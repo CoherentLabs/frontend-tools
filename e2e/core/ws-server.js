@@ -1,7 +1,7 @@
 const WebSocket = require('ws');
 const axios = require('axios');
 const { retryIfFails } = require('./utils');
-const gamefaceCommands = require('./commands');
+const gamefaceCommands = require('./commands/commands');
 const { sendCommands, sendCommand } = gamefaceCommands;
 const { player, killPlayer } = require('./player');
 const SPEC_TIMEOUT = 10000;
@@ -74,6 +74,7 @@ class WSServer {
 
                 global.log.debug('Gameface player is ready to execute tests.');
 
+                mocha.bail(global.config.bail);
                 mocha.timeout(global.config.specTimeout || SPEC_TIMEOUT);
                 mocha.run(async (failures) => {
                     this.ws.close();

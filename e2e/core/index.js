@@ -11,6 +11,10 @@ class GamefaceE2E extends Command {
     static description = 'Gameface e2e cli';
 
     static flags = {
+        bail: Flags.boolean({
+            required: false,
+            description: 'Enables bailing on the first failure.',
+        }),
         tests: Flags.string({
             char: 't',
             required: false,
@@ -43,6 +47,7 @@ class GamefaceE2E extends Command {
             this.tests = config.tests;
             this.gamefacePath = config.gamefacePath;
             this.specTimeout = config.specTimeout;
+            this.bail = config.bail;
         } else {
             this.warn(`Unable to find config file with path: ${configPath}. Please make sure this file exists!`);
         }
@@ -85,6 +90,8 @@ class GamefaceE2E extends Command {
         }
 
         global.config.gamefacePath = flags.gamefacePath || this.gamefacePath;
+
+        global.config.bail = flags.bail || this.bail;
     }
 
     async catch(error) {
@@ -118,6 +125,8 @@ class GamefaceE2E extends Command {
             });
         }
 
+        mocha.addFile('./core/commands/setup-mocha.js');
+
         for (const file of specFiles) {
             mocha.addFile(path.resolve(cwd(), file));
         }
@@ -127,10 +136,10 @@ class GamefaceE2E extends Command {
 
     async run() {
         global.log = {
-            error: this.error,
-            log: this.log,
-            debug: this.debug,
-            warn: this.warn
+            error: this.error.bind(this),
+            log: this.log.bind(this),
+            debug: this.debug.bind(this),
+            warn: this.warn.bind(this)
         }
 
         const { flags } = await this.parse(GamefaceE2E);
@@ -140,7 +149,6 @@ class GamefaceE2E extends Command {
             await closeClient();
             await killPlayer();
         });
-
 
         const mocha = await this.initMocha();
         await spawnPlayer();
