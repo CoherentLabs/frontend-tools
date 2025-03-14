@@ -43,7 +43,7 @@ class GamefaceCommands {
     }
 
     /**
-     * Will send DevTool comand to the player
+     * Will send DevTool command to the player
      * @param {string} method - DevTools protocol method
      * @param {object} params
      * @returns 
@@ -52,7 +52,7 @@ class GamefaceCommands {
         return new Promise((resolve, reject) => {
             if (!method) return reject(new Error(`Command must have a method property`));
 
-            const id = Math.floor(Math.random() * 100000) + 1; // We need + 1 because if id is 0 the message will fail and not response will come
+            const id = Math.floor(Math.random() * 100000) + 1; // We need + 1 because if the id is 0 the message will fail and no response will be returned
             const message = JSON.stringify({ id, method, params });
 
             this.pendingCommands.set(id, { resolve, reject });
@@ -67,7 +67,7 @@ class GamefaceCommands {
     }
 
     /**
-     * Will send mutiple DevTools comands to the player
+     * Will send mutiple DevTools commands to the player
      * @param {Array<string|object>} commands
      * @returns {Promise<Array<any>>}
      */
