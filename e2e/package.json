@@ -1,0 +1,28 @@
+{
+  "name": "gameface-e2e",
+  "version": "0.0.1",
+  "scripts": {
+    "test": "gameface-e2e"
+  },
+  "dependencies": {
+    "@oclif/core": "^4.2.8",
+    "assert": "^2.1.0",
+    "axios": "^1.8.1",
+    "glob": "^11.0.1",
+    "mocha": "^11.1.0",
+    "oclif": "^4.17.34",
+    "ws": "^8.18.1"
+  },
+  "bin": {
+    "gameface-e2e": "./bin/run"
+  },
+  "oclif": {
+    "bin": "gameface-e2e",
+    "commands": {
+      "strategy": "single",
+      "target": "./core/index.js"
+    },
+    "dirname": "./",
+    "topicSeparator": " "
+  }
+}
