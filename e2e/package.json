@@ -13,8 +13,9 @@
     "oclif": "^4.17.34",
     "ws": "^8.18.1"
   },
+  "types": "./core/commands/global.d.ts",
   "bin": {
-    "gameface-e2e": "./bin/run"
+    "gameface-e2e": "./bin/run.js"
   },
   "oclif": {
     "bin": "gameface-e2e",

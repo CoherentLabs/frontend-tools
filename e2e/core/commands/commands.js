@@ -152,9 +152,9 @@ class GamefaceCommands extends GamefaceCommandsBase {
     }
 
     /**
-     * Gets the element containing the given text.
-     * @param {string} text - The text to check for within the element.
-     * @param {string} selector - The selector used to find the element.
+     * Retrieves a DOM element containing the specified text.
+     * @param {string} text - The text to search for in the DOM element.
+     * @param {string} selector - The selector used to find the element that the search will be started from.
      * @returns {Promise<DOMElement>} - A promise that resolves to DOMElement that contains the text.
      */
     async contains(text, selector) {
