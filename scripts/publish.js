@@ -1,5 +1,6 @@
 const path = require('path');
-const fs = require('fs/promises');
+const fsPromises = require('fs/promises');
+const fs = require('fs');
 const { execSync } = require('child_process');
 const VITE_PLUGINS_PATH = path.join(__dirname, '../gameface-ui-vite-plugins');
 const TOOLS_PATH = path.join(__dirname, '..');
@@ -78,7 +79,7 @@ async function getToolsDirs(root, exclude = []) {
     const dirs = [];
 
     async function walk(dir) {
-        const entries = await fs.readdir(dir, { withFileTypes: true });
+        const entries = await fsPromises.readdir(dir, { withFileTypes: true });
 
         for (const entry of entries) {
             const fullPath = path.join(dir, entry.name);
