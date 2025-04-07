@@ -2,7 +2,7 @@
 
 ## Publish Workflow
 
-To package be published automatically to npm, ensure the following requirements are met:
+To publish the package automatically to npm, ensure the following requirements are met:
 
 1. The package must reside in a separate folder within the repository, such as the `e2e` package.
 2. A `package.json` file with a defined version must be present. When the version is updated and the PR is merged into the master branch, the package will be automatically uploaded to npm.
