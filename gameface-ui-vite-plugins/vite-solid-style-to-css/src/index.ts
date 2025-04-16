@@ -188,6 +188,37 @@ function warn(message: string) {
 }
 
 /**
+ * Extracts the node name and CSS class name from a JSX opening element's name.
+ *
+ * @param name - The `name` property of a JSX opening element, which can be of type `JSXIdentifier` or `JSXMemberExpression`.
+ * @returns An object containing:
+ * - `nodeName`: A string representing the concatenated node name.
+ * - `cssClassName`: A string representing the concatenated CSS class name.
+ *
+ * The function handles two cases:
+ * 1. If the `name` is a `JSXIdentifier`, it directly uses the identifier's name for both `nodeName` and `cssClassName`.
+ * 2. If the `name` is a `JSXMemberExpression`, it recursively processes the `object` and `property` to construct the `nodeName` and `cssClassName` by concatenating their respective values with an underscore (`_`).
+ *
+ * If the `name` type is not recognized, it returns an object with empty strings for both `nodeName` and `cssClassName`.
+ */
+function getNodeName(name: JSXOpeningElement['name']): { nodeName: string, cssClassName: string } {
+    switch (name.type) {
+        case 'JSXIdentifier': return { nodeName: name.name, cssClassName: name.name }
+        case 'JSXMemberExpression': {
+            const left = getNodeName(name.object);
+            const right = getNodeName(name.property);
+
+            return {
+                nodeName: `${left.nodeName}.${right.nodeName}`,
+                cssClassName: `${left.cssClassName}_${right.cssClassName}`
+            };
+
+        }
+        default: return { nodeName: '', cssClassName: '' }
+    }
+}
+
+/**
  * Transforms inlined `style` attributes in JSX elements into CSS classes and generates corresponding CSS rules.
  * 
  * This function parses the provided code as a JavaScript/TypeScript module with JSX syntax, traverses the AST,
@@ -214,8 +245,7 @@ function transformInlinedStyles(filePath: string, code: string, isBuild = false)
             const { loc } = path.node;
             const locationInfo = loc ? `(${filePath}:${loc.start.line}:${loc.start.column})` : `(${filePath})`;
             const attributes = path.node.attributes;
-            // @ts-ignore
-            const nodeName = path.node.name.name;
+            const { nodeName, cssClassName } = getNodeName(path.node.name);
 
             let styleAttrIndex = attributes.findIndex(
                 (attr) => attr.type === "JSXAttribute" && attr.name.name === "style"
@@ -237,7 +267,7 @@ function transformInlinedStyles(filePath: string, code: string, isBuild = false)
                 return;
             }
 
-            let className = `_${nodeName}_${Math.random().toString(36).substr(2, 5)}`;
+            let className = `_${cssClassName}_${Math.random().toString(36).substr(2, 5)}`;
 
             const styleRules = filterStylePropsAndGenerateStyles(styleExpr.expression, isBuild);
             if (styleRules) {
@@ -282,7 +312,7 @@ function handleHotUpdateTransform(id: string, virtualCssId: string) {
     updatedFiles.delete(id);
     if (!code || code.includes(`import "${virtualCssId}";`)) return code;
 
-    return `import "${virtualCssId}";\n` + code;
+    return code + `import "${virtualCssId}";\n`;
 }
 
 let showWarnings = true;
@@ -337,7 +367,7 @@ export default function solidStyleToCssPlugin({ suppressWarnings } = { suppressW
                 virtualCSSFiles.set(virtualCssId, cssOutput);
 
                 if (!transformedCode.includes(`import "${virtualCssId}";`)) {
-                    return `import "${virtualCssId}";\n` + transformedCode;
+                    return transformedCode + `import "${virtualCssId}";\n`;
                 }
 
                 return transformedCode;
