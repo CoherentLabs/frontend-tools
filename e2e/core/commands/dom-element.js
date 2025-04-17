@@ -1,3 +1,5 @@
+const { retryIfFails } = require("../utils");
+
 /**
  * @class DOMElements
  * @extends {Array<DOMElement>}
@@ -55,14 +57,20 @@ class DOMElement {
      * @constructor
      * @param {Object} gamefaceCommands - The gameface commands object.
      * @param {number} nodeId - The ID of the node to describe.
-     * @returns {Promise<DOMElement>} A promise that resolves to the created DOMElement instance.
+     * Resolves to the created DOMElement instance.
      */
     constructor(gamefaceCommands, nodeId) {
         this.nodeId = nodeId;
         /**@private*/this.gamefaceCommands = gamefaceCommands;
         /**@private*/this.sendCommand = gamefaceCommands.sendCommand;
 
+        // @ts-ignore
         return new Promise(async (resolve, reject) => {
+            if (!this.nodeId) {
+                global.log.warn(`\n[DOMElement] Unable to create DOMElement because nodeId is not provided.`);
+                return reject(new Error(`Unable to create DOMElement because nodeId is not provided.`));
+            }
+
             global.log.debug(`\n[DOMElement] Creating new DOMElement. Getting data of node with id - ${this.nodeId}`);
             const nodeData = await this.sendCommand('DOM.describeNode', { nodeId: this.nodeId });
             this.node = nodeData.node || null;
@@ -72,7 +80,7 @@ class DOMElement {
 
     /**
      * Gets the inner HTML content of the DOM element.
-     * @returns {string} The inner HTML content if available, otherwise an empty string.
+     * @returns {Promise<string>} The inner HTML content if available, otherwise an empty string.
      */
     async getInnerHTML() {
         global.log.debug(`\n[DOMElement] Getting inner HTML of node with id - ${this.nodeId}`);
@@ -122,6 +130,8 @@ class DOMElement {
             nodeId: this.nodeId,
             selector,
         });
+
+        if (!nodeId) throw new Error(`Unable to find element with selector - "${selector}" within node with id - ${this.nodeId}.`);
 
         return await new DOMElement(this.gamefaceCommands, nodeId);
     }
@@ -193,7 +203,8 @@ class DOMElement {
      *
      * @param {Object} node - The DOM node to retrieve text content from.
      * @param {string} node.nodeValue - The text content of the node.
-     * @param {Array} node.children - The child nodes of the DOM node.
+     * @param {Array<{nodeId: string}>} node.children - The child nodes of the DOM node.
+     * @param {Object} node.children - The children of the DOM node.
      * @param {number} node.children[].nodeId - The ID of the child node.
      * @returns {Promise<string>} The concatenated text content of the node and its children.
      */
@@ -246,7 +257,7 @@ class DOMElement {
      * @returns {Promise<boolean>} A promise that resolves to `true` if the element is hidden, otherwise `false`.
      */
     async isHidden() {
-        global.log.debug(`\n[DOMElement] Getting if of node with id - ${this.nodeId} is hidden`);
+        global.log.debug(`\n[DOMElement] Getting if node with id - ${this.nodeId} is hidden`);
 
         return retryIfFails(async () => {
             const { computedStyle } = await this.sendCommand('CSS.getComputedStyleForNode', { nodeId: this.nodeId });
@@ -269,12 +280,95 @@ class DOMElement {
      * @returns {Promise<boolean>} A promise that resolves to `true` if the element is visible, otherwise `false`.
      */
     async isVisible() {
-        global.log.debug(`\n[DOMElement] Getting if of node with id - ${this.nodeId} is visible`);
+        global.log.debug(`\n[DOMElement] Getting if node with id - ${this.nodeId} is visible`);
 
         const { model } = await this.sendCommand('DOM.getBoxModel', { nodeId: this.nodeId });
-        const isOffscreen = !model || model.height === 0 || model.width === 0;
 
-        return !(await this.isHidden()) && !isOffscreen;
+        if (!model || model.height === 0 || model.width === 0) return false;
+
+        const { result: widthRes } = await this.sendCommand('Runtime.evaluate', {
+            expression: 'window.innerWidth',
+            returnByValue: true
+        });
+
+        const { result: heightRes } = await this.sendCommand('Runtime.evaluate', {
+            expression: 'window.innerHeight',
+            returnByValue: true
+        });
+
+        const [windowWidth, windowHeight] = [widthRes.value, heightRes.value];
+
+        const xPoints = model.content.filter((_, i) => i % 2 === 0);
+        const yPoints = model.content.filter((_, i) => i % 2 === 1);
+        const [maxX, minX, maxY, minY] = [Math.max(...xPoints), Math.min(...xPoints), Math.max(...yPoints), Math.min(...yPoints)];
+
+        const isInViewport =
+            maxX > 0 && minX < windowWidth &&
+            maxY > 0 && minY < windowHeight;
+
+        return !await this.isHidden() && isInViewport;
+    }
+
+    /**
+     * Determines if the DOM element associated with the current node is scrollable.
+     *
+     * This method checks the computed CSS styles (`overflow`, `overflow-x`, and `overflow-y`)
+     * of the element to see if they are set to `scroll` or `auto`, which indicates scrollability.
+     *
+     * @async
+     * @returns {Promise<boolean>} A promise that resolves to `true` if the element is scrollable, otherwise `false`.
+     */
+    async isScrollable() {
+        global.log.debug(`\n[DOMElement] Getting if node with id - ${this.nodeId} is scrollable`);
+
+        const { computedStyle } = await this.sendCommand('CSS.getComputedStyleForNode', { nodeId: this.nodeId });
+
+        const isScrollable = computedStyle.some((style) => {
+            return (
+                (style.name === 'overflow' || style.name === 'overflow-x' || style.name === 'overflow-y') &&
+                (style.value === 'scroll' || style.value === 'auto')
+            );
+        });
+
+        return isScrollable;
+    }
+
+    /**
+     * Determines if the current DOM element is focusable.
+     *
+     * A DOM element is considered focusable if:
+     * - It is not hidden.
+     * - It is not disabled (does not have the "disabled" attribute).
+     * - It either has a "tabindex" attribute or is one of the following tag types: 
+     *   'a', 'button', 'input', 'textarea'.
+     *
+     * @async
+     * @returns {Promise<boolean>} A promise that resolves to `true` if the element is focusable, otherwise `false`.
+     */
+    async isFocusable() {
+        global.log.debug(`\n[DOMElement] Getting if node with id - ${this.nodeId} is focusable`);
+
+        if (await this.isHidden()) return false;
+
+        const attrMap = await this.getAttributes();
+        const tagName = this.node?.nodeName?.toLowerCase();
+        const hasTabindex = attrMap['tabindex'] !== undefined;
+        const isDisabled = attrMap['disabled'] !== undefined;
+        return !isDisabled && (hasTabindex || ['a', 'button', 'input', 'textarea'].includes(tagName));
+    }
+
+    /**
+     * Retrieves the list of CSS classes applied to the DOM element represented by this instance.
+     *
+     * @async
+     * @returns {Promise<string[]>} A promise that resolves to an array of class names. 
+     *                              If the element has no classes, an empty array is returned.
+     */
+    async classes() {
+        global.log.debug(`\n[DOMElement] Getting classes of node with id - ${this.nodeId}`);
+
+        const className = await this.getAttribute('class');
+        return className ? className.split(' ') : [];
     }
 
     /**
@@ -325,6 +419,8 @@ class DOMElement {
      * @returns {Promise<Object>} A promise that resolves to an object containing the element's attributes.
      */
     async getAttributes() {
+        global.log.debug(`\n[DOMElement] Getting attributes of node with id - ${this.nodeId}`);
+
         const { attributes } = await this.sendCommand('DOM.getAttributes', { nodeId: this.nodeId });
 
         const attrMap = {};
@@ -342,6 +438,8 @@ class DOMElement {
      * @returns {Promise<string|undefined>} A promise that resolves to the value of the attribute, or undefined if the attribute does not exist.
      */
     async getAttribute(name) {
+        global.log.debug(`\n[DOMElement] Getting attribute with name '${name}' of node with id - ${this.nodeId}`);
+
         const attrMap = await this.getAttributes();
         return attrMap[name];
     }
@@ -353,6 +451,8 @@ class DOMElement {
      * @returns {Promise<boolean>} - A promise that resolves to true if the attribute exists, otherwise false.
      */
     async hasAttribute(name) {
+        global.log.debug(`\n[DOMElement] Getting if node with id - ${this.nodeId} has '${name}' attribute`);
+
         const attrMap = await this.getAttributes();
         return attrMap.hasOwnProperty(name);
     }
@@ -367,6 +467,8 @@ class DOMElement {
      * @returns {Promise<void>} A promise that resolves when the attribute has been set.
      */
     async setAttribute(name, value) {
+        global.log.debug(`\n[DOMElement] Setting attribute with name '${name}' and value '${value}' of node with id - ${this.nodeId}`);
+
         await this.sendCommand('DOM.setAttributesAsText', {
             nodeId: this.nodeId,
             text: `${name}="${value}"`
@@ -382,6 +484,8 @@ class DOMElement {
      * @returns {Promise<void>} A promise that resolves when the click action is completed.
      */
     async click() {
+        global.log.debug(`\n[DOMElement] Clicking on node with id - ${this.nodeId}`);
+
         if (this.node.nodeType === 3) {
             global.log.warn(`Trying to click on text node that is not supported!`);
             return null;

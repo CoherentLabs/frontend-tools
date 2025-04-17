@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title>Document</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 0;
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+            font-size: 3vh;
+        }
+
+        #menu {
+            display: flex;
+            width: 100%;
+            justify-content: space-around;
+            background-color: #333;
+            color: white;
+            padding: 10px;
+        }
+
+        .link.active {
+            background-color: #555;
+            color: cyan;
+        }
+
+        .page {
+            display: none;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ccc;
+            margin: 10px;
+        }
+
+        .page.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="menu">
+        <div
+            id="link-1"
+            class="link"
+        >Page 1</div>
+        <div
+            id="link-2"
+            class="link"
+        >Page 2</div>
+    </div>
+    <div id="pages">
+        <div
+            id="page-1"
+            class="page"
+        >
+            <h1 class="title">Page 1</h1>
+            <p class="content">This is the content of page 1.</p>
+        </div>
+        <div
+            id="page-2"
+            class="page"
+        >
+            <h1 class="title">Page 2</h1>
+            <p class="content">This is the content of page 2.</p>
+        </div>
+    </div>
+    <script>
+        const pages = document.querySelectorAll('.page');
+        const links = document.querySelectorAll('.link');
+
+        function selectPage(page) {
+            pages.forEach((p) => {
+                p.classList.remove('active');
+            });
+
+            links.forEach((l) => {
+                l.classList.remove('active');
+            });
+
+            const pageEl = document.getElementById(`page-${page}`);
+            pageEl.classList.add('active');
+
+            const linkEl = document.getElementById(`link-${page}`);
+            linkEl.classList.add('active');
+        }
+
+        links.forEach((link, index) => {
+            link.addEventListener('click', (event) => {
+                selectPage(index + 1);
+            });
+        });
+
+        selectPage(1);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "checkJs": true,
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "types/*"
+            ]
+        }
+    },
+    "include": [
+        "examples",
+        "types"
+    ]
+}
