@@ -72,6 +72,38 @@ When you configure both properties inside your config file, there are two ways t
     npx gameface-e2e --config=./tests/my-config.js
     ```
 
+### Choosing between `gf` object and `DOMElement`
+
+The `gf` object is a global utility that provides methods to interact with the UI elements. It is typically used for quick, single actions, such as retrieving the text of an element without further interaction.
+
+Example of using the `gf` object for a single action:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const text = await gf.text('.my-element');
+        assert.equal(text, 'Hello, World!');
+    });
+});
+```
+
+The `DOMElement` object, on the other hand, represents a specific DOM element and is ideal for scenarios where multiple interactions with the same element are required. For instance, you might retrieve an element, check its text, and then perform a click action.
+
+Example of using the `DOMElement` object for multiple actions:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        const text = await element.text();
+        assert.equal(text, 'Hello, World!');
+        await element.click();
+    });
+});
+```
+
+Use the `gf` object for simplicity when only one interaction is needed, and opt for the `DOMElement` object when you need to perform multiple operations on the same element.
+
 ## `gameface-e2e` Command Flags
 
 | Flag         | Type   | Description                                                                                                           |
@@ -141,6 +173,8 @@ describe("My Gameface UI", () => {
     });
 });
 ```
+
+To see more examples of how to write tests, check the `examples` folder in the repository. The examples include various test cases demonstrating how to use the `gf` object and its methods.
 
 ## API Reference
 
@@ -247,6 +281,198 @@ Usage:
 describe('Test script', function () {
     it('Test 1', async () => {
         await gf.navigate('https://localhost:3000/');
+    });
+});
+```
+
+The `url` argument can receive either local or remote URLs. If you want to navigate to a local file, you can use the `gf.navigate` method with a file path. The file path could be either absolute or relative to the Player directory specified via `gamefacePath` command argument. For example, if you want to navigate to a local HTML file, you can use the following code:
+
+```js
+gf.navigate('D:/my-directory/my-file.html');
+```
+
+Or if you want to navigate to a file relative to the Player's directory, you can use the following code:
+
+```js
+gf.navigate('./my-file.html');
+```
+
+#### `gf.isHidden(selector: string): Promise<boolean>`
+
+Checks if the specified element is hidden.
+
+* `selector`: The CSS selector of the element to check.
+* Returns a promise that resolves to `true` if the element is hidden, `false` otherwise.
+* An element is considered hidden if:
+  * Its `display` property is set to `none`.
+  * Its `visibility` property is set to `hidden`.
+  * Its `opacity` property is set to `0`.
+* **Note: This method does not check if the element is off-screen.**
+
+Usage:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const isHidden = await gf.isHidden('.my-element');
+    });
+});
+```
+
+#### `gf.isVisible(selector: string): Promise<boolean>`
+
+Checks if the specified element is visible.
+
+* `selector`: The CSS selector of the element to check.
+* Returns a promise that resolves to `true` if the element is visible, `false` otherwise.
+* An element is considered visible if:
+  * Its `display` property is not set to `none`.
+  * Its `visibility` property is not set to `hidden`.
+  * Its `opacity` property is not set to `0`.
+  * It is not off-screen.
+  * It has a positive width and height.
+
+Usage:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const isVisible = await gf.isVisible('.my-element');
+    });
+});
+```
+
+#### `gf.isScrollable(selector: string): Promise<boolean>`
+
+Checks if the specified element is scrollable.
+
+* `selector`: The CSS selector of the element to check.
+* Returns a promise that resolves to `true` if the element is scrollable, `false` otherwise.
+* An element is considered scrollable if it has an `overflow` property set to `auto`, `scroll`.
+
+Usage:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const isScrollable = await gf.isScrollable('.my-element');
+    });
+});
+```
+
+#### `gf.isFocusable(selector: string): Promise<boolean>`
+
+Checks if the specified element is focusable.
+
+* `selector`: The CSS selector of the element to check.
+* Returns a promise that resolves to `true` if the element is focusable, `false` otherwise.
+* An element is considered focusable if:
+  * It has a `tabindex` attribute.
+  * Is not disabled - has not `disabled` attribute.
+  * It is an input element (e.g., `<input>`, `<textarea>`).
+  * It is a button element (e.g., `<button>`).
+  * It is a link element (`<a>`).
+
+Usage:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const isFocusable = await gf.isFocusable('.my-element');
+    });
+});
+```
+
+#### `gf.hasAttribute(selector: string, name: string): Promise<boolean>`
+
+Checks if the specified element has the specified attribute.
+
+* `selector`: The CSS selector of the element to check.
+* `name`: The name of the attribute to check for.
+* Returns a promise that resolves to `true` if the element has the attribute, `false` otherwise.
+
+Usage:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const hasAttribute = await gf.hasAttribute('.my-element', 'data-id');
+    });
+});
+```
+
+#### `gf.getAttribute(selector: string, name: string): Promise<string | undefined>`
+
+Retrieves the value of the specified attribute of the specified element.
+
+* `selector`: The CSS selector of the element to retrieve.
+* `name`: The name of the attribute to retrieve.
+* Returns a promise that resolves to the value of the attribute or `undefined` if the attribute does not exist.
+* **Note: The attribute value is returned as a string.**
+
+Usage:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const attribute = await gf.getAttribute('.my-element', 'data-id');
+    });
+});
+```
+
+#### `gf.getStyles(selector: string): Promise<Object>`
+
+Retrieves the computed styles of the specified element.
+
+* `selector`: The CSS selector of the element to retrieve.
+* Returns a promise that resolves to an object containing the computed styles of the element.
+* The object has the following structure: `{ property: value }`.
+* **Note: The values are returned as strings.**
+* **Note: The styles are computed styles, not inline styles.**
+* **Note: The styles are not returned in the same format as the CSS file.**
+
+Usage:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const styles = await gf.getStyles('.my-element');
+    });
+});
+```
+
+#### `gf.getClasses(selector: string): Promise<string[]>`
+
+Retrieves the classes of the specified element.
+
+* `selector`: The CSS selector of the element to retrieve.
+* Returns a promise that resolves to an array of strings representing the classes of the element.
+* **Note: The classes are returned as an array of strings.**
+
+Usage:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const classes = await gf.getClasses('.my-element');
+    });
+});
+```
+
+#### `gf.click(selector: string): Promise<void>`
+
+Simulates a click on the specified element.
+
+* `selector`: The CSS selector of the element to click.
+* Returns a promise that resolves when the click is complete.
+* **Note: Clicking on text elements is not supported.**
+
+Usage:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        await gf.click('.my-button');
     });
 });
 ```
@@ -438,6 +664,67 @@ describe('Test script', function () {
     });
 });
 ```
+
+#### `element.isScrollable(): Promise<boolean>`
+
+Checks if the element is scrollable.
+
+* Returns a promise that resolves to `true` if the element is scrollable, `false` otherwise.
+* An element is considered scrollable if it has an `overflow` property set to `auto`, `scroll`.
+
+Usage:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        const isScrollable = await element.isScrollable();
+    });
+});
+```
+
+#### `element.isFocusable(): Promise<boolean>`
+
+Checks if the element is focusable.
+
+* Returns a promise that resolves to `true` if the element is focusable, `false` otherwise.
+* An element is considered focusable if:
+  * It has a `tabindex` attribute.
+  * Is not disabled - has not `disabled` attribute.
+  * It is an input element (e.g., `<input>`, `<textarea>`).
+  * It is a button element (e.g., `<button>`).
+  * It is a link element (`<a>`).
+
+Usage:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        const isFocusable = await element.isFocusable();
+    });
+});
+```
+
+#### `element.classes(): Promise<string[]>`
+
+Retrieves the classes of the element.
+
+* Returns a promise that resolves to an array of strings representing the classes of the element.
+* **Note: The classes are returned as an array of strings.**
+
+Usage:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        const classes = await element.classes();
+    });
+});
+```
+
+
 
 #### `element.getPositionOnScreen(): Promise<{ x: number, y: number } | null>`
 

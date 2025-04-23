@@ -1,5 +1,5 @@
-import GamefaceCommands from "./commands";
-import Utils from '../utils';
+import GamefaceCommands from "../core/commands/commands";
+import Utils from '../core/utils';
 
 type GamefaceCommandsMethods = {
     [K in keyof typeof GamefaceCommands as typeof GamefaceCommands[K] extends Function ? K : never]: typeof GamefaceCommands[K];

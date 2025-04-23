@@ -1,5 +1,16 @@
 const { retryIfFails } = require("../utils");
 const { DOMElement, DOMElements } = require("./dom-element");
+const path = require('path');
+const URL = require('url');
+
+function isURL(input) {
+    try {
+        const url = URL.parse(input);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch (error) {
+        return false;
+    }
+}
 
 class GamefaceCommandsBase {
     constructor(player, ws) {
@@ -52,12 +63,12 @@ class GamefaceCommandsBase {
     async sendCommand(method, params = {}) {
         global.log.debug(`Executing command with method - ${method}, and params - ${JSON.stringify(params)}`);
 
-        if (!method) return reject(new Error(`Command must have a method property`));
-
         const id = Math.floor(Math.random() * 100000) + 1; // We need + 1 because if the id is 0 the message will fail and no response will be returned
         const message = JSON.stringify({ id, method, params });
 
         return new Promise((resolve, reject) => {
+            if (!method) return reject(new Error(`Command must have a method property`));
+
             this.pendingCommands.set(id, { resolve, reject });
             this.ws.send(message);
 
@@ -101,6 +112,15 @@ class GamefaceCommands extends GamefaceCommandsBase {
         this.text = this.text.bind(this);
         this.children = this.children.bind(this);
         this.navigate = this.navigate.bind(this);
+        this.isHidden = this.isHidden.bind(this);
+        this.isVisible = this.isVisible.bind(this);
+        this.isScrollable = this.isScrollable.bind(this);
+        this.isFocusable = this.isFocusable.bind(this);
+        this.hasAttribute = this.hasAttribute.bind(this);
+        this.getAttribute = this.getAttribute.bind(this);
+        this.getStyles = this.getStyles.bind(this);
+        this.getClasses = this.getClasses.bind(this);
+        this.click = this.click.bind(this);
     }
 
     /**
@@ -159,6 +179,7 @@ class GamefaceCommands extends GamefaceCommandsBase {
      */
     async contains(text, selector) {
         global.log.debug(`\n[GamefaceCommands] Trying to find text - ${text} within node with selector - ${selector}`);
+        if (!text) throw new Error(`Text must be provided to search for.`);
 
         const element = await this.get(selector);
         return element.contains(text);
@@ -196,10 +217,136 @@ class GamefaceCommands extends GamefaceCommandsBase {
     async navigate(url) {
         global.log.debug(`\n[GamefaceCommands] Navigating to new page with url - ${url}`);
 
+        if (!isURL(url)) {
+            url = path.resolve(global.config.gamefacePath, url).replace(/\\/g, '/');
+        }
+
         await this.sendCommand('Page.navigate', { url });
         await this.sendCommand('Page.loadEventFired');
         const { root: { nodeId } } = await this.sendCommand('DOM.getDocument');
         this.rootNodeId = nodeId;
+    }
+
+    /**
+     * Checks if the element matching the given selector is hidden.
+     *
+     * @param {string} selector - The CSS selector of the element to check.
+     * @returns {Promise<boolean>} A promise that resolves to `true` if the element is hidden, otherwise `false`.
+     */
+    async isHidden(selector) {
+        global.log.debug(`\n[GamefaceCommands] Getting if node with selector - ${selector} is hidden`);
+
+        const element = await this.get(selector);
+        return element.isHidden();
+    }
+
+    /**
+     * Checks if the element matching the given selector is visible on the page.
+     *
+     * @param {string} selector - The CSS selector of the element to check.
+     * @returns {Promise<boolean>} A promise that resolves to `true` if the element is visible, otherwise `false`.
+     */
+    async isVisible(selector) {
+        global.log.debug(`\n[GamefaceCommands] Getting if node with selector - ${selector} is visible`);
+
+        const element = await this.get(selector);
+        return element.isVisible();
+    }
+
+    /**
+     * Checks if the element identified by the given selector is scrollable.
+     *
+     * @param {string} selector - The CSS selector of the element to check.
+     * @returns {Promise<boolean>} A promise that resolves to `true` if the element is scrollable, otherwise `false`.
+     */
+    async isScrollable(selector) {
+        global.log.debug(`\n[GamefaceCommands] Getting if node with selector - ${selector} is scrollable`);
+
+        const element = await this.get(selector);
+        return element.isScrollable();
+    }
+
+    /**
+     * Checks if the element identified by the given selector is focusable.
+     *
+     * @param {string} selector - The CSS selector of the element to check.
+     * @returns {Promise<boolean>} A promise that resolves to `true` if the element is focusable, otherwise `false`.
+     */
+    async isFocusable(selector) {
+        global.log.debug(`\n[GamefaceCommands] Getting if node with selector - ${selector} is focusable`);
+
+        const element = await this.get(selector);
+        return element.isFocusable();
+    }
+
+    /**
+     * Checks if the element matching the given selector has the specified attribute.
+     *
+     * @param {string} selector - The CSS selector of the element to check.
+     * @param {string} name - The name of the attribute to check for.
+     * @returns {Promise<boolean>} A promise that resolves to `true` if the element has the attribute, otherwise `false`.
+     */
+    async hasAttribute(selector, name) {
+        global.log.debug(`\n[GamefaceCommands] Getting if node with selector - ${selector} has '${name}' attribute`);
+
+        const element = await this.get(selector);
+        return element.hasAttribute(name);
+    }
+
+    /**
+     * Retrieves the value of a specified attribute from an element identified by a selector.
+     *
+     * @async
+     * @param {string} selector - The CSS selector of the element to retrieve the attribute from.
+     * @param {string} name - The name of the attribute to retrieve.
+     * @returns {Promise<string|null>} A promise that resolves to the value of the attribute, or `null` if the attribute does not exist.
+     */
+    async getAttribute(selector, name) {
+        global.log.debug(`\n[GamefaceCommands] Getting attribute with name '${name}' of node with selector - ${selector}`);
+
+        const element = await this.get(selector);
+        return element.getAttribute(name);
+    }
+
+    /**
+     * Retrieves the computed styles of a DOM element identified by the given selector.
+     *
+     * @param {string} selector - The CSS selector of the target DOM element.
+     * @returns {Promise<Object>} A promise that resolves to an object containing the computed styles of the element.
+     */
+    async getStyles(selector) {
+        global.log.debug(`\n[GamefaceCommands] Getting styles of node with selector - ${selector}`);
+
+        const element = await this.get(selector);
+        return element.styles();
+    }
+
+    /**
+     * Retrieves the list of CSS classes for the DOM element matching the given selector.
+     *
+     * @param {string} selector - The CSS selector used to locate the DOM element.
+     * @returns {Promise<string[]>} A promise that resolves to an array of class names for the selected element.
+     * @throws {Error} Throws an error if the element cannot be found or if there is an issue retrieving the classes.
+     */
+    async getClasses(selector) {
+        global.log.debug(`\n[GamefaceCommands] Getting classes of node with selector - ${selector}`);
+
+        const element = await this.get(selector);
+        return element.classes();
+    }
+
+    /**
+     * Clicks on a DOM element specified by the given selector.
+     *
+     * @param {string} selector - The CSS selector of the element to click.
+     * @returns {Promise<void>} A promise that resolves when the click action is completed.
+     * @throws {Error} If the element cannot be found or the click action fails.
+     */
+    async click(selector) {
+        global.log.debug(`\n[GamefaceCommands] Clicking on node with selector - ${selector}`);
+
+        const element = await this.get(selector);
+        return element.click();
     }
 }
 
