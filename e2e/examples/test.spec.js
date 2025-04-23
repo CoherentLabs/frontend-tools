@@ -79,11 +79,11 @@ describe('Test script', function () {
     });
 
     it('Should test if element is hidden', async () => {
-        for (let i = 1; i <= 3; i++) {
-            assert.equal(await gf.isHidden(`#hidden-element-${i}`), true);
+        const hiddenElements = await gf.getAll('.hidden-element');
 
-            const el = (await gf.get(`#hidden-element-${i}`));
-            assert.equal(await el.isHidden(), true);
+        for (let i = 0; i < hiddenElements.length; i++) {
+            assert.equal(await gf.isHidden(`#hidden-element-${i + 1}`), true);
+            assert.equal(await hiddenElements.nth(i).isHidden(), true);
         }
     });
 
@@ -108,9 +108,11 @@ describe('Test script', function () {
     });
 
     it('Should test if element is focusable', async () => {
+        // Using the gf object only
         assert.equal(await gf.isFocusable(`#non-focusable-element`), false);
         assert.equal(await gf.isFocusable(`#focusable-element`), true);
 
+        // Using the gf object + DOMelement object
         let el = (await gf.get(`#non-focusable-element`));
         assert.equal(await el.isFocusable(), false);
         el = (await gf.get(`#focusable-element`));

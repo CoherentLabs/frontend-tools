@@ -72,6 +72,38 @@ When you configure both properties inside your config file, there are two ways t
     npx gameface-e2e --config=./tests/my-config.js
     ```
 
+### Choosing between `gf` object and `DOMElement`
+
+The `gf` object is a global utility that provides methods to interact with the UI elements. It is typically used for quick, single actions, such as retrieving the text of an element without further interaction.
+
+Example of using the `gf` object for a single action:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const text = await gf.text('.my-element');
+        assert.equal(text, 'Hello, World!');
+    });
+});
+```
+
+The `DOMElement` object, on the other hand, represents a specific DOM element and is ideal for scenarios where multiple interactions with the same element are required. For instance, you might retrieve an element, check its text, and then perform a click action.
+
+Example of using the `DOMElement` object for multiple actions:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        const text = await element.text();
+        assert.equal(text, 'Hello, World!');
+        await element.click();
+    });
+});
+```
+
+Use the `gf` object for simplicity when only one interaction is needed, and opt for the `DOMElement` object when you need to perform multiple operations on the same element.
+
 ## `gameface-e2e` Command Flags
 
 | Flag         | Type   | Description                                                                                                           |
