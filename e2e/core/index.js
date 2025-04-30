@@ -151,8 +151,8 @@ class GamefaceE2E extends Command {
         });
 
         const mocha = await this.initMocha();
-        await spawnPlayer();
-        await createClient();
+        const { debuggingPort } = await spawnPlayer();
+        await createClient(debuggingPort);
         await runTests(mocha);
     }
 }

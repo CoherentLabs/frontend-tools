@@ -1,4 +1,4 @@
-const { retryIfFails } = require("../utils");
+const { retryIfFails, getPressedKey } = require("../utils");
 
 /**
  * @class DOMElements
@@ -55,14 +55,22 @@ class DOMElement {
      * Creates an instance of DOMElement.
      * 
      * @constructor
-     * @param {Object} gamefaceCommands - The gameface commands object.
-     * @param {number} nodeId - The ID of the node to describe.
+     * @param {import("gamefaceCommands").GamefaceCommandsMethods} gamefaceCommands - The gameface commands object.
+     * @param {number|string} nodeId - The ID of the node to describe.
      * Resolves to the created DOMElement instance.
      */
     constructor(gamefaceCommands, nodeId) {
         this.nodeId = nodeId;
-        /**@private*/this.gamefaceCommands = gamefaceCommands;
-        /**@private*/this.sendCommand = gamefaceCommands.sendCommand;
+        /**
+         * @private
+         * @type {typeof gamefaceCommands}
+         */
+        this.gamefaceCommands = gamefaceCommands;
+        /**
+         * @private
+         * @type {typeof gamefaceCommands.sendCommand}
+         */
+        this.sendCommand = gamefaceCommands.sendCommand;
 
         // @ts-ignore
         return new Promise(async (resolve, reject) => {
@@ -72,10 +80,26 @@ class DOMElement {
             }
 
             global.log.debug(`\n[DOMElement] Creating new DOMElement. Getting data of node with id - ${this.nodeId}`);
-            const nodeData = await this.sendCommand('DOM.describeNode', { nodeId: this.nodeId });
-            this.node = nodeData.node || null;
+            await this._getNodeData();
+            if (this.node.nodeType !== 3) {
+                await this.setAttribute('data-node-id', String(this.nodeId))
+            }
+
             return resolve(this);
         })
+    }
+
+    /**
+     * Asynchronously retrieves and sets the node data for the current DOM element.
+     * Sends a 'DOM.describeNode' command to fetch details about the node using its nodeId.
+     * Updates the `node` property with the retrieved node data or sets it to null if no data is found.
+     *
+     * @private
+     * @returns {Promise<void>} A promise that resolves when the node data has been retrieved and set.
+     */
+    async _getNodeData() {
+        const nodeData = await this.sendCommand('DOM.describeNode', { nodeId: this.nodeId });
+        this.node = nodeData.node || null;
     }
 
     /**
@@ -194,6 +218,8 @@ class DOMElement {
     async contains(text) {
         global.log.debug(`\n[DOMElement] Trying to find text - ${text} within node with id - ${this.nodeId}`);
 
+        await this._getNodeData();
+
         return this._findElementWithContent(text, this.node);
     }
 
@@ -227,6 +253,8 @@ class DOMElement {
      */
     async text() {
         global.log.debug(`\n[DOMElement] Getting all the text content of node with id - ${this.nodeId}`);
+
+        await this._getNodeData();
 
         return this._getTextContent(this.node);
     }
@@ -286,17 +314,8 @@ class DOMElement {
 
         if (!model || model.height === 0 || model.width === 0) return false;
 
-        const { result: widthRes } = await this.sendCommand('Runtime.evaluate', {
-            expression: 'window.innerWidth',
-            returnByValue: true
-        });
-
-        const { result: heightRes } = await this.sendCommand('Runtime.evaluate', {
-            expression: 'window.innerHeight',
-            returnByValue: true
-        });
-
-        const [windowWidth, windowHeight] = [widthRes.value, heightRes.value];
+        const windowWidth = await this.gamefaceCommands.executeScript(() => window.innerWidth);
+        const windowHeight = await this.gamefaceCommands.executeScript(() => window.innerHeight);
 
         const xPoints = model.content.filter((_, i) => i % 2 === 0);
         const yPoints = model.content.filter((_, i) => i % 2 === 1);
@@ -307,6 +326,57 @@ class DOMElement {
             maxY > 0 && minY < windowHeight;
 
         return !await this.isHidden() && isInViewport;
+    }
+
+    /**
+     * Retrieves the bounding points of a DOM element.
+     * @private
+     * @param {Object} element - The DOM element object containing a `nodeId` property.
+     * @returns {Promise<number[]>} A promise that resolves to an array containing the following points:
+     *   - [0]: The maximum X-coordinate of the element.
+     *   - [1]: The minimum X-coordinate of the element.
+     *   - [2]: The maximum Y-coordinate of the element.
+     *   - [3]: The minimum Y-coordinate of the element.
+     */
+    async _getPointsOfElement(element) {
+        const { model } = await this.sendCommand('DOM.getBoxModel', { nodeId: element.nodeId });
+
+        const elementXPoints = model.content.filter((_, i) => i % 2 === 0);
+        const elementYPoints = model.content.filter((_, i) => i % 2 === 1);
+        return [
+            Math.max(...elementXPoints),
+            Math.min(...elementXPoints),
+            Math.max(...elementYPoints),
+            Math.min(...elementYPoints),
+        ];
+    }
+
+    /**
+     * Determines if the current DOM element is visible within a specified scrollable area.
+     *
+     * @async
+     * @param {DOMElement} scrollableArea - The scrollable area to check visibility against. Must be an instance of DOMElement.
+     * @returns {Promise<boolean>} A promise that resolves to `true` if the element is visible within the scrollable area, otherwise `false`.
+     * @throws {Error} Throws an error if `scrollableArea` is not provided or is not an instance of DOMElement.
+     */
+    async isVisibleInScrollableArea(scrollableArea) {
+        global.log.debug(`\n[DOMElement] Getting if node with id - ${this.nodeId} is visible in scrollable area`);
+
+        if (!this.isVisible()) return false;
+        if (!scrollableArea && !(scrollableArea instanceof DOMElement)) {
+            throw new Error(`"isVisibleInScrollableArea" expects scrollableArea to be a DOMElement instance! Received ${scrollableArea}`);
+        }
+
+        const [elementMaxX, elementMinX, elementMaxY, elementMinY] = await this._getPointsOfElement(this);
+        const [scrollableMaxX, scrollableMinX, scrollableMaxY, scrollableMinY] = await this._getPointsOfElement(scrollableArea);
+
+        const isInScrollableArea =
+            elementMaxX > scrollableMinX &&
+            elementMinX < scrollableMaxX &&
+            elementMaxY > scrollableMinY &&
+            elementMinY < scrollableMaxY;
+
+        return !await this.isHidden() && isInScrollableArea;
     }
 
     /**
@@ -358,6 +428,36 @@ class DOMElement {
     }
 
     /**
+     * Checks if the DOM element is currently focused.
+     *
+     * @returns {Promise<boolean>} A promise that resolves to `true` if the element is focused, otherwise `false`.
+     */
+    async isFocused() {
+        global.log.debug(`\n[DOMElement] Checking if node with id - ${this.nodeId} is focused`);
+
+        return await this.gamefaceCommands.executeScript((nodeId) => {
+            return document.activeElement && document.activeElement.isSameNode(document.querySelector(`[data-node-id="${nodeId}"]`));
+        }, this.nodeId);
+    }
+
+    /**
+     * Focuses the DOM element by simulating a click event.
+     *
+     * @returns {Promise<void>} A promise that resolves when the element is focused.
+     */
+    async focus() {
+        global.log.debug(`\n[DOMElement] Focusing on node with id - ${this.nodeId}`);
+
+        if (this.node.nodeType === 3) {
+            global.log.warn(`Trying to focus text node that is not supported!`);
+            return null;
+        }
+
+        if (await this.isFocused()) return;
+        await this._click('left');
+    }
+
+    /**
      * Retrieves the list of CSS classes applied to the DOM element represented by this instance.
      *
      * @async
@@ -380,7 +480,7 @@ class DOMElement {
         global.log.debug(`\n[DOMElement] Getting position on screen of node with id - ${this.nodeId}`);
 
         if (this.node.nodeType === 3) {
-            console.warn(`Trying to get position on screen of text node that is not supported!`);
+            global.log.warn(`Trying to get position on screen of text node that is not supported!`);
             return null;
         }
         const { model } = await this.sendCommand('DOM.getBoxModel', { nodeId: this.nodeId });
@@ -469,9 +569,142 @@ class DOMElement {
     async setAttribute(name, value) {
         global.log.debug(`\n[DOMElement] Setting attribute with name '${name}' and value '${value}' of node with id - ${this.nodeId}`);
 
+        if (this.node.nodeType === 3) {
+            global.log.warn(`Setting attribute to text node that is not supported!`);
+            return null;
+        }
+
         await this.sendCommand('DOM.setAttributesAsText', {
             nodeId: this.nodeId,
-            text: `${name}="${value}"`
+            text: `${name}="${value}"`,
+            name: name
+        });
+    }
+
+    /**
+     * Calculates and returns the center coordinates of the DOM element.
+     * @private
+     * @async
+     * @returns {Promise<number[]>} A promise that resolves to an array containing the x and y coordinates of the center of the element.
+     */
+    async _getCenter() {
+        const { model } = await this.sendCommand('DOM.getBoxModel', { nodeId: this.nodeId });
+        const { content } = model;
+        const x = (content[0] + content[2]) / 2;
+        const y = (content[1] + content[5]) / 2;
+        return [x, y];
+    }
+
+    /**
+     * @private
+     * Simulates a mouse click on the current DOM element.
+     *
+     * @param {'left'|'middle'|'right'} button - The mouse button to use for the click. 
+     *                          Possible values are "left", "middle", or "right".
+     * @param {Object} [options] - Additional options for the click action.
+     * @param {boolean} [options.altKey] - Indicates if the Alt key is pressed during the click.
+     * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed during the click.
+     * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed during the click.
+     * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed during the click.
+     * @param {number} [clickCount=1] - The number of times to click the mouse.
+     * @returns {Promise<null>} Returns null if the node is a text node (nodeType 3) 
+     *                          or after successfully dispatching the mouse events.
+     * @throws {Error} Throws an error if the `DOM.getBoxModel` or `Input.dispatchMouseEvent` commands fail.
+     */
+    async _click(button, options, clickCount = 1) {
+        if (this.node.nodeType === 3) {
+            global.log.warn(`Trying to click on text node that is not supported!`);
+            return null;
+        }
+
+        if (!await this.isVisible()) await this.scrollIntoView();
+
+        const [x, y] = await this._getCenter();
+        const modifiers = getPressedKey(options)
+
+        for (let i = 0; i < clickCount; i++) {
+            await this.gamefaceCommands.mousePress(x, y, button, modifiers);
+            await this.gamefaceCommands.mouseRelease(x, y, button, modifiers);
+        }
+    }
+
+    /**
+     * Simulates a mouse press action on the current DOM element.
+     *
+     * @param {'left'|'middle'|'right'} [button='left'] - The mouse button to press. Can be 'left', 'right', or 'middle'.
+     * @param {Object} [options] - Additional options for the mousepress action.
+     * @param {boolean} [options.altKey] - Indicates if the Alt key is pressed during the mousepress.
+     * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed during the mousepress.
+     * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed during the mousepress.
+     * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed during the mousepress.
+     * @returns {Promise<null|void>} Resolves to `null` if the element is a text node, otherwise performs the action.
+     */
+    async mousePress(button = 'left', options) {
+        global.log.debug(`\n[DOMElement] Mouse press with "${button}" button.`);
+
+        if (this.node.nodeType === 3) {
+            global.log.warn(`Trying to mouse press on text node that is not supported!`);
+            return null;
+        }
+
+        if (!await this.isVisible()) await this.scrollIntoView();
+
+        const [x, y] = await this._getCenter();
+        const modifiers = getPressedKey(options);
+        await this.gamefaceCommands.mousePress(x, y, button, modifiers);
+    }
+
+    /**
+     * Simulates a mouse release action on the current DOM element.
+     *
+     * @param {'left'|'middle'|'right'} [button='left'] - The mouse button to press. Can be 'left', 'right', or 'middle'.
+     * @param {Object} [options] - Additional options for the mouserelease action.
+     * @param {boolean} [options.altKey] - Indicates if the Alt key is pressed during the mouserelease.
+     * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed during the mouserelease.
+     * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed during the mouserelease.
+     * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed during the mouserelease.
+     * @returns {Promise<null|void>} Resolves to `null` if the element is a text node, otherwise performs the action.
+     */
+    async mouseRelease(button = 'left', options) {
+        global.log.debug(`\n[DOMElement] Mouse release with "${button}" button.`);
+
+        if (this.node.nodeType === 3) {
+            global.log.warn(`Trying to mouse release on text node that is not supported!`);
+            return null;
+        }
+
+        if (!await this.isVisible()) await this.scrollIntoView();
+
+        const [x, y] = await this._getCenter();
+        const modifiers = getPressedKey(options);
+        await this.gamefaceCommands.mouseRelease(x, y, button, modifiers);
+    }
+
+    /**
+     * Simulates a mouse wheel event on the current DOM element.
+     *
+     * @async
+     * @param {number} deltaX - The amount to scroll horizontally.
+     * @param {number} deltaY - The amount to scroll vertically.
+     * @returns {Promise<void|null>} Resolves when the event is dispatched, or null if the element is a text node.
+     */
+    async mouseWheel(deltaX, deltaY) {
+        global.log.debug(`\n[DOMElement] Mouse wheel with ${deltaX} ${deltaY}.`);
+
+        if (this.node.nodeType === 3) {
+            global.log.warn(`Trying to click on text node that is not supported!`);
+            return null;
+        }
+
+        if (!await this.isVisible()) await this.scrollIntoView();
+
+        const [x, y] = await this._getCenter();
+        await this.sendCommand('Input.dispatchMouseEvent', {
+            type: 'mouseWheel',
+            x,
+            y,
+            deltaX,
+            deltaY,
         });
     }
 
@@ -481,35 +714,439 @@ class DOMElement {
      * This method retrieves the bounding box model of the element and calculates
      * the center coordinates. It then dispatches a mouse pressed and mouse released
      * event at the calculated coordinates to simulate a click.
+     * 
+     * @param {Object} [options] - Additional options for the click action.
+     * @param {boolean} [options.altKey] - Indicates if the Alt key is pressed during the click.
+     * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed during the click.
+     * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed during the click.
+     * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed during the click.
+     * 
      * @returns {Promise<void>} A promise that resolves when the click action is completed.
      */
-    async click() {
+    async click(options) {
         global.log.debug(`\n[DOMElement] Clicking on node with id - ${this.nodeId}`);
 
+        await this._click("left", options);
+    }
+
+    /**
+     * Performs a right-click action on the DOM element associated with this instance.
+     *
+     * @param {Object} [options] - Additional options for the right click action.
+     * @param {boolean} [options.altKey] - Indicates if the Alt key is pressed during the right click.
+     * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed during the right click.
+     * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed during the right click.
+     * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed during the right click.
+     * @returns {Promise<void>} Resolves when the right-click action is completed.
+     */
+    async rightClick(options) {
+        global.log.debug(`\n[DOMElement] Right clicking on node with id - ${this.nodeId}`);
+
+        await this._click("right", options);
+    }
+
+    /**
+     * Performs a double-click action on the DOM element associated with this instance.
+     *
+     * @param {Object} [options] - Additional options for the double click action.
+     * @param {boolean} [options.altKey] - Indicates if the Alt key is pressed during the double click.
+     * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed during the double click.
+     * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed during the double click.
+     * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed during the double click.
+     * @returns {Promise<void>} Resolves when the double-click action is completed.
+     */
+    async doubleClick(options) {
+        global.log.debug(`\n[DOMElement] Double clicking on node with id - ${this.nodeId}`);
+
+        await this._click("left", options, 2);
+    }
+
+    /**
+     * Simulates hovering over a DOM element.
+     * Logs the action and performs necessary checks to ensure the element is interactable.
+     * If the element is a text node, a warning is logged and the operation is aborted.
+     * If the element is not visible, it scrolls into view before proceeding.
+     * Finally, it calculates the center of the element and moves the mouse to that position.
+     *
+     * @async
+     * @returns {Promise<null|void>} Returns `null` if the element is a text node, otherwise performs the hover action.
+     */
+    async hover() {
+        global.log.debug(`\n[DOMElement] Hovering on node with id - ${this.nodeId}`);
+
         if (this.node.nodeType === 3) {
-            global.log.warn(`Trying to click on text node that is not supported!`);
+            global.log.warn(`Trying to hover on text node that is not supported!`);
             return null;
         }
 
-        const { model } = await this.sendCommand('DOM.getBoxModel', { nodeId: this.nodeId });
-        const { content } = model;
-        const x = (content[0] + content[2]) / 2;
-        const y = (content[1] + content[5]) / 2;
+        if (!await this.isVisible()) await this.scrollIntoView();
 
-        await this.sendCommand('Input.dispatchMouseEvent', {
-            type: 'mousePressed',
-            x,
-            y,
-            button: 'left',
-            clickCount: 1,
-        });
-        await this.sendCommand('Input.dispatchMouseEvent', {
-            type: 'mouseReleased',
-            x,
-            y,
-            button: 'left',
-            clickCount: 1,
-        });
+        const [x, y] = await this._getCenter();
+        await this.gamefaceCommands.moveMouse(x, y);
+    }
+
+    /**
+     * Drags the DOM element to a specified position.
+     *
+     * @async
+     * @param {number} x - The x-coordinate to drag the element to.
+     * @param {number} y - The y-coordinate to drag the element to.
+     * @returns {Promise<void|null>} Resolves when the drag operation is complete. Returns `null` if the element is a text node and cannot be dragged.
+     */
+    async drag(x, y) {
+        global.log.debug(`\n[DOMElement] Dragging node with id - ${this.nodeId}`);
+
+        if (this.node.nodeType === 3) {
+            global.log.warn(`Trying to drag text node that is not supported!`);
+            return null;
+        }
+
+        if (!await this.isVisible()) await this.scrollIntoView();
+
+        const [startX, startY] = await this._getCenter();
+
+        await this.gamefaceCommands.mousePress(startX, startY);
+        await this.gamefaceCommands.moveMouse(x, y);
+        await this.gamefaceCommands.mouseRelease(x, y);
+    }
+
+    /**
+     * Scrolls the DOM element by the specified delta values.
+     *
+     * @async
+     * @param {number} deltaX - The amount to scroll horizontally.
+     * @param {number} deltaY - The amount to scroll vertically.
+     * @returns {Promise<void>} Resolves when the scrolling action is complete.
+     */
+    async scroll(deltaX = 0, deltaY = 0) {
+        global.log.debug(`\n[DOMElement] Scrolling node with id - ${this.nodeId}`);
+
+        if (this.node.nodeType === 3) {
+            global.log.warn(`Trying to scroll text node that is not supported!`);
+            return null;
+        }
+
+        if (!await this.isScrollable()) {
+            throw new Error(`Trying to scroll node that is not scrollable!`);
+        }
+
+        await this.mouseWheel(deltaX, deltaY);
+    }
+
+    /**
+     * Scrolls the DOM element to the specified coordinates (x, y).
+     *
+     * @async
+     * @param {number} x - The target x-coordinate to scroll to.
+     * @param {number} y - The target y-coordinate to scroll to.
+     * @returns {Promise<void>} Resolves when the scrolling operation is complete.
+     */
+    async scrollTo(x, y) {
+        global.log.debug(`\n[DOMElement] Scrolling node with id - ${this.nodeId} to position (${x}, ${y})`);
+
+        if (this.node.nodeType === 3) {
+            global.log.warn(`Trying to scroll text node that is not supported!`);
+            return null;
+        }
+
+        if (!await this.isScrollable()) {
+            throw new Error(`Trying to scroll node that is not scrollable!`);
+        }
+
+        if (!await this.isVisible()) await this.scrollIntoView();
+
+        const [currentX, currentY] = await this._getCenter();
+        const deltaX = x - currentX;
+        const deltaY = y - currentY;
+
+        await this.mouseWheel(deltaX, deltaY);
+    }
+
+    /**
+     * Asynchronously finds the nearest scrollable parent element of the current DOM element.
+     * If the current element is not visible, it traverses up the DOM tree to locate a scrollable parent.
+     * @private
+     * @async
+     * @returns {Promise<DOMElement|null>} A promise that resolves to the nearest scrollable parent element,
+     * or `null` if no scrollable parent is found.
+     */
+    async _findElementScrollableArea() {
+        if (!await this.isVisible()) {
+            let parent = this.node.parentId ? await new DOMElement(this.gamefaceCommands, this.node.parentId) : null;
+
+            while (parent) {
+                if (await parent.isScrollable()) return parent;
+
+                parent = parent.node.parentId ? await new DOMElement(this.gamefaceCommands, parent.node.parentId) : null;
+            }
+        }
+    }
+
+    /**
+     * Scrolls the current DOM element into view within a scrollable area.
+     *
+     * @param {DOMElement|null} [scrollableArea=null] - The scrollable area in which the element should be scrolled into view.
+     * If not provided, the method attempts to locate a scrollable parent element in the DOM hierarchy.
+     * 
+     * @throws {Error} Throws an error if:
+     * - The element is a text node (nodeType === 3), which cannot be scrolled.
+     * - A scrollable area cannot be located or is not explicitly provided.
+     * - The provided scrollableArea is not an instance of DOMElement.
+     * - The scrollable area is not scrollable.
+     * - The element cannot be scrolled into view after multiple retry attempts.
+     * 
+     * @returns {Promise<void|null>} Resolves when the element is successfully scrolled into view or if it is already visible.
+     * Returns `null` if the element is a text node and cannot be scrolled.
+     */
+    async scrollIntoView(scrollableArea = null) {
+        global.log.debug(`\n[DOMElement] Scrolling node with id - ${this.nodeId} into view`);
+
+        if (this.node.nodeType === 3) {
+            global.log.warn(`Trying to scroll text node that is not supported!`);
+            return null;
+        }
+
+        if (!scrollableArea) {
+            scrollableArea = await this._findElementScrollableArea();
+
+            if (!scrollableArea) {
+                throw new Error(`Could not locate a scrollable area for the element. Ensure the element has a scrollable parent in the DOM hierarchy or explicitly provide the scrollable area to the "scrollIntoView" method using the "scrollableArea" parameter.`);
+            }
+        }
+
+        if (!(scrollableArea instanceof DOMElement)) {
+            throw new Error(`"scrollIntoView" argument expects scrollableArea to be a DOMElement instance! Received ${scrollableArea}`);
+        }
+
+        if (!await scrollableArea.isScrollable()) {
+            throw new Error(`Trying to scroll node that is not scrollable!`);
+        }
+
+        if (await this.isVisibleInScrollableArea(scrollableArea)) {
+            return;
+        }
+
+        await retryIfFails(async () => {
+            const [elementMaxX, elementMinX, elementMaxY, elementMinY] = await this._getPointsOfElement(this);
+            const [scrollableMaxX, scrollableMinX, scrollableMaxY, scrollableMinY] = await this._getPointsOfElement(scrollableArea);
+
+            const elementCenterX = (elementMaxX + elementMinX) / 2;
+            const elementCenterY = (elementMaxY + elementMinY) / 2;
+
+            const scrollableCenterX = (scrollableMaxX + scrollableMinX) / 2;
+            const scrollableCenterY = (scrollableMaxY + scrollableMinY) / 2;
+
+            const diffX = elementCenterX - scrollableCenterX;
+            const diffY = elementCenterY - scrollableCenterY;
+
+            await scrollableArea.scrollTo(scrollableCenterX + diffX, scrollableCenterY + diffY);
+            if (!await this.isVisibleInScrollableArea(scrollableArea)) throw new Error(`Unable to scroll element into view. Please check if the element is visible!`);
+        }, 5);
+    }
+
+    /**
+     * Dispatches a keyboard event on the current DOM element.
+     * If the element is a text node, the operation is not supported and a warning is logged.
+     * @private
+     * @param {'keyDown'|'keyUp'} event - The type of keyboard event to dispatch (e.g., 'keydown', 'keyup').
+     * @param {string|number} key - The key to simulate.
+     * @param {Object} [options] - Additional options for the keyboard event.
+     * @param {boolean} [options.altKey] - Indicates if the Alt key is pressed.
+     * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed.
+     * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed.
+     * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed.
+     * @returns {Promise<null|void>} Resolves with `null` if the operation is not supported, otherwise resolves when the event is dispatched.
+     */
+    async _keyEvent(event, key, options) {
+        if (this.node.nodeType === 3) {
+            global.log.warn(`Trying to dispatch ${event} on text node that is not supported!`);
+            return null;
+        }
+
+        await this.focus();
+        // @ts-ignore
+        await this.gamefaceCommands._keyEvent(event, key, options);
+    }
+
+    /**
+     * Simulates a key down event on the current DOM element.
+     *
+     * @param {string|number} key - The key to simulate pressing.
+     * @param {Object} [options] - Additional options for the keyboard event.
+     * @param {boolean} [options.altKey] - Indicates if the Alt key is pressed.
+     * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed.
+     * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed.
+     * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed.
+     * @param {number} [count=1] - The number of times to simulate the key down event.
+     * @returns {Promise<void>} A promise that resolves when the key down events are completed.
+     */
+    async keyDown(key, options, count = 1) {
+        global.log.debug(`\n[DOMElement] Key down with "${key}" ${count} times.`);
+
+        for (let i = 0; i < count; i++) {
+            await this._keyEvent('keyDown', key, options);
+        }
+    }
+
+    /**
+     * Simulates a key up event on the current DOM element.
+     *
+     * @param {string} key - The key to simulate pressing.
+     * @param {Object} [options] - Additional options for the keyboard event.
+     * @param {boolean} [options.altKey] - Indicates if the Alt key is pressed.
+     * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed.
+     * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed.
+     * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed.
+     * @param {number} [count=1] - The number of times to simulate the key up event.
+     * @returns {Promise<void>} A promise that resolves when the key up events are completed.
+     */
+    async keyUp(key, options, count = 1) {
+        global.log.debug(`\n[DOMElement] Key up with "${key}" ${count} times.`);
+
+        for (let i = 0; i < count; i++) {
+            await this._keyEvent('keyUp', key, options);
+        }
+    }
+
+    /**
+     * Simulates a key press event on the current DOM element.
+     *
+     * @param {string} key - The key to simulate pressing.
+     * @param {Object} [options] - Additional options for the keyboard event.
+     * @param {boolean} [options.altKey] - Indicates if the Alt key is pressed.
+     * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed.
+     * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed.
+     * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed.
+     * @param {number} [count=1] - The number of times to simulate the key press event.
+     * @returns {Promise<void>} A promise that resolves when the key press events are completed.
+     */
+    async keyPress(key, options, count = 1) {
+        global.log.debug(`\n[DOMElement] Key press with "${key}" ${count} times.`);
+
+        if (this.node.nodeType === 3) {
+            global.log.warn(`Trying to keypress on text node that is not supported!`);
+            return null;
+        }
+
+        await this.focus();
+        await this.gamefaceCommands.keyPress(key, options, count);
+    }
+
+    /**
+     * Simulates typing on a DOM element by sending key events.
+     * Keypress will simulate - keyDown -> char -> keyUp for each key.
+     * If the element is input then it will dispatch just `char` event.
+     *
+     * @param {string|string[]} keys - The keys to type. Can be a string or an array of characters.
+     * @param {Object} [options] - Additional options for the keyboard event.
+     * @param {boolean} [options.altKey] - Indicates if the Alt key is pressed.
+     * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed.
+     * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed.
+     * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed.
+     * @returns {Promise<void>} A promise that resolves when the typing simulation is complete.
+     *
+     * @example
+     * // Typing a string
+     * await domElement.type('hello');
+     *
+     * @example
+     * // Typing an array of characters
+     * await domElement.type(['h', 'e', 'l', 'l', 'o']);
+     */
+    async type(keys, options) {
+        global.log.debug(`\n[DOMElement] Typing on node with id - ${this.nodeId}`);
+
+        if (this.node.nodeType === 3) {
+            global.log.warn(`Trying to type on text node that is not supported!`);
+            return;
+        }
+
+        if (typeof keys === 'string') {
+            keys = keys.split('');
+        }
+
+        if (!Array.isArray(keys)) {
+            global.log.warn(`Keys argument of the type method should be array with characters or string! Received: ${keys}`);
+            return;
+        }
+
+        const tagName = this.node?.nodeName?.toLowerCase();
+        if (tagName === 'input' || tagName === 'textarea') {
+            await this.focus();
+        }
+
+        for (let key of keys) {
+            if (tagName !== 'input' && tagName !== 'textarea') {
+                await this.keyPress(key, options);
+            } else {
+                // @ts-ignore
+                await this.gamefaceCommands._keyEvent('char', key, options);
+            }
+        }
+    }
+
+    /**
+     * Retrieves the value of the current DOM element if it is an input or textarea.
+    *
+    * @async
+     * @throws {Error} Throws an error if the current element is not an input or textarea.
+     * @returns {Promise<string>} The value of the input or textarea element.
+     */
+    async getValue() {
+        global.log.debug(`\n[DOMElement] Getting value of node with id - ${this.nodeId}.`);
+
+        const tagName = this.node?.nodeName?.toLowerCase();
+        if (tagName !== 'input' && tagName !== 'textarea') {
+            throw new Error(`The getValue method is only supported for input or textarea elements. Current element is a '${tagName}'.`);
+        }
+
+        return await this.gamefaceCommands.executeScript((nodeId) => {
+            /**@type {HTMLInputElement|HTMLTextAreaElement} */
+            const inputElement = document.querySelector(`[data-node-id="${nodeId}"]`);
+            return inputElement.value;
+        }, this.nodeId);
+    }
+
+    /**
+     * Clears the value of the current DOM element if it is an input or textarea.
+     * 
+     * @throws {Error} Throws an error if the current element is not an input or textarea.
+     * @returns {Promise<void>} A promise that resolves when the value has been cleared.
+     */
+    async clear() {
+        global.log.debug(`\n[DOMElement] Cleaning value of node with id - ${this.nodeId}.`);
+
+        const tagName = this.node?.nodeName?.toLowerCase();
+        if (tagName !== 'input' && tagName !== 'textarea') {
+            throw new Error(`The clear method is only supported for input or textarea elements. Current element is a '${tagName}'.`);
+        }
+
+        await this.focus();
+
+        //@ts-ignore
+        await this.gamefaceCommands.executeScript(() => document.activeElement.value = '');
+    }
+
+    /**
+     * Triggers a custom event on the DOM element identified by the `nodeId`.
+     *
+     * @param {string} eventName - The name of the custom event to dispatch.
+     * @param {Object} [data] - Optional data to include in the event's `detail` property.
+     * @returns {Promise<void>} A promise that resolves when the command is sent.
+     */
+    async trigger(eventName, data) {
+        global.log.debug(`\n[DOMElement] Triggering custom event "${eventName}" on node with id - ${this.nodeId}.`);
+
+        await this.gamefaceCommands.executeScript((eventName, data, nodeId) => {
+            const el = document.querySelector(`[data-node-id="${nodeId}"]`);
+            if (el) {
+                el.dispatchEvent(new CustomEvent(eventName, {
+                    detail: data,
+                }));
+            } else {
+                throw new Error(`Failed to trigger custom event "${eventName}" because the element could not be located.`);
+            }
+        }, eventName, data, this.nodeId);
     }
 }
 

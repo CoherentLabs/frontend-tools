@@ -68,6 +68,67 @@
         #focusable-element:focus {
             border: 2px solid blue;
         }
+
+        #test-hover {
+            width: 100px;
+            height: 100px;
+            background-color: white;
+        }
+
+        #test-hover:hover {
+            background-color: black;
+        }
+
+        #draggable {
+            position: absolute;
+            left: 200px;
+            top: 200px;
+            width: 100px;
+            height: 100px;
+            background-color: white;
+        }
+
+        #draggable:focus {
+            background-color: black;
+        }
+
+        #scrollable-container {
+            position: absolute;
+            left: 300px;
+            top: 300px;
+            width: 200px;
+            height: 100px;
+            background-color: white;
+            overflow: scroll;
+        }
+
+        .wrapped-element {
+            width: 100%;
+            height: 45px;
+            background-color: gray;
+            margin: 5px;
+        }
+
+        #input-element:focus {
+            border: 5px solid blue;
+        }
+
+        #input-area {
+            width: 300px;
+            height: 30px;
+            border: 1px solid gray;
+        }
+
+        #input-area:focus {
+            background-color: white;
+            border: 5px solid blue;
+        }
+
+        #custom-event-element {
+            width: 100px;
+            height: 100px;
+            background: gray;
+        }
     </style>
 </head>
 
@@ -117,6 +178,115 @@
         id="focusable-element"
         tabindex="1"
     ></div>
+    <div id="click-test-element">Test click</div>
+    <div id="dblclick-test-element">Test dblclick</div>
+    <div id="test-hover">Hover me</div>
+    <div id="draggable">Drag me</div>
+    <div id="scrollable-container">
+        <div class="wrapped-element">Text</div>
+        <div class="wrapped-element">Text</div>
+        <div class="wrapped-element">Text</div>
+        <div class="wrapped-element">Text</div>
+        <div class="wrapped-element">Text</div>
+        <div class="wrapped-element">Text</div>
+        <div class="wrapped-element">Text</div>
+        <div class="wrapped-element">Text</div>
+        <div id="inner-scrollable-element">Should scroll to me</div>
+        <div class="wrapped-element">Text</div>
+        <div class="wrapped-element">Text</div>
+        <div class="wrapped-element">Text</div>
+        <div class="wrapped-element">Text</div>
+    </div>
+    <input id="input-element" />
+    <div
+        id="input-area"
+        tabindex="1"
+    ></div>
+    <div id="custom-event-element"></div>
+    <script>
+        document.getElementById('input-area').addEventListener('keydown', (event) => {
+            // Handle backspace key
+            if (event.keyCode === 8) {
+                event.currentTarget.textContent = event.currentTarget.textContent.slice(0, -1);
+                return;
+            }
+            event.currentTarget.textContent += event.key;
+        });
+
+        const customEventEl = document.getElementById('custom-event-element');
+        customEventEl.addEventListener('custom-event-test', (event) => {
+            const value = event.detail.value;
+            event.currentTarget.textContent = value;
+        });
+
+        document.addEventListener('custom-event-test', (event) => {
+            const value = event.detail.value;
+            customEventEl.textContent = value;
+        });
+
+        const keys = ['altKey', 'ctrlKey', 'metaKey', 'shiftKey'];
+
+        document.getElementById('click-test-element').addEventListener('click', (event) => {
+            for (const key of keys) {
+                if (event[key]) {
+                    event.currentTarget.textContent = `Test click with ${key} pressed`;
+                    return;
+                }
+            }
+
+            event.currentTarget.textContent = 'Test click';
+        });
+
+        document.getElementById('click-test-element').addEventListener('mousedown', (event) => {
+            if (event.button !== 2) return;
+            for (const key of keys) {
+                if (event[key]) {
+                    event.currentTarget.textContent = `Test right click with ${key} pressed`;
+                    return;
+                }
+            }
+
+            event.currentTarget.textContent = 'Test right click';
+        });
+
+        document.getElementById('dblclick-test-element').addEventListener('dblclick', (event) => {
+            for (const key of keys) {
+                if (event[key]) {
+                    event.currentTarget.textContent = `Test dblclick with ${key} pressed`;
+                    return;
+                }
+            }
+
+            event.currentTarget.textContent = 'Test dblclick';
+        });
+
+        let isDragging = false;
+        let startX, startY;
+        const draggableElement = document.getElementById('draggable')
+
+        function moveElement(event) {
+            if (isDragging) {
+                const x = event.clientX - startX;
+                const y = event.clientY - startY;
+                draggableElement.style.left = `${x}px`;
+                draggableElement.style.top = `${y}px`;
+            }
+        }
+
+        function stopDragging() {
+            isDragging = false;
+            document.removeEventListener('mousemove', moveElement);
+            document.removeEventListener('mouseup', stopDragging);
+        }
+
+        draggableElement.addEventListener('mousedown', (event) => {
+            isDragging = true;
+            startX = event.clientX - draggableElement.offsetLeft;
+            startY = event.clientY - draggableElement.offsetTop;
+            document.addEventListener('mousemove', moveElement);
+            document.addEventListener('mouseup', stopDragging);
+        });
+    </script>
 </body>
 
 </html>

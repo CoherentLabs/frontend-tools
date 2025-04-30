@@ -1,6 +1,6 @@
 {
   "name": "gameface-e2e",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "scripts": {
     "test": "gameface-e2e",
     "publish": "npm publish"
@@ -9,6 +9,7 @@
     "@oclif/core": "^4.2.8",
     "assert": "^2.1.0",
     "axios": "^1.8.1",
+    "detect-port": "^2.1.0",
     "glob": "^11.0.1",
     "mocha": "^11.1.0",
     "oclif": "^4.17.34",

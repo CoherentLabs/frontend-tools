@@ -1,4 +1,4 @@
-const { retryIfFails } = require("../utils");
+const { retryIfFails, getPressedKey } = require("../utils");
 const { DOMElement, DOMElements } = require("./dom-element");
 const path = require('path');
 const URL = require('url');
@@ -121,6 +121,16 @@ class GamefaceCommands extends GamefaceCommandsBase {
         this.getStyles = this.getStyles.bind(this);
         this.getClasses = this.getClasses.bind(this);
         this.click = this.click.bind(this);
+        this.mousePress = this.mousePress.bind(this);
+        this.mouseRelease = this.mouseRelease.bind(this);
+        this.moveMouse = this.moveMouse.bind(this);
+        this.mouseWheel = this.mouseWheel.bind(this);
+        this._keyEvent = this._keyEvent.bind(this);
+        this.keyPress = this.keyPress.bind(this);
+        this.keyDown = this.keyDown.bind(this);
+        this.keyUp = this.keyUp.bind(this);
+        this.trigger = this.trigger.bind(this);
+        this.executeScript = this.executeScript.bind(this);
     }
 
     /**
@@ -347,6 +357,221 @@ class GamefaceCommands extends GamefaceCommandsBase {
 
         const element = await this.get(selector);
         return element.click();
+    }
+
+    /**
+     * Simulates a mouse press event at the specified coordinates.
+     *
+     * @param {number} [x=0] - The x-coordinate of the mouse press event.
+     * @param {number} [y=0] - The y-coordinate of the mouse press event.
+     * @param {'left'|'middle'|'right'} [button='left'] - The mouse button to press ('left', 'middle', 'right').
+     * @param {number} [modifiers=0] - Bitfield representing modifier keys (e.g., Alt, Ctrl, Meta, Shift).
+     * @returns {Promise<void>} A promise that resolves when the mouse press event is dispatched.
+     */
+    async mousePress(x = 0, y = 0, button = 'left', modifiers = 0) {
+        global.log.debug(`\n[GamefaceCommands] Mouse pressing on ${x} ${y} with "${button}" button.`);
+
+        await this.sendCommand('Input.dispatchMouseEvent', {
+            type: 'mousePressed',
+            x,
+            y,
+            button,
+            clickCount: 1,
+            modifiers
+        });
+    }
+
+    /**
+     * Simulates a mouse release event at the specified coordinates.
+     *
+     * @param {number} [x=0] - The x-coordinate of the mouse pointer.
+     * @param {number} [y=0] - The y-coordinate of the mouse pointer.
+     * @param {'left'|'middle'|'right'} [button='left'] - The mouse button to release. Possible values are 'left', 'middle', or 'right'.
+     * @param {number} [modifiers=0] - Bit field representing keyboard modifiers (e.g., Alt, Ctrl, Meta, Shift).
+     * @returns {Promise<void>} - A promise that resolves when the mouse release event is dispatched.
+     */
+    async mouseRelease(x = 0, y = 0, button = 'left', modifiers = 0) {
+        global.log.debug(`\n[GamefaceCommands] Mouse releasing on ${x} ${y} with "${button}" button.`);
+
+        await this.sendCommand('Input.dispatchMouseEvent', {
+            type: 'mouseReleased',
+            x,
+            y,
+            button,
+            clickCount: 1,
+            modifiers
+        });
+    }
+
+    /**
+     * Moves the mouse pointer to the specified coordinates.
+     *
+     * @param {number} x - The x-coordinate to move the mouse to.
+     * @param {number} y - The y-coordinate to move the mouse to.
+     * @returns {Promise<void>} A promise that resolves when the mouse movement is complete.
+     */
+    async moveMouse(x, y) {
+        global.log.debug(`\n[GamefaceCommands] Mouse moving on ${x} ${y}.`);
+
+        await this.sendCommand('Input.dispatchMouseEvent', {
+            type: 'mouseMoved',
+            x,
+            y,
+        });
+    }
+
+    /**
+     * Simulates a mouse wheel event at the specified coordinates with the given deltas.
+     *
+     * @param {number} x - The x-coordinate of the mouse pointer where the event occurs.
+     * @param {number} y - The y-coordinate of the mouse pointer where the event occurs.
+     * @param {number} deltaX - The horizontal scroll amount. Positive values scroll right, negative values scroll left.
+     * @param {number} deltaY - The vertical scroll amount. Positive values scroll down, negative values scroll up.
+     * @returns {Promise<void>} A promise that resolves when the mouse wheel event has been dispatched.
+     */
+    async mouseWheel(x, y, deltaX, deltaY) {
+        global.log.debug(`\n[GamefaceCommands] Mouse wheel on ${x} ${y}`);
+
+        await this.sendCommand('Input.dispatchMouseEvent', {
+            type: 'mouseWheel',
+            x,
+            y,
+            deltaX,
+            deltaY,
+        });
+    }
+
+    /**
+     * Dispatches a key event to the input system.
+     * @private
+     * @param {'keyDown'|'keyUp'|'char'} type - The type of key event (e.g., "keyDown", "keyUp", "char").
+     * @param {string|number} key - The key to be dispatched. Can be a character or its key code.
+     * @param {Object} [options] - Additional options for the keyboard event.
+     * @param {boolean} [options.altKey] - Indicates if the Alt key is pressed.
+     * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed.
+     * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed.
+     * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed.
+     * @returns {Promise<void>} A promise that resolves when the key event is dispatched.
+     */
+    async _keyEvent(type, key, options) {
+        if (!key) {
+            global.log.warn(`The key argument when executing key event is not specified!`);
+            return;
+        }
+
+        const modifiers = getPressedKey(options)
+        const keyCode = typeof key === 'number' ? key : key.charCodeAt(0);
+
+        await this.sendCommand('Input.dispatchKeyEvent', {
+            type,
+            modifiers,
+            keyIdentifier: keyCode,
+            windowsVirtualKeyCode: keyCode
+        });
+    }
+
+    /**
+     * Simulates a key press event by performing a sequence of keyDown, key event, and keyUp actions.
+     *
+     * @param {string|number} key - The key to be pressed.
+     * @param {Object} [options] - Additional options for the keyboard event.
+     * @param {boolean} [options.altKey] - Indicates if the Alt key is pressed.
+     * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed.
+     * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed.
+     * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed.
+     * @param {number} [count=1] - The number of times to repeat the key press sequence.
+     * @returns {Promise<void>} A promise that resolves when all key press actions are completed.
+     */
+    async keyPress(key, options, count = 1) {
+        global.log.debug(`\n[GamefaceCommands] Key press event with "${key}" ${count} times.`);
+
+        for (let i = 0; i < count; i++) {
+            await this.keyDown(key, options);
+            await this._keyEvent('char', key, options);
+            await this.keyUp(key, options);
+        }
+    }
+
+    /**
+     * Simulates a key down event for the specified key.
+     *
+     * @param {string|number} key - The key to simulate pressing down.
+     * @param {Object} [options] - Additional options for the keyboard event.
+     * @param {boolean} [options.altKey] - Indicates if the Alt key is pressed.
+     * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed.
+     * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed.
+     * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed.
+     * @param {number} [count=1] - The number of times to repeat the key down event.
+     * @returns {Promise<void>} A promise that resolves when the key down events are completed.
+     */
+    async keyDown(key, options, count = 1) {
+        global.log.debug(`\n[GamefaceCommands] Key down event with "${key}" ${count} times.`);
+
+        for (let i = 0; i < count; i++) {
+            await this._keyEvent('keyDown', key, options);
+        }
+    }
+
+    /**
+     * Simulates a key release event (keyUp) for the specified key.
+     *
+     * @param {string|number} key - The key to release (e.g., 'Enter', 'ArrowUp').
+     * @param {Object} [options] - Additional options for the keyboard event.
+     * @param {boolean} [options.altKey] - Indicates if the Alt key is pressed.
+     * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed.
+     * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed.
+     * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed.
+     * @param {number} [count=1] - The number of times to trigger the keyUp event.
+     * @returns {Promise<void>} A promise that resolves when the keyUp event(s) have been triggered.
+     */
+    async keyUp(key, options, count = 1) {
+        global.log.debug(`\n[GamefaceCommands] Key up event with "${key}" ${count} times.`);
+
+        for (let i = 0; i < count; i++) {
+            await this._keyEvent('keyUp', key, options);
+        }
+    }
+
+    /**
+     * Triggers a custom DOM event with the specified name and data.
+     *
+     * @param {string} eventName - The name of the custom event to dispatch.
+     * @param {Object} data - The data to include in the event's `detail` property.
+     * @returns {Promise<void>} A promise that resolves when the command is sent.
+     */
+    async trigger(eventName, data) {
+        global.log.debug(`\n[GamefaceCommands] Triggering ${eventName} custom event.`);
+
+        await this.executeScript((eventName, data) => {
+            document.dispatchEvent(new CustomEvent(eventName, {
+                detail: data,
+            }));
+        }, eventName, data);
+    }
+
+    /**
+     * Executes a JavaScript function in the context of the browser runtime.
+     *
+     * @param {Function} fn - The function to be executed. It will be serialized and executed in the browser context.
+     * @param {...any} args - The arguments to pass to the function being executed.
+     * @returns {Promise<any>} - A promise that resolves to the return value of the executed function.
+     * @throws {Error} - Throws an error if there are exception details in the execution result.
+     */
+    async executeScript(fn, ...args) {
+        const expression = `(${fn.toString()})(${args.map((arg) => JSON.stringify(arg)).join(',')})`;
+        global.log.debug(`\n[GamefaceCommands] Executing script - ${expression}.`);
+
+        const res = await this.sendCommand('Runtime.evaluate', {
+            expression,
+            returnByValue: true,
+            awaitPromise: true,
+        });
+
+        if (res?.exceptionDetails) {
+            throw new Error(`"${res?.exceptionDetails?.exception?.description || res?.exceptionDetails?.text}" in executing the following script: ${expression}.`)
+        }
+
+        return res?.result?.value;
     }
 }
 
