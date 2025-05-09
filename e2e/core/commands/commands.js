@@ -1,4 +1,4 @@
-const { retryIfFails, getPressedKey } = require("../utils");
+const { retryIfFails, getPressedKey, sleep } = require("../utils");
 const { DOMElement, DOMElements } = require("./dom-element");
 const path = require('path');
 const URL = require('url');
@@ -16,6 +16,7 @@ class GamefaceCommandsBase {
     constructor(player, ws) {
         this._ws = ws;
         this.rootNodeId = null;
+        this._cohtmlJSPath = null;
         this.commandTimeout = 10000;
         this.player = player;
         this.pendingCommands = new Map();
@@ -32,6 +33,14 @@ class GamefaceCommandsBase {
 
     get ws() {
         return this._ws;
+    }
+
+    set cohtmlJSPath(value) {
+        this._cohtmlJSPath = value;
+    }
+
+    get cohtmlJSPath() {
+        return this._cohtmlJSPath;
     }
 
     /**
@@ -131,6 +140,11 @@ class GamefaceCommands extends GamefaceCommandsBase {
         this.keyUp = this.keyUp.bind(this);
         this.trigger = this.trigger.bind(this);
         this.executeScript = this.executeScript.bind(this);
+        this.executeBindingScript = this.executeBindingScript.bind(this);
+        this.createModel = this.createModel.bind(this);
+        this.updateModel = this.updateModel.bind(this);
+        this.triggerEngineEvent = this.triggerEngineEvent.bind(this);
+        this.onEngineEvent = this.onEngineEvent.bind(this);
     }
 
     /**
@@ -235,6 +249,22 @@ class GamefaceCommands extends GamefaceCommandsBase {
         await this.sendCommand('Page.loadEventFired');
         const { root: { nodeId } } = await this.sendCommand('DOM.getDocument');
         this.rootNodeId = nodeId;
+
+        global.log.debug(`\n[GamefaceCommands] Loading cohtml.js with path - ${this.cohtmlJSPath}`);
+
+        await this.executeScript(() => {
+            // @ts-ignore
+            window.loadCohtmlJS = async (cohtmlPath) => {
+                await new Promise((resolve, reject) => {
+                    const cohtmlJS = document.createElement('script');
+                    cohtmlJS.type = "text/javascript";
+                    cohtmlJS.src = cohtmlPath;
+                    cohtmlJS.addEventListener('load', resolve);
+                    cohtmlJS.addEventListener('error', reject);
+                    document.body.appendChild(cohtmlJS);
+                })
+            }
+        })
     }
 
     /**
@@ -572,6 +602,137 @@ class GamefaceCommands extends GamefaceCommandsBase {
         }
 
         return res?.result?.value;
+    }
+
+    /**
+     * Executes a binding script within the context of Gameface.
+     *
+     * This method serializes the provided function and its arguments, then executes
+     * the script in the browser environment. It ensures that the engine is
+     * initialized and ready before executing the script. If the engine is not
+     * initialized, it attempts to load the cohtml.js library dynamically.
+     *
+     * @param {Function} fn - The function to be executed in the browser context. 
+     *                        This function will be serialized and reconstructed.
+     * @param {...any} args - The arguments to pass to the function `fn`.
+     * @returns {Promise<any>} A promise that resolves with the result of the executed function.
+     * @throws {Error} If the Cohtml engine is not initialized and cannot be loaded.
+     */
+    async executeBindingScript(fn, ...args) {
+        global.log.debug(`\n[GamefaceCommands] Executing binding script.`);
+
+        const serializedFn = fn.toString();
+        return await this.executeScript(async (cohtmlPath, serializedFn, ...args) => {
+            return await new Promise(async (resolve) => {
+                // @ts-ignore
+                if (!engine || !engine._Initialized) {
+                    if (document.querySelector(`[src="${cohtmlPath}"]`)) {
+                        throw new Error('cohtml.js is already included in the document, but the "engine" has not been initialized. Please manually import cohtml.js into your UI before testing the UI\'s data-binding functionality.');
+                    }
+
+                    // @ts-ignore
+                    await window.loadCohtmlJS(cohtmlPath);
+                }
+
+                // @ts-ignore
+                if (!engine._BindingsReady) {
+                    // @ts-ignore
+                    await engine.whenReady;
+                }
+
+                const fn = new Function(`return (${serializedFn})`)();
+                return resolve(fn(...args));
+            })
+        }, this.cohtmlJSPath, serializedFn, ...args);
+    }
+
+    /**
+     * Creates a model and binds it to the UI.
+     * @template T
+     * @param {string} name - The name of the model to be created.
+     * @param {T} model - The model object to be created and synchronized.
+     * @returns {Promise<T>} A promise that resolves to the created model.
+     */
+    async createModel(name, model) {
+        global.log.debug(`\n[GamefaceCommands] Creating binding model with name - ${name} and data - ${JSON.stringify(model)}.`);
+
+        await this.executeBindingScript((name, model) => {
+            // @ts-ignore
+            const engine = window.engine || globalThis.engine;
+            window[name] = model;
+            engine.createJSModel(name, window[name]);
+            engine.synchronizeModels();
+        }, name, model);
+
+        return model;
+    }
+
+    /**
+     * Updates a model and synchronizes the UI.
+     * @template T
+     * @param {T} modelName - The name of the model to be created.
+     * @param {Function} fn - The function to be executed. It will be serialized and executed in the browser context.
+     * @param {...any} args - The arguments to pass to the function being executed.
+     * @returns {Promise<any>} A promise that resolves when the model is updated.
+     */
+    async updateModel(modelName, fn, ...args) {
+        global.log.debug(`\n[GamefaceCommands] Updating binding model with name - ${modelName}.`);
+
+        const serializedFn = fn.toString();
+
+        await this.executeBindingScript((modelName, serializedFn, ...args) => {
+            const fn = new Function(`return (${serializedFn})`)();
+            fn(...args);
+            // @ts-ignore
+            engine.updateWholeModel(window[modelName]);
+            // @ts-ignore
+            engine.synchronizeModels();
+        }, modelName, serializedFn, ...args);
+    }
+
+    /**
+     * Triggers an engine event with the specified event name and data.
+     *
+     * @param {string} eventName - The name of the event to trigger.
+     * @param {*} data - The data to pass along with the event.
+     * @returns {Promise<void>} A promise that resolves when the event has been triggered.
+     */
+    async triggerEngineEvent(eventName, data) {
+        global.log.debug(`\n[GamefaceCommands] Triggering engine event - ${eventName} to the UI.`);
+
+        await this.executeBindingScript((eventName, data) => {
+            // @ts-ignore
+            engine.trigger(eventName, data);
+        }, eventName, data);
+    }
+
+    /**
+     * Handles an engine event by setting up a listener for the specified event,
+     * triggering an action, and resolving with the event data once the event occurs.
+     *
+     * @param {string} eventName - The name of the engine event to listen for.
+     * @param {Function} triggerEventAction - A function that triggers the event.
+     * @returns {Promise<any>} A promise that resolves with the data from the triggered event.
+     */
+    async onEngineEvent(eventName, triggerEventAction) {
+        global.log.debug(`\n[GamefaceCommands] Listening for engine event - ${eventName} from the UI.`);
+
+        const promise = this.executeBindingScript((eventName) => {
+            return new Promise((resolve) => {
+                function callback(data) {
+                    // @ts-ignore
+                    engine.off(eventName, callback)
+                    resolve(data)
+                }
+
+                // @ts-ignore
+                engine.on(eventName, callback);
+            });
+        }, eventName);
+
+        await triggerEventAction();
+
+        return await promise;
     }
 }
 

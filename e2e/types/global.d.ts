@@ -5,7 +5,7 @@ type UtilMethods = {
     [K in keyof typeof Utils as typeof Utils[K] extends Function ? K : never]: typeof Utils[K];
 };
 
-type FilteredGamefaceCommands = Omit<GamefaceCommandsMethods, '_ws' | 'handleMessage' | 'rootNodeId' | 'ws' | 'player'>;
+type FilteredGamefaceCommands = Omit<GamefaceCommandsMethods, '_ws' | '_cohtmlJSPath' | 'handleMessage' | 'rootNodeId' | 'ws' | 'cohtmlJSPath' | 'player'>;
 type FilteredUtilMethods = Omit<UtilMethods, '_retryInner' | 'getPressedKey'>;
 
 declare global {

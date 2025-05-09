@@ -414,3 +414,52 @@ describe('Test custom events', function () {
         assert.equal(await el.text(), `test`);
     });
 });
+
+describe('Test data-binding', function () {
+    const Model = { value: 'test', arr: [{ value: 1, class: 'one' }, { value: 2, class: 'two' }, { value: 3, class: 'three' }] };
+
+    this.beforeAll('Should navigate to the test page', async () => {
+        // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
+        await gf.navigate('../../../frontend-tools/e2e/examples/data-binding.html');
+        await gf.createModel('Model', Model);
+    });
+
+    it(`Should create model and check the element bounded value`, async () => {
+        assert.equal(await gf.text(`#test-element`), `test`);
+        const items = await gf.getAll('.item');
+        items.forEach(async (item, index) => {
+            assert.equal(await item.text(), index);
+        })
+    });
+
+    it(`Should update model and check the element bounded value`, async () => {
+        await gf.updateModel('Model', () => {
+            Model.value = 'test2';
+            Model.arr[1].value = 1234;
+        });
+        assert.equal(await gf.text(`#test-element`), `test2`);
+        assert.equal(await (await gf.getAll(`.item`)).nth(1).text(), 1234);
+    });
+
+    it(`Should trigger engine event`, async () => {
+        // Add the test engine event here to ensure the engine object is properly set up in the HTML page, 
+        // as the cohtml.js script is not directly imported inside the data-binding.html page.
+        await gf.executeBindingScript(() => {
+            // @ts-ignore
+            engine.on('test-event', (data) => {
+                document.querySelector('#test-engine-event').textContent = data.value;
+            })
+        });
+
+        await gf.triggerEngineEvent('test-event', { value: 'test-data' });
+        assert.equal(await gf.text(`#test-engine-event`), `test-data`);
+    });
+
+    it(`Should listen for engine event triggered from the UI`, async () => {
+        const eventData = await gf.onEngineEvent('test-engine-event', async () => {
+            await gf.click('#trigger-engine-event');
+        });
+
+        assert.deepEqual(eventData, { value: 'test-engine-value' });
+    });
+});
