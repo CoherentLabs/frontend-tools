@@ -745,6 +745,148 @@ describe('Test script', function () {
 });
 ```
 
+#### `gf.executeBindingScript(fn: Function, args: ...any): Promise<any>`
+
+Executes a JavaScript function within the browser's runtime environment, specifically designed for binding scripts. Unlike `gf.executeScript`, this method is tailored for scripts that rely on binding models or the global engine object. It ensures the engine is initialized and ready before execution. If the engine is not initialized, it dynamically loads the `cohtml.js` library from the Player's directory. By default, `cohtml.js` is found in `${GamefacePackage}/Samples/uiresources/library`.
+
+* `fn`: The function to execute in the runtime environment.
+* `args`: Arguments to pass to the function during execution.
+* Returns a promise that resolves with the function's return value from the runtime.
+* Throws an error if the function encounters an error during execution.
+
+Usage:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        await gf.executeBindingScript(() => {
+            MyModel.value = '1';
+            engine.updateWholeModel(MyModel);
+            engine.synchronizeModels();
+        });
+    });
+});
+```
+
+#### `gf.createModel(name: string, model: Object): Promise<void>`
+
+Creates a new data bind model with the given name and data.
+
+* `name`: The name of the model to be created.
+* `model`: The data structure representing the model.
+* Returns a promise that resolves once the model is successfully created.
+
+It is recommended to use this method within the `beforeAll` hook of a `describe` block. This ensures the model is initialized once and can be reused across all tests within the block. Additionally, declare the model variable within the `describe` block to make it accessible to all tests.
+
+Usage:
+
+```js
+describe('Test script', function () {
+    const Model = { value: 'test', arr: [{ value: 1, class: 'one' }, { value: 2, class: 'two' }, { value: 3, class: 'three' }] };
+
+    this.beforeAll('Should navigate to the test page', async () => {
+        await gf.navigate('../../../frontend-tools/e2e/examples/data-binding.html');
+        await gf.createModel('Model', Model);
+    });
+
+    it('Test 1', async () => {
+        ...
+    });
+});
+```
+
+#### `gf.updateModel(modelName: string, fn: Function, args: ...any): Promise<void>`
+
+Updates a given data model by running a specified function. Any changes to the model should be implemented within the function body. Optional arguments can be passed to the function during execution.
+
+* `modelName`: The name of the model to be updated.
+* `fn`: The function to execute for modifying the model.
+* `args`: Optional arguments to pass to the function during execution. These can include variables from the test script.
+* Returns a promise that resolves once the model has been updated.
+
+This method automatically invokes `engine.updateWholeModel` and `engine.synchronizeModels` after the function execution, ensuring the model is updated and synchronized with the engine.
+
+Usage:
+
+```js
+describe('Test script', function () {
+    const Model = { value: 'test', arr: [{ value: 1, class: 'one' }, { value: 2, class: 'two' }, { value: 3, class: 'three' }] };
+
+    this.beforeAll('Should navigate to the test page', async () => {
+        await gf.navigate('../../../frontend-tools/e2e/examples/data-binding.html');
+        await gf.createModel('Model', Model);
+    });
+
+    it('Test 1', async () => {
+        const value = 'test2';
+
+        await gf.updateModel('Model', (value) => {
+            Model.value = value;
+            Model.arr[1].value = 1234;
+        }, value);
+    });
+});
+```
+
+#### `gf.triggerEngineEvent(eventName: string, data: Object): Promise<void>`
+
+Simulates the dispatch of a custom event from the engine with a specified name and associated data.
+
+* `eventName`: The name of the custom event to trigger.
+* `data`: The payload to include in the event.
+* Returns a promise that resolves once the event has been successfully triggered.
+
+This method is particularly useful for simulating engine events that the UI listens to.
+
+Usage:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        // For demonstration purposes, we subscribe to the 'custom-event' from the engine here. In practice, this should be handled within the UI.
+        await gf.executeBindingScript(() => {
+            engine.on('custom-event', (data) => {
+                document.querySelector('#custom-engine-event').textContent = data.value;
+            });
+        });
+        await gf.triggerEngineEvent('custom-event', { value: 1 });
+    });
+});
+```
+
+#### `gf.onEngineEvent(eventName: string, triggerEventAction: Function): Promise<void>`
+
+Subscribes to a custom event triggered from the UI to the engine with a specified name.
+
+* `eventName`: The name of the custom event to listen for.
+* `triggerEventAction`: A function that performs an action on a UI element to trigger the custom event. For example, clicking a button.
+* Returns a promise that resolves with the event data once the event is successfully handled.
+
+Usage:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const eventData = await gf.onEngineEvent('test-engine-event', async () => {
+            await gf.click('#trigger-engine-event-btn');
+        });
+
+        assert.deepEqual(eventData, { value: 'test-engine-value' });
+    });
+});
+```
+
+In this example, the UI contains a button with the ID `trigger-engine-event-btn`. Clicking this button triggers the custom event `test-engine-event` with the data `{ value: 'test-engine-value' }`. The test script subscribes to this event and waits for it to be triggered before asserting the received data.
+
+```html
+<button id="trigger-engine-event-btn">Trigger Engine Event</button>
+<script>
+    document.getElementById('trigger-engine-event-btn').addEventListener('click', () => {
+        engine.trigger('test-engine-event', { value: 'test-engine-value' });
+    });
+</script>
+```
+
 ### `DOMElement` Object
 
 The `DOMElement` object represents a DOM element and provides various methods to interact with it.
