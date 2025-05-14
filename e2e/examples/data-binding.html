@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title>Document</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 0;
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .item.one {
+            background-color: #333;
+        }
+
+        .item.two {
+            background-color: aquamarine;
+        }
+
+        .item.three {
+            background-color: chocolate;
+        }
+    </style>
+</head>
+
+<body>
+    <div
+        id="test-element"
+        data-bind-value="{{Model.value}}"
+    ></div>
+    <div data-bind-for="iter:{{Model.arr}}">
+        <div
+            class="item"
+            data-bind-class="{{iter.class}}"
+            data-bind-value="{{iter.value}}"
+        ></div>
+    </div>
+    <div id="test-engine-event"></div>
+    <button id="trigger-engine-event">Test engine event</button>
+    <script>
+        document.getElementById('trigger-engine-event').addEventListener('click', () => {
+            engine.trigger('test-engine-event', { value: 'test-engine-value' });
+        });
+    </script>
+</body>
+
+</html>

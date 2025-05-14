@@ -1,10 +1,11 @@
 const WebSocket = require('ws');
 const axios = require('axios');
-const { retryIfFails } = require('./utils');
+const { retryIfFails, sleep } = require('./utils');
 const gamefaceCommands = require('./commands/commands');
 const { sendCommands, sendCommand } = gamefaceCommands;
 const { player, killPlayer } = require('./player');
 const SPEC_TIMEOUT = 10000;
+const path = require('path')
 
 class WSServer {
     constructor() {
@@ -58,6 +59,7 @@ class WSServer {
         this.ws = new WebSocket(await this.getWebSocketDebuggerUrl());
 
         gamefaceCommands.player = player;
+        gamefaceCommands.cohtmlJSPath = path.join(global.config.gamefacePath, '..', '..', 'Samples', 'uiresources', 'library', 'cohtml.js').replace(/\\/g, '/');
         gamefaceCommands.ws = this.ws;
     }
 

@@ -65,17 +65,6 @@ class GamefaceE2E extends Command {
         }
 
         global.config.tests = flags.tests || this.tests;
-
-        if (!this.gamefacePath && !flags.gamefacePath) {
-            this.error("Path to the gameface player executable is not specified!", {
-                code: "NO_GAMEFACE_PATH",
-                suggestions: [
-                    'Set the path in your config.js through the "gamefacePath" property.',
-                    'Use "gamefacePath" argument when running the tests through cli to specify the path.'
-                ],
-                exit: 1
-            });
-        }
         global.config.specTimeout = flags.specTimeout || this.specTimeout;
 
         if (!this.gamefacePath && !flags.gamefacePath) {
