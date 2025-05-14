@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <title>Document</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 0;
+            margin: 0;
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="test-element"></div>
+    <div id="test-element-2"></div>
+    <div id="test-mouse"></div>
+    <script>
+        const testElement = document.getElementById('test-element');
+        const secondTestElement = document.getElementById('test-element-2');
+        const mouseElement = document.getElementById('test-mouse');
+
+        document.addEventListener('keydown', (event) => {
+            // Handle backspace key
+            if (event.keyCode === 8) {
+                testElement.textContent = testElement.textContent.slice(0, -1);
+                return;
+            }
+            testElement.textContent += event.key;
+        });
+
+        document.addEventListener('keyup', (event) => {
+            // Handle backspace key
+            if (event.keyCode === 8) {
+                secondTestElement.textContent = secondTestElement.textContent.slice(0, -1);
+                return;
+            }
+            secondTestElement.textContent += event.key;
+        });
+
+        document.addEventListener('mousedown', (event) => {
+            mouseElement.textContent = 'Mouse down';
+        });
+
+        document.addEventListener('mouseup', (event) => {
+            mouseElement.textContent = 'Mouse up';
+        });
+    </script>
+</body>
+
+</html>

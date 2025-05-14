@@ -9,6 +9,7 @@ const SPEC_TIMEOUT = 10000;
 class WSServer {
     constructor() {
         this.wsServerUrl = '';
+        this.debuggingPort = '9444';
         this._ws = null;
         this.createClient = this.createClient.bind(this);
         this.getWebSocketDebuggerUrl = this.getWebSocketDebuggerUrl.bind(this);
@@ -29,10 +30,10 @@ class WSServer {
      * @returns {Promise<string>} WebSocket Debugger URL
      */
     async getWebSocketDebuggerUrl() {
-        global.log.debug('Establishing connection with the Gameface DevTools server on port 9444.');
+        global.log.debug(`Establishing connection with the Gameface DevTools server on port ${this.debuggingPort}.`);
         try {
             return await retryIfFails(async () => {
-                const response = await axios.get('http://localhost:9444/json');
+                const response = await axios.get(`http://localhost:${this.debuggingPort}/json`);
                 const devTools = response.data[0];
                 this.wsServerUrl = devTools.webSocketDebuggerUrl;
                 return this.wsServerUrl;
@@ -50,8 +51,10 @@ class WSServer {
 
     /**
      * Creates a WebSocket client
+     * @param {number} debuggingPort 
      */
-    async createClient() {
+    async createClient(debuggingPort) {
+        this.debuggingPort = debuggingPort;
         this.ws = new WebSocket(await this.getWebSocketDebuggerUrl());
 
         gamefaceCommands.player = player;
@@ -65,7 +68,7 @@ class WSServer {
     async runTests(mocha) {
         this.ws.on('open', async () => {
             try {
-                global.log.debug('Connected to the Gameface Devtools server on port 9444.');
+                global.log.debug(`Connected to the Gameface Devtools server on port ${this.debuggingPort}.`);
 
                 await sendCommands(['Page.enable', 'DOM.enable', 'CSS.enable', 'Runtime.enable', 'Input.enable']);
 

@@ -181,4 +181,236 @@ describe('Test script', function () {
             assert.equal(styles[`border-${position}-color`], 'rgba(0, 0, 255, 1)');
         }
     });
+
+    it('Should hover on an element and check background color', async () => {
+        let el = (await gf.get(`#test-hover`));
+        let styles = await el.styles();
+
+        assert.equal(styles['background-color'], 'rgba(255, 255, 255, 1)');
+
+        await el.hover();
+        styles = await el.styles();
+
+        assert.equal(styles['background-color'], 'rgba(0, 0, 0, 1)');
+    });
+
+    it('Should drag and drop an element', async () => {
+        const el = (await gf.get(`#draggable`));
+        const { x, y } = await el.getPositionOnScreen();
+        assert.equal(x, 200);
+        assert.equal(y, 200);
+        await el.drag(500, 500);
+        const { x: newX, y: newY } = await el.getPositionOnScreen();
+        // Should be 450, 450 because the element is 100x100 and the drag is 500, 500. Mouse is at the center of the element.
+        assert.equal(newX, 450);
+        assert.equal(newY, 450);
+    });
+});
+
+describe('Test custom scripts', function () {
+    it('Should navigate to the test page', async () => {
+        // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
+        await gf.navigate('../../../frontend-tools/e2e/examples/index.html');
+    });
+
+    it('Should execute custom javascript', async () => {
+        await gf.executeScript(() => {
+            // @ts-ignore
+            document.body.style = 'background: red;';
+        });
+
+        assert.equal((await (await gf.get(`body`)).styles())['background-color'], 'rgba(255, 0, 0, 1)');
+    });
+
+    it('Should execute custom javascript with a promise', async () => {
+        await gf.executeScript(async () => {
+            const promise = new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    // @ts-ignore
+                    document.body.style = 'background: blue;';
+                    resolve();
+                }, 500);
+            });
+
+            await promise;
+        });
+
+        assert.equal((await (await gf.get(`body`)).styles())['background-color'], 'rgba(0, 0, 255, 1)');
+    });
+
+    it('Should execute custom javascript and get value', async () => {
+        assert.equal(await gf.executeScript(() => document.getElementById('container').textContent.trim()), 'Test content')
+    });
+
+    it('Should execute custom javascript with an error', async () => {
+        try {
+            await gf.executeScript(() => {
+                throw new Error('test 1');
+            });
+        } catch (error) {
+            assert.match(error.message, /Error: test 1/)
+        }
+    });
+});
+
+describe('Test scroll', function () {
+    it('Should navigate to the test page', async () => {
+        // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
+        await gf.navigate('../../../frontend-tools/e2e/examples/index.html');
+    });
+
+    it('Should not scroll a non scrollable element', async () => {
+        const el = (await gf.get(`#draggable`));
+        try {
+            await el.scroll(10);
+        } catch (error) {
+            assert.equal(error.message, 'Trying to scroll node that is not scrollable!')
+        }
+    });
+
+    it('Should scroll element to another element', async () => {
+        const scrollableArea = (await gf.get(`#scrollable-container`));
+        const el = await gf.get(`#inner-scrollable-element`);
+        assert.equal(await el.isVisibleInScrollableArea(scrollableArea), false);
+        await gf.retryIfFails(async () => {
+            await scrollableArea.scroll(0, 50);
+            assert.equal(await el.isVisibleInScrollableArea(scrollableArea), true);
+        })
+    });
+
+    it('Should scroll to top and then element into view', async () => {
+        const scrollableArea = (await gf.get(`#scrollable-container`));
+        await scrollableArea.scrollTo(0, 0);
+        const el = await gf.get(`#inner-scrollable-element`);
+        assert.equal(await el.isVisibleInScrollableArea(scrollableArea), false);
+        await el.scrollIntoView(scrollableArea);
+        assert.equal(await el.isVisibleInScrollableArea(scrollableArea), true);
+    });
+
+});
+
+describe('Test click events', function () {
+    const keys = ['altKey', 'ctrlKey', 'metaKey', 'shiftKey'];
+    it('Should navigate to the test page', async () => {
+        // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
+        await gf.navigate('../../../frontend-tools/e2e/examples/index.html');
+    });
+
+    for (let key of keys) {
+        it(`Should click on an element with ${key} pressed`, async () => {
+            const el = (await gf.get(`#click-test-element`));
+            await el.click({ [key]: true });
+            assert.equal(await el.text(), `Test click with ${key} pressed`);
+        });
+    }
+
+    for (let key of keys) {
+        it(`Should right click on an element with ${key} pressed`, async () => {
+            const el = (await gf.get(`#click-test-element`));
+            await el.rightClick({ [key]: true });
+            assert.equal(await el.text(), `Test right click with ${key} pressed`);
+        });
+    }
+
+    for (let key of keys) {
+        it(`Should double click on an element with ${key} pressed`, async () => {
+            const el = (await gf.get(`#dblclick-test-element`));
+            await el.doubleClick({ [key]: true });
+            assert.equal(await el.text(), `Test dblclick with ${key} pressed`);
+        });
+    }
+});
+
+describe('Test key events', function () {
+    const typeMessage = 'Test message';
+    const keys = ['altKey', 'ctrlKey', 'metaKey', 'shiftKey'];
+    it('Should navigate to the test page', async () => {
+        // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
+        await gf.navigate('../../../frontend-tools/e2e/examples/index.html');
+    });
+
+    for (let key of keys) {
+        it(`Should type "${typeMessage}" to element with ${key} pressed`, async () => {
+            const el = (await gf.get(`#input-area`));
+            for (let i = 0; i < typeMessage.length; i++) {
+                await el.keyDown(typeMessage[i], { [key]: true });
+            }
+            assert.equal(await el.text(), `Test message`);
+            await el.keyDown(gf.KEYS.BACKSPACE, void 0, typeMessage.length);
+            assert.equal(await el.text(), ``);
+        });
+    }
+
+    for (let key of keys) {
+        it(`Should type "${typeMessage}" to input with ${key} pressed`, async () => {
+            const el = (await gf.get(`#input-element`));
+            await el.type(typeMessage, { [key]: true });
+            assert.equal(await el.getValue(), `Test message`);
+            await el.clear();
+            assert.equal(await el.getValue(), ``);
+        });
+    }
+});
+
+describe('Test document key events', function () {
+    const typeMessage = 'Test message';
+    const keys = ['altKey', 'ctrlKey', 'metaKey', 'shiftKey'];
+    it('Should navigate to the test page', async () => {
+        // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
+        await gf.navigate('../../../frontend-tools/e2e/examples/document-events.html');
+    });
+
+    for (let key of keys) {
+        it(`Should keydown "${typeMessage}" to document with ${key} pressed`, async () => {
+            for (let i = 0; i < typeMessage.length; i++) {
+                await gf.keyDown(typeMessage[i], { [key]: true });
+            }
+            const el = (await gf.get(`#test-element`));
+            assert.equal(await el.text(), `Test message`);
+            await gf.keyDown(gf.KEYS.BACKSPACE, void 0, typeMessage.length);
+            assert.equal(await el.text(), ``);
+        });
+    }
+
+    for (let key of keys) {
+        it(`Should keyup "${typeMessage}" to document with ${key} pressed`, async () => {
+            for (let i = 0; i < typeMessage.length; i++) {
+                await gf.keyUp(typeMessage[i], { [key]: true });
+            }
+            const el = (await gf.get(`#test-element-2`));
+            assert.equal(await el.text(), `Test message`);
+            await gf.keyUp(gf.KEYS.BACKSPACE, void 0, typeMessage.length);
+            assert.equal(await el.text(), ``);
+        });
+    }
+
+    it(`Should mousedown to document`, async () => {
+        await gf.mousePress();
+        const el = (await gf.get(`#test-mouse`));
+        assert.equal(await el.text(), `Mouse down`);
+    });
+
+    it(`Should mouseup to document`, async () => {
+        await gf.mouseRelease();
+        const el = (await gf.get(`#test-mouse`));
+        assert.equal(await el.text(), `Mouse up`);
+    });
+});
+
+describe('Test custom events', function () {
+    it('Should navigate to the test page', async () => {
+        // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
+        await gf.navigate('../../../frontend-tools/e2e/examples/index.html');
+    });
+
+    it(`Should dispatch custom event to document`, async () => {
+        await gf.trigger('custom-event-test', { value: 'test-document' });
+        assert.equal(await gf.text(`#custom-event-element`), `test-document`);
+    });
+
+    it(`Should dispatch custom event to element`, async () => {
+        const el = (await gf.get(`#custom-event-element`));
+        await el.trigger('custom-event-test', { value: 'test' })
+        assert.equal(await el.text(), `test`);
+    });
 });
