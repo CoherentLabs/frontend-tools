@@ -1,0 +1,29 @@
+---
+title: gameface-e2e-config.js
+sidebar:
+    order: 1
+---
+
+The `gameface-e2e-config.js` file is a configuration file for the `gameface-e2e` testing framework. It allows you to specify various properties that control the behavior of the framework when running your tests.
+
+## Configuration Properties
+
+| Property     | Type    | Description                                                                                                               |
+| ------------ | ------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **gamefacePath** | **String**  | Specifies the path to your `Player.exe`.                                                                                  |
+| **tests**        | **String**  | Specifies the path to your test `.spec.js` files.                                                                         |
+| **specTimeout**  | **Number**  | Sets the timeout for tests in spec files. The default is 10 seconds. Use this property to increase the timeout if needed. |
+| **bail**         | **Boolean** | Enables bailing on the first failure.                                                                                     |
+
+## Example
+
+Here is an example of a `gameface-e2e-config.js` file:
+
+```js title="gameface-e2e-config.js"
+module.exports = {
+    gamefacePath: "C:/Gameface/Player/Player.exe",
+    tests: "examples/**/*.spec.js",
+    specTimeout: 20000,
+    bail: true
+}
+```

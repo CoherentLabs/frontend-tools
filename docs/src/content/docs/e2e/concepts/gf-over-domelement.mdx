@@ -1,0 +1,47 @@
+---
+title: GF object and DOMElement
+sidebar:
+    order: 2
+---
+
+Gameface e2e testing framework provides two main ways to interact with UI elements: the `gf` object and the `DOMElement` object. Each serves a different purpose and is suited for different scenarios. Understanding when to use each can help you write more efficient and effective tests.
+
+## `gf` object
+
+The `gf` object is a global utility that provides methods to interact with the UI elements. It is typically used for quick, single actions, such as retrieving the text of an element without further interaction.
+
+### Example
+
+Here is an example of using the `gf` object to get the text of an element:
+
+```js ins="await gf.text('.my-element')"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const text = await gf.text('.my-element');
+        assert.equal(text, 'Hello, World!');
+    });
+});
+```
+
+## `DOMElement` object
+
+The `DOMElement` object, on the other hand, represents a specific DOM element and is ideal for scenarios where multiple interactions with the same element are required. For instance, you might retrieve an element, check its text, and then perform a click action.
+
+### Example
+
+Here is an example of using the `DOMElement` object to perform multiple actions on the same element:
+
+```js ins="await gf.get('.my-element');" ins="await element.text();" ins="await element.click();"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        const text = await element.text();
+        assert.equal(text, 'Hello, World!');
+        await element.click();
+    });
+});
+```
+
+## Summary
+
+Use the `gf` object for simplicity when only one interaction is needed, and opt for the `DOMElement` object when you need to perform multiple operations on the same element.

@@ -1,0 +1,21 @@
+---
+title: 'element.find'
+---
+
+## `element.find(selector: string): Promise<DOMElement>`
+
+Finds a DOM element using the specified selector starting from the current element.
+
+* **`selector`**: The CSS selector to query the DOM element.
+* Returns a promise that resolves to the `DOMElement` instance.
+
+## Usage
+
+```js ins="await element.find('.child-element');"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        const childElement = await element.find('.child-element');
+    });
+});
+```

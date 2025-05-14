@@ -1,0 +1,25 @@
+---
+title: Changelog
+---
+
+import { Badge } from '@astrojs/starlight/components'
+
+## 0.0.2 :badge[Latest]{variant="note"}
+
+<Badge text="New" variant="tip" size="small" /> Added more examples of how to write tests in the `examples` folder of the `gameface-e2e` npm package.
+
+<Badge text="New" variant="tip" size="small" /> Introduced the `gf` object and `DOMElement` object to interact with UI elements. The `gf` object is a global utility for quick actions, while the `DOMElement` object represents a specific DOM element for multiple interactions.
+
+<Badge text="Feature" variant="success" size="small" /> Added methods for accessing elements in the UI.
+
+<Badge text="Feature" variant="success" size="small" /> Added methods for validating elements in the UI.
+
+<Badge text="Feature" variant="success" size="small" /> Added method for navigating to a specific URL in the UI via `gf.navigate(url)`.
+
+## 0.0.1
+
+Created base of the e2e testing framework.
+
+<Badge text="New" variant="tip" size="small" /> The framework is able to spawn the Gameface player and run tests in it.
+
+<Badge text="New" variant="tip" size="small" /> Added config file support for the framework, allowing users to specify the path to the Player.exe and test files.

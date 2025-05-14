@@ -1,0 +1,20 @@
+---
+title: gameface-e2e
+sidebar:
+    order: 1
+---
+
+The `gameface-e2e` command will run end-to-end tests in your Gameface projects. It allows you to execute your test files and interact with the Player.exe application.
+
+## Flags
+
+Here is a list of all the flags you can use with the `gameface-e2e` command:
+
+| Flag         | Type   | Description                                                                                                           |
+| ------------ | ------ | --------------------------------------------------------------------------------------------------------------------- |
+| **help**         |        | Displays the help information for the command.                                                                        |
+| **gamefacePath** | **String** | Specifies the path to your `Player.exe`.                                                                              |
+| **tests**        | **String** | Specifies the path to your test `.spec.js` files.                                                                     |
+| **config**       | **String** | Specifies the path to your config file if you are using one to run the tests.                                         |
+| **specTimeout**  | **Number** | Sets the timeout for tests in spec files. The default is 10 seconds. Use this flag to increase the timeout if needed. |
+| **bail**         |        | Enables bailing on the first failure.                                                                                 |

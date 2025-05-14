@@ -1,0 +1,57 @@
+---
+title: Usage
+sidebar:
+    order: 3
+---
+
+To run tests with the `gameface-e2e` framework, you need the following:
+
+1. `Player.exe` located at `${GamefacePackage}/Player/Player.exe`.
+2. `.spec` files to be executed. The framework uses [`mocha`](https://mochajs.org/), so your `.spec` files should follow the `describe`-`it` pattern.
+3. (Optional) A config file for running the tests.
+
+## Running tests without a config file
+
+To run your tests without a config file, use the following command:
+
+```shell
+npx gameface-e2e --gamefacePath=${PATH_TO_PLAYER_EXE} --tests=${PATH_TO_SPEC_FILES}
+```
+
+If you have installed the framework globally, you can use:
+
+```shell
+gameface-e2e --gamefacePath=${PATH_TO_PLAYER_EXE} --tests=${PATH_TO_SPEC_FILES}
+```
+
+* `PATH_TO_PLAYER_EXE`: The path to your `Player.exe`, either relative to the command execution location or as an absolute path.
+* `PATH_TO_SPEC_FILES`: The path to your spec files, either relative to the command execution location or as an absolute path. You can use patterns like `tests/**/*.spec.js` to match all `.spec` files in the `tests` folder.
+
+## Running tests with a config file
+
+To avoid specifying the `gamefacePath` and `tests` paths each time you run your tests, you can create a config file that the framework will use to retrieve both flags.
+
+There are two ways to do this:
+
+1. Create a `gameface-e2e-config.js` file in the directory where you plan to run the `gameface-e2e` command, such as your project root.
+2. Create a config JavaScript file with any name and place it anywhere.
+
+Inside this file, you can specify various config properties for the testing library. Here is an example where we specify the path to the Player.exe and tests:
+
+```js title="gameface-e2e-config.js"
+module.exports = {
+    tests: "examples/**/*.spec.js",
+    gamefacePath: "C:/Gameface/Player/Player.exe"
+}
+```
+
+When you configure both properties inside your config file, there are two ways to execute the `gameface-e2e` command without specifying the required flags:
+
+1. **Without specifying the config file path.** Create a file named `gameface-e2e-config.js` in the directory where you will execute the command:
+    ```shell
+    npx gameface-e2e
+    ```
+2. **By specifying the config file path.** Pass the path to your config file, which must be relative to the location where the command will be executed:
+    ```shell
+    npx gameface-e2e --config=./tests/my-config.js
+    ```

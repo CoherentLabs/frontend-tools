@@ -1,0 +1,22 @@
+---
+title: 'element.click'
+---
+
+## `element.click(): Promise<void>`
+
+Simulates a click on the element.
+
+* Returns a promise that resolves when the click is complete.
+
+## Usage
+
+```js ins="await element.click();"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-button');
+        await element.click();
+    });
+});
+```
+
+**Note: Clicking on text elements is not supported.**
