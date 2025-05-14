@@ -776,7 +776,7 @@ Creates a new data bind model with the given name and data.
 * `model`: The data structure representing the model.
 * Returns a promise that resolves once the model is successfully created.
 
-It is recommended to use this method within the `beforeAll` hook of a `describe` block. This ensures the model is initialized once and can be reused across all tests within the block. Additionally, declare the model variable within the `describe` block to make it accessible to all tests.
+It is recommended to use this method within the `beforeAll` hook of a `describe` block. This ensures the model is initialized once and can be reused across all tests within the block. The model variable must be declared within the `describe` block to make it accessible to all tests.
 
 Usage:
 
