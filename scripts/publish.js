@@ -66,7 +66,7 @@ function shouldUpdate(tool) {
  */
 async function publish(tool) {
     try {
-        execSync(`npm run publish`, { cwd: path.join(tool), encoding: 'utf8', stdio: 'inherit' });
+        execSync(`npm run publish:package`, { cwd: path.join(tool), encoding: 'utf8', stdio: 'inherit' });
         console.log(`Successfully published ${tool}.`);
     } catch (err) {
         console.error(err);

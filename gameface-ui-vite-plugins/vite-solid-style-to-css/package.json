@@ -1,13 +1,13 @@
 {
   "name": "vite-solid-style-to-css",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "description": "A Vite plugin that converts Solid.js inline styles to CSS for better performance and maintainability.",
   "main": "dist/index.js",
   "scripts": {
     "build": "npm run clean:dist&&rollup -c",
     "dev": "rollup -c -w",
-    "publish": "npm run clean&&npm i&&rollup -c&&npm publish",
+    "publish:package": "npm run clean&&npm i&&rollup -c&&npm publish",
     "clean:dist": "rm -rf dist",
     "clean": "npm run clean:dist&&rm -rf node_modules&&rm package-lock.json"
   },
