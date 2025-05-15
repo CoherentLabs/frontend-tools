@@ -1,0 +1,29 @@
+---
+title: Writing tests
+sidebar:
+    order: 1
+---
+
+To write tests for your UI in Gameface, you can use the `gf` object provided by the testing framework. The `gf` object provides various methods to interact with the UI, such as clicking elements, getting the element properties, etc.
+
+Here is a simple example of a test file:
+
+```js
+describe("Test my UI", () => {
+    it("Should display the correct text", async () => {
+        const element = await gf.get('.my-element');
+        const text = await element.text();
+        assert.equal(text, 'Hello, World!');
+    });
+
+    it("Should update the text when clicked", async () => {
+        const btn = await gf.get('.my-button');
+        await btn.click();
+        const element = await gf.get('.my-element');
+        const text = await element.text();
+        assert.equal(text, 'Hello, Gameface!');
+    });
+});
+```
+
+To see more examples of how to write tests, check the `examples` folder in the gameface-e2e npm package. The examples include various test cases demonstrating how to use the `gf` object and its methods.

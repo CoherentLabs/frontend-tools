@@ -1,0 +1,25 @@
+---
+title: 'element.getSize'
+---
+
+## `element.getSize(): Promise<{ width: number, height: number } | null>`
+
+Retrieves the size of the element.
+
+* Returns a promise that resolves to an object containing the `width` and `height` of the element.
+* If the element is not visible, the method returns `null`.
+
+## Usage
+
+```js ins="const size = await element.getSize();"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        const size = await element.getSize();
+    });
+});
+```
+
+:::note
+Getting the size of a text element is not supported.
+:::

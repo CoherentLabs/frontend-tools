@@ -1,0 +1,38 @@
+---
+title: 'gf.updateModel'
+---
+
+## `gf.updateModel(modelName: string, fn: Function, args: ...any): Promise<void>`
+
+Updates a given data model by running a specified function. Any changes to the model should be implemented within the function body. Optional arguments can be passed to the function during execution.
+
+* **`modelName`**: The name of the model to be updated.
+* **`fn`**: The function to execute for modifying the model.
+* **`args`**: Optional arguments to pass to the function during execution. These can include variables from the test script.
+* Returns a promise that resolves once the model has been updated.
+
+:::note
+This method automatically invokes `engine.updateWholeModel` and `engine.synchronizeModels` after the function execution, ensuring the model is updated and synchronized with the engine.
+:::
+
+## Usage
+
+```js
+describe('Test script', function () {
+    const Model = { value: 'test', arr: [{ value: 1, class: 'one' }, { value: 2, class: 'two' }, { value: 3, class: 'three' }] };
+
+    this.beforeAll('Should navigate to the test page', async () => {
+        await gf.navigate('../../../frontend-tools/e2e/examples/data-binding.html');
+        await gf.createModel('Model', Model);
+    });
+
+    it('Test 1', async () => {
+        const value = 'test2';
+
+        await gf.updateModel('Model', (value) => {
+            Model.value = value;
+            Model.arr[1].value = 1234;
+        }, value);
+    });
+});
+```

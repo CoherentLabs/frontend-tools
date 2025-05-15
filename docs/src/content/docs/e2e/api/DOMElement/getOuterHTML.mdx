@@ -1,0 +1,20 @@
+---
+title: 'element.getOuterHTML'
+---
+
+## `element.getOuterHTML(): Promise<string>`
+
+Retrieves the outer HTML of the element.
+
+* Returns a promise that resolves to the outer HTML of the element.
+
+## Usage
+
+```js ins="await element.getOuterHTML();"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        const outerHTML = await element.getOuterHTML();
+    });
+});
+```

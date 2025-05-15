@@ -1,0 +1,24 @@
+---
+title: 'gf.mouseRelease'
+---
+
+## `gf.mouseRelease(x?: number, y?: number, button?: 'left'|'middle'|'right', modifiers?: number): Promise<void>`
+
+Simulates a mouse release event at the specified coordinates on the document.
+
+* **`x`**: **`(Default = 0)`** The X coordinate where the mouse will be released.
+* **`y`**: **`(Default = 0)`** The Y coordinate where the mouse will be released.
+* **`buttton`**: **`(Default = 'left')`** Specifies the mouse button that will be used for the event.
+* **`modifiers`**: **`(Default = 0)`** Bitfield representing modifier keys (e.g., Alt, Ctrl, Meta, Shift).
+* Returns a promise that resolves when the mouse release is complete.
+
+## Usage
+
+```js ins="await gf.mouseRelease();" ins="await gf.mouseRelease(100, 100, 'right');"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        await gf.mouseRelease();
+        await gf.mouseRelease(100, 100, 'right');
+    });
+});
+```

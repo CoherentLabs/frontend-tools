@@ -1,0 +1,22 @@
+---
+title: 'gf.trigger'
+---
+
+## `gf.trigger(eventName: string, data: Object)`
+
+Triggers a custom DOM event on the document with the specified name and data.
+
+* **`eventName`** - The name of the custom event to dispatch.
+* **`data`** - The data to include in the event's `detail` property.
+* Returns a promise that resolves when triggering custom event up is complete.
+
+## Usage
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        await gf.trigger('custom-event');
+        await gf.trigger('custom-event', { testData: 1 });
+    });
+});
+```

@@ -1,0 +1,24 @@
+---
+title: 'element.classes'
+---
+
+## `element.classes(): Promise<string[]>`
+
+Retrieves the classes of the element.
+
+* Returns a promise that resolves to an array of strings representing the classes of the element.
+
+:::note
+The classes are returned as an array of strings.
+:::
+
+## Usage
+
+```js ins="await element.classes();"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        const classes = await element.classes();
+    });
+});
+```

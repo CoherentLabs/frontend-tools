@@ -1,0 +1,32 @@
+---
+title: 'gf.navigate'
+---
+
+## `gf.navigate(url: string): Promise<void>`
+
+Navigates to the specified URL.
+
+* **`url`**: The URL to navigate to.
+* Returns a promise that resolves when the navigation is complete.
+
+The `url` argument can receive either local or remote URLs. If you want to navigate to a local file, you can use the `gf.navigate` method with a file path. The file path could be either absolute or relative to the Player directory specified via `gamefacePath` command argument. For example, if you want to navigate to a local HTML file, you can use the following code:
+
+```js
+gf.navigate('D:/my-directory/my-file.html');
+```
+
+Or if you want to navigate to a file relative to the Player's directory, you can use the following code:
+
+```js
+gf.navigate('./my-file.html');
+```
+
+## Usage
+
+```js ins="await gf.navigate('https://localhost:3000/');"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        await gf.navigate('https://localhost:3000/');
+    });
+});
+```

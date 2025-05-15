@@ -1,0 +1,40 @@
+---
+title: Gameface Frontend Tools
+description: Discover the complete suite of tools designed to streamline the creation and testing of game user interfaces with Gameface.
+head:
+  - tag: title
+    content: Gameface Frontend Tools
+template: splash
+editUrl: false
+lastUpdated: false
+hero:
+  tagline: Discover the complete suite of tools designed to streamline the creation and testing of game user interfaces with Gameface.
+---
+
+import { LinkButton } from '@astrojs/starlight/components'
+
+import { Card, CardGrid } from '@astrojs/starlight/components'
+
+<CardGrid>
+  <Card title="Gameface E2E">
+    Gameface E2E is a powerful tool for testing your game user interfaces. It provides a robust framework for writing end-to-end tests, ensuring that your UI behaves as expected across different scenarios.
+
+    <LinkButton href="/e2e/getting-started" variant="primary" icon="rocket">
+      Check the Gameface E2E documentation
+    </LinkButton>
+  </Card>
+  <Card title="Gameface Vite Plugin">
+    The Gameface Vite plugin is designed to enhance your development experience when using SolidJS with Gameface.
+  
+    <LinkButton href="/gameface-vite-plugin/getting-started" variant="primary" icon="seti:vite">
+      Check the Gameface Vite plugin documentation
+    </LinkButton>
+  </Card>
+  <Card title="Solid Style to CSS Plugin">
+    The Solid Style to CSS plugin is a Vite plugin that allows you to use SolidJS `style` property in your components and automatically converts them to CSS classes.
+  
+    <LinkButton href="/vite-solid-style-to-css-plugin/getting-started" variant="primary" icon="seti:css">
+      Check the Solid Style to CSS plugin documentation
+    </LinkButton>
+  </Card>
+</CardGrid>

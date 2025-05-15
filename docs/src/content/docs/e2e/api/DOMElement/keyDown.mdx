@@ -1,0 +1,30 @@
+---
+title: 'element.keyDown'
+---
+
+## `element.keyDown(key: string|number, options?: Object, count?: number): Promise<void>`
+
+Simulates a key down event for the specified key on the element.
+
+* **`key`**: Either a key code as number or string.
+  * You can use the `gf.KEYS` object to specify the `key` argument.
+* **`options.altKey`**: Indicates if the Alt key is pressed.
+* **`options.ctrlKey`**: Indicates if the Ctrl key is pressed.
+* **`options.metaKey`**: Indicates if the Meta key is pressed.
+* **`options.shiftKey`**: Indicates if the Shift key is pressed.
+* **`count`**: **`(Default = 0)`** The number of times to repeat the key down event.
+* Returns a promise that resolves when the key down is complete.
+
+## Usage
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        await element.keyDown('a'); // Will key down - 'a'
+        await element.keyDown('a', void 0, 2); // Will key down - 'a' two times
+        await element.keyDown('a', { altKey: true }, 2); // Will key down - 'a' with alt pressed key two times
+        await element.keyDown(gf.KEYS.TAB, void 0, 2); // Will key down the Tab key two times
+    });
+});
+```

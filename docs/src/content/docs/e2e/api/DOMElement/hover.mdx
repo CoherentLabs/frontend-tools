@@ -1,0 +1,24 @@
+---
+title: 'element.hover'
+---
+
+## `element.hover(): Promise<void>`
+
+Simulates hovering over the element.
+
+* Returns a promise that resolves when the action is complete.
+
+## Usage
+
+```js ins="await element.hover();"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-button');
+        await element.hover();
+    });
+});
+```
+
+:::note
+Hovering on text elements is not supported.
+:::

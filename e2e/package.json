@@ -1,9 +1,9 @@
 {
   "name": "gameface-e2e",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "scripts": {
     "test": "gameface-e2e",
-    "publish": "npm publish"
+    "publish:package": "npm publish"
   },
   "dependencies": {
     "@oclif/core": "^4.2.8",

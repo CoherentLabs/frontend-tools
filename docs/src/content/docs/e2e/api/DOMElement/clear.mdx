@@ -1,0 +1,18 @@
+---
+title: 'element.clear'
+---
+
+## `element.clear(): Promise<void>`
+
+Clears the value of the element if it is an input or textarea.
+
+* Returns a promise that resolves when the action is complete.
+
+```js ins="await input.clear();"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const input = await gf.get('input');
+        await input.clear();
+    });
+});
+```

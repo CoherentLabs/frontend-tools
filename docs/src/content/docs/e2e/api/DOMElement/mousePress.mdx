@@ -1,0 +1,29 @@
+---
+title: 'element.mousePress'
+---
+
+## `element.mousePress(button: 'left'|'right'|'middle', options?: Object): Promise<void>`
+
+Simulates a `mousedown` event on the element.
+
+* **`button`**: **`(Default = 'left')`** Specifies the mouse button that will be used for the event.
+* **`options.altKey`**: Indicates if the Alt key is pressed.
+* **`options.ctrlKey`**: Indicates if the Ctrl key is pressed.
+* **`options.metaKey`**: Indicates if the Meta key is pressed.
+* **`options.shiftKey`**: Indicates if the Shift key is pressed.
+* Returns a promise that resolves when the mouse event is complete.
+
+## Usage
+
+```js ins="await element.mousePress();"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-button');
+        await element.mousePress();
+    });
+});
+```
+
+:::note
+Mouse pressing on text elements is not supported.
+:::

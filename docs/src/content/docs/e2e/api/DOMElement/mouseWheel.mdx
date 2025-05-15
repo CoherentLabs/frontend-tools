@@ -1,0 +1,26 @@
+---
+title: 'element.mouseWheel'
+---
+
+## `element.mouseWheel(deltaX: number, deltaY: number): Promise<void>`
+
+Simulates a `mousewheel` event on the element.
+
+* **`deltaX`**: The horizontal scroll amount. Positive values scroll right, negative values scroll left.
+* **`deltaY`**: The vertical scroll amount. Positive values scroll down, negative values scroll up.
+* Returns a promise that resolves when the mouse event is complete.
+
+## Usage
+
+```js ins="await element.mouseWheel(0, -100);"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-button');
+        await element.mouseWheel();
+    });
+});
+```
+
+:::note
+Wheeling on text elements is not supported.
+:::

@@ -1,0 +1,27 @@
+---
+title: 'gf.getStyles'
+---
+
+## `gf.getStyles(selector: string): Promise<Object>`
+
+Retrieves the computed styles of the specified element.
+
+* **`selector`**: The CSS selector of the element to retrieve.
+* Returns a promise that resolves to an object containing the computed styles of the element.
+* The object has the following structure: `{ property: value }`.
+
+:::note
+* The values are returned as strings.
+* The styles are computed styles, not inline styles.
+* The styles are not returned in the same format as the CSS file.
+:::
+
+## Usage
+
+```js ins="await gf.getStyles('.my-element');"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const styles = await gf.getStyles('.my-element');
+    });
+});
+```

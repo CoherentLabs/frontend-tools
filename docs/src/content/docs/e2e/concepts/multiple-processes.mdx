@@ -1,0 +1,65 @@
+---
+title: Running multiple test processes in parallel
+sidebar:
+    order: 2
+---
+
+The framework allows running multiple test processes simultaneously. Each test process spawns a separate Gameface Player instance on a different port if the current one is occupied.
+
+This feature enables you to execute multiple test processes independently and in parallel, which can significantly reduce the overall test execution time.
+
+## Example
+
+In this example, we will use the `concurrently` npm module to run two test processes in parallel. Alternatively, you can create your own script to manage multiple processes and handle their exit codes.
+
+First, install the `concurrently` module:
+
+```shell
+npm install --save-dev concurrently
+```
+
+Next, add the following script to the `scripts` section of your project's `package.json`:
+
+```json
+"scripts": {
+    ...
+    "test": "concurrently --kill-others-on-fail \"gameface-e2e --tests=./tests/view1/**/*.spec.js --gamefacePath=../Gameface/Player/Player.exe\" \"gameface-e2e --tests=./tests/view2/**/*.spec.js --gamefacePath=../Gameface/Player/Player.exe\""
+    ...
+}
+```
+
+You can also use separate configuration files to run different test processes:
+
+```json
+"scripts": {
+    ...
+    "test": "concurrently --kill-others-on-fail \"gameface-e2e --config=./tests/view1.config.js\" \"gameface-e2e --config=./tests/view2.config.js\""
+    ...
+}
+```
+
+In each configuration file, specify the `tests` and `gamefacePath` properties.
+
+Now, running `npm run test` will start two `Player` processes, each executing tests for a specific view in parallel.
+
+:::tip
+
+If you are using bash terminal and want to keep your `package.json` organized, you can follow these steps:
+
+1. Create a `run-e2e.sh` script:
+
+```bash
+#!/bin/bash
+concurrently --kill-others-on-fail \
+    "gameface-e2e --config=./tests/view1.config.js" \
+    "gameface-e2e --config=./tests/view2.config.js"
+```
+
+2. Update the `scripts` section in your `package.json`:
+
+```json
+"scripts": {
+    "test": "bash ./run-e2e.sh"
+}
+```
+:::

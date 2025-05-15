@@ -1,0 +1,20 @@
+---
+title: 'element.getInnerHTML'
+---
+
+## `element.getInnerHTML(): Promise<string>`
+
+Retrieves the inner HTML of the element.
+
+* Returns a promise that resolves to the inner HTML of the element.
+
+## Usage
+
+```js ins="await element.getInnerHTML();"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        const innerHTML = await element.getInnerHTML();
+    });
+});
+```

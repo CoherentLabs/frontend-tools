@@ -1,0 +1,25 @@
+---
+title: 'element.getPositionOnScreen'
+---
+
+## `element.getPositionOnScreen(): Promise<{ x: number, y: number } | null>`
+
+Retrieves the position of the element on the screen.
+
+* Returns a promise that resolves to an object containing the `x` and `y` coordinates of the element on the screen.
+* If the element is not visible, the method returns `null`.
+
+## Usage
+
+```js ins="const position = await element.getPositionOnScreen();"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        const position = await element.getPositionOnScreen();
+    });
+});
+```
+
+:::note
+Getting the position of a text element is not supported.
+:::
