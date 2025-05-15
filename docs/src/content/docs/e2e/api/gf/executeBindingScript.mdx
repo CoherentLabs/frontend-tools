@@ -1,0 +1,26 @@
+---
+title: 'gf.executeBindingScript'
+---
+
+## `gf.executeBindingScript(fn: Function, args: ...any): Promise<any>`
+
+Executes a JavaScript function within the browser's runtime environment, specifically designed for binding scripts. Unlike `gf.executeScript`, this method is tailored for scripts that rely on binding models or the global engine object. It ensures the engine is initialized and ready before execution. If the engine is not initialized, it dynamically loads the `cohtml.js` library from the Player's directory. By default, `cohtml.js` is found in `${GamefacePackage}/Samples/uiresources/library`.
+
+* **`fn`**: The function to execute in the runtime environment.
+* **`args`**: Arguments to pass to the function during execution.
+* Returns a promise that resolves with the function's return value from the runtime.
+* Throws an error if the function encounters an error during execution.
+
+## Usage
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        await gf.executeBindingScript(() => {
+            MyModel.value = '1';
+            engine.updateWholeModel(MyModel);
+            engine.synchronizeModels();
+        });
+    });
+});
+```

@@ -1,0 +1,21 @@
+---
+title: 'element.isVisibleInScrollableArea'
+---
+
+## `element.isVisibleInScrollableArea(scrollableArea: DOMElement):Promise<boolean>`
+
+Determines if the current DOM element is visible within a specified scrollable area.
+
+* **`scrollableArea`**: The scrollable area to check visibility against. Must be an instance of DOMElement.
+* Returns a promise that resolves to `true` if the element is visible within the scrollable area, otherwise `false`.
+
+## Usage
+
+```js ins="await element.isVisibleInScrollableArea(scrollableArea);"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        const text = await element.isVisibleInScrollableArea(await gf.get('.element-wrapper'));
+    });
+});
+```

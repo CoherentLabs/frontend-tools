@@ -4,22 +4,46 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 0.0.2 :badge[Latest]{variant="note"}
+## 0.0.4 :badge[Latest]{variant="note"}
 
-<Badge text="New" variant="tip" size="small" /> Added more examples of how to write tests in the `examples` folder of the `gameface-e2e` npm package.
+<Badge text="New" variant="tip" size="small" /> Introduced support for testing data bindings in the UI.
 
-<Badge text="New" variant="tip" size="small" /> Introduced the `gf` object and `DOMElement` object to interact with UI elements. The `gf` object is a global utility for quick actions, while the `DOMElement` object represents a specific DOM element for multiple interactions.
+<Badge text="New" variant="tip" size="small" /> Added additional examples of how to test data bindings in the UI.
 
-<Badge text="Feature" variant="success" size="small" /> Added methods for accessing elements in the UI.
+<Badge text="Feature" variant="success" size="small" /> Added methods to test data bindings by creating and updating models.
 
-<Badge text="Feature" variant="success" size="small" /> Added methods for validating elements in the UI.
+<Badge text="Feature" variant="success" size="small" /> Added methods to test data bindings by triggering and listening to engine events.
 
-<Badge text="Feature" variant="success" size="small" /> Added method for navigating to a specific URL in the UI via `gf.navigate(url)`.
+## 0.0.3
+
+<Badge text="New" variant="tip" size="small" /> Introduced support for UI interactions.
+
+<Badge text="New" variant="tip" size="small" /> Added additional examples for keyboard and mouse interactions.
+
+<Badge text="Feature" variant="success" size="small" /> Enabled support for keyboard and mouse interactions.
+
+<Badge text="Feature" variant="success" size="small" /> Added methods for scrolling elements into view within scrollable containers.
+
+<Badge text="Feature" variant="success" size="small" /> Enabled support for spawning multiple test processes.
+
+<Badge text="Feature" variant="success" size="small" /> Added runtime script execution support via the `gf.executeScript` method.
+
+## 0.0.2
+
+<Badge text="New" variant="tip" size="small" /> Added more test examples in the `examples` folder of the `gameface-e2e` npm package.
+
+<Badge text="New" variant="tip" size="small" /> Introduced the `gf` object and `DOMElement` object for UI interactions. The `gf` object provides global utilities, while the `DOMElement` object represents specific DOM elements for interaction.
+
+<Badge text="Feature" variant="success" size="small" /> Added methods to access UI elements.
+
+<Badge text="Feature" variant="success" size="small" /> Added methods to validate UI elements.
+
+<Badge text="Feature" variant="success" size="small" /> Introduced navigation to specific URLs via `gf.navigate(url)`.
 
 ## 0.0.1
 
-Created base of the e2e testing framework.
+Initial release of the e2e testing framework.
 
-<Badge text="New" variant="tip" size="small" /> The framework is able to spawn the Gameface player and run tests in it.
+<Badge text="New" variant="tip" size="small" /> Enabled the framework to spawn the Gameface player and execute tests.
 
-<Badge text="New" variant="tip" size="small" /> Added config file support for the framework, allowing users to specify the path to the Player.exe and test files.
+<Badge text="New" variant="tip" size="small" /> Added configuration file support, allowing users to specify the path to `Player.exe` and test files.

@@ -139,13 +139,22 @@ async function getConfig() {
             }, {})
           })
         ],
-        social: {
-          email: 'https://coherent-labs.com/get-in-touch',
-        },
+        social: [
+          {
+            icon: 'open-book',
+            label: 'Documentation',
+            href: 'https://coherent-labs.com/documentation',
+          },
+          {
+            icon: 'email',
+            label: 'Email',
+            href: 'https://coherent-labs.com/get-in-touch'
+          },
+        ],
         title: 'Gameface Frontend Tools',
       }),
     ],
-    site: 'https://gameface-ui-tools.coherent-labs.com',
+    site: 'https://frontend-tools.coherent-labs.com',
   })
 }
 

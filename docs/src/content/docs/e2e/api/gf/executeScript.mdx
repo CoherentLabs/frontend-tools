@@ -1,0 +1,29 @@
+---
+title: 'gf.executeScript'
+---
+
+## `gf.executeScript(fn: Function, args: ...any): Promise<any>`
+
+Runs a JavaScript function within the browser's runtime context.
+
+* **`fn`**: The function to execute in the runtime environment.
+* **`args`**: Arguments to pass to the function during execution.
+* Returns a promise that resolves with the function's return value from the runtime.
+* Throws an error if the function encounters an error during execution.
+
+## Usage
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        // Retrieve the height of the Player's window
+        const height = await gf.executeScript(() => window.innerHeight);
+
+        // Change the background color of the body
+        const color = 'red';
+        await gf.executeScript((color) => {
+            document.body.style.background = color;
+        }, color);
+    });
+});
+```

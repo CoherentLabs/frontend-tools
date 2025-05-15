@@ -1,0 +1,23 @@
+---
+title: 'element.scroll'
+---
+
+## `element.scroll(deltaX: number, deltaY: number): Promise<void>`
+
+Scrolls the element by the specified delta values.
+
+* **`deltaX`**: **`(Default = 0)`** The horizontal scroll amount. Positive values scroll right, negative values scroll left.
+* **`deltaY`**: **`(Default = 0)`** The vertical scroll amount. Positive values scroll down, negative values scroll up.
+* Returns a promise that resolves when the action is complete.
+* Will not perform the action on elements that are not scrollable - element is hidden or overflow is set to `visible` or `hidden`.
+
+## Usage
+
+```js ins="await element.scroll(0, 100);"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.scroll-container');
+        await element.scroll(0, 100);
+    });
+});
+```
