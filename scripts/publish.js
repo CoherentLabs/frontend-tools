@@ -75,7 +75,7 @@ async function publish(tool) {
 }
 
 async function getToolsDirs(root, exclude = []) {
-    const excludeDirs = ['.github', 'scripts', 'node_modules', '.git', ...exclude];
+    const excludeDirs = ['.github', 'scripts', 'docs', 'node_modules', '.git', ...exclude];
     const dirs = [];
 
     async function walk(dir) {
