@@ -4,7 +4,33 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 1.0.1 :badge[Latest]{variant="note"}
+## 1.0.2 :badge[Latest]{variant="note"}
+
+<Badge text="Fix" variant="danger" size="small" /> Resolved Vite warnings related to the plugin when building with source maps enabled by regenerating the source maps after transforming the code.
+
+The warnings included:
+
+```
+[plugin gameface] Sourcemap is likely to be incorrect: a plugin (gameface) was used to transform files, but didn't generate a sourcemap for the transformation. Consult the plugin documentation for help
+```
+
+<Badge text="Fix" variant="danger" size="small" /> Corrected the handling of inlined `SVGs` to ensure proper transformation of child SVG elements wrapped within components. For instance, the [SolidJS clock example](https://www.solidjs.com/examples/clock) now functions correctly due to the plugin's improved transformation of `SVG` elements in such scenarios.
+
+Here is an example of a case that is now transformed correctly:
+
+```tsx
+const SVGComponent = ()=>{
+    return <svg>
+        <Line />
+    </svg>
+}
+
+const Line = () => {
+    return <line stroke="red" stroke-width="2px"></line>
+}
+```
+
+## 1.0.1
 
 <Badge text="New" variant="tip" size="small" /> Added public documentation for the plugin.
 
