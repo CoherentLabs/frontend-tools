@@ -356,21 +356,38 @@ export default function solidStyleToCssPlugin({ suppressWarnings } = { suppressW
                 if (updatedFiles.has(id)) return handleHotUpdateTransform(id, virtualCssId);
 
                 const { ast, cssOutput } = transformInlinedStyles(id, code, isBuild);
-                let transformedCode = generate(ast).code;
-                if (!cssOutput) return transformedCode;
+                const { code: transformedCode, map: babelMap } = generate(ast, {
+                    sourceMaps: true,
+                    sourceFileName: id,
+                });
+
+                if (!cssOutput) {
+                    return {
+                        code: transformedCode,
+                        map: babelMap,
+                    };
+                }
 
                 if (isBuild) {
                     chunkToCssContent.set(id, cssOutput);
-                    return transformedCode;
+                    return {
+                        code: transformedCode,
+                        map: babelMap,
+                    };
                 }
 
                 virtualCSSFiles.set(virtualCssId, cssOutput);
 
+                let finalCode = transformedCode;
+
                 if (!transformedCode.includes(`import "${virtualCssId}";`)) {
-                    return transformedCode + `import "${virtualCssId}";\n`;
+                    finalCode = `${transformedCode}\nimport "${virtualCssId}";`;
                 }
 
-                return transformedCode;
+                return {
+                    code: finalCode,
+                    map: babelMap
+                };
             }
         },
         resolveId: {
