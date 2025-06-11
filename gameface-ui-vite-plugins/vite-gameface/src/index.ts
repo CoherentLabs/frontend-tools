@@ -19,7 +19,7 @@ function fixTemplate(template: string, isSVG?: boolean): string {
     let fixedTemplate = isSVG
         ? template.replace(/=\s*([^"'\s>]+)/g, '="$1"')
         : template;
-    return fixedTemplate.replace(/\(<\!\>\)/g, '(<!---->)');
+    return fixedTemplate.replace(/\<\!\>/g, '<!---->');
 }
 
 export default function solidGameface(options: GamefacePluginOptions = {}): Plugin {
