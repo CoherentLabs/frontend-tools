@@ -4,7 +4,22 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 1.0.2 :badge[Latest]{variant="note"}
+## 1.0.3 :badge[Latest]{variant="note"}
+
+<Badge text="Fix" variant="danger" size="small" /> Resolved issues with using `()` brackets in SolidJS components, which previously caused errors with the plugin. The generated template from the SolidJS plugin, transformed by vite-gameface, contained `(<!>)` in place of `({expression})`, leading to build errors. This update ensures proper transformation of components using `()` brackets, eliminating these errors.
+
+For instance, the following code now functions as expected:
+
+```tsx
+const MyComponent = () => {
+    const [test] = createSignal('test');
+    return (
+        <span>({test()})</span>
+    );
+};
+```
+
+## 1.0.2
 
 <Badge text="Fix" variant="danger" size="small" /> Resolved Vite warnings related to the plugin when building with source maps enabled by regenerating the source maps after transforming the code.
 
