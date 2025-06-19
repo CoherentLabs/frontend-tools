@@ -1,5 +1,6 @@
 const { retryIfFails, getPressedKey, sleep } = require("../utils");
 const { DOMElement, DOMElements } = require("./dom-element");
+const { eventEmitter, waitDevtoolsEvent } = require("../event-emitter");
 const path = require('path');
 const URL = require('url');
 
@@ -50,6 +51,7 @@ class GamefaceCommandsBase {
     handleMessage(data) {
         try {
             const response = JSON.parse(data);
+            if (response.method) eventEmitter.emit(response.method, response.params);
             if (response.id && this.pendingCommands.has(response.id)) {
                 const { resolve, reject } = this.pendingCommands.get(response.id);
                 this.pendingCommands.delete(response.id);
@@ -155,6 +157,8 @@ class GamefaceCommands extends GamefaceCommandsBase {
     async get(selector) {
         global.log.debug(`\n[GamefaceCommands] Trying to find element with selector - ${selector}`);
 
+        if (!selector) throw new Error(`Selector must be provided to find an element.`);
+
         return await retryIfFails(async () => {
             const { nodeId } = await this.sendCommand('DOM.querySelector', {
                 nodeId: this.rootNodeId,
@@ -176,6 +180,8 @@ class GamefaceCommands extends GamefaceCommandsBase {
      */
     async getAll(selector) {
         global.log.debug(`\n[GamefaceCommands] Trying to find all elements with selector - ${selector}`);
+
+        if (!selector) throw new Error(`Selector must be provided to find elements.`);
 
         return await retryIfFails(async () => {
             const { nodeIds } = await this.sendCommand('DOM.querySelectorAll', {
@@ -205,6 +211,8 @@ class GamefaceCommands extends GamefaceCommandsBase {
         global.log.debug(`\n[GamefaceCommands] Trying to find text - ${text} within node with selector - ${selector}`);
         if (!text) throw new Error(`Text must be provided to search for.`);
 
+        if (!selector) throw new Error(`Selector must be provided to find an element.`);
+
         const element = await this.get(selector);
         return element.contains(text);
     }
@@ -217,6 +225,8 @@ class GamefaceCommands extends GamefaceCommandsBase {
     async text(selector) {
         global.log.debug(`\n[GamefaceCommands] Getting all the text content of node with selector - ${selector}`);
 
+        if (!selector) throw new Error(`Selector must be provided to find an element.`);
+
         const element = await this.get(selector);
         return element.text();
     }
@@ -228,6 +238,8 @@ class GamefaceCommands extends GamefaceCommandsBase {
      */
     async children(selector) {
         global.log.debug(`\n[GamefaceCommands] Getting children of node with selector - ${selector}`);
+
+        if (!selector) throw new Error(`Selector must be provided to find an element.`);
 
         const element = await this.get(selector);
         return element.children();
@@ -245,8 +257,11 @@ class GamefaceCommands extends GamefaceCommandsBase {
             url = path.resolve(global.config.gamefacePath, url).replace(/\\/g, '/');
         }
 
-        await this.sendCommand('Page.navigate', { url });
+        await waitDevtoolsEvent('DOM.documentUpdated', async () => {
+            await this.sendCommand('Page.navigate', { url });
+        });
         await this.sendCommand('Page.loadEventFired');
+
         const { root: { nodeId } } = await this.sendCommand('DOM.getDocument');
         this.rootNodeId = nodeId;
 
@@ -276,6 +291,8 @@ class GamefaceCommands extends GamefaceCommandsBase {
     async isHidden(selector) {
         global.log.debug(`\n[GamefaceCommands] Getting if node with selector - ${selector} is hidden`);
 
+        if (!selector) throw new Error(`Selector must be provided to find an element.`);
+
         const element = await this.get(selector);
         return element.isHidden();
     }
@@ -288,6 +305,8 @@ class GamefaceCommands extends GamefaceCommandsBase {
      */
     async isVisible(selector) {
         global.log.debug(`\n[GamefaceCommands] Getting if node with selector - ${selector} is visible`);
+
+        if (!selector) throw new Error(`Selector must be provided to find an element.`);
 
         const element = await this.get(selector);
         return element.isVisible();
@@ -302,6 +321,8 @@ class GamefaceCommands extends GamefaceCommandsBase {
     async isScrollable(selector) {
         global.log.debug(`\n[GamefaceCommands] Getting if node with selector - ${selector} is scrollable`);
 
+        if (!selector) throw new Error(`Selector must be provided to find an element.`);
+
         const element = await this.get(selector);
         return element.isScrollable();
     }
@@ -314,6 +335,8 @@ class GamefaceCommands extends GamefaceCommandsBase {
      */
     async isFocusable(selector) {
         global.log.debug(`\n[GamefaceCommands] Getting if node with selector - ${selector} is focusable`);
+
+        if (!selector) throw new Error(`Selector must be provided to find an element.`);
 
         const element = await this.get(selector);
         return element.isFocusable();
@@ -328,6 +351,8 @@ class GamefaceCommands extends GamefaceCommandsBase {
      */
     async hasAttribute(selector, name) {
         global.log.debug(`\n[GamefaceCommands] Getting if node with selector - ${selector} has '${name}' attribute`);
+
+        if (!selector) throw new Error(`Selector must be provided to find an element.`);
 
         const element = await this.get(selector);
         return element.hasAttribute(name);
@@ -344,6 +369,8 @@ class GamefaceCommands extends GamefaceCommandsBase {
     async getAttribute(selector, name) {
         global.log.debug(`\n[GamefaceCommands] Getting attribute with name '${name}' of node with selector - ${selector}`);
 
+        if (!selector) throw new Error(`Selector must be provided to find an element.`);
+
         const element = await this.get(selector);
         return element.getAttribute(name);
     }
@@ -356,6 +383,8 @@ class GamefaceCommands extends GamefaceCommandsBase {
      */
     async getStyles(selector) {
         global.log.debug(`\n[GamefaceCommands] Getting styles of node with selector - ${selector}`);
+
+        if (!selector) throw new Error(`Selector must be provided to find an element.`);
 
         const element = await this.get(selector);
         return element.styles();
@@ -371,6 +400,8 @@ class GamefaceCommands extends GamefaceCommandsBase {
     async getClasses(selector) {
         global.log.debug(`\n[GamefaceCommands] Getting classes of node with selector - ${selector}`);
 
+        if (!selector) throw new Error(`Selector must be provided to find an element.`);
+
         const element = await this.get(selector);
         return element.classes();
     }
@@ -384,6 +415,8 @@ class GamefaceCommands extends GamefaceCommandsBase {
      */
     async click(selector) {
         global.log.debug(`\n[GamefaceCommands] Clicking on node with selector - ${selector}`);
+
+        if (!selector) throw new Error(`Selector must be provided to find an element.`);
 
         const element = await this.get(selector);
         return element.click();
