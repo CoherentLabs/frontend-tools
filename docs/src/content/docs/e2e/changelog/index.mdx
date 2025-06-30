@@ -4,7 +4,11 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 1.0.1 :badge[Latest]{variant="note"}
+## 1.0.2 :badge[Latest]{variant="note"}
+
+<Badge text="Fix" variant="danger" size="small" /> Fixed the `element.scrollIntoView` method to correctly identify the nearest scrollable container when none is explicitly provided through the arguments.
+
+## 1.0.1
 
 <Badge text="Fix" variant="danger" size="small" /> Resolved a random error where the WebSocket failed to locate an element with a specific ID while the tests are running.
 

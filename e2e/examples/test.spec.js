@@ -287,6 +287,15 @@ describe('Test scroll', function () {
         assert.equal(await el.isVisibleInScrollableArea(scrollableArea), true);
     });
 
+    it('Should scroll to top and then element into view without passing the scrollable area', async () => {
+        const scrollableArea = (await gf.get(`#scrollable-container`));
+        await scrollableArea.scrollTo(0, 0);
+        const el = await gf.get(`#inner-scrollable-element`);
+        assert.equal(await el.isVisibleInScrollableArea(scrollableArea), false);
+        await el.scrollIntoView();
+        assert.equal(await el.isVisibleInScrollableArea(scrollableArea), true);
+    });
+
 });
 
 describe('Test click events', function () {
