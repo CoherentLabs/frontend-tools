@@ -1,4 +1,4 @@
-import { GamefaceCommandsMethods } from 'gamefaceCommands';
+import { GamefaceCommandsMethods } from './gamefaceCommands';
 import Utils from '../core/utils';
 
 type UtilMethods = {

@@ -114,7 +114,7 @@ class GamefaceE2E extends Command {
             });
         }
 
-        mocha.addFile('./core/commands/setup-mocha.js');
+        mocha.addFile(path.join(__dirname, './commands/setup-mocha.js'));
 
         for (const file of specFiles) {
             mocha.addFile(path.resolve(cwd(), file));

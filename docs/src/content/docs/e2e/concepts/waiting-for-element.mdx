@@ -1,0 +1,50 @@
+---
+title: Waiting for the right element state
+sidebar:
+    badge:
+        text: Important
+        variant: caution
+    order: 5
+---
+
+Validating changes in an element's state within the UI can sometimes lead to unreliable test results. For instance, clicking a button that modifies an element's size might cause the test to fail if the size change hasn't occurred by the time the validation runs. This happens because UI updates are often asynchronous and may take time to reflect.
+
+Methods prone to such issues include:
+- `element.getSize`
+- `element.getPositionOnScreen`
+- `element.isVisible`
+- `element.isVisibleInScrollableArea`
+- `element.isHidden`
+- `element.isScrollable`
+- `gf.isHidden`
+- `gf.isVisible`
+
+Other methods that depend on the UI's state post-interaction may also exhibit similar problems. The following guide outlines an effective approach to address these challenges.
+
+## Use `gf.retryIfFails`
+
+To handle asynchronous UI updates, leverage the `gf.retryIfFails` method. This utility retries the provided function until it succeeds or times out, ensuring the element's state has changed before proceeding with validation.
+
+### Example
+
+Below is an example demonstrating how to use `gf.retryIfFails` to wait for an element's size to update after a click. The test clicks an element to trigger a size change and then validates the updated size:
+
+```js ins="await gf.retryIfFails(async () => {"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        await element.click(); // Trigger a size change
+        await gf.retryIfFails(async () => {
+            const size = await element.getSize();
+            assert(size.width > 100, 'Element width should be greater than 100');
+        });
+    });
+});
+```
+
+## `gf.retryIfFails` Parameters
+
+The `gf.retryIfFails` method accepts the following parameters:
+
+- **`action`**: The function to execute, which should return a promise. If the promise resolves successfully, the retry stops; if it rejects, the retry continues until the timeout is reached.
+- **`retryCount`** (optional): The number of times to retry the action. Defaults to 10. Each retry waits for 100 milliseconds before executing the action again.

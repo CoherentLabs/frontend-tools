@@ -150,6 +150,8 @@ class DOMElement {
     async find(selector) {
         global.log.debug(`\n[DOMElement] Trying to find element with selector - ${selector} within node with id - ${this.nodeId}`);
 
+        if(!selector) throw new Error(`Selector must be provided to find an element.`);
+
         const { nodeId } = await this.sendCommand('DOM.querySelector', {
             nodeId: this.nodeId,
             selector,
@@ -169,6 +171,8 @@ class DOMElement {
      */
     async findAll(selector) {
         global.log.debug(`\n[DOMElement] Trying to find all elements with selector - ${selector} within node with id - ${this.nodeId}`);
+
+        if(!selector) throw new Error(`Selector must be provided to find elements.`);
 
         const { nodeIds } = await this.sendCommand('DOM.querySelectorAll', {
             nodeId: this.nodeId,
