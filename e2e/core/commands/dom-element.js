@@ -150,7 +150,7 @@ class DOMElement {
     async find(selector) {
         global.log.debug(`\n[DOMElement] Trying to find element with selector - ${selector} within node with id - ${this.nodeId}`);
 
-        if(!selector) throw new Error(`Selector must be provided to find an element.`);
+        if (!selector) throw new Error(`Selector must be provided to find an element.`);
 
         const { nodeId } = await this.sendCommand('DOM.querySelector', {
             nodeId: this.nodeId,
@@ -172,7 +172,7 @@ class DOMElement {
     async findAll(selector) {
         global.log.debug(`\n[DOMElement] Trying to find all elements with selector - ${selector} within node with id - ${this.nodeId}`);
 
-        if(!selector) throw new Error(`Selector must be provided to find elements.`);
+        if (!selector) throw new Error(`Selector must be provided to find elements.`);
 
         const { nodeIds } = await this.sendCommand('DOM.querySelectorAll', {
             nodeId: this.nodeId,
@@ -868,22 +868,22 @@ class DOMElement {
 
     /**
      * Asynchronously finds the nearest scrollable parent element of the current DOM element.
-     * If the current element is not visible, it traverses up the DOM tree to locate a scrollable parent.
+     * It traverses up the DOM tree to locate a scrollable parent.
      * @private
      * @async
      * @returns {Promise<DOMElement|null>} A promise that resolves to the nearest scrollable parent element,
      * or `null` if no scrollable parent is found.
      */
     async _findElementScrollableArea() {
-        if (!await this.isVisible()) {
-            let parent = this.node.parentId ? await new DOMElement(this.gamefaceCommands, this.node.parentId) : null;
+        let parent = this.node.parentId ? await new DOMElement(this.gamefaceCommands, this.node.parentId) : null;
 
-            while (parent) {
-                if (await parent.isScrollable()) return parent;
+        while (parent) {
+            if (await parent.isScrollable()) return parent;
 
-                parent = parent.node.parentId ? await new DOMElement(this.gamefaceCommands, parent.node.parentId) : null;
-            }
+            parent = parent.node.parentId ? await new DOMElement(this.gamefaceCommands, parent.node.parentId) : null;
         }
+
+        return null;
     }
 
     /**
