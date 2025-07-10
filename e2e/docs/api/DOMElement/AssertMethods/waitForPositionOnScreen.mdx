@@ -1,0 +1,26 @@
+---
+title: 'element.waitForPositionOnScreen'
+---
+
+## `element.waitForPositionOnScreen(position: { x: number, y: number }): Promise<boolean>`
+
+Waits for the element to be positioned at the specified coordinates on the screen. This method is useful when you need to ensure that an element has moved to a specific position before proceeding with further actions or assertions.
+
+* **`position`**: An object containing the `x` and `y` coordinates where the element should be positioned on the screen. For example, `{ x: 100, y: 200 }`.
+* Returns a promise that resolves to `true` if the element is positioned at the specified coordinates.
+* The method will retry checking the position of the element until it matches the specified coordinates or the timeout is reached.
+* If the element is not positioned at the specified coordinates within the timeout, it will throw an error indicating that the expected position was not found in the element.
+
+## Usage
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        // Wait for the element to be positioned at (100, 200)
+        const isElementToRightPosition = await element.waitForPositionOnScreen({ x: 100, y: 200 });
+        assert(isElementToRightPosition);
+        // Proceed with further actions or assertions
+    });
+});
+```

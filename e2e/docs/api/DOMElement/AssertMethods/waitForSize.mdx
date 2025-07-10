@@ -1,0 +1,26 @@
+---
+title: 'element.waitForSize'
+---
+
+## `element.waitForSize(size: { width: number, height: number }): Promise<boolean>`
+
+Waits for the element to have the specified size. This method is useful when you need to ensure that an element has the expected dimensions before proceeding with further actions or assertions.
+
+* **`size`**: An object containing the `width` and `height` of the element. For example, `{ width: 100, height: 200 }`.
+* Returns a promise that resolves to `true` if the element has the expected size.
+* The method will retry checking the size of the element until it matches the specified dimensions or the timeout is reached.
+* If the element does not have the expected size within the timeout, it will throw an error indicating that the expected size was not found in the element.
+
+## Usage
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        // Wait for the element to have the size { width: 100, height: 200 }
+        const isElementWithRightSize = await element.waitForSize({ width: 100, height: 200 });
+        assert(isElementWithRightSize);
+        // Proceed with further actions or assertions
+    });
+});
+```

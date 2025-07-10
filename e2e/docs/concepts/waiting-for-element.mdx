@@ -48,3 +48,25 @@ The `gf.retryIfFails` method accepts the following parameters:
 
 - **`action`**: The function to execute, which should return a promise. If the promise resolves successfully, the retry stops; if it rejects, the retry continues until the timeout is reached.
 - **`retryCount`** (optional): The number of times to retry the action. Defaults to 10. Each retry waits for 100 milliseconds before executing the action again.
+
+## Enhanced assert methods :badge[1.1.0]{variant="note"}
+
+Version `1.1.0` introduced additional methods to the `DOMElement` object for easier validation of element states. These methods internally retry the validation, eliminating the need to use `gf.retryIfFails` directly in your tests.
+
+For example:
+
+```diff lang="js"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        // Clicking the button makes the element visible
+        await gf.click('.btn');
+-        // This approach may result in flaky tests if the element isn't immediately visible after the click
+-        assert.equal(await element.isVisible(), true, 'Element should be visible');
++        // This method retries the visibility check until it passes or times out. If the element remains invisible after the timeout, an error is thrown with a descriptive message.
++        assert(await element.waitForVisibility(true));
+    });
+});
+```
+
+For more details on the new assert methods, refer to the [DOMElement Assert methods documentation](/e2e/api/domelement/assertmethods/).

@@ -15,6 +15,7 @@ describe('Test script', function () {
 
         const el = await gf.get('#container');
         assert.equal((await el.text()).trim(), 'Test content');
+        assert(await el.waitForText('Test content'));
     });
 
     it('Should check if element contains element with text', async () => {
@@ -72,10 +73,7 @@ describe('Test script', function () {
         }
 
         const el = (await gf.get('#element-with-styles'));
-        styles = await el.styles();
-        for (const [prop, value] of Object.entries(expectedStyles)) {
-            assert.equal(styles[prop], value, `Expected ${prop} to be ${value}`);
-        }
+        assert(await el.waitForStyles(expectedStyles));
     });
 
     it('Should test if element is hidden', async () => {
@@ -97,7 +95,29 @@ describe('Test script', function () {
         assert.equal(await el.isVisible(), true);
     });
 
+    it('Should test if element is visible', async () => {
+        const assertElement = await gf.get('#wait-for-visiblity-assert-element');
+        await gf.click('#wait-for-visibility-false');
+        assert(await assertElement.waitForVisibility(false));
+        assert.equal(await assertElement.isVisible(), false)
+        await gf.click('#wait-for-visibility-true');
+        assert(await assertElement.waitForVisibility(true));
+    });
+
+    it('Should scroll to bottom', async () => {
+        await gf.scrollToTop();
+        const assertElement = await gf.get('#wait-for-visiblity-assert-element');
+        const document = await gf.get('html');
+        assert(await assertElement.waitForVisibilityInScrollableArea(document, false));
+
+        await gf.scrollToBottom();
+        assert(await assertElement.waitForVisibilityInScrollableArea(document, true));
+        await gf.scrollToTop();
+    });
+
     it('Should test if element is scrollable', async () => {
+        await gf.scrollTo(0, 0);
+
         assert.equal(await gf.isScrollable(`#non-scrollable-element`), false);
         assert.equal(await gf.isScrollable(`#scrollable-element`), true);
 
@@ -121,12 +141,13 @@ describe('Test script', function () {
 
     it('Should get position on the screen of element', async () => {
         let el = (await gf.get(`#non-visible-element`));
-        assert.deepEqual(await el.getPositionOnScreen(), { x: -200, y: 0 });
+        assert(await el.waitForPositionOnScreen({ x: -200, y: 0 }));
     });
 
     it('Should get size of element', async () => {
         let el = (await gf.get(`#non-visible-element`));
         assert.deepEqual(await el.getSize(), { height: 100, width: 100 });
+        assert(await el.waitForSize({ height: 100, width: 100 }));
     });
 
     it('Should get attributes of element', async () => {
@@ -136,10 +157,7 @@ describe('Test script', function () {
             'disabled': '',
         };
 
-        const attributes = await el.getAttributes();
-        for (const [prop, value] of Object.entries(expectedAttributes)) {
-            assert.equal(attributes[prop], value, `Expected ${prop} to be ${value}`);
-        }
+        assert(await el.waitForAttributes(expectedAttributes));
     });
 
     it('Should get attribute of element', async () => {
@@ -200,10 +218,8 @@ describe('Test script', function () {
         assert.equal(x, 200);
         assert.equal(y, 200);
         await el.drag(500, 500);
-        const { x: newX, y: newY } = await el.getPositionOnScreen();
         // Should be 450, 450 because the element is 100x100 and the drag is 500, 500. Mouse is at the center of the element.
-        assert.equal(newX, 450);
-        assert.equal(newY, 450);
+        assert(await el.waitForPositionOnScreen({ x: 450, y: 450 }));
     });
 });
 
@@ -356,7 +372,7 @@ describe('Test key events', function () {
             await el.type(typeMessage, { [key]: true });
             assert.equal(await el.getValue(), `Test message`);
             await el.clear();
-            assert.equal(await el.getValue(), ``);
+            assert(await el.waitForValue(``));
         });
     }
 });

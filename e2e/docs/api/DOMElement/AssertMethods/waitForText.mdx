@@ -1,0 +1,26 @@
+---
+title: 'element.waitForText'
+---
+
+## `element.waitForText(text: string): Promise<boolean>`
+
+Waits for the element to contain the specified text. This method is useful when you need to ensure that an element has updated its text content before proceeding with further actions or assertions.
+
+* **`text`**: The text to wait for in the element.
+* Returns a promise that resolves to `true` if the text is found.
+* The method will retry checking the text content of the element until it matches the specified text or the timeout is reached.
+* If the text is not found within the timeout, it will throw an error indicating that the expected text was not found in the element.
+
+## Usage
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        // Wait for the element to contain the text 'Hello World'
+        const hasText = await element.waitForText('Hello World');
+        assert(hasText);
+        // Proceed with further actions or assertions
+    });
+});
+```

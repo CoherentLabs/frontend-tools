@@ -22,7 +22,7 @@ describe('Menu', function () {
         const link = (await gf.get('#link-2'));
         await link.click();
 
-        assert((await link.classes()).includes('active'));
+        assert(await link.waitForClasses(['active']));
         assert((await gf.getClasses('#page-2')).includes('active'));
         assert.equal((await gf.text('.page.active .title')), 'Page 2');
         assert.equal((await gf.text('.page.active .content')), 'This is the content of page 2.');
@@ -32,7 +32,7 @@ describe('Menu', function () {
         const link = (await gf.get('#link-1'));
         await link.click();
 
-        assert((await link.classes()).includes('active'));
+        assert(await link.waitForClasses(['active']));
         assert((await gf.getClasses('#page-1')).includes('active'));
         assert.equal((await gf.text('.page.active .title')), 'Page 1');
         assert.equal((await gf.text('.page.active .content')), 'This is the content of page 1.');
