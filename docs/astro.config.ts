@@ -6,6 +6,10 @@ import starlightHeadingBadges from 'starlight-heading-badges'
 import starlightSidebarTopics from 'starlight-sidebar-topics'
 import generateChangelog from './src/changelogSideBar';
 import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function generateVersion(version, link) {
   const config: { label: string; link?: string; attrs?: { target: string }; badge?: { text: string; variant: string } } = {
@@ -36,7 +40,7 @@ async function generateVersionWithPackageJSON(packagePath, link) {
 }
 
 async function getConfig() {
-  const documentations = ['e2e', 'gameface-vite-plugin', 'vite-solid-style-to-css-plugin'];
+  const documentations = ['e2e', 'gameface-vite-plugin', 'vite-solid-style-to-css-plugin', 'interaction-manager'];
 
   const sideBarTopics = [
     {
@@ -50,7 +54,7 @@ async function getConfig() {
           'https://npmjs.org/gameface-e2e'
         ),
         {
-          label: 'Gettings Started',
+          label: 'Getting Started',
           autogenerate: { directory: 'e2e/getting-started' },
         },
         {
@@ -67,6 +71,21 @@ async function getConfig() {
       ],
     },
     {
+      link: '/interaction-manager/getting-started',
+      label: 'Interaction manager',
+      id: 'interaction-manager',
+      icon: 'puzzle',
+      items: [
+        await generateVersionWithPackageJSON(
+          '../interaction-manager/package.json',
+          'https://npmjs.org/coherent-gameface-interaction-manager'
+        ),
+
+        { label: 'Getting Started', autogenerate: { directory: 'interaction-manager/getting-started' } },
+        { label: 'Features', autogenerate: { directory: 'interaction-manager/features' } }
+      ],
+    },
+    {
       link: '/gameface-vite-plugin/getting-started',
       label: 'Gameface Vite Plugin',
       id: 'gameface-vite-plugin',
@@ -77,7 +96,7 @@ async function getConfig() {
           'https://npmjs.org/vite-gameface'
         ),
         {
-          label: 'Gettings Started',
+          label: 'Getting Started',
           autogenerate: { directory: 'gameface-vite-plugin/getting-started' },
         },
         {
@@ -98,7 +117,7 @@ async function getConfig() {
           'https://npmjs.org/vite-solid-style-to-css'
         ),
         {
-          label: 'Gettings Started',
+          label: 'Getting Started',
           autogenerate: { directory: 'vite-solid-style-to-css-plugin/getting-started' },
         },
         {
@@ -111,6 +130,19 @@ async function getConfig() {
   ];
 
   return defineConfig({
+    vite: {
+      server: {
+        fs: {
+          allow: ['.', './src/content/docs/interaction-manager'],
+        },
+      },
+      resolve: {
+        preserveSymlinks: true,
+        alias: {
+          '@components': path.join(__dirname, "src", "components"),
+        }
+      }
+    },
     redirects: documentations.reduce((acc, doc) => {
       acc[`/${doc}`] = `/${doc}/getting-started/`;
       return acc;

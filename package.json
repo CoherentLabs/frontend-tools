@@ -2,6 +2,7 @@
   "name": "frontend-tools",
   "version": "1.0.0",
   "scripts": {
-    "publish:packages": "node ./scripts/publish.js"
+    "publish:packages": "node ./scripts/publish.js",
+    "test": "node ./scripts/test.js"
   }
 }

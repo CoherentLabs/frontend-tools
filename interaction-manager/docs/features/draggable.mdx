@@ -1,0 +1,122 @@
+---
+title: Draggable
+---
+
+import IMExample from '@components/IMExample.astro';
+
+Allows you to drag around elements on the screen.
+
+## Usage
+
+```js
+new draggable(draggableOptions);
+```
+
+## Basic implementation
+
+```js
+const square = new draggable({ element: '.square' });
+```
+
+<IMExample path="/im-demo/demo/Draggable/drag-around-screen.html"/>
+
+## dragableOptions
+
+### element
+
+Type:
+
+```js
+type element = string
+```
+
+The element selector.
+
+### restrictTo
+
+Type:
+
+```js
+type restrictTo = string;
+```
+
+Restricts the dragged element to another element. That way the dragged element won't go out of the other element bounds.
+
+**Example**
+
+```js
+const square = new draggable({ element: '.square', restrictTo: '.container' });
+```
+
+<IMExample path="/im-demo/demo/Draggable/restrict-drag-to-container.html" height="600"/>
+
+### dragClass
+
+Type:
+
+```js
+type dragClass = string
+```
+
+Class to be added to the dragged element.
+
+### lockAxis
+
+Type:
+
+```js
+type lockAxis = 'x' | 'y'
+```
+
+Locks the dragged element to either the x or y axis.
+
+**Example**
+
+```js
+const square1 = new draggable({ element: '.square1', lockAxis: 'x' });
+const square2 = new draggable({ element: '.square2', lockAxis: 'y' });
+```
+
+<IMExample path="/im-demo/demo/Draggable/drag-lock-axis.html" height="600"/>
+
+### onDragStart
+
+Type:
+
+```js
+type onDragStart = () => {}
+```
+
+Executes when you start dragging the element.
+
+### onDragMove
+
+Type:
+
+```js
+type onDragMove = () => {}
+```
+
+Executes when you move the dragged element.
+
+### onDragEnd
+
+Type:
+
+```js
+type onDragEnd = () => {}
+```
+
+Executes when you stop dragging the element.
+
+## Actions
+
+You are able to drag elements using actions. Since every draggable action is unique you can do the following:
+
+```js
+const element = new draggable({ element: '.square'});
+
+actions.execute(element.actionName, {x: 100, y: 100, index: 0}); 
+```
+
+You will need to pass the x and y coordinates where you want the element to go and the index of the element.

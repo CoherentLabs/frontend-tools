@@ -1,0 +1,46 @@
+{
+  "name": "coherent-gameface-interaction-manager",
+  "version": "2.3.4",
+  "description": "Library for the most common UI interactions",
+  "main": "dist/interaction-manager.js",
+  "module": "esm/interaction-manager.js",
+  "scripts": {
+    "publish:package": "npm i&&npm run build",
+    "build": "node scripts/build-im.js",
+    "test": "node tests/index.js",
+    "test:Chrome": "node tests/index.js -- --browsers Chrome"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CoherentLabs/frontend-tools/tree/master/interaction_manager"
+  },
+  "keywords": [
+    "UI",
+    "Interactions"
+  ],
+  "author": "CoherentLabs",
+  "license": "ISC",
+  "eslintConfig": {
+    "globals": {
+      "_IM": false
+    },
+    "env": {
+      "browser": true,
+      "node": true
+    }
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.6",
+    "fs-extra": "^11.3.0",
+    "chai": "^4.3.10",
+    "karma": "^6.4.4",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^3.2.0",
+    "karma-html2js-preprocessor": "^1.1.0",
+    "karma-jasmine": "^4.0.2",
+    "karma-sinon": "^1.0.5",
+    "karma-spec-reporter": "0.0.36",
+    "karma-webpack": "^5.0.1",
+    "kill-port": "^2.0.1"
+  }
+}

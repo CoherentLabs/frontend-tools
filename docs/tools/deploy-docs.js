@@ -89,7 +89,8 @@ function main() {
 [INFO] DeployCommitMessage: ${deployCommitMessage}
 `);
     core.endGroup();
-
+    execSync(`npm i`, { cwd: path.join(worspaceDir, 'interaction-manager'), stdio: 'inherit' });
+    execSync(`npm run build`, { cwd: path.join(worspaceDir, 'interaction-manager'), stdio: 'inherit' });
     prepareDocs();
     transferDocs();
     deployDocs();

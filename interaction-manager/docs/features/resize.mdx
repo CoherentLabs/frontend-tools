@@ -1,0 +1,125 @@
+---
+title: Resize
+---
+
+import IMExample from '@components/IMExample.astro';
+
+Allows you to resize an element.
+
+## Usage
+
+```js
+new resize(resizeOptions);
+```
+
+## Basic implementation
+
+```js
+const square = new resize({ element: '.square' });
+```
+
+<IMExample path="/im-demo/demo/Resize/resize.html"/>
+
+## resizeOptions
+
+### element
+
+Type:
+
+```js
+type element = string
+```
+
+The element selector.
+
+### edgeWidth
+
+Type:
+
+```js
+type edgeWidth = number
+```
+
+`default: 5`
+
+The width of the edge that you can grab.
+
+### widthMin
+
+Type:
+
+```js
+type widthMin = number
+```
+
+`default: 50`
+
+The minimum width that element can be resized to.
+
+### widthMax
+
+Type:
+
+```js
+type widthMax = number
+```
+
+`default: window.innerWidth`
+
+The maximum width that element can be resized to.
+
+### heightMin
+
+Type:
+
+```js
+type heightMin = number
+```
+
+`default: 50`
+
+The minimum height that element can be resized to.
+
+### heightMax
+
+Type:
+
+```js
+type heightMax = number
+```
+
+`default: window.innerHeight`
+
+The maximum height that element can be resized to.
+
+### onWidthChange
+
+Type:
+
+```js
+type onWidthChange = (width) => {}
+```
+
+Executes when the element width changes
+
+### onHeightChange
+
+Type:
+
+```js
+type onHeightChange = (height) => {}
+```
+
+Executes when the element height changes.
+
+## Actions
+
+You are able to resize elements using actions. Since every resize action is unique you can do the following:
+
+```js
+const element = new resize({ element: '.square' });
+
+actions.execute(element.heightAction, height);
+
+actions.execute(element.widthAction, width);
+```
