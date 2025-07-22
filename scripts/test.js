@@ -21,11 +21,18 @@ async function runTests(tool, npmTestCommand = 'test', build = false) {
 /** */
 async function main() {
     try {
-        const tools = [
-            { path: path.join(TOOLS_PATH, 'interaction-manager'), testCommand: 'test:Chrome', build: true }
-        ];
-        for (const tool of tools) {
-            await runTests(tool.path, tool.testCommand, tool.build)
+        const args = process.argv.slice(2);
+        const toolArg = args.find(arg => arg.startsWith('--tool='));
+        if (!toolArg) throw new Error('Tool path is not specified. Use --toolArg=<path> to specify the toolArg path.');
+        const toolPath = path.join(TOOLS_PATH, toolArg.split('=')[1]);
+        const gamefacePathArg = args.find(arg => arg.startsWith('--gamefacePath='));
+        const gamefacePath = gamefacePathArg ? path.join(toolPath, gamefacePathArg.split('=')[1]) : null;
+        const shouldBuildTool = args.includes('--buildTool');
+
+        if (!gamefacePath) {
+            await runTests(toolPath, `test`, shouldBuildTool);
+        } else {
+            await runTests(toolPath, `test -- --gamefacePath=${gamefacePath}`, shouldBuildTool);
         }
     } catch (error) {
         console.error(error);

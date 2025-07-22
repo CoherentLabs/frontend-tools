@@ -29,5 +29,5 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Run tests
-      run: npm run test
+    - name: Run IM tests
+      run: npm run test -- --tool=interaction-manager

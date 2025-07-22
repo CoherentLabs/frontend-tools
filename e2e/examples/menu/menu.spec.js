@@ -3,7 +3,7 @@ const assert = require('assert');
 describe('Menu', function () {
     it('Should navigate to the menu page', async () => {
         // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
-        await gf.navigate('../../../frontend-tools/e2e/examples/menu/menu.html');
+        await gf.navigate('http://localhost:54321/menu/menu.html');
     });
 
     it('Page 1 should be active', async () => {
