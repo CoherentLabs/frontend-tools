@@ -27,7 +27,7 @@ async function main() {
         const toolPath = path.join(TOOLS_PATH, toolArg.split('=')[1]);
         const gamefacePathArg = args.find(arg => arg.startsWith('--gamefacePath='));
         const gamefacePath = gamefacePathArg ? path.join(toolPath, gamefacePathArg.split('=')[1]) : null;
-        const shouldBuildTool = args.includes('--buildTool');
+        const shouldBuildTool = args.includes('--build');
 
         if (!gamefacePath) {
             await runTests(toolPath, `test`, shouldBuildTool);
