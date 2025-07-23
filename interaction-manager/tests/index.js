@@ -5,6 +5,9 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync, exec, spawn } = require('child_process');
+require("dotenv").config({ path: path.join(__dirname, '..', '..', '.env') });
+
+let gamefacePath = process.env.GAMEFACE_PATH;
 
 const TESTS_FOLDER = __dirname;
 const ROOT_FOLDER = path.join(__dirname, '../');
@@ -34,7 +37,7 @@ function areComponentsPackaged() {
 
 let cohtmlPlayer = null;
 
-function startGameface(gamefacePath) {
+function startGameface() {
     cohtmlPlayer = spawn(gamefacePath, ['--url=http://localhost:9876/debug.html']);
 
     cohtmlPlayer.on('error', (err) => {
@@ -65,9 +68,6 @@ function test(rebuild) {
  * Start a Karma server and listen for process events
  */
 function startKarma() {
-    const args = global.process.argv.slice(2);
-    const gamefacePathArg = args.find(arg => arg.startsWith('--gamefacePath='));
-    const gamefacePath = gamefacePathArg ? gamefacePathArg.split('=')[1] : null;
     const shouldRunInChrome = !gamefacePath;
     const karmaProcess = exec(`karma start tests/karma.conf.js ${shouldRunInChrome ? '--browsers=Chrome' : ''}`, { cwd: ROOT_FOLDER });
 
@@ -75,7 +75,7 @@ function startKarma() {
         console.error(data.toString());
     });
     karmaProcess.stdout.on('data', function (data) {
-        if (gamefacePath && data.includes('server started at http://localhost:9876/')) startGameface(gamefacePath);
+        if (gamefacePath && data.includes('server started at http://localhost:9876/')) startGameface();
         if (data.includes('[FAILED]')) process.exitCode = -1;
         console.log(data.toString());
     });

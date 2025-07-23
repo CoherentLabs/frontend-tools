@@ -3,3 +3,4 @@ dist
 !docs/public/im-demo/dist
 *.tgz
 .astro
+.env

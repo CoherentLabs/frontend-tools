@@ -23,17 +23,11 @@ async function main() {
     try {
         const args = process.argv.slice(2);
         const toolArg = args.find(arg => arg.startsWith('--tool='));
-        if (!toolArg) throw new Error('Tool path is not specified. Use --toolArg=<path> to specify the toolArg path.');
+        if (!toolArg) throw new Error('Tool path is not specified. Use --tool=<path> to specify the toolArg path.');
         const toolPath = path.join(TOOLS_PATH, toolArg.split('=')[1]);
-        const gamefacePathArg = args.find(arg => arg.startsWith('--gamefacePath='));
-        const gamefacePath = gamefacePathArg ? path.join(toolPath, gamefacePathArg.split('=')[1]) : null;
         const shouldBuildTool = args.includes('--build');
 
-        if (!gamefacePath) {
-            await runTests(toolPath, `test`, shouldBuildTool);
-        } else {
-            await runTests(toolPath, `test -- --gamefacePath=${gamefacePath}`, shouldBuildTool);
-        }
+        await runTests(toolPath, `test`, shouldBuildTool);
     } catch (error) {
         console.error(error);
         process.exitCode = -1;

@@ -1,43 +1,23 @@
-const http = require('http-server');
-const path = require('path');
-const { spawn } = require('child_process');
+const { execSync } = require("child_process");
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, '..', '..', '.env') });
 
-const PORT = 54321;
-const serverDir = path.resolve(__dirname, '../examples');
-const server = http.createServer({ root: serverDir });
+let gamefacePath = process.env.GAMEFACE_PATH;
 
-let testProcess;
-
-function shutdown() {
-    server.close();
-
-    if (testProcess && testProcess.pid) {
-        testProcess.kill('SIGTERM');
-    }
+if (!gamefacePath) {
+    console.error("Gameface path is not specified. Please set the GAMEFACE_PATH environment variable.");
+    process.exit(1);
 }
 
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
-process.on('exit', shutdown);
+if (!path.isAbsolute(gamefacePath)) {
+    gamefacePath = path.resolve(__dirname, '..', '..', gamefacePath);
+}
 
-server.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-
-    const extraArgs = process.argv.slice(2);
-
-    testProcess = spawn(
-        'node',
-        ['./bin/run.js', '--config=./examples/gameface-e2e-config.js', ...extraArgs],
-        { stdio: 'inherit' }
-    );
-
-    testProcess.on('exit', (code) => {
-        console.log(`Tests exited with code ${code}`);
-        process.exit(code);
+try {
+    execSync(`node ./bin/run.js --config=./examples/gameface-e2e-config.js --gamefacePath=${gamefacePath}`, {
+        stdio: "inherit",
+        shell: true,
     });
-
-    testProcess.on('error', (err) => {
-        console.error('Test process error:', err);
-        process.exit(1);
-    });
-});
+} catch (error) {
+    process.exitCode = error.status || 1;
+}
