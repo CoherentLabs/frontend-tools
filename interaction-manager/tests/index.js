@@ -68,8 +68,7 @@ function test(rebuild) {
  * Start a Karma server and listen for process events
  */
 function startKarma() {
-    const shouldRunInChrome = !gamefacePath;
-    const karmaProcess = exec(`karma start tests/karma.conf.js ${shouldRunInChrome ? '--browsers=Chrome' : ''}`, { cwd: ROOT_FOLDER });
+    const karmaProcess = exec(`karma start tests/karma.conf.js`, { cwd: ROOT_FOLDER });
 
     karmaProcess.stderr.on('data', function (data) {
         console.error(data.toString());
@@ -94,6 +93,10 @@ function startKarma() {
 
 /** */
 function main() {
+    if(!gamefacePath) {
+        console.error("Gameface path is not specified. Please set the GAMEFACE_PATH environment variable.");
+        global.process.exit(1);
+    }
     const args = global.process.argv.slice(2);
     const rebuild = args.indexOf('--rebuild') > -1;
     test(rebuild);

@@ -7,8 +7,7 @@
   "scripts": {
     "publish:package": "npm i&&npm run build",
     "build": "node scripts/build-im.js",
-    "test": "node tests/index.js",
-    "test:Chrome": "node tests/index.js -- --browsers Chrome"
+    "test": "node tests/index.js"
   },
   "repository": {
     "type": "git",
