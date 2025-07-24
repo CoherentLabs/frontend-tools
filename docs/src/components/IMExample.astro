@@ -1,0 +1,11 @@
+---
+const { path, width, height } = Astro.props;
+---
+
+<object
+    style="border: 2px solid black;"
+    data={path}
+    width={width || "100%"}
+    height={height || "500"}
+>
+</object>

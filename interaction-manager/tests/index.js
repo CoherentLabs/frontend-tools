@@ -1,0 +1,90 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Coherent Labs AD. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+const fs = require('fs');
+const path = require('path');
+const { execSync, exec } = require('child_process');
+
+const TESTS_FOLDER = __dirname;
+const ROOT_FOLDER = path.join(__dirname, '../');
+
+const INTERACTION_MANAGER_FOLDER = path.join(__dirname, '../');
+const IMFolder = path.join(INTERACTION_MANAGER_FOLDER, 'dist');
+const IMTestFolder = path.join(TESTS_FOLDER, 'interaction-manager');
+
+const KARMA_PORT = 9876;
+
+/**
+ * Checks if all the components are having packages and are not missing
+ * @returns {boolean}
+ */
+function areComponentsPackaged() {
+    const notBuildComponents = [];
+
+    if (fs.existsSync(IMTestFolder) && !fs.existsSync(IMFolder)) notBuildComponents.push('interaction-manager');
+
+    if (!notBuildComponents.length) return true;
+    console.error(`Missing packages for ${notBuildComponents.join(', ')}.
+    Did you forget to build the components?
+    Try running npm run test -- --rebuild to generate the component packages.`);
+
+    return false;
+}
+
+/**
+ * Will build components and test them
+ * @param {boolean} rebuild
+ * @param {string} browsersArg
+ * @returns {void}
+ */
+function test(rebuild, browsersArg) {
+    if (rebuild) {
+        execSync('npm run build:im', { cwd: ROOT_FOLDER, stdio: 'inherit' });
+    }
+    if (!areComponentsPackaged()) global.process.exit(1);
+
+    execSync('npm i', { cwd: ROOT_FOLDER, stdio: 'inherit' });
+    execSync(`npx kill-port ${KARMA_PORT}`, { cwd: ROOT_FOLDER, stdio: 'inherit' });
+
+    startKarma(browsersArg);
+}
+
+/**
+ * Start a Karma server and listen for process events
+ * @param {string} browsersArg
+ */
+function startKarma(browsersArg) {
+    const karmaProcess = exec(`karma start tests/karma.conf.js ${browsersArg}`, { cwd: ROOT_FOLDER });
+
+    karmaProcess.stderr.on('data', function (data) {
+        console.error(data.toString());
+    });
+    karmaProcess.stdout.on('data', function (data) {
+        console.log(data.toString());
+    });
+    karmaProcess.on('exit', function (code) {
+        global.process.exit(code);
+    });
+    karmaProcess.on('uncaughtException', (err) => {
+        console.error(err);
+        global.process.exit(1);
+    });
+}
+
+
+/** */
+function main() {
+    const args = global.process.argv.slice(2);
+    const rebuild = args.indexOf('--rebuild') > -1;
+    const noLink = args.indexOf('--no-link') > -1 || false;
+    let browsersArg = '';
+
+    const browsersArgIndex = args.indexOf('--browsers');
+    if (browsersArgIndex > -1) browsersArg = `--browsers ${args[browsersArgIndex + 1]}`;
+
+    test(rebuild, browsersArg, noLink);
+}
+
+
+main();

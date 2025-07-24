@@ -1,0 +1,65 @@
+---
+title: Rotate
+---
+
+import IMExample from '@components/IMExample.astro';
+
+Allows you to rotate an element.
+
+## Usage
+
+```js
+new rotate(rotateOptions)
+```
+
+## Basic implementation
+
+```js
+const circle = new rotate({ element: '.circle1' });
+```
+
+<IMExample path="/im-demo/demo/Rotate/rotate.html"/>
+
+## rotateOptions
+
+### element
+
+Type:
+
+```js
+type element = string
+```
+
+The element selector.
+
+### snapAngle
+
+Type:
+
+```js
+type snapAngle = number
+```
+
+`default: 1`
+
+The angle that the rotation snaps to.
+
+### onRotation
+
+Type:
+
+```js
+type onRotation = (angle) => {}
+```
+
+Executes when the element rotates.
+
+## Actions
+
+You are able to rotate elements using actions. Since every rotate action is unique you can do the following:
+
+```js
+const element = new rotate({ element: '.circle1' });
+
+actions.execute(element.actionName, angle);
+```
