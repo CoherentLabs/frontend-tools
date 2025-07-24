@@ -1,0 +1,31 @@
+---
+title: 'element.waitForVisibilityInScrollableArea'
+---
+
+## `element.waitForVisibilityInScrollableArea(scrollableArea: DOMElement, visibility: boolean): Promise<boolean>`
+
+Waits for the element to be visible or hidden within a specified scrollable area based on the given visibility state. This method is useful when you need to ensure that an element is in the expected visibility state within a specific scrollable context before proceeding with further actions or assertions.
+
+* **`scrollableArea`**: The scrollable area within which to check the visibility of the element. This should be a `DOMElement` that represents a scrollable container.
+* **`visibility`**: A boolean indicating whether to wait for the element to be visible (`true`) or hidden (`false`).
+* Returns a promise that resolves to `true` if the element is in the expected visibility state within the scrollable area.
+* The method will retry checking the visibility of the element within the scrollable area until it matches the specified state or the timeout is reached.
+* If the element is not in the expected visibility state within the scrollable area within the timeout, it will throw an error indicating that the expected visibility state was not found in the element.
+
+## Usage
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const scrollableArea = await gf.get('.scrollable-area');
+        const element = await gf.get('.my-element');
+        // Scroll the scrollable area to a specific position
+        scrollableArea.scrollTo(0, 100);
+        // Wait for the element to be visible within the scrollable area
+        await element.waitForVisibilityInScrollableArea(scrollableArea, true);
+        const textContent = await element.text();
+        assert.equal(textContent, 'Expected Text');
+        // Proceed with further actions or assertions
+    });
+});
+```

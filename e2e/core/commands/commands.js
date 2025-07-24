@@ -147,6 +147,9 @@ class GamefaceCommands extends GamefaceCommandsBase {
         this.updateModel = this.updateModel.bind(this);
         this.triggerEngineEvent = this.triggerEngineEvent.bind(this);
         this.onEngineEvent = this.onEngineEvent.bind(this);
+        this.scrollTo = this.scrollTo.bind(this);
+        this.scrollToTop = this.scrollToTop.bind(this);
+        this.scrollToBottom = this.scrollToBottom.bind(this);
     }
 
     /**
@@ -766,6 +769,49 @@ class GamefaceCommands extends GamefaceCommandsBase {
         await triggerEventAction();
 
         return await promise;
+    }
+
+    /**
+     * Scrolls the document to the specified x and y coordinates.
+     *
+     * @async
+     * @function scrollTo
+     * @param {number} x - The horizontal coordinate to scroll to.
+     * @param {number} y - The vertical coordinate to scroll to.
+     * @returns {Promise<void>} Resolves when the scrolling is complete.
+     */
+    async scrollTo(x, y) {
+        global.log.debug(`\n[GamefaceCommands] Scrolling document to ${x} ${y}.`);
+
+        const documentElement = await this.get('html');
+        await documentElement.scrollTo(x, y);
+    }
+
+    /**
+     * Scrolls the document to the top of the page.
+     * Utilizes the `scrollTo` method to set the scroll position to (0, 0).
+     * 
+     * @async
+     * @returns {Promise<void>} Resolves when the scrolling action is complete.
+     */
+    async scrollToTop() {
+        global.log.debug(`\n[GamefaceCommands] Scrolling document to the top.`);
+
+        await this.scrollTo(0, 0);
+    }
+
+    /**
+     * Scrolls the document to the bottom of the page.
+     * Utilizes the window's inner height to determine the scroll position.
+     * 
+     * @async
+     * @returns {Promise<void>} Resolves when the scrolling action is complete.
+     */
+    async scrollToBottom() {
+        global.log.debug(`\n[GamefaceCommands] Scrolling document to the bottom.`);
+
+        const windowHeight = await this.executeScript(() => window.innerHeight);
+        await this.scrollTo(0, windowHeight);
     }
 }
 

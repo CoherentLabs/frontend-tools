@@ -152,14 +152,16 @@ class DOMElement {
 
         if (!selector) throw new Error(`Selector must be provided to find an element.`);
 
-        const { nodeId } = await this.sendCommand('DOM.querySelector', {
-            nodeId: this.nodeId,
-            selector,
-        });
+        return await retryIfFails(async () => {
+            const { nodeId } = await this.sendCommand('DOM.querySelector', {
+                nodeId: this.nodeId,
+                selector,
+            });
 
-        if (!nodeId) throw new Error(`Unable to find element with selector - "${selector}" within node with id - ${this.nodeId}.`);
+            if (!nodeId) throw new Error(`Unable to find element with selector - "${selector}" within node with id - ${this.nodeId}.`);
 
-        return await new DOMElement(this.gamefaceCommands, nodeId);
+            return await new DOMElement(this.gamefaceCommands, nodeId);
+        })
     }
 
     /**
@@ -174,20 +176,22 @@ class DOMElement {
 
         if (!selector) throw new Error(`Selector must be provided to find elements.`);
 
-        const { nodeIds } = await this.sendCommand('DOM.querySelectorAll', {
-            nodeId: this.nodeId,
-            selector,
+        return await retryIfFails(async () => {
+            const { nodeIds } = await this.sendCommand('DOM.querySelectorAll', {
+                nodeId: this.nodeId,
+                selector,
+            });
+
+            if (!nodeIds?.length) throw new Error(`Unable to find any elements with selector - ${selector} within node with id - ${this.nodeId}.`)
+
+            const elements = new DOMElements(this.nodeId);
+
+            for (let nodeId of nodeIds) {
+                elements.push(await new DOMElement(this.gamefaceCommands, nodeId));
+            }
+
+            return elements;
         });
-
-        if (!nodeIds?.length) throw new Error(`Unable to find any elements with selector - ${selector} within node with id - ${this.nodeId}.`)
-
-        const elements = new DOMElements(this.nodeId);
-
-        for (let nodeId of nodeIds) {
-            elements.push(await new DOMElement(this.gamefaceCommands, nodeId));
-        }
-
-        return elements;
     }
 
     /**
@@ -264,6 +268,25 @@ class DOMElement {
     }
 
     /**
+     * Waits for the specified text to appear within the DOM element associated with this instance.
+     * Retries the operation if it fails initially.
+     *
+     * @param {string} text - The text to wait for within the DOM element.
+     * @returns {Promise<boolean>} Resolves to `true` if the text is found, otherwise throws an error.
+     * @throws {Error} If the specified text is not found within the DOM element after retries.
+     */
+    async waitForText(text) {
+        global.log.debug(`\n[DOMElement] Waiting for text - ${text} in node with id - ${this.nodeId}`);
+
+        return retryIfFails(async () => {
+            const content = await this.text();
+            if (content.trim().includes(text)) return true;
+
+            throw new Error(`Text "${text}" not found in node with id - ${this.nodeId}.`);
+        });
+    }
+
+    /**
      * Retrieves the computed styles for the current DOM element.
      * @returns {Promise<Object>} A promise that resolves to an object containing the computed styles,
      * where each key is a CSS property name and each value is the corresponding CSS value.
@@ -277,6 +300,29 @@ class DOMElement {
             prev[current.name] = current.value;
             return prev;
         }, {});
+    }
+
+    /**
+     * Waits for the specified styles to be applied to the DOM element.
+     * This method retries the check until the styles match or the retry limit is reached.
+     *
+     * @async
+     * @param {Object} styles - An object representing the CSS styles to wait for, where keys are CSS property names and values are expected values.
+     * @returns {Promise<boolean>} Resolves to `true` if the styles match successfully.
+     * @throws {Error} Throws an error if the expected styles are not found within the retry limit.
+     */
+    async waitForStyles(styles) {
+        global.log.debug(`\n[DOMElement] Waiting for styles - ${JSON.stringify(styles)} in node with id - ${this.nodeId}`);
+
+        return retryIfFails(async () => {
+            const computedStyles = await this.styles();
+            for (const [key, value] of Object.entries(styles)) {
+                if (computedStyles[key] !== value) {
+                    throw new Error(`Style "${key}" with value "${computedStyles[key]}" not found in node with id - ${this.nodeId}. Received "${value}" value for the ${key} property instead.`);
+                }
+            }
+            return true;
+        });
     }
 
     /**
@@ -300,6 +346,26 @@ class DOMElement {
                     (style.name === 'opacity' && style.value === '0')
             );
         })
+    }
+
+    /**
+     * Waits for the visibility state of the DOM element to match the specified condition.
+     * Logs the process and retries if the initial check fails.
+     *
+     * @param {boolean} [visibility=true] - The desired visibility state of the DOM element.
+     *                                      `true` for visible, `false` for hidden.
+     * @returns {Promise<boolean>} Resolves to `true` if the visibility state matches the desired condition.
+     * @throws {Error} Throws an error if the visibility state does not match the desired condition after retries.
+     */
+    async waitForVisibility(visibility = true) {
+        global.log.debug(`\n[DOMElement] Waiting for node with id - ${this.nodeId} to be ${visibility ? 'visible' : 'hidden'}`);
+
+        return retryIfFails(async () => {
+            const isVisible = await this.isVisible();
+            if (isVisible === visibility) return true;
+
+            throw new Error(`Node with id - ${this.nodeId} is not ${visibility ? 'visible' : 'hidden'}`);
+        });
     }
 
     /**
@@ -381,6 +447,27 @@ class DOMElement {
             elementMinY < scrollableMaxY;
 
         return !await this.isHidden() && isInScrollableArea;
+    }
+
+    /**
+     * Waits for the visibility of a DOM element within a scrollable area.
+     * Retries the check until the element's visibility matches the expected state.
+     *
+     * @param {DOMElement} scrollableArea - The scrollable area in which to check the visibility of the element.
+     * @param {boolean} [visibility=true] - The expected visibility state of the element. 
+     *                                       `true` for visible, `false` for hidden.
+     * @returns {Promise<boolean>} Resolves to `true` if the element's visibility matches the expected state.
+     * @throws {Error} Throws an error if the element's visibility does not match the expected state after retries.
+     */
+    async waitForVisibilityInScrollableArea(scrollableArea, visibility = true) {
+        global.log.debug(`\n[DOMElement] Waiting for node with id - ${this.nodeId} to be ${visibility ? 'visible' : 'hidden'} in scrollable area`);
+
+        return retryIfFails(async () => {
+            const isVisible = await this.isVisibleInScrollableArea(scrollableArea);
+            if (isVisible === visibility) return true;
+
+            throw new Error(`Node with id - ${this.nodeId} is not ${visibility ? 'visible' : 'hidden'} in scrollable area.`);
+        });
     }
 
     /**
@@ -476,6 +563,28 @@ class DOMElement {
     }
 
     /**
+     * Waits for specific classes to be present in the DOM element associated with this instance.
+     * Retries if the check fails initially.
+     *
+     * @param {string[]} classes - An array of class names to check for in the element's class list.
+     * @returns {Promise<boolean>} Resolves to `true` if all specified classes are found, otherwise retries or throws an error.
+     * @throws {Error} Throws an error if any of the specified classes are not found after retries.
+     */
+    async waitForClasses(classes) {
+        global.log.debug(`\n[DOMElement] Waiting for classes - ${classes} in node with id - ${this.nodeId}`);
+
+        return retryIfFails(async () => {
+            const elementClasses = await this.classes();
+            for (const className of classes) {
+                if (!elementClasses.includes(className)) {
+                    throw new Error(`Class "${className}" not found in node with id - ${this.nodeId}. The current classes are: ${elementClasses.join(', ')}`);
+                }
+            }
+            return true;
+        });
+    }
+
+    /**
      * Asynchronously retrieves the position of the DOM element on the screen.
      *
      * @returns {Promise<{x: number, y: number} | null>} The position of the element on the screen, or null if not available.
@@ -492,6 +601,30 @@ class DOMElement {
 
         const [x, y] = model.border;
         return { x, y };
+    }
+
+    /**
+     * Waits for the DOM element to be at the specified position on the screen.
+     * Retries the operation if it fails until the element is at the expected position.
+     *
+     * @async
+     * @param {Object} position - The expected position of the DOM element on the screen.
+     * @param {number} position.x - The expected x-coordinate of the element.
+     * @param {number} position.y - The expected y-coordinate of the element.
+     * @returns {Promise<boolean>} Resolves to `true` if the element is at the expected position.
+     * @throws {Error} Throws an error if the position cannot be retrieved or if the element is not at the expected position.
+     */
+    async waitForPositionOnScreen(position) {
+        global.log.debug(`\n[DOMElement] Waiting for position on screen - ${JSON.stringify(position)} of node with id - ${this.nodeId}`);
+
+        return retryIfFails(async () => {
+            const currentPosition = await this.getPositionOnScreen();
+            if (!currentPosition) throw new Error(`Unable to get position on screen of node with id - ${this.nodeId}.`);
+
+            if (currentPosition.x === position.x && currentPosition.y === position.y) return true;
+
+            throw new Error(`Node with id - ${this.nodeId} is not at the expected position on screen. Expected: ${JSON.stringify(position)}, but got: ${JSON.stringify(currentPosition)}.`);
+        });
     }
 
     /**
@@ -515,6 +648,30 @@ class DOMElement {
     }
 
     /**
+     * Waits for the DOM element to reach the specified size.
+     * Retries the operation if it fails until the size matches the expected dimensions.
+     *
+     * @async
+     * @param {Object} size - The expected size of the DOM element.
+     * @param {number} size.width - The expected width of the DOM element.
+     * @param {number} size.height - The expected height of the DOM element.
+     * @returns {Promise<boolean>} Resolves to `true` if the DOM element reaches the expected size.
+     * @throws {Error} Throws an error if the size cannot be retrieved or does not match the expected dimensions.
+     */
+    async waitForSize(size) {
+        global.log.debug(`\n[DOMElement] Waiting for size - ${JSON.stringify(size)} of node with id - ${this.nodeId}`);
+
+        return retryIfFails(async () => {
+            const currentSize = await this.getSize();
+            if (!currentSize) throw new Error(`Unable to get size of node with id - ${this.nodeId}.`);
+
+            if (currentSize.width === size.width && currentSize.height === size.height) return true;
+
+            throw new Error(`Node with id - ${this.nodeId} is not at the expected size. Expected: ${JSON.stringify(size)}, but got: ${JSON.stringify(currentSize)}.`);
+        });
+    }
+
+    /**
      * Retrieves the attributes of a DOM element.
      *
      * This method sends a command to the Gameface to get the attributes of the DOM element.
@@ -533,6 +690,33 @@ class DOMElement {
         }
 
         return attrMap;
+    }
+
+    /**
+     * Waits for specific attributes to be present on a DOM element.
+     * This method retries the check until the attributes match or the retry limit is reached.
+     *
+     * @async
+     * @param {Object} attributes - An object representing the attributes to wait for, where keys are attribute names and values are expected attribute values.
+     * @returns {Promise<boolean>} Resolves to `true` if the attributes match successfully.
+     * @throws {Error} Throws an error if the expected attributes are not found within the retry limit.
+     */
+    async waitForAttributes(attributes) {
+        global.log.debug(`\n[DOMElement] Waiting for attributes - ${JSON.stringify(attributes)} of node with id - ${this.nodeId}`);
+
+        return retryIfFails(async () => {
+            const attrMap = await this.getAttributes();
+            for (const [key, value] of Object.entries(attributes)) {
+                if (!attrMap.hasOwnProperty(key)) {
+                    throw new Error(`Attribute "${key}" not found in node with id - ${this.nodeId}. The current attributes of the element are: ${JSON.stringify(attrMap)}`);
+                }
+
+                if (attrMap[key] !== value) {
+                    throw new Error(`Attribute "${key}" found in node with id - ${this.nodeId} but the its value is "${attrMap[key]}", expected "${value}". The current attributes of the element are: ${JSON.stringify(attrMap)}`);
+                }
+            }
+            return true;
+        });
     }
 
     /**
@@ -1091,8 +1275,8 @@ class DOMElement {
 
     /**
      * Retrieves the value of the current DOM element if it is an input or textarea.
-    *
-    * @async
+     *
+     * @async
      * @throws {Error} Throws an error if the current element is not an input or textarea.
      * @returns {Promise<string>} The value of the input or textarea element.
      */
@@ -1109,6 +1293,32 @@ class DOMElement {
             const inputElement = document.querySelector(`[data-node-id="${nodeId}"]`);
             return inputElement.value;
         }, this.nodeId);
+    }
+
+    /**
+     * Waits for the value of an input or textarea element to match the specified value.
+     * This method retries the check until the value matches or an error is thrown.
+     *
+     * @async
+     * @param {string} value - The expected value to wait for in the input or textarea element.
+     * @throws {Error} Throws an error if the element is not an input or textarea.
+     * @throws {Error} Throws an error if the current value does not match the expected value after retries.
+     * @returns {Promise<boolean>} Resolves to `true` if the value matches the expected value.
+     */
+    async waitForValue(value) {
+        global.log.debug(`\n[DOMElement] Waiting for value - ${value} in node with id - ${this.nodeId}`);
+
+        const tagName = this.node?.nodeName?.toLowerCase();
+        if (tagName !== 'input' && tagName !== 'textarea') {
+            throw new Error(`The waitForValue method is only supported for input or textarea elements. Current element is a '${tagName}'.`);
+        }
+
+        return retryIfFails(async () => {
+            const currentValue = await this.getValue();
+            if (currentValue === value) return true;
+
+            throw new Error(`Expected input value - "${value}" is different than the current value - "${currentValue}" in node with id - ${this.nodeId}.`);
+        });
     }
 
     /**

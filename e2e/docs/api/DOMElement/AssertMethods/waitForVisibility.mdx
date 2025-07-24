@@ -1,0 +1,29 @@
+---
+title: 'element.waitForVisibility'
+---
+
+## `element.waitForVisibility(visibility: boolean): Promise<boolean>`
+
+Waits for the element to be visible or hidden based on the specified visibility state. This method is useful when you need to ensure that an element is in the expected visibility state before proceeding with further actions or assertions.
+
+* **`visibility`**: A boolean indicating whether to wait for the element to be visible (`true`) or hidden (`false`).
+* Returns a promise that resolves to `true` if the element is in the expected visibility state.
+* The method will retry checking the visibility of the element until it matches the specified state or the timeout is reached.
+* If the element is not in the expected visibility state within the timeout, it will throw an error indicating that the expected visibility state was not found in the element.
+
+## Usage
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        // Click the button to show the element
+        await gf.click('.button');
+        // Wait for the element to be visible
+        await element.waitForVisibility(true);
+        const textContent = await element.text();
+        assert.equal(textContent, 'Expected Text');
+        // Proceed with further actions or assertions
+    });
+});
+```

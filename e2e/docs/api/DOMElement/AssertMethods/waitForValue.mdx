@@ -1,0 +1,28 @@
+---
+title: 'element.waitForValue'
+---
+
+## `element.waitForValue(value: string): Promise<boolean>`
+
+Waits for input or textarea elements to have the specified value. This method is useful when you need to ensure that an input or textarea has updated its value before proceeding with further actions or assertions.
+
+* **`value`**: The value to wait for in the input or textarea element.
+* Returns a promise that resolves to `true` if the value is found.
+* The method will retry checking the value of the element until it matches the specified value or the timeout is reached.
+* If the value is not found within the timeout, it will throw an error indicating that the expected value was not found in the element.
+
+## Usage
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('input[name="username"]');
+        // Click the button to change the input value
+        await gf.click('.button');
+        // Wait for the input to have the value 'testuser'
+        const hasValue = await element.waitForValue('testuser');
+        assert(hasValue);
+        // Proceed with further actions or assertions
+    });
+});
+```

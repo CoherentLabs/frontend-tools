@@ -1,0 +1,26 @@
+---
+title: 'element.waitForStyles'
+---
+
+## `element.waitForStyles(styles: Object): Promise<boolean>`
+
+Waits for the element to have the specified styles applied. This method is useful when you need to ensure that an element has updated its styles before proceeding with further actions or assertions.
+
+* **`styles`**: An object containing CSS properties and their expected values. For example, `{ display: 'block' }`.
+* Returns a promise that resolves to `true` if the styles are applied as expected.
+* The method will retry checking the styles of the element until they match the specified values or the timeout is reached.
+* If the styles are not applied within the timeout, it will throw an error indicating that the expected styles were not found in the element.
+
+## Usage
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        // Wait for the element to have the style 'display: block'
+        const hasStyle = await element.waitForStyles({ display: 'block' });
+        assert(hasStyle);
+        // Proceed with further actions or assertions
+    });
+});
+```

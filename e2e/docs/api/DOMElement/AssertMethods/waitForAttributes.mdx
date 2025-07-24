@@ -1,0 +1,27 @@
+---
+title: 'element.waitForAttributes'
+---
+
+## `element.waitForAttributes(attributes: Object): Promise<boolean>`
+
+Waits for the element to have the specified attributes with their expected values. This method is useful when you need to ensure that an element has updated its attributes before proceeding with further actions or assertions.
+
+* **`attributes`**: An object containing attribute names and their expected values. For example, `{ 'data-test': 'value' }`.
+* Returns a promise that resolves to `true` if the attributes are applied as expected.
+* The method will retry checking the attributes of the element until they match the specified values or the timeout is reached.
+* If the attributes are not applied within the timeout, it will throw an error indicating that the expected attributes were not found in the element.
+* If an attribute presents for the element, but its value does not match the expected value, it will throw an error indicating this.
+
+## Usage
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        // Wait for the element to have the attribute 'data-test' with value 'value'
+        const hasDataTestAttribute = await element.waitForAttributes({ 'data-test': 'value' }));
+        assert(hasDataTestAttribute);
+        // Proceed with further actions or assertions
+    });
+});
+```

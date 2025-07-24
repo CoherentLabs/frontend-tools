@@ -1,0 +1,26 @@
+---
+title: 'element.waitForClasses'
+---
+
+## `element.waitForClasses(classes: string[]): Promise<boolean>`
+
+Waits for the element to have the specified classes applied. This method is useful when you need to ensure that an element has updated its classes before proceeding with further actions or assertions.
+
+* **`classes`**: An array of class names to wait for in the element. For example, `['class1', 'class2']`.
+* Returns a promise that resolves to `true` if the classes are applied as expected.
+* The method will retry checking the classes of the element until they match the specified values or the timeout is reached.
+* If the classes are not applied within the timeout, it will throw an error indicating that the expected classes were not found in the element.
+
+## Usage
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        // Wait for the element to have the classes 'class1' and 'class2'
+        const hasClasses = await element.waitForClasses(['class1', 'class2']);
+        assert(hasClasses);
+        // Proceed with further actions or assertions
+    });
+});
+```
