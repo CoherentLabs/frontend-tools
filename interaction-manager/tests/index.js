@@ -4,7 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 const fs = require('fs');
 const path = require('path');
-const { execSync, exec } = require('child_process');
+const { execSync, exec, spawn } = require('child_process');
+require("dotenv").config({ path: path.join(__dirname, '..', '..', '.env') });
+
+let gamefacePath = process.env.GAMEFACE_PATH;
 
 const TESTS_FOLDER = __dirname;
 const ROOT_FOLDER = path.join(__dirname, '../');
@@ -32,13 +35,24 @@ function areComponentsPackaged() {
     return false;
 }
 
+let cohtmlPlayer = null;
+
+function startGameface() {
+    cohtmlPlayer = spawn(gamefacePath, ['--url=http://localhost:9876/debug.html']);
+
+    cohtmlPlayer.on('error', (err) => {
+        console.error(err);
+        global.process.exitCode = -1;
+    })
+    cohtmlPlayer.on('data', data => console.log(data))
+}
+
 /**
  * Will build components and test them
  * @param {boolean} rebuild
- * @param {string} browsersArg
  * @returns {void}
  */
-function test(rebuild, browsersArg) {
+function test(rebuild) {
     if (rebuild) {
         execSync('npm run build:im', { cwd: ROOT_FOLDER, stdio: 'inherit' });
     }
@@ -47,20 +61,21 @@ function test(rebuild, browsersArg) {
     execSync('npm i', { cwd: ROOT_FOLDER, stdio: 'inherit' });
     execSync(`npx kill-port ${KARMA_PORT}`, { cwd: ROOT_FOLDER, stdio: 'inherit' });
 
-    startKarma(browsersArg);
+    startKarma();
 }
 
 /**
  * Start a Karma server and listen for process events
- * @param {string} browsersArg
  */
-function startKarma(browsersArg) {
-    const karmaProcess = exec(`karma start tests/karma.conf.js ${browsersArg}`, { cwd: ROOT_FOLDER });
+function startKarma() {
+    const karmaProcess = exec(`karma start tests/karma.conf.js`, { cwd: ROOT_FOLDER });
 
     karmaProcess.stderr.on('data', function (data) {
         console.error(data.toString());
     });
     karmaProcess.stdout.on('data', function (data) {
+        if (gamefacePath && data.includes('server started at http://localhost:9876/')) startGameface();
+        if (data.includes('[FAILED]')) process.exitCode = -1;
         console.log(data.toString());
     });
     karmaProcess.on('exit', function (code) {
@@ -70,21 +85,21 @@ function startKarma(browsersArg) {
         console.error(err);
         global.process.exit(1);
     });
+    karmaProcess.on('close', () => {
+        if (cohtmlPlayer) cohtmlPlayer.kill();
+    })
 }
 
 
 /** */
 function main() {
+    if(!gamefacePath) {
+        console.error("Gameface path is not specified. Please set the GAMEFACE_PATH environment variable.");
+        global.process.exit(1);
+    }
     const args = global.process.argv.slice(2);
     const rebuild = args.indexOf('--rebuild') > -1;
-    const noLink = args.indexOf('--no-link') > -1 || false;
-    let browsersArg = '';
-
-    const browsersArgIndex = args.indexOf('--browsers');
-    if (browsersArgIndex > -1) browsersArg = `--browsers ${args[browsersArgIndex + 1]}`;
-
-    test(rebuild, browsersArg, noLink);
+    test(rebuild);
 }
-
 
 main();

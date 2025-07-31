@@ -101,11 +101,12 @@ class WSServer {
 
         this.ws.on('close', () => {
             global.log.debug('End - disconnected from Chrome DevTools.');
-            process.exitCode = 0;
-            process.exit();
+            process.exit(process.exitCode);
         });
 
         this.ws.on('error', (error) => {
+            process.exitCode = 1;
+
             global.log.error(`WebSocket error: ${error}`, {
                 code: "INTERNAL_ERROR_WEBSOCKET",
                 exit: false

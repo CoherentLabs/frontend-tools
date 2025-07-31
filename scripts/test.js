@@ -21,12 +21,13 @@ async function runTests(tool, npmTestCommand = 'test', build = false) {
 /** */
 async function main() {
     try {
-        const tools = [
-            { path: path.join(TOOLS_PATH, 'interaction-manager'), testCommand: 'test:Chrome', build: true }
-        ];
-        for (const tool of tools) {
-            await runTests(tool.path, tool.testCommand, tool.build)
-        }
+        const args = process.argv.slice(2);
+        const toolArg = args.find(arg => arg.startsWith('--tool='));
+        if (!toolArg) throw new Error('Tool path is not specified. Use --tool=<path> to specify the toolArg path.');
+        const toolPath = path.join(TOOLS_PATH, toolArg.split('=')[1]);
+        const shouldBuildTool = args.includes('--build');
+
+        await runTests(toolPath, `test`, shouldBuildTool);
     } catch (error) {
         console.error(error);
         process.exitCode = -1;

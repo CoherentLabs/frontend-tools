@@ -4,7 +4,11 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 1.1.0 :badge[Latest]{variant="note"}
+## 1.1.1 :badge[Latest]{variant="note"}
+
+<Badge text="Fix" variant="danger" size="small" /> Fixed tests exit code when tests fail. Previously, the exit code was always 0, which could lead to confusion when running tests in CI/CD pipelines.
+
+## 1.1.0
 
 <Badge text="Feature" variant="success" size="small" /> Introduced new assertion methods for the `DOMElement` object, leveraging `gf.retryIfFails` to ensure reliable validation of element states.
 

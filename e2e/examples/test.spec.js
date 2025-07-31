@@ -1,9 +1,11 @@
 const assert = require('assert');
 
+const PORT = process.env.PORT || 54321;
+
 describe('Test script', function () {
     it('Should navigate to the test page', async () => {
         // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
-        await gf.navigate('../../../frontend-tools/e2e/examples/index.html');
+        await gf.navigate(`http://localhost:${PORT}`);
     });
 
     it('Should get element', async () => {
@@ -226,7 +228,7 @@ describe('Test script', function () {
 describe('Test custom scripts', function () {
     it('Should navigate to the test page', async () => {
         // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
-        await gf.navigate('../../../frontend-tools/e2e/examples/index.html');
+        await gf.navigate(`http://localhost:${PORT}`);
     });
 
     it('Should execute custom javascript', async () => {
@@ -272,7 +274,7 @@ describe('Test custom scripts', function () {
 describe('Test scroll', function () {
     it('Should navigate to the test page', async () => {
         // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
-        await gf.navigate('../../../frontend-tools/e2e/examples/index.html');
+        await gf.navigate(`http://localhost:${PORT}`);
     });
 
     it('Should not scroll a non scrollable element', async () => {
@@ -318,7 +320,7 @@ describe('Test click events', function () {
     const keys = ['altKey', 'ctrlKey', 'metaKey', 'shiftKey'];
     it('Should navigate to the test page', async () => {
         // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
-        await gf.navigate('../../../frontend-tools/e2e/examples/index.html');
+        await gf.navigate(`http://localhost:${PORT}`);
     });
 
     for (let key of keys) {
@@ -351,7 +353,7 @@ describe('Test key events', function () {
     const keys = ['altKey', 'ctrlKey', 'metaKey', 'shiftKey'];
     it('Should navigate to the test page', async () => {
         // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
-        await gf.navigate('../../../frontend-tools/e2e/examples/index.html');
+        await gf.navigate(`http://localhost:${PORT}`);
     });
 
     for (let key of keys) {
@@ -382,7 +384,7 @@ describe('Test document key events', function () {
     const keys = ['altKey', 'ctrlKey', 'metaKey', 'shiftKey'];
     it('Should navigate to the test page', async () => {
         // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
-        await gf.navigate('../../../frontend-tools/e2e/examples/document-events.html');
+        await gf.navigate(`http://localhost:${PORT}/document-events.html`);
     });
 
     for (let key of keys) {
@@ -425,7 +427,7 @@ describe('Test document key events', function () {
 describe('Test custom events', function () {
     it('Should navigate to the test page', async () => {
         // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
-        await gf.navigate('../../../frontend-tools/e2e/examples/index.html');
+        await gf.navigate(`http://localhost:${PORT}`);
     });
 
     it(`Should dispatch custom event to document`, async () => {
@@ -445,7 +447,8 @@ describe('Test data-binding', function () {
 
     this.beforeAll('Should navigate to the test page', async () => {
         // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
-        await gf.navigate('../../../frontend-tools/e2e/examples/data-binding.html');
+        await gf.navigate(`http://localhost:${PORT}/data-binding.html`);
+
         await gf.createModel('Model', Model);
     });
 
