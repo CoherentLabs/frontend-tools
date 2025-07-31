@@ -2,6 +2,10 @@ const { execSync } = require("child_process");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, '..', '..', '.env') });
 
+const args = process.argv.slice(2);
+const portArg = args.find(arg => arg.startsWith('--port='));
+process.env.PORT = portArg.split('=')[1];
+
 let gamefacePath = process.env.GAMEFACE_PATH;
 
 if (!gamefacePath) {
