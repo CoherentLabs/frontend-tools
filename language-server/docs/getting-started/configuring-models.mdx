@@ -1,0 +1,23 @@
+---
+title: Configuring the Models
+sidebar:
+    order: 4
+---
+
+In order to get model suggestions, we'll need to provide the definitions of your models. The language server works with examples of the models as `json` objects. You don't have to manually write the definitions. Run this code on your models and save the results into files that have the same name as the model:
+
+```js
+const playerModel = {
+    name: 'John Doe'
+};
+
+const json = JSON.stringify(playerModel, function(key, value) {
+  if (typeof value === 'function') return 'function';
+  return value;
+});
+
+// json will be:
+// "{"name":"John Doe"}"
+```
+
+The file for the model above should be named `playerModel.json`. Put all of the `json` definitions in a folder named `gameface-models` anywhere in your workspace. You'll need this folder only during development, you don't need to include it in the final package of your project.

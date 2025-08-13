@@ -99,7 +99,7 @@ async function getToolsDirs(root, exclude = []) {
 /** */
 async function main() {
     try {
-        const tools = [...await getToolsDirs(TOOLS_PATH, ['gameface-ui-vite-plugins']), ...await getToolsDirs(VITE_PLUGINS_PATH)];
+        const tools = [...await getToolsDirs(TOOLS_PATH, ['gameface-ui-vite-plugins', 'language-server']), ...await getToolsDirs(VITE_PLUGINS_PATH)];
         for (const tool of tools) {
             if (shouldUpdate(tool)) await publish(tool);
         }

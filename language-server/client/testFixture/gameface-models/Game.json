@@ -1,0 +1,238 @@
+{
+    "Model": {
+        "players": [
+           {"name": "John"}
+        ],
+        "animals": {
+            "cat": {
+                "cuteness": 100
+            },
+            "dog": {
+                "cuteness": 90
+            }
+        }
+    },
+    "activeCard": {},
+    "collections": [
+        {
+            "owner": "Set Title 1",
+            "cards": [
+                {
+                    "isActive": true,
+                    "isOwned": false,
+                    "title": "R04 - XTG",
+                    "backgroundImage": "img / img01.png",
+                    "symbolImage": "img / sym01.png",
+                    "description": "Saku XT04 is a next generation assistant droid who, once connected with you, is extremely loyal and knows no fear.",
+                    "firstPropVal": "Homeworld",
+                    "firstPropType": "Xatria",
+                    "secondPropVal": "Job",
+                    "secondPropType": "Droid Assistant",
+                    "firstAppearance": "District X04 - 0O9[x - TG05]"
+                },
+                {
+                    "isActive": false,
+                    "isOwned": true,
+                    "title": "Nemesis",
+                    "backgroundImage": "img / img02.png",
+                    "symbolImage": "img / sym02.png",
+                    "description": "A member of the Kaidju task force doesn't understand the concept of cruelty. Nemesis is determined to rise in the ranks by any means necessary.",
+                    "firstPropVal": "Main Weapon",
+                    "firstPropType": "Crysalis Blaster",
+                    "secondPropVal": "Extra Equipment",
+                    "secondPropType": "Ion Jetpack",
+                    "firstAppearance": "Drakonia AT14"
+                },
+                {
+                    "isActive": false,
+                    "isOwned": false,
+                    "title": "Silver",
+                    "backgroundImage": "img/img03.png",
+                    "symbolImage": "img/sym01.png",
+                    "description": "One day the golden plague came and Silver was lucky to be alive. Her family, however, was not. Since that day she has been devoted to curing the world from diseases.",
+                    "firstPropVal": "Homeworld",
+                    "firstPropType": "Mistrafold",
+                    "secondPropVal": "Equipment",
+                    "secondPropType": "Medpack",
+                    "firstAppearance": "Red Moon 17A-5F"
+                }
+            ]
+        },
+        {
+            "owner": "Set Title 2",
+            "cards": [
+                {
+                    "isActive": false,
+                    "isOwned": true,
+                    "title": "R04-XTG",
+                    "backgroundImage": "img/img01.png",
+                    "symbolImage": "img/sym01.png",
+                    "description": "Saku XT04 is a next generation assistant droid who, once connected with you, is extremely loyal and knows no fear.",
+                    "firstPropVal": "Homeworld",
+                    "firstPropType": "Xatria",
+                    "secondPropVal": "Job",
+                    "secondPropType": "Droid Assistant",
+                    "firstAppearance": "District X04-0O9 [x-TG05]"
+                },
+                {
+                    "isActive": false,
+                    "isOwned": false,
+                    "title": "Nemesis",
+                    "backgroundImage": "img/img02.png",
+                    "symbolImage": "img/sym02.png",
+                    "description": "A member of the Kaidju task force doesn't understand the concept of cruelty.Nemesis is determined to rise in the ranks by any means necessary.",
+                    "firstPropVal": "Main Weapon",
+                    "firstPropType": "Crysalis Blaster",
+                    "secondPropVal": "Extra Equipment",
+                    "secondPropType": "Ion Jetpack",
+                    "firstAppearance": "Drakonia AT14"
+                },
+                {
+                    "isActive": false,
+                    "isOwned": true,
+                    "title": "Silver",
+                    "backgroundImage": "img / img03.png",
+                    "symbolImage": "img / sym01.png",
+                    "description": "One day the golden plague came and Silver was lucky to be alive.Her family, however, was not.Since that day she has been devoted to curing the world from diseases.",
+                    "firstPropVal": "Homeworld",
+                    "firstPropType": "Mistrafold",
+                    "secondPropVal": "Equipment",
+                    "secondPropType": "Medpack",
+                    "firstAppearance": "Red Moon 17A - 5F"
+                }
+            ]
+        },
+        {
+            "owner": "Set Title 3",
+            "cards": [
+                {
+                    "isActive": false,
+                    "isOwned": false,
+                    "title": "R04 - XTG",
+                    "backgroundImage": "img / img01.png",
+                    "symbolImage": "img / sym01.png",
+                    "description": "Saku XT04 is a next generation assistant droid who, once connected with you, is extremely loyal and knows no fear.",
+                    "firstPropVal": "Homeworld",
+                    "firstPropType": "Xatria",
+                    "secondPropVal": "Job",
+                    "secondPropType": "Droid Assistant",
+                    "firstAppearance": "District X04 - 0O9[x - TG05]"
+                },
+                {
+                    "isActive": false,
+                    "isOwned": true,
+                    "title": "Nemesis",
+                    "backgroundImage": "img / img02.png",
+                    "symbolImage": "img / sym02.png",
+                    "description": "A member of the Kaidju task force doesn't understand the concept of cruelty. Nemesis is determined to rise in the ranks by any means necessary.",
+                    "firstPropVal": "Main Weapon",
+                    "firstPropType": "Crysalis Blaster",
+                    "secondPropVal": "Extra Equipment",
+                    "secondPropType": "Ion Jetpack",
+                    "firstAppearance": "Drakonia AT14"
+                },
+                {
+                    "isActive": false,
+                    "isOwned": false,
+                    "title": "Silver",
+                    "backgroundImage": "img/img03.png",
+                    "symbolImage": "img/sym01.png",
+                    "description": "One day the golden plague came and Silver was lucky to be alive. Her family, however, was not. Since that day she has been devoted to curing the world from diseases.",
+                    "firstPropVal": "Homeworld",
+                    "firstPropType": "Mistrafold",
+                    "secondPropVal": "Equipment",
+                    "secondPropType": "Medpack",
+                    "firstAppearance": "Red Moon 17A-5F"
+                }
+            ]
+        },
+        {
+            "owner": "Set Title 4",
+            "cards": [
+                {
+                    "isActive": false,
+                    "isOwned": true,
+                    "title": "R04-XTG",
+                    "backgroundImage": "img/img01.png",
+                    "symbolImage": "img/sym01.png",
+                    "description": "Saku XT04 is a next generation assistant droid who, once connected with you, is extremely loyal and knows no fear.",
+                    "firstPropVal": "Homeworld",
+                    "firstPropType": "Xatria",
+                    "secondPropVal": "Job",
+                    "secondPropType": "Droid Assistant",
+                    "firstAppearance": "District X04-0O9 [x-TG05]"
+                },
+                {
+                    "isActive": false,
+                    "isOwned": false,
+                    "title": "Nemesis",
+                    "backgroundImage": "img/img02.png",
+                    "symbolImage": "img/sym02.png",
+                    "description": "A member of the Kaidju task force doesn't understand the concept of cruelty.Nemesis is determined to rise in the ranks by any means necessary.",
+                    "firstPropVal": "Main Weapon",
+                    "firstPropType": "Crysalis Blaster",
+                    "secondPropVal": "Extra Equipment",
+                    "secondPropType": "Ion Jetpack",
+                    "firstAppearance": "Drakonia AT14"
+                },
+                {
+                    "isActive": false,
+                    "isOwned": true,
+                    "title": "Silver",
+                    "backgroundImage": "img / img03.png",
+                    "symbolImage": "img / sym01.png",
+                    "description": "One day the golden plague came and Silver was lucky to be alive.Her family, however, was not.Since that day she has been devoted to curing the world from diseases.",
+                    "firstPropVal": "Homeworld",
+                    "firstPropType": "Mistrafold",
+                    "secondPropVal": "Equipment",
+                    "secondPropType": "Medpack",
+                    "firstAppearance": "Red Moon 17A - 5F"
+                }
+            ]
+        },
+        {
+            "owner": "Set Title 5",
+            "cards": [
+                {
+                    "isActive": false,
+                    "isOwned": false,
+                    "title": "R04 - XTG",
+                    "backgroundImage": "img / img01.png",
+                    "symbolImage": "img / sym01.png",
+                    "description": "Saku XT04 is a next generation assistant droid who, once connected with you, is extremely loyal and knows no fear.",
+                    "firstPropVal": "Homeworld",
+                    "firstPropType": "Xatria",
+                    "secondPropVal": "Job",
+                    "secondPropType": "Droid Assistant",
+                    "firstAppearance": "District X04 - 0O9[x - TG05]"
+                },
+                {
+                    "isActive": false,
+                    "isOwned": true,
+                    "title": "Nemesis",
+                    "backgroundImage": "img / img02.png",
+                    "symbolImage": "img / sym02.png",
+                    "description": "A member of the Kaidju task force doesn't understand the concept of cruelty. Nemesis is determined to rise in the ranks by any means necessary.",
+                    "firstPropVal": "Main Weapon",
+                    "firstPropType": "Crysalis Blaster",
+                    "secondPropVal": "Extra Equipment",
+                    "secondPropType": "Ion Jetpack",
+                    "firstAppearance": "Drakonia AT14"
+                },
+                {
+                    "isActive": false,
+                    "isOwned": false,
+                    "title": "Silver",
+                    "backgroundImage": "img/img03.png",
+                    "symbolImage": "img/sym01.png",
+                    "description": "One day the golden plague came and Silver was lucky to be alive. Her family, however, was not. Since that day she has been devoted to curing the world from diseases.",
+                    "firstPropVal": "Homeworld",
+                    "firstPropType": "Mistrafold",
+                    "secondPropVal": "Equipment",
+                    "secondPropType": "Medpack",
+                    "firstAppearance": "Red Moon 17A-5F"
+                }
+            ]
+        }
+    ]
+}

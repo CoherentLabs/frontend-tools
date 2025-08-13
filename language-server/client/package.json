@@ -1,0 +1,22 @@
+{
+    "name": "data-binding-autocomplete-client",
+    "description": "VSCode part of a language server",
+    "author": "Microsoft Corporation",
+    "license": "MIT",
+    "version": "0.0.1",
+    "publisher": "vscode",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/CoherentLabs/cohtml"
+    },
+    "engines": {
+        "vscode": "^1.79.2"
+    },
+    "dependencies": {
+        "vscode-languageclient": "8.1.0"
+    },
+    "devDependencies": {
+        "@types/vscode": "1.79.0",
+        "vscode-test": "1.3.0"
+    }
+}

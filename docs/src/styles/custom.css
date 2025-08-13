@@ -1,0 +1,8 @@
+.starlight-sidebar-topics-dropdown-button-label,
+.starlight-sidebar-topics-dropdown-label {
+    white-space: pre-line !important;
+}
+
+:root {
+    --sl-sidebar-width: 20rem;
+}

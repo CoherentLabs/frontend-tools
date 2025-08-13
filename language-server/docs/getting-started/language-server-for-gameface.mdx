@@ -1,0 +1,22 @@
+---
+title: Language Server for Gameface
+sidebar:
+    order: 2
+---
+
+The default auto-complete features usually can't provide meaningful suggestions for Gameface features. That's because none of the editors are aware of the data binding attributes or the game models that are initialized runtime. [VS Code's](https://code.visualstudio.com/) functionality can be greatly enhanced and extended through extensions. The [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) developed by [Microsoft](https://www.microsoft.com/) can be used to create a custom language server that can handle Gameface specific features.
+
+## How it Works
+
+A language server is a specific type of VSCode extension that uses the language server protocol to support code editing features like IntelliSense. A custom language server can be aware of the Gameface data binding attributes and even of the game models used by the data binding.
+
+## Supported Features
+
+The language server that we created can:
+
+* suggest auto-complete for data binding attributes like
+    * data-bind-for
+    * data-bind-if
+    * data-bind-value
+    * and more
+* suggest model properties based on your model definitions
