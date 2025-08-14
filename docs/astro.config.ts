@@ -141,6 +141,10 @@ async function getConfig() {
           label: 'Getting Started',
           autogenerate: { directory: 'data-binding-autocomplete/getting-started' },
         },
+        {
+          label: 'Downloads',
+          link: 'data-binding-autocomplete/downloads'
+        },
       ],
     },
   ];

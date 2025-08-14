@@ -149,6 +149,8 @@ function readWorkspace(root: string) {
 }
 
 connection.onInitialized(() => {
+    connection.console.log('Data Binding Autocomplete Language Server initialized.');
+
     if (hasConfigurationCapability) {
         // Register for all configuration changes.
         connection.client.register(DidChangeConfigurationNotification.type, undefined);

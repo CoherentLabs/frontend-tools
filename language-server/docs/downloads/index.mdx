@@ -1,0 +1,14 @@
+---
+title: Downloads
+---
+import { Icon } from '@astrojs/starlight/components';
+
+import { getDownloads } from './getDownloads.js';
+
+export const downloads = getDownloads();
+
+Here you can find the latest releases of the Gameface Language Server extension for Visual Studio Code. The extension is available as a `.visx` file, which is a VSCode extension bundle. To install it check the [Installation](getting-started/installation) section.
+
+{downloads.map((entry) => {
+    return <a class="download-link" href={entry?.url}><Icon name="seti:zip"/>{entry?.name}</a>
+})}

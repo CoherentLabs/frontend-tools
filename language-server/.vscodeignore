@@ -3,12 +3,28 @@
 **/*.map
 .gitignore
 **/tsconfig.json
+**/tsconfig.prod.json
 **/tsconfig.base.json
 contributing.md
 .travis.yml
 client/node_modules/**
-!client/node_modules/vscode-jsonrpc/**
-!client/node_modules/vscode-languageclient/**
-!client/node_modules/vscode-languageserver-protocol/**
-!client/node_modules/vscode-languageserver-types/**
-!client/node_modules/semver/**
+server/node_modules/**
+# !client/node_modules/vscode-jsonrpc/**
+# !client/node_modules/vscode-languageclient/**
+# !client/node_modules/vscode-languageserver-protocol/**
+# !client/node_modules/vscode-languageserver-types/**
+# !client/node_modules/semver/**
+
+docs
+client/testFixture
+client/package.json
+client/package-lock.json
+client/rollup.config.mjs
+
+server/package.json
+server/package-lock.json
+server/rollup.config.mjs
+
+node_modules
+scripts
+downloads
