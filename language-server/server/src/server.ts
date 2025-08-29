@@ -34,7 +34,7 @@ import {
     ExampleSettings,
 } from './types';
 
-let modelDefinitions:GamefaceModelDefinition[] = [];
+let modelDefinitions: GamefaceModelDefinition[] = [];
 const modelDefinitionsFolder = 'gameface-models';
 const customBindingsFolder = 'custom-bindings';
 const customBindingsFile = 'bindings.json';
@@ -108,17 +108,16 @@ connection.onInitialize((params: InitializeParams) => {
 // Read all files in a folder and creates the model definitions objects from them
 function readFiles(root: string): GamefaceModelDefinition[] {
     const modelsDefinitions: GamefaceModelDefinition[] = [];
-    const files = fs.readdirSync(root, { encoding: 'utf-8'});
+    const files = fs.readdirSync(root, { encoding: 'utf-8' });
 
     for (let file of files) {
-        const content = fs.readFileSync(path.join(root, file), {encoding: 'utf-8'});
+        const content = fs.readFileSync(path.join(root, file), { encoding: 'utf-8' });
 
         try {
             let contentObj = JSON.parse(content);
-            modelsDefinitions.push({name: file.replace('.json', ''), content: contentObj});
-        } catch(err) {
-            connection.console.error(`${err}
-            File ${file} contains is not a valid JSON, located in ${path.join(root, file)}.`);
+            modelsDefinitions.push({ name: file.replace('.json', ''), content: contentObj });
+        } catch (err) {
+            connection.console.error(`Error parsing JSON in file "${file}" at "${path.join(root, file)}": ${err}`);
         }
     }
 
@@ -126,7 +125,7 @@ function readFiles(root: string): GamefaceModelDefinition[] {
 }
 
 function readCustomBindings(filePath: string) {
-    const file = fs.readFileSync(filePath, { encoding: 'utf-8'});
+    const file = fs.readFileSync(filePath, { encoding: 'utf-8' });
     // match all symbols between the braces of registerBindingAttribute(will match here)
     const bindings = file.match(/(?<=(registerBindingAttribute\("))([a-z\-0-9]+)(?=\'|\")+/g);
 
@@ -140,7 +139,7 @@ function readWorkspace(root: string) {
     for (let file of files) {
         if (file.name === modelDefinitionsFolder) {
             modelDefinitions.push(...readFiles(path.join(root, file.name)));
-        } else if(file.name === customBindingsFolder) {
+        } else if (file.name === customBindingsFolder) {
             readCustomBindings(path.join(root, file.name, customBindingsFile));
         } else if (file.isDirectory()) {
             readWorkspace(path.join(root, file.name));
@@ -165,7 +164,7 @@ connection.onInitialized(() => {
     setupModelDefinitions();
 });
 
-async function setupModelDefinitions () {
+async function setupModelDefinitions() {
     const workspaceFolders = await connection.sendRequest(WorkspaceFoldersRequest.type);
 
     if (workspaceFolders === null) return;
@@ -261,23 +260,23 @@ function generateCompletionsItems(suggestions: Suggestion[]): CompletionItem[] {
 //This handler provides the initial list of the completion items.
 connection.onCompletion(
     (_textDocumentPosition: TextDocumentPositionParams): CompletionItem[] => {
-        const document:TextDocument|undefined = documents.get(_textDocumentPosition.textDocument.uri);
+        const document: TextDocument | undefined = documents.get(_textDocumentPosition.textDocument.uri);
 
-        if(!document) return [];
-        
+        if (!document) return [];
+
         const linePrefix = lineAt(_textDocumentPosition.position, document).text.substring(0, _textDocumentPosition.position.character);
         const dataBindingCompletions = generateDataBindingCompletions();
 
-        let modelCompletions:CompletionItem[] = [];
+        let modelCompletions: CompletionItem[] = [];
         if (modelDefinitions.length) {
             const modelRelations: Relation[][] = [];
             // generate the relations for each model
-            for(let model of modelDefinitions) {
+            for (let model of modelDefinitions) {
                 modelRelations.push(generateRelations(model.content as GamefaceModel, model.name));
             }
 
-            for(let relations of modelRelations) {
-                for(let relation of relations) {
+            for (let relations of modelRelations) {
+                for (let relation of relations) {
                     const regex = new RegExp(`(?<!\\.)${relation.key}\.$`, 'g');
                     if (!linePrefix.match(regex)) continue;
                     modelCompletions = generateCompletionsItems(relation.suggestions);
