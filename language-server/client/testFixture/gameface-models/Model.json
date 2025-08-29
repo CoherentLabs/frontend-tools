@@ -1,0 +1,157 @@
+{
+    "gameId": 1,
+    "gameModes": [
+        {
+            "name": "free for all",
+            "id": "001"
+        },
+        {
+            "name": "free for all",
+            "id": "001"
+        }
+    ],
+    "players": [
+        {
+            "type": "regular",
+            "name": "player1",
+            "rank": 100,
+            "id": 1,
+            "friends": [
+                2,
+                3
+            ],
+            "items": {
+                "axe": {
+                    "durability": 89,
+                    "dps": 100,
+                    "leech": 90
+                },
+                "knife": {
+                    "durability": 100,
+                    "dps": 10,
+                    "leech": 5
+                },
+                "riffle": {
+                    "durability": 90,
+                    "dps": 300,
+                    "leech": 0
+                }
+            },
+            "mounts": {
+                "air": {
+                    "dragons": {
+                        "black": {
+                            "strength": 100,
+                            "speed": 200,
+                            "maxHeight": 300
+                        },
+                        "white": {
+                            "strength": 90,
+                            "speed": 200,
+                            "maxHeight": 300
+                        },
+                        "blue": {
+                            "strength": 200,
+                            "speed": 300,
+                            "maxHeight": 350
+                        }
+                    },
+                    "birds": {
+                        "eagle": {
+                            "agility": 100,
+                            "speed": 200
+                        },
+                        "pigeon": {
+                            "agility": 40,
+                            "speed": 100
+                        }
+                    }
+                },
+                "land": {
+                    "horses": {
+                        "mountainStallion": {
+                            "speed": 100,
+                            "jumpDistance": 200
+                        },
+                        "mustang": {
+                            "speed": 110,
+                            "jumpDistance": 100
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "regular",
+            "name": "player2",
+            "rank": 100,
+            "id": 1,
+            "friends": [
+                2,
+                3
+            ],
+            "items": {
+                "axe": {
+                    "durability": 89,
+                    "dps": 100,
+                    "leech": 90
+                },
+                "knife": {
+                    "durability": 100,
+                    "dps": 10,
+                    "leech": 5
+                },
+                "riffle": {
+                    "durability": 90,
+                    "dps": 300,
+                    "leech": 0
+                }
+            },
+            "mounts": {
+                "air": {
+                    "dragons": {
+                        "black": {
+                            "strength": 100,
+                            "speed": 200,
+                            "maxHeight": 300
+                        },
+                        "white": {
+                            "strength": 90,
+                            "speed": 200,
+                            "maxHeight": 300
+                        },
+                        "blue": {
+                            "strength": 200,
+                            "speed": 300,
+                            "maxHeight": 350
+                        }
+                    },
+                    "birds": {
+                        "eagle": {
+                            "agility": 100,
+                            "speed": 200
+                        },
+                        "pigeon": {
+                            "agility": 40,
+                            "speed": 100
+                        }
+                    }
+                },
+                "land": {
+                    "horses": {
+                        "mountainStallion": {
+                            "speed": 100,
+                            "jumpDistance": 200
+                        },
+                        "mustang": {
+                            "speed": 110,
+                            "jumpDistance": 100
+                        }
+                    }
+                }
+            }
+        }
+    ],
+    "getPlayer": "function() {}",
+    "maximumPlayersAllowed": 10
+}

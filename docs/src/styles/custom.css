@@ -1,0 +1,19 @@
+.starlight-sidebar-topics-dropdown-button-label,
+.starlight-sidebar-topics-dropdown-label {
+    white-space: pre-line !important;
+}
+
+:root {
+    --sl-sidebar-width: 20rem;
+}
+
+.download-link {
+    display: flex;
+    align-items: center;
+    padding-left: 1rem;
+    padding-top: 1rem;
+}
+
+.download-link svg {
+    margin-right: 0.3rem;
+}

@@ -1,0 +1,7 @@
+out
+node_modules
+client/server
+.vscode-test
+*package-lock.json
+data-binding-autocomplete-*.vsix
+!downloads/data-binding-autocomplete-*.vsix

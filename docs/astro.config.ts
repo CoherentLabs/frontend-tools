@@ -14,6 +14,7 @@ const __dirname = path.dirname(__filename);
 function generateVersion(version, link) {
   const config: { label: string; link?: string; attrs?: { target: string }; badge?: { text: string; variant: string } } = {
     label: 'Version:',
+    link: '',
     badge: {
       text: `${version}`,
       variant: 'tip',
@@ -28,9 +29,8 @@ function generateVersion(version, link) {
   return config;
 }
 
-async function generateVersionWithPackageJSON(packagePath, link) {
+async function generateVersionWithPackageJSON(packagePath, link?: string) {
   if (!fs.existsSync(packagePath)) throw new Error(`Version not found in ${packagePath}`);
-
   const packageContent = fs.readFileSync(packagePath, 'utf-8');
   const packageJson = JSON.parse(packageContent);
   const version = packageJson?.version;
@@ -40,7 +40,7 @@ async function generateVersionWithPackageJSON(packagePath, link) {
 }
 
 async function getConfig() {
-  const documentations = ['e2e', 'gameface-vite-plugin', 'vite-solid-style-to-css-plugin', 'interaction-manager'];
+  const documentations = ['e2e', 'gameface-vite-plugin', 'vite-solid-style-to-css-plugin', 'interaction-manager', 'data-binding-autocomplete'];
 
   const sideBarTopics = [
     {
@@ -125,6 +125,26 @@ async function getConfig() {
           autogenerate: { directory: 'vite-solid-style-to-css-plugin/concepts' },
         },
         generateChangelog('vite-solid-style-to-css-plugin'),
+      ],
+    },
+    {
+      link: '/data-binding-autocomplete/getting-started',
+      label: 'Data binding autocomplete',
+      id: 'data-binding-autocomplete',
+      icon: 'vscode',
+      items: [
+        await generateVersionWithPackageJSON(
+          '../language-server/package.json',
+          '/data-binding-autocomplete/getting-started/'
+        ),
+        {
+          label: 'Getting Started',
+          autogenerate: { directory: 'data-binding-autocomplete/getting-started' },
+        },
+        {
+          label: 'Downloads',
+          link: 'data-binding-autocomplete/downloads'
+        },
       ],
     },
   ];
