@@ -1,0 +1,34 @@
+<h2>Test Exporter</h2>
+<button id="create">Create</button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+    document.getElementById('create').onclick = () => {
+        parent.postMessage({ pluginMessage: { type: 'create-shapes' } }, '*');
+    };
+
+    onmessage = (event) => {
+        const msg = event.data.pluginMessage;
+        if (msg.type === 'download-files') {
+            const pages = msg.pages;
+
+            const jszip = new JSZip();
+            for (const [name, { html, css }] of Object.entries(pages)) {
+                jszip.file(`${name}/${name}.html`, html);
+                jszip.file(`${name}/${name}.css`, css);
+            }
+
+            jszip.generateAsync({ type: 'blob' }).then((archive) => {
+                const archiveUrl = URL.createObjectURL(archive);
+
+                // Create download links and trigger the downloads
+                const aZip = document.createElement('a');
+                aZip.href = archiveUrl;
+                aZip.download = msg.filename; // Default download filename for ZIP
+                aZip.click();
+                URL.revokeObjectURL(archiveUrl); // Clean up the URL object
+                
+                parent.postMessage({ pluginMessage: { type: 'close-plugin' } }, '*');
+            });
+        }
+    };
+</script>
