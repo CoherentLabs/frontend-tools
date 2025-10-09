@@ -1,5 +1,11 @@
 import { convertPXtoVH, getPercentage } from '../utils/convertUnits';
 import createRGBAColor from '../utils/createRGBAColor';
+import {
+    angularGradientHandle,
+    diamondGradientHandle,
+    linearGradientHandle,
+    radialGradientHandle,
+} from '../utils/gradientUtils';
 import getParentSize from '../utils/parentSize';
 import sanitizeNames from '../utils/sanitizeNames';
 
@@ -23,7 +29,9 @@ function generatePosition(node: CommonNode): string {
         top: ${getPercentage(y, height)}%;`;
 }
 
-function generateBackground(fills: readonly Paint[]): string {
+function generateBackground(node: SceneNode): string {
+    const { fills } = node;
+
     if (!fills || fills.length === 0) {
         return '';
     }
@@ -44,22 +52,39 @@ function generateBackground(fills: readonly Paint[]): string {
             case 'GRADIENT_LINEAR': {
                 if (!fill.visible) break;
 
-                const { gradientStops } = fill;
-                if (gradientStops && gradientStops.length > 0) {
-                    const gradientColors = gradientStops.map((stop) => {
-                        const { color, position } = stop;
-                        const { r, g, b, a } = color;
-                        return `${createRGBAColor(r, g, b, a)} ${position * 100}%`;
-                    });
-                    backgroundArrays.push(`linear-gradient(${gradientColors.join(', ')})`);
-                }
+                const { gradient } = linearGradientHandle(fill, node.width, node.height, node.x, node.y);
+                backgroundArrays.unshift(gradient);
                 break;
             }
 
-            default:
+            case 'GRADIENT_RADIAL': {
+                if (!fill.visible) break;
+                const { r, g, b, a } = fill.gradientStops[fill.gradientStops.length - 1].color;
+                const lastColor = createRGBAColor(r, g, b, a);
+                backgroundArrays.push(lastColor);
                 break;
+            }
+
+            case 'GRADIENT_ANGULAR': {
+                if (!fill.visible) break;
+
+                const { gradient } = angularGradientHandle(fill, node.width, node.height);
+                backgroundArrays.unshift(gradient);
+                break;
+            }
+
+            case 'GRADIENT_DIAMOND': {
+                if (!fill.visible) break;
+                const { r, g, b, a } = fill.gradientStops[fill.gradientStops.length - 1].color;
+                const lastColor = createRGBAColor(r, g, b, a);
+                backgroundArrays.push(lastColor);
+                break;
+            }
         }
     }
+
+    if (backgroundArrays.length === 0) return '';
+
     return `background: ${backgroundArrays.join(', ')};`;
 }
 
@@ -80,14 +105,63 @@ function generateCommonStyles(node: CommonNode): string {
 }
 
 function generateAdditionalStyles(node: CommonNode): string {
-    const { fills } = node;
-
     return `
         ${generateBackground(Array.isArray(fills) ? fills : [])}
         ${handleBorders(node)}
     `;
 }
 
+function addPseudoStylesForBackground(node: SceneNode): string {
+    let result = '';
+    if (!node.fills) return result;
+
+    const specialFillTypes = ['GRADIENT_RADIAL', 'GRADIENT_DIAMOND'];
+
+    const specialFills = node.fills.filter((fill) => specialFillTypes.includes(fill.type) && fill.visible);
+    if (!specialFills || specialFills.length === 0) {
+        return result;
+    }
+
+    for (const fill of specialFills) {
+        switch (fill.type) {
+            case 'GRADIENT_RADIAL': {
+                const { gradient, rotation, size, position } = radialGradientHandle(fill, node.height, node.width);
+                result += buildPseudoElementForSpecialFill(gradient, rotation, size, position);
+                break;
+            }
+
+            case 'GRADIENT_DIAMOND': {
+                const { gradient, size, position, rotation } = diamondGradientHandle(fill, node.width, node.height);
+                result += buildPseudoElementForSpecialFill(gradient, rotation, size, position);
+                break;
+            }
+        }
+    }
+
+    return result;
+}
+
+function buildPseudoElementForSpecialFill(gradient: string, rotation: string, size: string, position: string): string {
+    return `
+        content: '';
+        position: absolute;
+        background: ${gradient};
+        transform: rotate(${rotation}deg) translate(-50%, -50%);
+        transform-origin: top left;
+        ${size}
+        ${position}
+    `;
+}
+
+function generatePseudoStyles(node: SceneNode): string {
+    if (addPseudoStylesForBackground(node) === '') return '';
+
+    return `::before {
+    ${addPseudoStylesForBackground(node)}
+    }`;
+}
+
+function handleBorderRadius(node: SceneNode): string {
 function handleBorderRadius(node: CommonNode): string {
     if (node.type !== 'RECTANGLE' && node.type !== 'FRAME') {
         return '';
@@ -157,4 +231,5 @@ function handleBorders(node: CommonNode): string {
 function generateClassName(name: string, id: string): string {
     return `${sanitizeNames(name)}-${sanitizeNames(id)}`;
 }
-export { generateCommonStyles, generateAdditionalStyles, handleBorderRadius, generateClassName };
+
+export { generateCommonStyles, generateAdditionalStyles, handleBorderRadius, generateClassName, generatePseudoStyles };
