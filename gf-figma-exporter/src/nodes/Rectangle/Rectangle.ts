@@ -1,4 +1,10 @@
-import { generateAdditionalStyles, generateClassName, generateCommonStyles, handleBorderRadius } from "../commonNodeMethods";
+import {
+    generateAdditionalStyles,
+    generateClassName,
+    generateCommonStyles,
+    generatePseudoStyles,
+    handleBorderRadius,
+} from '../commonNodeMethods';
 
 class GFRectangle {
     public node: RectangleNode;
@@ -14,12 +20,23 @@ class GFRectangle {
     }
 
     createCSS(): string {
+        let pseudoElement = '';
+        
+
+        if (generatePseudoStyles(this.node) !== '') {
+            pseudoElement = `.${this.className}${generatePseudoStyles(this.node)}`;
+        }
+
         return `
         .${this.className} {
             ${generateCommonStyles(this.node)}
             ${generateAdditionalStyles(this.node)}
             ${handleBorderRadius(this.node)}
-        }`
+            overflow: hidden;
+        }
+
+        ${pseudoElement}
+    `;
     }
 }
 

@@ -42,6 +42,8 @@
     }
   },
   "dependencies": {
-    "jszip": "^3.10.1"
+    "@figma-plugin/helpers": "^0.15.2",
+    "jszip": "^3.10.1",
+    "matrix-inverse": "^2.0.0"
   }
 }
