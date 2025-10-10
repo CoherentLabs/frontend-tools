@@ -1,14 +1,16 @@
-import { convertPTtoVH, convertPXtoVH, getPercentage } from '../utils/convertUnits';
+import { convertPXtoVH, getPercentage } from '../utils/convertUnits';
 import createRGBAColor from '../utils/createRGBAColor';
 import getParentSize from '../utils/parentSize';
 import sanitizeNames from '../utils/sanitizeNames';
+
+type CommonNode = FrameNode | RectangleNode | EllipseNode ;
 
 function generateSize(width: number, height: number): string {
     return `width: ${convertPXtoVH(width)}vh;
         height: ${convertPXtoVH(height)}vh;`;
 }
 
-function generatePosition(node: SceneNode): string {
+function generatePosition(node: CommonNode): string {
     const { x, y, parent } = node;
     const { width, height } = getParentSize(parent);
 
@@ -68,7 +70,7 @@ function generateOpacity(opacity: number | undefined): string {
     return `opacity: ${opacity};`;
 }
 
-function generateCommonStyles(node: SceneNode): string {
+function generateCommonStyles(node: CommonNode): string {
     const { width, height, opacity } = node;
     return `
         ${generateSize(width, height)}
@@ -77,16 +79,19 @@ function generateCommonStyles(node: SceneNode): string {
     `;
 }
 
-function generateAdditionalStyles(node: SceneNode): string {
+function generateAdditionalStyles(node: CommonNode): string {
     const { fills } = node;
 
     return `
-        ${generateBackground(fills)}
+        ${generateBackground(Array.isArray(fills) ? fills : [])}
         ${handleBorders(node)}
     `;
 }
 
-function handleBorderRadius(node: SceneNode): string {
+function handleBorderRadius(node: CommonNode): string {
+    if (node.type !== 'RECTANGLE' && node.type !== 'FRAME') {
+        return '';
+    }
     const { topLeftRadius, topRightRadius, bottomRightRadius, bottomLeftRadius } = node;
     return `border-top-left-radius: ${convertPXtoVH(topLeftRadius)}vh;
         border-top-right-radius: ${convertPXtoVH(topRightRadius)}vh;
@@ -94,7 +99,7 @@ function handleBorderRadius(node: SceneNode): string {
         border-bottom-left-radius: ${convertPXtoVH(bottomLeftRadius)}vh;`;
 }
 
-function handleBorders(node: SceneNode): string {
+function handleBorders(node: CommonNode): string {
     const {
         strokes,
         strokeWeight,
@@ -109,8 +114,14 @@ function handleBorders(node: SceneNode): string {
         return '';
     }
 
-    const color = strokes[0].color;
-    const borderColor = createRGBAColor(color.r, color.g, color.b, strokes[0].opacity);
+    let borderColor = '';
+    const stroke = strokes[0];
+    if (stroke.type === 'SOLID' && stroke.color) {
+        borderColor = createRGBAColor(stroke.color.r, stroke.color.g, stroke.color.b, stroke.opacity ?? 1);
+    } else {
+        // fallback to transparent if not a solid stroke
+        borderColor = 'rgba(0,0,0,0)';
+    }
 
     if (strokeAlign === 'INSIDE') {
         if (typeof strokeWeight === 'number') {

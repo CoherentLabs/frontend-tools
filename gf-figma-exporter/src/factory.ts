@@ -15,18 +15,24 @@ const NODE_TYPES = {
     GROUP: GFFrame, // Treat GROUPs like FRAMEs for this purpose
     ELLIPSE: GFEllipse
 }
-
+const TYPES = {
+    FRAME: "FRAME",
+    RECTANGLE: "RECTANGLE",
+    ELLIPSE: "ELLIPSE",
+    GROUP: "GROUP"
+}
 function generateCode(node: SceneNode): FactoryResult {
     const result = { html: '', css: '' };
+     
+    if (!Object.prototype.hasOwnProperty.call(TYPES, node.type)) return result;
 
-    for (const [type, NodeClassRef] of Object.entries(NODE_TYPES)) {
-        if (node.type === type) {
-            const instance = new NodeClassRef(node as SceneNode);
-            result.html += instance.createHTML();
-            result.css += instance.createCSS();
-        }
+    const NodeClassRef = NODE_TYPES[node.type as keyof typeof NODE_TYPES];
+    if (NodeClassRef) {
+        //@ts-expect-error
+        const instance = new NodeClassRef(node);
+        result.html += instance.createHTML();
+        result.css += instance.createCSS();
     }
-
     return result;
 }
 
