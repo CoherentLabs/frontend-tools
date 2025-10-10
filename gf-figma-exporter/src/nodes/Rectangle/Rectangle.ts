@@ -32,7 +32,6 @@ class GFRectangle {
             ${generateCommonStyles(this.node)}
             ${generateAdditionalStyles(this.node)}
             ${handleBorderRadius(this.node)}
-            overflow: hidden;
         }
 
         ${pseudoElement}

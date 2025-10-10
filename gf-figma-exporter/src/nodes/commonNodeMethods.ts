@@ -58,7 +58,7 @@ function generateBackground(node: SceneNode): string {
             }
 
             case 'GRADIENT_RADIAL': {
-                if (!fill.visible) break;
+                if (!fill.visible || node.type === 'FRAME') break;
                 const { r, g, b, a } = fill.gradientStops[fill.gradientStops.length - 1].color;
                 const lastColor = createRGBAColor(r, g, b, a);
                 backgroundArrays.push(lastColor);
@@ -74,7 +74,7 @@ function generateBackground(node: SceneNode): string {
             }
 
             case 'GRADIENT_DIAMOND': {
-                if (!fill.visible) break;
+                if (!fill.visible || node.type === 'FRAME') break;
                 const { r, g, b, a } = fill.gradientStops[fill.gradientStops.length - 1].color;
                 const lastColor = createRGBAColor(r, g, b, a);
                 backgroundArrays.push(lastColor);
@@ -101,12 +101,13 @@ function generateCommonStyles(node: CommonNode): string {
         ${generateSize(width, height)}
         ${generatePosition(node)}
         ${generateOpacity(opacity)}
+        overflow: hidden;
     `;
 }
 
 function generateAdditionalStyles(node: CommonNode): string {
     return `
-        ${generateBackground(Array.isArray(fills) ? fills : [])}
+        ${generateBackground(node)}
         ${handleBorders(node)}
     `;
 }
@@ -162,7 +163,6 @@ function generatePseudoStyles(node: SceneNode): string {
 }
 
 function handleBorderRadius(node: SceneNode): string {
-function handleBorderRadius(node: CommonNode): string {
     if (node.type !== 'RECTANGLE' && node.type !== 'FRAME') {
         return '';
     }
@@ -191,7 +191,7 @@ function handleBorders(node: CommonNode): string {
     let borderColor = '';
     const stroke = strokes[0];
     if (stroke.type === 'SOLID' && stroke.color) {
-        borderColor = createRGBAColor(stroke.color.r, stroke.color.g, stroke.color.b, stroke.opacity ?? 1);
+        borderColor = createRGBAColor(stroke.color.r, stroke.color.g, stroke.color.b, stroke.opacity || 1);
     } else {
         // fallback to transparent if not a solid stroke
         borderColor = 'rgba(0,0,0,0)';

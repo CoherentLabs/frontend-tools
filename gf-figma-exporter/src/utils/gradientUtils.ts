@@ -53,7 +53,7 @@ export function linearGradientHandle(
                 { x: end[0], y: end[1] }
             );
             const percentOnSubLine =
-                angleDeg < 90 || angleDeg > 270
+                angleDeg < 90 || angleDeg > 270 // If the gradient is going upwards or downwards
                     ? mapPointToPercentOnLine(pointOnGradientLine, bottomLeftProjection!, topLeftProjection!)
                     : mapPointToPercentOnLine(pointOnGradientLine, topLeftProjection!, bottomLeftProjection!);
 
@@ -80,7 +80,7 @@ export function radialGradientHandle(
         paint.gradientTransform
     );
 
-    const gradientScale = `50% 50% at 50% 50%`;
+    const gradientScale = `50% 50% at 50% 50%`; // Keeping gradient centered to avoid odd behavior with radial gradients
     const size = `height: ${(radius[0] * 200).toFixed(2)}%;\n width: ${(radius[1] * 200).toFixed(2)}%;`;
     const position = `left: ${(center[0] * 100).toFixed(2)}%;\ntop: ${(center[1] * 100).toFixed(2)}%;`;
 
@@ -114,7 +114,9 @@ export function angularGradientHandle(
         paint.gradientTransform
     );
 
-    const radiusScale = (radius[1] * shapeWidth) / (radius[0] * shapeHeight);
+    const GRADIENT_STOP_LIMIT = 15;
+
+    const radiusScale = (radius[1] * shapeWidth) / (radius[0] * shapeHeight); // Since there is no radius in conic gradients, we simulate it by adjusting color stops
 
     const stops = paint.gradientStops
         .map((stop, index, self) => {
@@ -128,9 +130,9 @@ export function angularGradientHandle(
             const nextAddedStop = mixRgbaColors(stop.color, self[index + 1].color);
 
             return `${createRGBAColor(...prevAddedStop)} ${
-                Math.abs(100 - stop.position * 100) - radiusScale * 15 - 1
+                Math.abs(100 - stop.position * 100) - radiusScale * GRADIENT_STOP_LIMIT - 1
             }%, ${createRGBAColor(r, g, b, a)} ${stop.position * 100}%, ${createRGBAColor(...nextAddedStop)} ${
-                stop.position * 100 + radiusScale * 15 + 1
+                stop.position * 100 + radiusScale * GRADIENT_STOP_LIMIT + 1
             }%`;
         })
         .join(', ');
@@ -170,7 +172,7 @@ export function diamondGradientHandle(
 
                 const color = createRGBAColor(r, g, b, a);
 
-                const position = `${((stop.position / 2) * 100).toFixed(2)}%`;
+                const position = `${((stop.position / 2) * 100).toFixed(2)}%`; // Dividing by 2 to have gradient cover only half the distance
                 return `${color} ${position}`;
             })
             .join(', ');
