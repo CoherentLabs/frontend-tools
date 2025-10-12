@@ -1,34 +1,63 @@
 import { getNodes } from "../../exporter";
-import { generateAdditionalStyles, generateClassName, generateCommonStyles, handleBorderRadius } from "../commonNodeMethods";
+import { GFImage } from "../../types/commonTypes";
+import hasImage from "../../utils/hasImage";
+import GFBaseNode from "../BaseNode";
+import { generateAdditionalStyles, generateCommonStyles, handleBorderRadius } from "../commonNodeMethods";
+import handleImage from "../handleImages";
 
-class GFFrame {
-    public node: FrameNode;
-    public className: string;
+class GFFrame extends GFBaseNode {
     public html: string;
     public css: string;
+    public images: GFImage[] = [];
 
     constructor(node: FrameNode) {
-        this.node = node;
-        this.className = generateClassName(this.node.name, this.node.id);
-        ({ html: this.html, css: this.css } = getNodes(this.node.children));
+        super(node);
+        this.html = "";
+        this.css = "";
+        this.images = [];
     }
 
-    createHTML(): string {
+    async init() {
+        const { html, css, images } = await getNodes((this.node as FrameNode).children);
+        this.html = html;
+        this.css = css;
+        this.images = this.images.concat(images);
+    }
+
+    async createHTML(): Promise<string> {
+        console.log('Frame HTML:', this.html);
         return `<div class="${this.className}">
             ${this.html}
         </div>`;
     }
 
-    createCSS(): string {
+    async createCSS(): Promise<string> {
+                let imageBackground = '';
+
+        if (hasImage((this.node as FrameNode).fills)) {
+            this.setAllChildrenVisibility(false);
+            const imageData = await handleImage(this.node as FrameNode);
+            imageBackground = `background: url('./${imageData.name}') no-repeat center center / cover;`;
+            this.images.push({ name: imageData.name, data: imageData.buffer });
+            this.setAllChildrenVisibility(true);
+        }
+
         return `
         .${this.className} {
-            ${generateCommonStyles(this.node)}
-            ${handleBorderRadius(this.node)}
-            ${generateAdditionalStyles(this.node)}
+            ${generateCommonStyles(this.node as FrameNode)}
+            ${handleBorderRadius(this.node as FrameNode)}
+            ${generateAdditionalStyles(this.node as FrameNode)}
+            ${imageBackground}
         }
 
         ${this.css}
         `
+    }
+
+    setAllChildrenVisibility(visible: boolean) {
+        (this.node as FrameNode).children.forEach(child => {
+            child.visible = visible;
+        });
     }
 }
 

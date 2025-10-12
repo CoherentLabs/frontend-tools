@@ -1,37 +1,39 @@
+import hasImage from '../../utils/hasImage';
+import GFBaseNode from '../BaseNode';
 import {
     generateAdditionalStyles,
-    generateClassName,
     generateCommonStyles,
     generatePseudoStyles,
     handleBorderRadius,
 } from '../commonNodeMethods';
+import handleImage from '../handleImages';
 
-class GFRectangle {
-    public node: RectangleNode;
-    public className: string;
+class GFRectangle extends GFBaseNode {
 
     constructor(node: RectangleNode) {
-        this.node = node;
-        this.className = generateClassName(this.node.name, this.node.id);
+        super(node);
     }
 
-    createHTML(): string {
-        return `<div class="${this.className}"></div>`;
-    }
-
-    createCSS(): string {
+    async createCSS(): Promise<string> {
         let pseudoElement = '';
-        
+        let imageBackground = '';
 
         if (generatePseudoStyles(this.node) !== '') {
             pseudoElement = `.${this.className}${generatePseudoStyles(this.node)}`;
         }
 
+        if (hasImage((this.node as RectangleNode).fills)) {
+            const imageData = await handleImage(this.node as RectangleNode);
+            imageBackground = `background: url('./${imageData.name}') no-repeat center center / cover;`;
+            this.images.push({ name: imageData.name, data: imageData.buffer });
+        }
+
         return `
         .${this.className} {
-            ${generateCommonStyles(this.node)}
-            ${generateAdditionalStyles(this.node)}
-            ${handleBorderRadius(this.node)}
+            ${generateCommonStyles(this.node as RectangleNode)}
+            ${generateAdditionalStyles(this.node as RectangleNode)}
+            ${handleBorderRadius(this.node as RectangleNode)}
+            ${imageBackground}
         }
 
         ${pseudoElement}

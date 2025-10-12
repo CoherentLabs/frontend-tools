@@ -12,9 +12,15 @@
             const pages = msg.pages;
 
             const jszip = new JSZip();
-            for (const [name, { html, css }] of Object.entries(pages)) {
+            for (const [name, { html, css, images }] of Object.entries(pages)) {
                 jszip.file(`${name}/${name}.html`, html);
                 jszip.file(`${name}/${name}.css`, css);
+
+                if (images.length > 0) {
+                    for (const image of images) {
+                        jszip.file(`${name}/${image.name}`, image.data);
+                    }
+                }
             }
 
             jszip.generateAsync({ type: 'blob' }).then((archive) => {
@@ -26,7 +32,7 @@
                 aZip.download = msg.filename; // Default download filename for ZIP
                 aZip.click();
                 URL.revokeObjectURL(archiveUrl); // Clean up the URL object
-                
+
                 parent.postMessage({ pluginMessage: { type: 'close-plugin' } }, '*');
             });
         }

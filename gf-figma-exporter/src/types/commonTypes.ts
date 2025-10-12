@@ -1,0 +1,1 @@
+export type GFImage = { name: string; data: Uint8Array | null };
