@@ -5,7 +5,7 @@ import GFRectangle from "./nodes/Rectangle/Rectangle";
 interface FactoryResult {
     html: string;
     css: string;
-
+    images: { name: string; data: Uint8Array | null }[];
 }
 
 
@@ -21,17 +21,22 @@ const TYPES = {
     ELLIPSE: "ELLIPSE",
     GROUP: "GROUP"
 }
-function generateCode(node: SceneNode): FactoryResult {
-    const result = { html: '', css: '' };
-     
+
+async function generateCode(node: SceneNode): Promise<FactoryResult> {
+    const result = { html: '', css: '', images: [] };
+
     if (!Object.prototype.hasOwnProperty.call(TYPES, node.type)) return result;
 
     const NodeClassRef = NODE_TYPES[node.type as keyof typeof NODE_TYPES];
     if (NodeClassRef) {
         //@ts-expect-error
         const instance = new NodeClassRef(node);
-        result.html += instance.createHTML();
-        result.css += instance.createCSS();
+        if (node.type === 'FRAME' || node.type === 'GROUP') {
+            await (instance as GFFrame).init();
+        }
+        result.html += await instance.createHTML();
+        result.css += await instance.createCSS();
+        result.images = result.images.concat(instance.images);
     }
     return result;
 }

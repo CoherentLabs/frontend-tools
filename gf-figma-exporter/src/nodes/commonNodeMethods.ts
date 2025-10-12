@@ -1,3 +1,4 @@
+import { SceneNodeWithFills } from '../types/commonTypes';
 import { convertPXtoVH, getPercentage } from '../utils/convertUnits';
 import createRGBAColor from '../utils/createRGBAColor';
 import {
@@ -6,6 +7,7 @@ import {
     linearGradientHandle,
     radialGradientHandle,
 } from '../utils/gradientUtils';
+import hasImage from '../utils/hasImage';
 import getParentSize from '../utils/parentSize';
 import sanitizeNames from '../utils/sanitizeNames';
 
@@ -106,13 +108,14 @@ function generateCommonStyles(node: CommonNode): string {
 }
 
 function generateAdditionalStyles(node: CommonNode): string {
+
     return `
-        ${generateBackground(node)}
+        ${!hasImage(node.fills) ? generateBackground(node) : ''}
         ${handleBorders(node)}
     `;
 }
 
-function addPseudoStylesForBackground(node: SceneNode): string {
+function addPseudoStylesForBackground(node: CommonNode): string {
     let result = '';
     if (!node.fills) return result;
 
