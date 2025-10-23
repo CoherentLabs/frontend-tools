@@ -3,5 +3,5 @@ export default function hasImage(fills: readonly Paint[] | PluginAPI["mixed"]): 
         return false;
     }
 
-    return fills.some((fill) => fill.type === 'IMAGE');
+    return fills.some((fill) => (fill.type === 'IMAGE' || fill.type === 'PATTERN') && fill.visible);
 }
