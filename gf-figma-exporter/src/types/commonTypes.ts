@@ -8,3 +8,28 @@ type SharedKeys<T, U> = keyof T & keyof U;
 type SharedProps<T, U> = Pick<T, SharedKeys<T, U>>;
 
 export type FrameAndGroup = SharedProps<FrameNode, GroupNode>;
+
+export type SVGNodes = VectorNode | LineNode | StarNode | PolygonNode | EllipseNode;
+
+export interface Point {
+    x: number;
+    y: number;
+}
+
+export interface FlattenOptions {
+    /** Max allowed deviation (in px) between the curve and its polyline approximation. */
+    tolerancePx?: number;
+    /** Coarse chunk count before adaptive refinement (higher = more initial samples). */
+    initialChunkCount?: number;
+}
+
+/** Minimal shape of your node used here. Adapt to your real type. */
+export interface FillGeometry {
+    data: string; // SVG path "d" attribute
+}
+
+export interface SvgNodeLike {
+    width: number;
+    height: number;
+    fillGeometry?: FillGeometry[];
+}

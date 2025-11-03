@@ -1,4 +1,5 @@
 import { NodesWithFillsAndStrokes } from '../../types/commonTypes';
+import isNodeSVG from '../../utils/isNodeSVG';
 import isBasicStroke from '../../utils/isStrokeBasic';
 
 export default function shouldExportStroke(node: NodesWithFillsAndStrokes): boolean {
@@ -21,6 +22,8 @@ export default function shouldExportStroke(node: NodesWithFillsAndStrokes): bool
     if (!isBasicStroke(node)) result = true;
 
     if (node.strokes[0].type !== 'GRADIENT_LINEAR' && node.strokes[0].type !== 'SOLID') result = true;
+
+    if (isNodeSVG(node)) result = true;
 
     return result;
 }

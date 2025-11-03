@@ -1,5 +1,3 @@
-import { NodesWithFillsAndStrokes } from '../../types/commonTypes';
-
 import generateImageName from '../../utils/generateImageName';
 
 interface GFImageResult {
@@ -7,9 +5,9 @@ interface GFImageResult {
     data: Uint8Array | null;
 }
 
-async function handleImage(node: NodesWithFillsAndStrokes, type: 'background' | 'border'): Promise<GFImageResult> {
+async function handleImage(node: SceneNode, type: 'background' | 'border' | 'full', format: ExportSettings['format']): Promise<GFImageResult> {
     const result: GFImageResult = { name: '', data: null };
-    result.data = await node.exportAsync({ format: 'PNG' });
+    result.data = await node.exportAsync({ format });
     result.name = generateImageName(node.name, node.id, type);
 
     return result;
