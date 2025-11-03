@@ -47,7 +47,7 @@ class ImageExporter {
         hideStrokes(node);
         hideEffects(node);
 
-        const { name, data } = await handleImage(node, 'background');
+        const { name, data } = await handleImage(node, 'background', 'PNG');
         if (!data) return null;
 
         if (node.type === 'FRAME') {
@@ -80,7 +80,7 @@ class ImageExporter {
         hideFills(node);
         hideEffects(node);
 
-        const { name, data } = await handleImage(node, 'border');
+        const { name, data } = await handleImage(node, 'border', 'PNG');
         if (!data) return null;
 
         restoreFills(node, fills);
@@ -96,6 +96,18 @@ class ImageExporter {
             data,
         };
     }
+
+    async exportFullImage(node: SceneNode, type: 'SVG' | 'PNG'): Promise<{ name: string; data: Uint8Array | null } | null> {
+        
+        const { name, data } = await handleImage(node, 'full', type);
+        if (!data) return null;
+
+        return {
+            name,
+            data,
+        };
+    }
+
 }
 
 export default ImageExporter;

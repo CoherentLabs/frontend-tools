@@ -15,10 +15,12 @@ figma.ui.onmessage = (msg: { type: string; count: number }) => {
                 pages,
                 filename: sanitizeNames(figma.root.name || 'figma-export'),
             });
-        });
-    }
 
-    if (msg.type === 'close-plugin') {
-        figma.closePlugin();
+            figma.ui.onmessage = (msg: { type: string }) => {
+                if (msg.type === 'close-plugin') {
+                    figma.closePlugin();
+                }
+            };
+        });
     }
 };

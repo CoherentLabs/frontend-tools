@@ -36,5 +36,71 @@
                 parent.postMessage({ pluginMessage: { type: 'close-plugin' } }, '*');
             });
         }
+
+        if (msg.type === 'flatten-svg') {
+            const { path, width, height, tolerance } = msg.options;
+            const SVG_NS = 'http://www.w3.org/2000/svg';
+
+            // Create the SVG
+            const svg = document.createElementNS(SVG_NS, 'svg');
+            svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+            svg.setAttribute('width', `${width}`);
+            svg.setAttribute('height', `${height}`);
+
+            // Create a path (a rectangle here)
+            const pathElement = document.createElementNS(SVG_NS, 'path');
+            pathElement.setAttribute('d', path);
+
+            svg.appendChild(pathElement);
+
+            // Calculate the total length of the path
+            const totalLength = pathElement.getTotalLength();
+            const points = [];
+
+            // Sample points along the path based on the tolerance
+            for (let length = 0; length <= totalLength; length += tolerance) {
+                const point = pathElement.getPointAtLength(length);
+                points.push({ x: point.x, y: point.y });
+            }
+
+            parent.postMessage({ pluginMessage: { type: 'flattened-svg-result', points } }, '*');
+        }
+
+        if (msg.type === 'path-bbox') {
+            const { path } = msg.options;
+            const SVG_NS = 'http://www.w3.org/2000/svg';
+
+            // Create the SVG
+            const svg = document.createElementNS(SVG_NS, 'svg');
+            svg.style.position = 'absolute';
+            svg.style.left = '-9999px';
+
+            document.body.appendChild(svg);
+
+            // Create a path
+            const pathElement = document.createElementNS(SVG_NS, 'path');
+            pathElement.setAttribute('d', path);
+
+            svg.appendChild(pathElement);
+
+            const bbox = pathElement.getBBox();
+
+            document.body.removeChild(svg);
+
+            parent.postMessage(
+                {
+                    pluginMessage: {
+                        type: 'path-bbox-result',
+                        bbox: {
+                            x: Number(bbox.x),
+                            y: Number(bbox.y),
+                            width: Number(bbox.width),
+                            height: Number(bbox.height),
+                        },
+                    },
+                },
+                '*'
+            );
+        }
     };
 </script>

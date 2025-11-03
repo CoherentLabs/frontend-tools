@@ -8,6 +8,9 @@ import {
     diamondGradientHandle,
 } from '../../utils/gradientUtils';
 import hasImage from '../../utils/hasImage';
+import isNodeSVG from '../../utils/isNodeSVG';
+import getPathBBox from '../../utils/getPathBBox';
+import { getPercentage } from '../../utils/convertUnits';
 
 export const SPECIAL_FILL_TYPES = ['GRADIENT_RADIAL', 'GRADIENT_DIAMOND'];
 
@@ -29,6 +32,11 @@ export function generateBackground(node: NodesWithFillsAndStrokes): string {
     // If there are multiple special fills, do not create pseudo elements for them because we can't handle that in CSS. Instead we'll export them as an image.
     const specialFillsCount = fills.filter((fill) => SPECIAL_FILL_TYPES.includes(fill.type) && fill.visible).length;
     if (specialFillsCount > 1) {
+        handleImageBackground(node);
+        return `${backgroundArrays.join(', ')}`;
+    }
+
+    if (fills.filter((fill) => fill.type === 'SOLID' && fill.visible).length > 1) {
         handleImageBackground(node);
         return `${backgroundArrays.join(', ')}`;
     }
@@ -136,4 +144,31 @@ export function additionalBackgroundStyles(node: NodesWithFillsAndStrokes): stri
     }
 
     return result;
+}
+
+export async function generateBackgroundRect(node: NodesWithFillsAndStrokes): Promise<DOMRect> {
+    const { fillGeometry } = node;
+
+    // If there is no fillGeometry or it's empty, return a sensible default rect
+    if (!fillGeometry || fillGeometry.length === 0) {
+        return { x: 0, y: 0, width: 100, height: 100 } as DOMRect;
+    }
+
+    // Only proceed for SVG nodes
+    if (!isNodeSVG(node)) {
+        return { x: 0, y: 0, width: 100, height: 100 } as DOMRect;
+    }
+
+    const bbox = await getPathBBox(fillGeometry[0].data);
+
+    if (!bbox) {
+        return { x: 0, y: 0, width: 100, height: 100 } as DOMRect;
+    }
+
+    return {
+        x: getPercentage(bbox.x, node.width),
+        y: getPercentage(bbox.y, node.height),
+        width: getPercentage(bbox.width, node.width),
+        height: getPercentage(bbox.height, node.height),
+    } as DOMRect;
 }

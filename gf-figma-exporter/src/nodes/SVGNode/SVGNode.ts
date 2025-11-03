@@ -1,23 +1,13 @@
-import CSSExporter from '../CSSExporter/CSSExporter';
-import ImageExporter from '../ImageExporter/ImageExporter';
-import { GFImage, NodesWithFillsAndStrokes } from '../types/commonTypes';
-import { BACKGROUND_SUFFIX } from '../utils/constants';
-import generateClassName from '../utils/generateClassName';
+import CSSExporter from '../../CSSExporter/CSSExporter';
+import { createClipPath } from '../../CSSExporter/utils/clipPath';
+import ImageExporter from '../../ImageExporter/ImageExporter';
+import { NodesWithFillsAndStrokes, SVGNodes } from '../../types/commonTypes';
+import { BACKGROUND_SUFFIX } from '../../utils/constants';
+import GFBaseNode from '../BaseNode';
 
-export default class GFBaseNode {
-    public node: SceneNode;
-    public className: string;
-    public images: GFImage[] = [];
-    public additionalCSS: string;
-
-    constructor(node: SceneNode) {
-        this.node = node;
-        this.className = generateClassName(this.node.name, this.node.id);
-        this.additionalCSS = '';
-    }
-
-    async createHTML(): Promise<string> {
-        return `<div class="${this.className}"><div class="${this.className}${BACKGROUND_SUFFIX}"></div></div>`;
+export default class GFSVGNode extends GFBaseNode {
+    constructor(public node: SVGNodes) {
+        super(node);
     }
 
     async createCSS(): Promise<string> {
@@ -36,15 +26,24 @@ export default class GFBaseNode {
         if (border) {
             this.images.push(border);
         }
-        
+
+        if (!background) { //Avoid calling postmessage if we are exporting background as image
+            // Create clip-path only if we are not exporting background as image
+            const clipPath = await createClipPath(this.node);
+
+            if (clipPath) {
+                CSSExporterInstance.backgroundStyles.add('clip-path', clipPath);
+            }
+        }
+
         const beforePseudoStyles = CSSExporterInstance.generateBeforePseudo();
-        if (beforePseudoStyles) 
+        if (beforePseudoStyles)
             beforePseudo = `.${this.className}${BACKGROUND_SUFFIX}::before {
             ${beforePseudoStyles}
         }`;
 
         const afterPseudoStyles = await CSSExporterInstance.generateAfterPseudo();
-        if (afterPseudoStyles) 
+        if (afterPseudoStyles)
             afterPseudo = `.${this.className}::after {
             ${afterPseudoStyles}
         }`;
@@ -59,7 +58,6 @@ export default class GFBaseNode {
         }
 
         ${beforePseudo}
-        ${afterPseudo}
-        ${this.additionalCSS}`;
+        ${afterPseudo}`;
     }
 }

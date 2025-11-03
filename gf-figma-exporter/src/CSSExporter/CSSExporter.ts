@@ -1,5 +1,7 @@
 import { NodesWithFillsAndStrokes, PrimitiveNodes } from '../types/commonTypes';
-import { additionalBackgroundStyles, generateBackground } from './utils/background';
+import isNodeSVG from '../utils/isNodeSVG';
+import StyleManager from './StyleManager/StyleManager';
+import { additionalBackgroundStyles, generateBackground, generateBackgroundRect } from './utils/background';
 import { generateBorderRadius, generateBorders } from './utils/border';
 import { generateOpacity } from './utils/opacity';
 import { generatePosition } from './utils/position';
@@ -8,9 +10,17 @@ import { generateZIndex } from './utils/zIndex';
 
 class CSSExporter {
     public node: SceneNode;
+    public style: StyleManager;
+    public backgroundStyles: StyleManager;
+    public pseudoBeforeStyles: StyleManager;
+    public borderStyles: StyleManager;
 
     constructor(node: SceneNode) {
         this.node = node;
+        this.style = new StyleManager();
+        this.backgroundStyles = new StyleManager();
+        this.borderStyles = new StyleManager();
+        this.pseudoBeforeStyles = new StyleManager();
     }
 
     generateElementStyle() {
@@ -19,38 +29,42 @@ class CSSExporter {
         const opacity = generateOpacity((this.node as PrimitiveNodes).opacity);
         const zIndex = generateZIndex(this.node as PrimitiveNodes);
 
-        return `
-            width: ${width};
-            height: ${height};
-            position: absolute;
-            top: ${top};
-            left: ${left};
-            opacity: ${opacity};
-            z-index: ${zIndex};
-        `;
+        this.style.add('width', width);
+        this.style.add('height', height);
+        this.style.add('position', 'absolute');
+        this.style.add('top', top);
+        this.style.add('left', left);
+        this.style.add('opacity', opacity);
+        this.style.add('z-index', zIndex.toString());
+
+        return this.style.getCSS();
     }
 
-    generateBackgroundElementStyle() {
+    async generateBackgroundElementStyle() {
         const { topLeftRadius, bottomLeftRadius, bottomRightRadius, topRightRadius } = generateBorderRadius(
             this.node as PrimitiveNodes
         );
         const background = generateBackground(this.node as NodesWithFillsAndStrokes);
         const zIndex = generateZIndex(this.node as PrimitiveNodes);
 
-        return `
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            overflow: hidden;
-            border-top-left-radius: ${topLeftRadius};
-            border-top-right-radius: ${topRightRadius};
-            border-bottom-right-radius: ${bottomRightRadius};
-            border-bottom-left-radius: ${bottomLeftRadius};
-            ${background ? `background: ${background}` : ''};
-            z-index: ${zIndex};
-        `;
+        const {x, y, width, height} = await generateBackgroundRect(this.node as NodesWithFillsAndStrokes);
+
+        this.backgroundStyles.add('width', `${width}%`);
+        this.backgroundStyles.add('height', `${height}%`);
+        this.backgroundStyles.add('position', 'absolute');
+        this.backgroundStyles.add('top', `${y}%`);
+        this.backgroundStyles.add('left', `${x}%`);
+        this.backgroundStyles.add('overflow', 'hidden');
+        this.backgroundStyles.add('border-top-left-radius', !isNodeSVG(this.node) ? topLeftRadius : '0');
+        this.backgroundStyles.add('border-top-right-radius', !isNodeSVG(this.node) ? topRightRadius : '0');
+        this.backgroundStyles.add('border-bottom-right-radius', !isNodeSVG(this.node) ? bottomRightRadius : '0');
+        this.backgroundStyles.add('border-bottom-left-radius', !isNodeSVG(this.node) ? bottomLeftRadius : '0');
+        this.backgroundStyles.add('z-index', zIndex.toString());
+        if (background) {
+            this.backgroundStyles.add('background', background);
+        }
+
+        return this.backgroundStyles.getCSS();
     }
 
     generateBeforePseudo(): string {
@@ -59,26 +73,30 @@ class CSSExporter {
             return '';
         }
 
+        this.pseudoBeforeStyles.add('content', "''");
+        this.pseudoBeforeStyles.add('position', 'absolute');
+        this.pseudoBeforeStyles.add('transform-origin', 'top left');
+
         return `
-            content: '';
-            position: absolute;
-            transform-origin: top left;
+            ${this.pseudoBeforeStyles.getCSS()}
             ${pseudoStyles}
         `;
     }
 
-    generateAfterPseudo(): string {
-        const pseudoStyles = generateBorders(this.node as NodesWithFillsAndStrokes);
+    async generateAfterPseudo(): Promise<string> {
+        const pseudoStyles = await generateBorders(this.node as NodesWithFillsAndStrokes);
         if (!pseudoStyles) {
             return '';
         }
 
         const zIndex = generateZIndex(this.node as PrimitiveNodes) + 2;
 
+        this.borderStyles.add('content', "''");
+        this.borderStyles.add('position', 'absolute');
+        this.borderStyles.add('z-index', zIndex.toString());
+
         return `
-            content: '';
-            position: absolute;
-            z-index: ${zIndex};
+            ${this.borderStyles.getCSS()}
             ${pseudoStyles}
         `;
     }

@@ -2,7 +2,9 @@ import { NodesWithFillsAndStrokes, PrimitiveNodes } from '../../types/commonType
 import { convertPXtoVH } from '../../utils/convertUnits';
 import createRGBAColor from '../../utils/createRGBAColor';
 import generateImageName from '../../utils/generateImageName';
+import getPathBBox from '../../utils/getPathBBox';
 import { linearGradientHandle } from '../../utils/gradientUtils';
+import isNodeSVG from '../../utils/isNodeSVG';
 import isBasicStroke from '../../utils/isStrokeBasic';
 
 export function generateBorderRadius(node: PrimitiveNodes): {
@@ -28,7 +30,7 @@ export function generateBorderRadius(node: PrimitiveNodes): {
     };
 }
 
-export function generateBorders(node: NodesWithFillsAndStrokes): string {
+export async function generateBorders(node: NodesWithFillsAndStrokes): Promise<string> {
     const { strokes } = node;
 
     let result = '';
@@ -37,8 +39,10 @@ export function generateBorders(node: NodesWithFillsAndStrokes): string {
 
     if (strokes.every((stroke) => stroke.visible === false)) return '';
 
-    result += calculateElementWidthWithBorder(node);
-    result += calculatePositionWithBorder(node);
+    const bbox = isNodeSVG(node) && node.strokeGeometry[0] ? await getPathBBox(node.strokeGeometry[0].data) : undefined;
+
+    result += calculateElementWidthWithBorder(node, bbox);
+    result += calculatePositionWithBorder(node, bbox);
 
     const handleImageStroke = () => {
         result += `background-image: url(./${generateImageName(node.name, node.id, 'border')});\n`;
@@ -71,6 +75,12 @@ export function generateBorders(node: NodesWithFillsAndStrokes): string {
         return result;
     }
 
+    if (isNodeSVG(node)) {
+        // SVG nodes have complex stroke geometry that CSS borders do not support, so we export as image
+        handleImageStroke();
+        return result;
+    }
+
     switch (strokes[0].type) {
         case 'SOLID': {
             if (!isBasicStroke(node)) {
@@ -95,7 +105,13 @@ export function generateBorders(node: NodesWithFillsAndStrokes): string {
                 return result;
             }
 
-            const { gradient } = linearGradientHandle(strokes[0] as GradientPaint, node.width, node.height, node.x, node.y);
+            const { gradient } = linearGradientHandle(
+                strokes[0] as GradientPaint,
+                node.width,
+                node.height,
+                node.x,
+                node.y
+            );
             result += `border-image: ${gradient} 1;\n`;
             result += handleBorderWidths(node);
             result += `border-style: solid;\n`;
@@ -125,10 +141,11 @@ function handleBorderWidths(node: NodesWithFillsAndStrokes): string {
     return result;
 }
 
-function calculateElementWidthWithBorder(node: NodesWithFillsAndStrokes): string {
+function calculateElementWidthWithBorder(node: NodesWithFillsAndStrokes, bbox?: DOMRect): string {
     let result = '';
-    const width = convertPXtoVH(node.width);
-    const height = convertPXtoVH(node.height);
+    
+    const width = convertPXtoVH(bbox ? bbox.width : node.width);
+    const height = convertPXtoVH(bbox ? bbox.height : node.height);
     if (node.strokeWeight === figma.mixed && node.type !== 'ELLIPSE') {
         const left = convertPXtoVH(node.strokeLeftWeight);
         const right = convertPXtoVH(node.strokeRightWeight);
@@ -165,7 +182,7 @@ function calculateOffsetBorder(node: NodesWithFillsAndStrokes, strokeWidth: numb
     }
 }
 
-function calculatePositionWithBorder(node: NodesWithFillsAndStrokes): string {
+function calculatePositionWithBorder(node: NodesWithFillsAndStrokes, bbox?: DOMRect): string {
     let leftOffset = 0;
     let topOffset = 0;
     if (node.strokeWeight === figma.mixed && node.type !== 'ELLIPSE') {
@@ -176,9 +193,16 @@ function calculatePositionWithBorder(node: NodesWithFillsAndStrokes): string {
         topOffset = node.strokeWeight as number;
     }
 
+    if (bbox) {
+        leftOffset += bbox.x;
+        topOffset += bbox.y;
+    }
+
     switch (node.strokeAlign) {
         case 'INSIDE': {
-            return `top: 0vh;\nleft: 0vh;\n`;
+            return `top: ${convertPXtoVH(bbox ? bbox.y : 0).toFixed(2)}vh;\nleft: ${convertPXtoVH(
+                bbox ? bbox.x : 0
+            ).toFixed(2)}vh;\n`;
         }
         case 'OUTSIDE': {
             return `top: -${convertPXtoVH(topOffset).toFixed(2)}vh;\nleft: -${convertPXtoVH(leftOffset).toFixed(
@@ -192,4 +216,3 @@ function calculatePositionWithBorder(node: NodesWithFillsAndStrokes): string {
         }
     }
 }
-
