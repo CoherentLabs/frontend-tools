@@ -125,6 +125,21 @@ class DOMElement {
     }
 
     /**
+     * Retrieves the parent element of the current DOM element.
+     *
+     * @returns {Promise<DOMElement>} A promise that resolves to a new DOMElement instance with the found nodeId.
+     */
+    async getParent() {
+        global.log.debug(`\n[DOMElement] Getting parent element of node with id - ${this.nodeId}`);
+
+        if (!this.node.parentId) {
+            throw new Error(`Node with id - ${this.nodeId} does not have a parent element.`);
+        }
+
+        return await new DOMElement(this.gamefaceCommands, this.node.parentId);
+    }
+
+    /**
      * Retrieves the child elements of the current DOM element.
      *
      * @returns {Promise<DOMElements>} A promise that resolves to an array of child DOM elements.

@@ -37,15 +37,14 @@ describe('Test script', function () {
         assert.equal((await children.nth(1).text()).trim(), '456');
     });
 
-    it('Should test element with children', async () => {
+    it('Should test getting an element\'s parent', async () => {
         const el = (await gf.get('#element-with-children'));
         const children = await el.children();
-        assert.equal(children.length, 2);
-        assert.equal((await gf.getAll('.child')).length, 2);
 
-        assert.equal((await children.first().text()), '123');
-        assert.equal((await children.last().text()), '456');
-        assert.equal((await children.nth(1).text()), '456');
+        const firstChild = children[0];
+        const parent = await firstChild.getParent();
+
+        assert.equal(parent.nodeId, el.nodeId);
     });
 
     it('Should test finding an element', async () => {

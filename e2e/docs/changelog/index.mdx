@@ -4,7 +4,13 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 1.1.1 :badge[Latest]{variant="note"}
+## 2.0.0 :badge[Latest]{variant="note"}
+
+<Badge text="Change" variant="danger" size="small" /> Renamed `gf.moveMouse` method to `gf.mouseMove` for consistency with other mouse-related methods (breaking).
+
+<Badge text="Feature" variant="success" size="small" /> Added `getParent` methods to both the `gf` object and the `DOMElement` object for retrieving the parent element of a specified element or the current DOM element, respectively.
+
+## 1.1.1
 
 <Badge text="Fix" variant="danger" size="small" /> Fixed tests exit code when tests fail. Previously, the exit code was always 0, which could lead to confusion when running tests in CI/CD pipelines.
 

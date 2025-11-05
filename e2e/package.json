@@ -1,6 +1,6 @@
 {
   "name": "gameface-e2e",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "scripts": {
     "run-test": "node ./scripts/test.js --port=54321",
     "dev:host": "http-server ./examples -p 54321",
