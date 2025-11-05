@@ -54,6 +54,10 @@
         document.addEventListener('mouseup', (event) => {
             mouseElement.textContent = 'Mouse up';
         });
+
+        document.addEventListener('mousemove', (event) => {
+            mouseElement.textContent = `${event.clientX}, ${event.clientY}`;
+        });
     </script>
 </body>
 

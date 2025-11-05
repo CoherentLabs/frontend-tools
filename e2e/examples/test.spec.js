@@ -37,15 +37,14 @@ describe('Test script', function () {
         assert.equal((await children.nth(1).text()).trim(), '456');
     });
 
-    it('Should test element with children', async () => {
+    it('Should test getting an element\'s parent', async () => {
         const el = (await gf.get('#element-with-children'));
         const children = await el.children();
-        assert.equal(children.length, 2);
-        assert.equal((await gf.getAll('.child')).length, 2);
 
-        assert.equal((await children.first().text()), '123');
-        assert.equal((await children.last().text()), '456');
-        assert.equal((await children.nth(1).text()), '456');
+        const firstChild = children[0];
+        const parent = await firstChild.getParent();
+
+        assert.equal(parent.nodeId, el.nodeId);
     });
 
     it('Should test finding an element', async () => {
@@ -410,6 +409,13 @@ describe('Test document key events', function () {
             assert.equal(await el.text(), ``);
         });
     }
+});
+
+describe('Test mouse events', function () {
+    it('Should navigate to the test page', async () => {
+        // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
+        await gf.navigate(`http://localhost:${PORT}/document-events.html`);
+    });
 
     it(`Should mousedown to document`, async () => {
         await gf.mousePress();
@@ -421,6 +427,12 @@ describe('Test document key events', function () {
         await gf.mouseRelease();
         const el = (await gf.get(`#test-mouse`));
         assert.equal(await el.text(), `Mouse up`);
+    });
+
+    it(`Should mousemove to coordinates`, async () => {
+        await gf.mouseMove(100, 150);
+        const el = (await gf.get(`#test-mouse`));
+        assert.equal(await el.text(), `100, 150`);
     });
 });
 

@@ -121,6 +121,7 @@ class GamefaceCommands extends GamefaceCommandsBase {
         this.getAll = this.getAll.bind(this);
         this.contains = this.contains.bind(this);
         this.text = this.text.bind(this);
+        this.getParent = this.getParent.bind(this);
         this.children = this.children.bind(this);
         this.navigate = this.navigate.bind(this);
         this.isHidden = this.isHidden.bind(this);
@@ -134,7 +135,7 @@ class GamefaceCommands extends GamefaceCommandsBase {
         this.click = this.click.bind(this);
         this.mousePress = this.mousePress.bind(this);
         this.mouseRelease = this.mouseRelease.bind(this);
-        this.moveMouse = this.moveMouse.bind(this);
+        this.mouseMove = this.mouseMove.bind(this);
         this.mouseWheel = this.mouseWheel.bind(this);
         this._keyEvent = this._keyEvent.bind(this);
         this.keyPress = this.keyPress.bind(this);
@@ -232,6 +233,20 @@ class GamefaceCommands extends GamefaceCommandsBase {
 
         const element = await this.get(selector);
         return element.text();
+    }
+
+    /**
+     * Retrieves the parent of the specified element.
+     * @param {string} selector - The CSS selector of the element to get the parent from.
+     * @returns {Promise<DOMElement>} A promise that resolves to the DOMElement instance of the parent element.
+     */
+    async getParent(selector) {
+        global.log.debug(`\n[DOMElement] Getting parent element of node with selector - ${selector}`);
+
+        if (!selector) throw new Error(`Selector must be provided to find an element.`);
+
+        const element = await this.get(selector);
+        return element.getParent();
     }
 
     /**
@@ -476,7 +491,7 @@ class GamefaceCommands extends GamefaceCommandsBase {
      * @param {number} y - The y-coordinate to move the mouse to.
      * @returns {Promise<void>} A promise that resolves when the mouse movement is complete.
      */
-    async moveMouse(x, y) {
+    async mouseMove(x, y) {
         global.log.debug(`\n[GamefaceCommands] Mouse moving on ${x} ${y}.`);
 
         await this.sendCommand('Input.dispatchMouseEvent', {
