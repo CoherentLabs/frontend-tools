@@ -134,7 +134,7 @@ class GamefaceCommands extends GamefaceCommandsBase {
         this.click = this.click.bind(this);
         this.mousePress = this.mousePress.bind(this);
         this.mouseRelease = this.mouseRelease.bind(this);
-        this.moveMouse = this.moveMouse.bind(this);
+        this.mouseMove = this.mouseMove.bind(this);
         this.mouseWheel = this.mouseWheel.bind(this);
         this._keyEvent = this._keyEvent.bind(this);
         this.keyPress = this.keyPress.bind(this);
@@ -476,7 +476,7 @@ class GamefaceCommands extends GamefaceCommandsBase {
      * @param {number} y - The y-coordinate to move the mouse to.
      * @returns {Promise<void>} A promise that resolves when the mouse movement is complete.
      */
-    async moveMouse(x, y) {
+    async mouseMove(x, y) {
         global.log.debug(`\n[GamefaceCommands] Mouse moving on ${x} ${y}.`);
 
         await this.sendCommand('Input.dispatchMouseEvent', {

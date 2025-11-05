@@ -970,7 +970,7 @@ class DOMElement {
         if (!await this.isVisible()) await this.scrollIntoView();
 
         const [x, y] = await this._getCenter();
-        await this.gamefaceCommands.moveMouse(x, y);
+        await this.gamefaceCommands.mouseMove(x, y);
     }
 
     /**
@@ -994,7 +994,7 @@ class DOMElement {
         const [startX, startY] = await this._getCenter();
 
         await this.gamefaceCommands.mousePress(startX, startY);
-        await this.gamefaceCommands.moveMouse(x, y);
+        await this.gamefaceCommands.mouseMove(x, y);
         await this.gamefaceCommands.mouseRelease(x, y);
     }
 

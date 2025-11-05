@@ -410,6 +410,13 @@ describe('Test document key events', function () {
             assert.equal(await el.text(), ``);
         });
     }
+});
+
+describe('Test mouse events', function () {
+    it('Should navigate to the test page', async () => {
+        // Replace with your html file path that you want to test. The path should be absolute or relative to the passed gameface path.
+        await gf.navigate(`http://localhost:${PORT}/document-events.html`);
+    });
 
     it(`Should mousedown to document`, async () => {
         await gf.mousePress();
@@ -421,6 +428,12 @@ describe('Test document key events', function () {
         await gf.mouseRelease();
         const el = (await gf.get(`#test-mouse`));
         assert.equal(await el.text(), `Mouse up`);
+    });
+
+    it(`Should mousemove to coordinates`, async () => {
+        await gf.mouseMove(100, 150);
+        const el = (await gf.get(`#test-mouse`));
+        assert.equal(await el.text(), `100, 150`);
     });
 });
 
