@@ -32,7 +32,7 @@ class ImageExporter {
     async exportBackgroundImage(
         node: NodesWithFillsAndStrokes
     ): Promise<{ name: string; data: Uint8Array | null } | null> {
-        if (!shouldExportBackground(node.fills)) return null;
+        if (!shouldExportBackground(node)) return null;
 
         if (node.type === 'FRAME') {
             // Temporarily hide children to avoid exporting them in the background image

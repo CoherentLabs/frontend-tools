@@ -1,8 +1,9 @@
-import { NodesWithFillsAndStrokes, PrimitiveNodes } from '../types/commonTypes';
+import { NodesWithFillsAndStrokes, PrimitiveNodes, SVGNodes } from '../types/commonTypes';
 import isNodeSVG from '../utils/isNodeSVG';
 import StyleManager from './StyleManager/StyleManager';
 import { additionalBackgroundStyles, generateBackground, generateBackgroundRect } from './utils/background';
 import { generateBorderRadius, generateBorders } from './utils/border';
+import { generateEffectStyles } from './utils/effects';
 import { generateOpacity } from './utils/opacity';
 import { generatePosition } from './utils/position';
 import { generateSize } from './utils/size';
@@ -28,11 +29,15 @@ class CSSExporter {
         const { top, left } = generatePosition(this.node as PrimitiveNodes);
         const opacity = generateOpacity((this.node as PrimitiveNodes).opacity);
         const zIndex = generateZIndex(this.node as PrimitiveNodes);
+        const { filter, backDropFilter } = generateEffectStyles(
+            this.node as SVGNodes | NodesWithFillsAndStrokes
+        );
 
         const { topLeftRadius, bottomLeftRadius, bottomRightRadius, topRightRadius } = generateBorderRadius(
             this.node as PrimitiveNodes
         );
 
+        this.style.add('font-size', '1vh');
         this.style.add('width', width);
         this.style.add('height', height);
         this.style.add('position', 'absolute');
@@ -44,6 +49,12 @@ class CSSExporter {
         this.style.add('border-top-right-radius', !isNodeSVG(this.node) ? topRightRadius : '0');
         this.style.add('border-bottom-right-radius', !isNodeSVG(this.node) ? bottomRightRadius : '0');
         this.style.add('border-bottom-left-radius', !isNodeSVG(this.node) ? bottomLeftRadius : '0');
+        if (filter) {
+            this.style.add('filter', filter);
+        }
+        if (backDropFilter) {
+            this.style.add('backdrop-filter', backDropFilter);
+        }
 
         if ((this.node as NodesWithFillsAndStrokes).strokeAlign === 'INSIDE') {
             this.style.add('overflow', 'hidden');
@@ -60,6 +71,11 @@ class CSSExporter {
         const zIndex = generateZIndex(this.node as PrimitiveNodes);
 
         const { x, y, width, height } = await generateBackgroundRect(this.node as NodesWithFillsAndStrokes);
+
+        const {boxShadow} = generateEffectStyles(this.node as SVGNodes | NodesWithFillsAndStrokes);
+        if (boxShadow) {
+            this.backgroundStyles.add('box-shadow', boxShadow);
+        }
 
         this.backgroundStyles.add('width', `${width}%`);
         this.backgroundStyles.add('height', `${height}%`);

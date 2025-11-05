@@ -1,4 +1,5 @@
 import { NodesWithFillsAndStrokes } from '../../types/commonTypes';
+import getExportableEffects from '../../utils/exportableEffect';
 import isNodeSVG from '../../utils/isNodeSVG';
 import isBasicStroke from '../../utils/isStrokeBasic';
 
@@ -24,6 +25,9 @@ export default function shouldExportStroke(node: NodesWithFillsAndStrokes): bool
     if (node.strokes[0].type !== 'GRADIENT_LINEAR' && node.strokes[0].type !== 'SOLID') result = true;
 
     if (isNodeSVG(node)) result = true;
+
+    const exportableEffect = getExportableEffects(node);
+    if (exportableEffect.length > 0) result = true;
 
     return result;
 }

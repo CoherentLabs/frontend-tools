@@ -12,6 +12,7 @@ import isNodeSVG from '../../utils/isNodeSVG';
 import getPathBBox from '../../utils/getPathBBox';
 import { getPercentage } from '../../utils/convertUnits';
 import shouldExportBackground from '../../ImageExporter/utils/shouldExportBackground';
+import getExportableEffects from '../../utils/exportableEffect';
 
 export const SPECIAL_FILL_TYPES = ['GRADIENT_RADIAL', 'GRADIENT_DIAMOND'];
 
@@ -38,6 +39,11 @@ export function generateBackground(node: NodesWithFillsAndStrokes): string {
     }
 
     if (fills.filter((fill) => fill.type === 'SOLID' && fill.visible).length > 1) {
+        handleImageBackground(node);
+        return `${backgroundArrays.join(', ')}`;
+    }
+
+    if (getExportableEffects(node).length > 0) {
         handleImageBackground(node);
         return `${backgroundArrays.join(', ')}`;
     }
