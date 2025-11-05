@@ -1,4 +1,5 @@
 import { NodesWithFillsAndStrokes, PrimitiveNodes } from '../../types/commonTypes';
+import getExportableEffects from '../../utils/exportableEffect';
 
 export function hideStrokes(node: NodesWithFillsAndStrokes) {
     if (!node.strokes || node.strokes.length === 0) return;
@@ -28,7 +29,9 @@ export function restoreFills(node: NodesWithFillsAndStrokes, originalFills: Pain
 export function hideEffects(node: PrimitiveNodes) {
     if (!node.effects || node.effects.length === 0) return;
 
-    node.effects = [];
+
+
+    node.effects = getExportableEffects(node);
 }
 
 export function restoreEffects(node: PrimitiveNodes, originalEffects: Effect[] | ReadonlyArray<Effect>) {

@@ -1,7 +1,11 @@
 import { SPECIAL_FILL_TYPES } from "../../CSSExporter/utils/background";
+import { NodesWithFillsAndStrokes, SVGNodes } from "../../types/commonTypes";
+import getExportableEffects from "../../utils/exportableEffect";
 import hasImage from "../../utils/hasImage";
 
-export default function shouldExportBackground(fills: readonly Paint[] | PluginAPI["mixed"]): boolean {
+export default function shouldExportBackground(node: SVGNodes | NodesWithFillsAndStrokes): boolean {
+    const { fills } = node;
+
     let result = false;
 
     if (!fills || fills === figma.mixed) return result;
@@ -17,6 +21,9 @@ export default function shouldExportBackground(fills: readonly Paint[] | PluginA
     if (specialFillsCount > 1) result = true;
 
     if (hasImage(fills)) result = true;
+
+    const imageEffects = getExportableEffects(node);
+    if (imageEffects.length > 0) result = true;
 
     return result;
 }
