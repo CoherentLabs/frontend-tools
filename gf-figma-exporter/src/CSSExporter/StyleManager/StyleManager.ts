@@ -15,7 +15,7 @@ class StyleManager {
     getCSS(): string {
         let css = '';
         this.rules.forEach((declaration, rule) => {
-            css += `${rule}: ${declaration} ;\n`;
+            css += `${rule}: ${declaration};\n`;
         });
         return css;
     }
