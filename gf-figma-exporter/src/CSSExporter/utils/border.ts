@@ -143,7 +143,6 @@ function handleBorderWidths(node: NodesWithFillsAndStrokes): string {
 
 function calculateElementWidthWithBorder(node: NodesWithFillsAndStrokes, bbox?: DOMRect): string {
     let result = '';
-    
     const width = convertPXtoVH(bbox ? bbox.width : node.width);
     const height = convertPXtoVH(bbox ? bbox.height : node.height);
     if (node.strokeWeight === figma.mixed && node.type !== 'ELLIPSE') {

@@ -98,7 +98,6 @@ class ImageExporter {
     }
 
     async exportFullImage(node: SceneNode, type: 'SVG' | 'PNG'): Promise<{ name: string; data: Uint8Array | null } | null> {
-        
         const { name, data } = await handleImage(node, 'full', type);
         if (!data) return null;
 
