@@ -29,6 +29,10 @@ class CSSExporter {
         const opacity = generateOpacity((this.node as PrimitiveNodes).opacity);
         const zIndex = generateZIndex(this.node as PrimitiveNodes);
 
+        const { topLeftRadius, bottomLeftRadius, bottomRightRadius, topRightRadius } = generateBorderRadius(
+            this.node as PrimitiveNodes
+        );
+
         this.style.add('width', width);
         this.style.add('height', height);
         this.style.add('position', 'absolute');
@@ -36,6 +40,14 @@ class CSSExporter {
         this.style.add('left', left);
         this.style.add('opacity', opacity);
         this.style.add('z-index', zIndex.toString());
+        this.style.add('border-top-left-radius', !isNodeSVG(this.node) ? topLeftRadius : '0');
+        this.style.add('border-top-right-radius', !isNodeSVG(this.node) ? topRightRadius : '0');
+        this.style.add('border-bottom-right-radius', !isNodeSVG(this.node) ? bottomRightRadius : '0');
+        this.style.add('border-bottom-left-radius', !isNodeSVG(this.node) ? bottomLeftRadius : '0');
+
+        if ((this.node as NodesWithFillsAndStrokes).strokeAlign === 'INSIDE') {
+            this.style.add('overflow', 'hidden');
+        }
 
         return this.style.getCSS();
     }
@@ -47,7 +59,7 @@ class CSSExporter {
         const background = generateBackground(this.node as NodesWithFillsAndStrokes);
         const zIndex = generateZIndex(this.node as PrimitiveNodes);
 
-        const {x, y, width, height} = await generateBackgroundRect(this.node as NodesWithFillsAndStrokes);
+        const { x, y, width, height } = await generateBackgroundRect(this.node as NodesWithFillsAndStrokes);
 
         this.backgroundStyles.add('width', `${width}%`);
         this.backgroundStyles.add('height', `${height}%`);
