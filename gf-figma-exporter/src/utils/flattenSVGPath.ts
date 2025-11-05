@@ -1,3 +1,4 @@
+// We need to call postMessage on the figma.ui to leverage the browser's SVG capabilities as Figma's plugin environment does not support SVG manipulation natively.
 export default async function flattenSVGPath(
     path: string,
     width: number,

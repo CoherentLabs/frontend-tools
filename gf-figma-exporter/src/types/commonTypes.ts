@@ -22,14 +22,3 @@ export interface FlattenOptions {
     /** Coarse chunk count before adaptive refinement (higher = more initial samples). */
     initialChunkCount?: number;
 }
-
-/** Minimal shape of your node used here. Adapt to your real type. */
-export interface FillGeometry {
-    data: string; // SVG path "d" attribute
-}
-
-export interface SvgNodeLike {
-    width: number;
-    height: number;
-    fillGeometry?: FillGeometry[];
-}

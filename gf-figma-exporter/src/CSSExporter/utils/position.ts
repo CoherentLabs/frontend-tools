@@ -3,11 +3,17 @@ import { getPercentage } from '../../utils/convertUnits';
 import getParentSize from '../../utils/parentSize';
 
 export function generatePosition(node: PrimitiveNodes): { left: string; top: string } {
-    const { x, y, parent } = node;
+    let { x, y } = node;
+    const { parent } = node;
 
     if (!parent || parent.type === 'PAGE') return { left: `0%`, top: `0%` };
 
     const { width, height } = getParentSize(parent);
+
+    if (parent.type === 'GROUP') {
+        x -= parent.x;
+        y -= parent.y;
+    }
 
     return {
         left: `${getPercentage(x, width)}%`,

@@ -1,4 +1,4 @@
-import { NodesWithFillsAndStrokes, PrimitiveNodes } from '../../types/commonTypes';
+import { NodesWithFillsAndStrokes, PrimitiveNodes, SVGNodes } from '../../types/commonTypes';
 import { convertPXtoVH } from '../../utils/convertUnits';
 import createRGBAColor from '../../utils/createRGBAColor';
 import generateImageName from '../../utils/generateImageName';
@@ -39,7 +39,7 @@ export async function generateBorders(node: NodesWithFillsAndStrokes): Promise<s
 
     if (strokes.every((stroke) => stroke.visible === false)) return '';
 
-    const bbox = isNodeSVG(node) && node.strokeGeometry[0] ? await getPathBBox(node.strokeGeometry[0].data) : undefined;
+    const bbox = node.strokeGeometry[0] ? await getPathBBox(node.strokeGeometry[0].data) : undefined;
 
     result += calculateElementWidthWithBorder(node, bbox);
     result += calculatePositionWithBorder(node, bbox);
@@ -139,75 +139,72 @@ function handleBorderWidths(node: NodesWithFillsAndStrokes): string {
 
 function calculateElementWidthWithBorder(node: NodesWithFillsAndStrokes, bbox?: DOMRect): string {
     let result = '';
-    const width = convertPXtoVH(bbox ? bbox.width : node.width);
-    const height = convertPXtoVH(bbox ? bbox.height : node.height);
-    if (node.strokeWeight === figma.mixed && node.type !== 'ELLIPSE') {
-        const left = convertPXtoVH(node.strokeLeftWeight);
-        const right = convertPXtoVH(node.strokeRightWeight);
-        result = `width: ${(width + calculateOffsetBorder(node, left) + calculateOffsetBorder(node, right)).toFixed(
-            2
-        )}vh;\n`;
+    const {width, height} = calculateOffsetBorderSize(node, bbox);
 
-        const top = convertPXtoVH(node.strokeTopWeight);
-        const bottom = convertPXtoVH(node.strokeBottomWeight);
-        result += `height: ${(height + calculateOffsetBorder(node, top) + calculateOffsetBorder(node, bottom)).toFixed(
-            2
-        )}vh;\n`;
-        return result;
-    }
-
-    const strokeWidth = convertPXtoVH(node.strokeWeight as number);
-
-    result += `width: ${(width + calculateOffsetBorder(node, strokeWidth)).toFixed(2)}vh;\n`;
-    result += `height: ${(height + calculateOffsetBorder(node, strokeWidth)).toFixed(2)}vh;\n`;
+    result += `width: ${convertPXtoVH(width).toFixed(2)}vh;\n`;
+    result += `height: ${convertPXtoVH(height).toFixed(2)}vh;\n`;
     return result;
 }
 
-function calculateOffsetBorder(node: NodesWithFillsAndStrokes, strokeWidth: number): number {
+function calculateOffsetBorderSize(
+    node: NodesWithFillsAndStrokes | SVGNodes,
+    bbox?: DOMRect
+): { width: number; height: number } {
+    const width = bbox ? bbox.width : node.width;
+    const height = bbox ? bbox.height : node.height;
+
+    if ((bbox && bbox.width < node.width) && (bbox && bbox.height < node.height)) {
+        return { width, height };
+    }
+
     switch (node.strokeAlign) {
-        case 'INSIDE': {
-            return 0;
-        }
-        case 'OUTSIDE': {
-            return strokeWidth * 2;
-        }
-        case 'CENTER': {
-            return strokeWidth;
-        }
+        case 'OUTSIDE':
+            return { width, height };
+
+        case 'CENTER':
+            return {
+                width: width - (width - node.width) / 2,
+                height: height - (height - node.height) / 2,
+            };
+
+        case 'INSIDE':
+            return {
+                width: width - (width - node.width),
+                height: height - (height - node.height),
+            };
     }
 }
 
 function calculatePositionWithBorder(node: NodesWithFillsAndStrokes, bbox?: DOMRect): string {
-    let leftOffset = 0;
-    let topOffset = 0;
-    if (node.strokeWeight === figma.mixed && node.type !== 'ELLIPSE') {
-        leftOffset = node.strokeLeftWeight;
-        topOffset = node.strokeTopWeight;
-    } else {
-        leftOffset = node.strokeWeight as number;
-        topOffset = node.strokeWeight as number;
-    }
+    let result = '';
+    const { x, y } = calculateOffsetBorderPosition(node, bbox);
 
-    if (bbox) {
-        leftOffset += bbox.x;
-        topOffset += bbox.y;
+    result += `left: ${convertPXtoVH(x).toFixed(2)}vh;\n`;
+    result += `top: ${convertPXtoVH(y).toFixed(2)}vh;\n`;
+
+    return result;
+
+}
+
+function calculateOffsetBorderPosition(
+    node: NodesWithFillsAndStrokes | SVGNodes,
+    bbox?: DOMRect
+): { x: number; y: number } {
+    const x = bbox ? bbox.x : node.x;
+    const y = bbox ? bbox.y : node.y;
+
+    if ((bbox && bbox.x > 0) && (bbox && bbox.y > 0)) {
+        return { x, y };
     }
 
     switch (node.strokeAlign) {
-        case 'INSIDE': {
-            return `top: ${convertPXtoVH(bbox ? bbox.y : 0).toFixed(2)}vh;\nleft: ${convertPXtoVH(
-                bbox ? bbox.x : 0
-            ).toFixed(2)}vh;\n`;
-        }
-        case 'OUTSIDE': {
-            return `top: -${convertPXtoVH(topOffset).toFixed(2)}vh;\nleft: -${convertPXtoVH(leftOffset).toFixed(
-                2
-            )}vh;\n`;
-        }
-        case 'CENTER': {
-            return `top: -${convertPXtoVH(topOffset / 2).toFixed(2)}vh;\nleft: -${convertPXtoVH(leftOffset / 2).toFixed(
-                2
-            )}vh;\n`;
-        }
+        case 'OUTSIDE':
+            return { x, y };
+
+        case 'CENTER':
+            return { x: x / 2, y: y / 2 };
+
+        case 'INSIDE':
+            return { x: 0, y: 0 };
     }
 }

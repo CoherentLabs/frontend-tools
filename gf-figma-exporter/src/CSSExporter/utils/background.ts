@@ -11,6 +11,7 @@ import hasImage from '../../utils/hasImage';
 import isNodeSVG from '../../utils/isNodeSVG';
 import getPathBBox from '../../utils/getPathBBox';
 import { getPercentage } from '../../utils/convertUnits';
+import shouldExportBackground from '../../ImageExporter/utils/shouldExportBackground';
 
 export const SPECIAL_FILL_TYPES = ['GRADIENT_RADIAL', 'GRADIENT_DIAMOND'];
 
@@ -158,7 +159,7 @@ export async function generateBackgroundRect(node: NodesWithFillsAndStrokes): Pr
 
     const bbox = await getPathBBox(fillGeometry[0].data);
 
-    if (!bbox) {
+    if (!bbox || !shouldExportBackground(node.fills)) {
         return { x: 0, y: 0, width: 100, height: 100 } as DOMRect;
     }
 
