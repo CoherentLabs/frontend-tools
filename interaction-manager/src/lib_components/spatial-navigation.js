@@ -94,7 +94,7 @@ class SpatialNavigation {
 
         this.navigatableElements[area].elements.forEach(element => element.removeAttribute('tabindex'));
 
-        this.navigatableElements[area] = {};
+        delete this.navigatableElements[area];
     }
 
     /**
