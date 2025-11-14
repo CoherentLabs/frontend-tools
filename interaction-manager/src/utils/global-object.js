@@ -3,6 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+ /**
+   * @typedef {Object} KeyboardFunction
+   * @property {string[]} keys - Array of key combinations
+   * @property {(Function|string)[]} callbacks - Array of callbacks or action names
+   * @property {('press'|'hold'|'lift')} type - Type of key action
+   */
+
 /**
  * Global object class
  */
@@ -24,7 +31,7 @@ class IM {
     /**
      *
      * @param {string[]} keys Array of key combinations
-     * @returns {string[]} Key combination from the _IM global object
+     * @returns {KeyboardFunction[]} Array of keyboard function objects
      */
     getKeys(keys) {
         return _IM.keyboardFunctions.filter(keyFunction => keyFunction.keys.every(key => keys.includes(key)));
