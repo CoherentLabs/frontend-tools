@@ -58,21 +58,10 @@ class Keyboard {
             const existingEntry = registeredKeys.find(key => key.type === type);
 
             if (existingEntry) {
-                if (existingEntry.callbacks.some(cb => cb === options.callback)) {
-                    const callbackType = typeof options.callback === 'string' ? 'action' : 'function';
-                    const callbackName = typeof options.callback === 'string' ? options.callback : '(anonymous function)';
-
-                    return console.error(
-                        `Duplicate callback detected!\n` +
-                        `Keys: [${options.keys.join(', ')}]\n` +
-                        `Type: '${type}'\n` +
-                        `Callback: ${callbackName}\n` +
-                        `This ${callbackType} is already registered for this key combination and type. ` +
-                        `To update it, first remove with .off([${options.keys.map(k => `'${k}'`).join(', ')}], callback).`
-                    );
-                }
-
-                return existingEntry.callbacks.push(options.callback);
+                return IM.addCallbackToEntry(existingEntry, options.callback, {
+                    identifier: `Keys: [${options.keys.join(', ')}]`,
+                    type: type
+                });
             }
 
             if (type === 'lift' && options.keys.length > 1) return console.error('You can only have a single key trigger an action on lift');
@@ -106,7 +95,6 @@ class Keyboard {
         let keyCombinationCount = keyCombinations.length;
         if (keyCombinationCount === 0) return console.error('You are trying to remove a non-existent key combination!');
 
-        // maybe make this a method
         if (callback) {
             const combinationsWithCallback = keyCombinations.filter(combination => combination.callbacks.includes(callback));
 
@@ -119,16 +107,13 @@ class Keyboard {
                 combination.callbacks.splice(cbIndex, 1);
 
                 if (combination.callbacks.length === 0) {
-                    const entryIndex = _IM.keyboardFunctions.indexOf(combination);
-                    _IM.keyboardFunctions.splice(entryIndex, 1);
+                    IM.removeKeyboardFunction(combination)
                 }
             })
         } else {
-            while (keyCombinationCount > 0) {
-                const keyCombinationIndex = IM.getKeysIndex(keys);
-                _IM.keyboardFunctions.splice(keyCombinationIndex, 1);
-                keyCombinationCount--;
-            }
+            keyCombinations.forEach((combination) => {
+                IM.removeKeyboardFunction(combination)
+            })
         }
 
         if (_IM.keyboardFunctions.length === 0) {

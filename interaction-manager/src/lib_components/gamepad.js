@@ -70,8 +70,7 @@ class Gamepad {
      * @param {Object} options
      * @param {string[] | number[]} options.actions - Action to trigger the callback. Can be name of button or joystick
      * @param {'press' | 'hold'} options.type - The type of action to trigger the callback. The available options are hold and press.
-     * @param {function} options.callback - Callback to trigger on the set action
-     * @param {number} options.gamepadNumber - The number of the gamepad that you want to trigger the callback on. Use -1 for all gamepads
+     * @param {function | string} options.callback - Function(s) or action(s) to be triggered on the set action
      * @returns {void}
      */
     on(options) {
@@ -89,26 +88,49 @@ class Gamepad {
             return console.error(`You can't use an axis action in a combination with a button action`);
         }
 
-        if (IM.getGamepadAction(options)) {
-            return console.error(
-                'You have already registered a callback for this action. If you want to overwrite it, remove it first with .off([actions])'
-            );
+        const existingEntry = IM.getGamepadAction(options);
+        if (existingEntry) {
+            return IM.addCallbackToEntry(existingEntry, options.callback, {
+                identifier: `Actions: [${options.actions.join(', ')}]`,
+                type: options.type
+            });
         }
 
-        _IM.gamepadFunctions.push(options);
+        _IM.gamepadFunctions.push({
+            actions: options.actions,
+            callbacks: [options.callback],
+            type: options.type,
+        });
     }
 
     /**
-     * Removes registered actions
+     * Removes either an action or a callback from the provided action
      * @param {Array} actions - Array containing the action you want to remove
+     * @param {string | Function} callback - Callback or action you want to remove 
      * @returns {void}
      */
-    off(actions) {
-        const actionsIndex = IM.getGamepadActionIndex(actions.map(this.sanitizeAction));
+    off(actions, callback) {
+        const matchingActions = IM.getGamepadActions(actions.map(this.sanitizeAction));
 
-        if (actionsIndex === -1) return console.error('You are trying to remove a non-existent action!');
+        if (matchingActions.length === 0) {
+            return console.error('You are trying to remove a non-existent action!');
+        }
 
-        _IM.gamepadFunctions.splice(actionsIndex, 1);
+        if (callback) {
+            const actionsWithCallback = matchingActions.filter(action => action.callbacks.includes(callback));
+            if (actionsWithCallback.length === 0) return console.error('You are trying to remove a non-existent callback from this action!');
+
+            actionsWithCallback.forEach((action) => {
+                const cbIndex = action.callbacks.indexOf(callback);
+                action.callbacks.splice(cbIndex, 1);  // Remove from callbacks array
+
+                if (action.callbacks.length === 0) {
+                    IM.removeGamepadFunction(action)  
+                }
+            })
+        } else {
+            matchingActions.forEach(action => IM.removeGamepadFunction(action));
+        }
     }
 
     /**
@@ -155,7 +177,7 @@ class Gamepad {
 
         if (this._pressedAction) {
             if (!gamepadActions.includes(this._pressedAction)) {
-                this.executeCallback(this._pressedAction, this._pressedAction.actions);
+                this.executeCallbacks(this._pressedAction, this._pressedAction.actions);
             }
             this._pressedAction = null;
         }
@@ -166,7 +188,7 @@ class Gamepad {
                 return;
             }
 
-            this.executeCallback(gamepadAction, pressedButtons.buttons);
+            this.executeCallbacks(gamepadAction, pressedButtons.buttons);
         });
     }
 
@@ -182,32 +204,32 @@ class Gamepad {
         joystickActions.forEach((jAction) => {
             switch (jAction.actions[0]) {
                 case 'left.joystick':
-                    return this.executeCallback(jAction, [axes[0], axes[1]]);
+                    return this.executeCallbacks(jAction, [axes[0], axes[1]]);
                 case 'right.joystick':
-                    return this.executeCallback(jAction, [axes[2], axes[3]]);
+                    return this.executeCallbacks(jAction, [axes[2], axes[3]]);
                 case 'left.joystick.down':
-                    if (axes[1] > AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[0], axes[1]]);
+                    if (axes[1] > AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[0], axes[1]]);
                     break;
                 case 'left.joystick.up':
-                    if (axes[1] < -AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[0], axes[1]]);
+                    if (axes[1] < -AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[0], axes[1]]);
                     break;
                 case 'left.joystick.left':
-                    if (axes[0] < -AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[0], axes[1]]);
+                    if (axes[0] < -AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[0], axes[1]]);
                     break;
                 case 'left.joystick.right':
-                    if (axes[0] > AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[0], axes[1]]);
+                    if (axes[0] > AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[0], axes[1]]);
                     break;
                 case 'right.joystick.down':
-                    if (axes[3] > AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[2], axes[3]]);
+                    if (axes[3] > AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[2], axes[3]]);
                     break;
                 case 'right.joystick.up':
-                    if (axes[3] < -AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[2], axes[3]]);
+                    if (axes[3] < -AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[2], axes[3]]);
                     break;
                 case 'right.joystick.left':
-                    if (axes[2] < -AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[2], axes[3]]);
+                    if (axes[2] < -AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[2], axes[3]]);
                     break;
                 case 'right.joystick.right':
-                    if (axes[2] > AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[2], axes[3]]);
+                    if (axes[2] > AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[2], axes[3]]);
                     break;
             }
         });
@@ -244,16 +266,18 @@ class Gamepad {
     }
 
     /**
-     * Executes the callback from the registered action
+     * Executes the callbacks from the registered action
      * @param {Object} action
      * @param {any} value
      * @returns {void}
      * @private
      */
-    executeCallback(action, value) {
-        if (typeof action.callback === 'string') return Actions.execute(action.callback, value);
-
-        action.callback(value);
+    executeCallbacks(action, value) {
+        action.callbacks.forEach(callback => {
+            if (typeof callback === 'string') return Actions.execute(callback, value);
+    
+            callback(value);
+        })
     }
 }
 
