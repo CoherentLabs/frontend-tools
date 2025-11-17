@@ -92,3 +92,85 @@ describe('Spatial navigation', () => {
         assert.strictEqual(document.activeElement, expectedActiveEl, `Expected the active element to be '.square-1' but found '${document.activeElement.className}' instead.`);
     });
 });
+
+describe('Spatial navigation - HTMLElement support', () => {
+    afterEach(() => {
+        cleanTestPage('.test-container');
+        interactionManager.spatialNavigation.deinit();
+    });
+
+    beforeEach(async () => {
+        await setupTestPage(createTemplate());
+    });
+
+    it('Should add an array of HTMLElements to the default area', () => {
+        const elements = [
+            document.querySelector('.square-1'),
+            document.querySelector('.square-2'),
+            document.querySelector('.square-3'),
+        ];
+
+        interactionManager.spatialNavigation.init(elements);
+        interactionManager.spatialNavigation.focusFirst();
+
+        elements.forEach((el) => {
+            assert.strictEqual(document.activeElement, el, `Expected ${el} to be focused`);
+            simulateKeyPress('ARROW_RIGHT');
+        })
+    });
+
+    it('Should support HTMLElement refs in object syntax', () => {
+        const element1 = document.querySelector('.square-1');
+        const element2 = document.querySelector('.square-2');
+
+        interactionManager.spatialNavigation.init([
+            { area: 'custom', elements: [element1, element2] },
+        ]);
+        interactionManager.spatialNavigation.focusFirst('custom');
+
+        assert.strictEqual(document.activeElement, element1, 'Expected the first element to be focused');
+
+        simulateKeyPress('ARROW_RIGHT');
+        assert.strictEqual(document.activeElement, element2, 'Expected navigation to second element');
+    });
+
+    it('Should support mixed arrays of selectors and HTMLElement refs', () => {
+        const elementRef = document.querySelector('.square-2');
+
+        interactionManager.spatialNavigation.init([
+            { area: 'mixed', elements: ['.square-1', elementRef, '.square-3'] },
+        ]);
+        interactionManager.spatialNavigation.focusFirst('mixed');
+
+        const expectedElements = [
+            document.querySelector('.square-1'),
+            elementRef,
+            document.querySelector('.square-3'),
+        ];
+
+        expectedElements.forEach((el) => {
+            assert.strictEqual(document.activeElement, el, `Expected ${el} to be focused`);
+            simulateKeyPress('ARROW_RIGHT');
+        })
+    });
+
+    it('Should make HTMLElement refs focusable', () => {
+        const element = document.querySelector('.square-1');
+        interactionManager.spatialNavigation.init([element]);
+        assert.strictEqual(element.getAttribute('tabindex'), '1', 'Expected HTMLElement ref to have tabindex set');
+    });
+
+    it('Should allow adding HTMLElements to existing areas', () => {
+        const element1 = document.querySelector('.square-1');
+        const element2 = document.querySelector('.square-2');
+
+        interactionManager.spatialNavigation.init([element1]);
+        interactionManager.spatialNavigation.add([element2]);
+
+        const defaultArea = interactionManager.spatialNavigation.navigatableElements.default;
+
+        assert.strictEqual(defaultArea.elements.length, 2, 'Expected default area to have 2 elements');
+        assert.strictEqual(defaultArea.elements[0], element1, 'Expected first element in area');
+        assert.strictEqual(defaultArea.elements[1], element2, 'Expected second element in area');
+    });
+});

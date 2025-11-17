@@ -2,6 +2,7 @@
 title: Spatial Navigation
 ---
 
+import { Badge } from '@astrojs/starlight/components'
 import IMExample from '@components/IMExample.astro';
 
 A JavaScript-based implementation for Spatial Navigation with gamepad support
@@ -28,13 +29,22 @@ Initializes the spatial navigation.
 
 #### navigatableElement
 
-The `navigatableElement` can either be a string with an element selector.
+The `navigatableElement` can be:
+
+##### 1. A string selector:
 
 ```js
 spatialNavigation.init(['.square']);
 ```
 
-or a navigatableArea object
+##### 2. An HTMLElement reference: :badge[2.4.4]{variant="note"}
+
+```js
+const element = document.getElementById('myElement');
+spatialNavigation.init([element]);
+```
+
+##### 3. A navigatableArea object:
 
 ```js
 spatialNavigation.init([
@@ -43,7 +53,7 @@ spatialNavigation.init([
 ]);
 ```
 
-This will create different areas to separate the navigation. If you pass only a selector, it will be saved to the default area.
+This will create different areas to separate the navigation. If you pass only selectors or HTMLElements directly, they will be saved to the default area.
 
 <IMExample path="/im-demo/demo/SpatialNavigation/grid-elements-areas.html" height="700"/>
 
@@ -82,10 +92,10 @@ The name of the area you want to be navigatable
 Type:
 
 ```js
-type elements = string[]
+type elements = (string | HTMLElement)[]
 ```
 
-An array of the elements selectors that will be navigatable in this area.
+An array of element selectors (strings) or HTMLElement references that will be navigatable in this area. You can mix both types in the same array.
 
 ### .deinit()
 
@@ -95,8 +105,21 @@ Removes the spatial navigation, listeners and actions.
 
 The same as `.init()` but only adds elements to areas and new areas. Use it after initialization.
 
+Supports the same formats as `init()`: selector strings, HTMLElement references, or navigatableArea objects with mixed types.
+
 ```js
-spatialNavigation.add([{ area: 'area-1', elements: ['.element'] }]);
+// Add selectors to default area
+spatialNavigation.add(['.new-element']);
+
+// Add HTMLElement references to default area
+const newEl = document.getElementById('newItem');
+spatialNavigation.add([newEl]);
+
+// Add to named area with mixed types
+const element = document.getElementById('sidebar-item');
+spatialNavigation.add([
+    { area: 'area-1', elements: ['.element', element] }
+]);
 ```
 
 ### remove(area)
