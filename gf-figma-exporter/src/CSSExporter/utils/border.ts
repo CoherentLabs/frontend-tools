@@ -45,30 +45,27 @@ export function generateBorders(node: NodesWithFillsAndStrokes): string {
         result += `background-repeat: no-repeat;\n`;
         result += `background-size: 100% 100%;\n`;
         result += `background-position: center;\n`;
+        return result;
     };
 
     if (strokes.length > 1) {
         // There are no multiple border support in CSS, so we export as image
         handleImageStroke();
-        return result;
     }
 
     if (node.cornerRadius === figma.mixed || node.cornerRadius > 0) {
         // In CSS border-images do not support rounded corners well, so we export as image
         handleImageStroke();
-        return result;
     }
 
     if (node.dashPattern.length > 0) {
         // Gameface currently does not support dashed borders, so we export as image
         handleImageStroke();
-        return result;
     }
 
     if (node.type === 'ELLIPSE') {
         // Ellipses are rectangles with 50% border radius in CSS, which border images do not support well, so we export as image
         handleImageStroke();
-        return result;
     }
 
     switch (strokes[0].type) {
@@ -76,7 +73,6 @@ export function generateBorders(node: NodesWithFillsAndStrokes): string {
             if (!isBasicStroke(node)) {
                 // Complex stroke geometry is not supported in CSS borders, so we export as image
                 handleImageStroke();
-                return result;
             }
 
             const { r, g, b } = (strokes[0] as SolidPaint).color;

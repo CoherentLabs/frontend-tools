@@ -5,9 +5,7 @@ import getParentSize from '../../utils/parentSize';
 export function generatePosition(node: PrimitiveNodes): { left: string; top: string } {
     const { x, y, parent } = node;
 
-    if (!parent) return { left: `0%`, top: `0%` };
-
-    if (parent.type === 'PAGE') return { left: `0%`, top: `0%` };
+    if (!parent || parent.type === 'PAGE') return { left: `0%`, top: `0%` };
 
     const { width, height } = getParentSize(parent);
 

@@ -34,9 +34,9 @@ export function generateBackground(node: NodesWithFillsAndStrokes): string {
     }
 
     fillLoop: for (const fill of fills) {
+        if (!fill.visible) continue;
         switch (fill.type) {
             case 'SOLID': {
-                if (!fill.visible) break;
 
                 const { r, g, b } = fill.color;
                 const a = fill.opacity !== undefined ? fill.opacity : 1;
@@ -45,7 +45,6 @@ export function generateBackground(node: NodesWithFillsAndStrokes): string {
             }
 
             case 'GRADIENT_LINEAR': {
-                if (!fill.visible) break;
 
                 const { gradient } = linearGradientHandle(fill, node.width, node.height, node.x, node.y);
                 backgroundArrays.unshift(gradient);
@@ -53,7 +52,7 @@ export function generateBackground(node: NodesWithFillsAndStrokes): string {
             }
 
             case 'GRADIENT_RADIAL': {
-                if (!fill.visible || node.type === 'FRAME') break;
+                if (node.type === 'FRAME') break;
                 const { r, g, b, a } = fill.gradientStops[fill.gradientStops.length - 1].color;
                 const lastColor = createRGBAColor(r, g, b, a);
                 backgroundArrays.push(lastColor);
@@ -61,7 +60,6 @@ export function generateBackground(node: NodesWithFillsAndStrokes): string {
             }
 
             case 'GRADIENT_ANGULAR': {
-                if (!fill.visible) break;
 
                 const { gradient } = angularGradientHandle(fill, node.width, node.height);
                 backgroundArrays.unshift(gradient);
@@ -69,7 +67,7 @@ export function generateBackground(node: NodesWithFillsAndStrokes): string {
             }
 
             case 'GRADIENT_DIAMOND': {
-                if (!fill.visible || node.type === 'FRAME') break;
+                if (node.type === 'FRAME') break;
                 const { r, g, b, a } = fill.gradientStops[fill.gradientStops.length - 1].color;
                 const lastColor = createRGBAColor(r, g, b, a);
                 backgroundArrays.push(lastColor);
@@ -78,7 +76,6 @@ export function generateBackground(node: NodesWithFillsAndStrokes): string {
 
             case 'IMAGE':
             case 'PATTERN': {
-                if (!fill.visible) break;
                 handleImageBackground(node);
                 break fillLoop; // Break out of the for loop since image overrides all other backgrounds
             }
