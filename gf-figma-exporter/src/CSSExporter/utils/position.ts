@@ -12,7 +12,7 @@ export function generatePosition(node: PrimitiveNodes): { left: string; top: str
 
     const { width, height } = getParentSize(parent);
 
-    if (parent.type === 'GROUP') {
+    if (parent.type === 'GROUP') { // Groups have the top Frame as their origin not their parent
         x -= parent.x;
         y -= parent.y;
     }
