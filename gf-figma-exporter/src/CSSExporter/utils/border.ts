@@ -153,7 +153,7 @@ function calculateOffsetBorderSize(
     const width = bbox ? bbox.width : node.width;
     const height = bbox ? bbox.height : node.height;
 
-    if ((bbox && bbox.width < node.width) && (bbox && bbox.height < node.height)) {
+    if ((bbox && bbox.width < node.width && bbox.height < node.height)) {
         return { width, height };
     }
 
@@ -193,7 +193,7 @@ function calculateOffsetBorderPosition(
     const x = bbox ? bbox.x : node.x;
     const y = bbox ? bbox.y : node.y;
 
-    if ((bbox && bbox.x > 0) && (bbox && bbox.y > 0)) {
+    if ((bbox && bbox.x > 0 && bbox.y > 0)) {
         return { x, y };
     }
 

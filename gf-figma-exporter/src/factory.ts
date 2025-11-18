@@ -35,6 +35,8 @@ const TYPES = {
 async function generateCode(node: SceneNode): Promise<FactoryResult> {
     const result = { html: '', css: '', images: [] as GFImage[] };
 
+    if (!node.visible) return result;
+
     let type: SceneNode['type'] | "SVG" = node.type;
 
     if (!Object.prototype.hasOwnProperty.call(TYPES, type)) return result;
