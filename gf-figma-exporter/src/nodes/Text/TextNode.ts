@@ -2,6 +2,7 @@ import { parseTextStyle } from '../../utils/parseTextStyle';
 import { TextSegment } from '../../types/commonTypes';
 import generateClassName from '../../utils/generateClassName';
 import CSSExporter from '../../CSSExporter/CSSExporter';
+import verticalAlignToFlex from '../../utils/verticalAlignToFlex';
 
 class GFTextNode {
     node: TextNode;
@@ -27,7 +28,13 @@ class GFTextNode {
 
     async createCSS(): Promise<string> {
         const CSSExporterInstance = new CSSExporter(this.node);
+        const textAlign = this.node.textAlignHorizontal;
+
         CSSExporterInstance.style.add('white-space', 'pre-wrap');
+        CSSExporterInstance.style.add('text-align', textAlign.toLowerCase());
+        CSSExporterInstance.style.add('align-items', verticalAlignToFlex(this.node.textAlignVertical));
+        CSSExporterInstance.style.add('margin', '0'); // Reset default margin for <p> tag
+        
         let css = `.${this.className} {
             ${CSSExporterInstance.generateElementStyle()}
         }

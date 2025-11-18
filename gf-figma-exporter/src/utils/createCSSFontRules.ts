@@ -1,4 +1,5 @@
 import FontExporter from '../FontExporter/FontExporter';
+import { isItalicStyle } from '../FontExporter/utils/parseStyleUtils';
 
 export default function createCSSFontRules() {
     let result = '';
@@ -11,7 +12,7 @@ export default function createCSSFontRules() {
                     if (((fonts[font])[weight])[style].subsets[subset] === null) continue;
                     result += `@font-face {
                                 font-family: '${fonts[font][weight][style].fontName}${subset === 'latin' ? '' : ` ${subset}`}';
-                                font-style: ${style};
+                                font-style: ${isItalicStyle(style) ? 'italic' : 'normal'};
                                 font-weight: ${weight};
                                 src: url('./fonts/${font}-${style}_${weight}_${subset}.ttf');
                             }\n`;
