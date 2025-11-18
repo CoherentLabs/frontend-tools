@@ -1,10 +1,11 @@
-import GFEllipse from "./nodes/Ellipse/Ellipse";
-import GFFrame from "./nodes/Frame/Frame";
-import GFGroup from "./nodes/Group/Group";
-import GFRectangle from "./nodes/Rectangle/Rectangle";
-import GFSVGNode from "./nodes/SVGNode/SVGNode";
-import { GFImage } from "./types/commonTypes";
-import isNodeSVG from "./utils/isNodeSVG";
+import GFEllipse from './nodes/Ellipse/Ellipse';
+import GFFrame from './nodes/Frame/Frame';
+import GFGroup from './nodes/Group/Group';
+import GFRectangle from './nodes/Rectangle/Rectangle';
+import GFSVGNode from './nodes/SVGNode/SVGNode';
+import GFTextNode from './nodes/Text/TextNode';
+import { GFImage } from './types/commonTypes';
+import isNodeSVG from './utils/isNodeSVG';
 
 interface FactoryResult {
     html: string;
@@ -12,25 +13,26 @@ interface FactoryResult {
     images: { name: string; data: Uint8Array | null }[];
 }
 
-
 const NODE_TYPES = {
     RECTANGLE: GFRectangle,
     FRAME: GFFrame,
     GROUP: GFGroup,
     ELLIPSE: GFEllipse,
     SVG: GFSVGNode,
-}
+    TEXT: GFTextNode,
+};
 const TYPES = {
-    FRAME: "FRAME",
-    RECTANGLE: "RECTANGLE",
-    ELLIPSE: "ELLIPSE",
-    GROUP: "GROUP",
+    FRAME: 'FRAME',
+    RECTANGLE: 'RECTANGLE',
+    ELLIPSE: 'ELLIPSE',
+    GROUP: 'GROUP',
     VECTOR: 'VECTOR',
     LINE: 'LINE',
     STAR: 'STAR',
     POLYGON: 'POLYGON',
-    'BOOLEAN_OPERATION': 'BOOLEAN_OPERATION',
-}
+    BOOLEAN_OPERATION: 'BOOLEAN_OPERATION',
+    TEXT: 'TEXT',
+};
 
 async function generateCode(node: SceneNode): Promise<FactoryResult> {
     const result = { html: '', css: '', images: [] as GFImage[] };

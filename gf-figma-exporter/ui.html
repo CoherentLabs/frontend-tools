@@ -1,24 +1,48 @@
 <h2>Test Exporter</h2>
+<form action="javascript:void(0);" class="input-area"></form>
 <button id="create">Create</button>
+<div>
+    <button id="export-missing-fonts" style="display: none">Add Missing Fonts and Export</button>
+    <button id="export-without-fonts" style="display: none">Continue without Fonts</button>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
-    document.getElementById('create').onclick = () => {
+    const form = document.querySelector('form');
+    const exportButton = document.getElementById('create');
+    const exportMissingFontsButton = document.getElementById('export-missing-fonts');
+    const exportWithoutFontsButton = document.getElementById('export-without-fonts');
+
+    exportButton.onclick = () => {
         parent.postMessage({ pluginMessage: { type: 'create-shapes' } }, '*');
     };
 
     onmessage = (event) => {
         const msg = event.data.pluginMessage;
         if (msg.type === 'download-files') {
-            const pages = msg.pages;
+            const pages = msg.data.pages;
 
             const jszip = new JSZip();
-            for (const [name, { html, css, images }] of Object.entries(pages)) {
+            for (const [name, { html, css, images, fonts }] of Object.entries(pages)) {
                 jszip.file(`${name}/${name}.html`, html);
                 jszip.file(`${name}/${name}.css`, css);
 
                 if (images.length > 0) {
                     for (const image of images) {
                         jszip.file(`${name}/${image.name}`, image.data);
+                    }
+                }
+
+                if (fonts && Object.keys(fonts).length > 0) {
+                    for (const font of Object.keys(fonts)) {
+                        for (const weight of Object.keys(fonts[font])) {
+                            for (const style of Object.keys(fonts[font][weight])) {
+                                for (const [subset, data] of Object.entries(fonts[font][weight][style].subsets)) {
+                                    if (data) {
+                                        jszip.file(`${name}/fonts/${font}-${style}_${weight}_${subset}.ttf`, data);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -29,7 +53,7 @@
                 // Create download links and trigger the downloads
                 const aZip = document.createElement('a');
                 aZip.href = archiveUrl;
-                aZip.download = msg.filename; // Default download filename for ZIP
+                aZip.download = msg.data.filename; // Default download filename for ZIP
                 aZip.click();
                 URL.revokeObjectURL(archiveUrl); // Clean up the URL object
 
@@ -38,7 +62,7 @@
         }
 
         if (msg.type === 'flatten-svg') {
-            const { path, width, height, tolerance } = msg.options;
+            const { path, width, height, tolerance } = msg.data;
             const SVG_NS = 'http://www.w3.org/2000/svg';
 
             // Create the SVG
@@ -63,11 +87,11 @@
                 points.push({ x: point.x, y: point.y });
             }
 
-            parent.postMessage({ pluginMessage: { type: 'flattened-svg-result', points } }, '*');
+            parent.postMessage({ pluginMessage: { type: 'flattened-svg-result', data: points } }, '*');
         }
 
         if (msg.type === 'path-bbox') {
-            const { path } = msg.options;
+            const { path } = msg.data;
             const SVG_NS = 'http://www.w3.org/2000/svg';
 
             // Create the SVG
@@ -91,7 +115,7 @@
                 {
                     pluginMessage: {
                         type: 'path-bbox-result',
-                        bbox: {
+                        data: {
                             x: Number(bbox.x),
                             y: Number(bbox.y),
                             width: Number(bbox.width),
@@ -101,6 +125,84 @@
                 },
                 '*'
             );
+        }
+
+        if (msg.type === 'MISSING_FONTS_DETECTED') {
+            const { fonts } = msg.data;
+            const h2 = document.createElement('h2');
+            h2.textContent = 'Missing Fonts Detected. Please provide the font files below:';
+            form.appendChild(h2);
+
+            const table = document.createElement('table');
+            const tableHead = document.createElement('thead');
+            tableHead.innerHTML = `<tr><th>Font Family</th><th>Weight</th><th>Style</th><th>Subset</th><th>Provide Font Data</th></tr>`;
+            const tableBody = document.createElement('tbody');
+
+            table.appendChild(tableHead);
+            table.appendChild(tableBody);
+            form.appendChild(table);
+
+            for (const font of Object.keys(fonts)) {
+                for (const weight of Object.keys(fonts[font])) {
+                    for (const style of Object.keys(fonts[font][weight])) {
+                        for (const subset of Object.keys(fonts[font][weight][style].subsets)) {
+                            const fontInput = document.createElement('input');
+                            fontInput.type = 'file';
+                            fontInput.accept = '.ttf';
+
+                            fontInput.name = `${font}_${weight}_${style}_${subset}`;
+
+                            const row = document.createElement('tr');
+                            row.innerHTML = `<td>${font}</td><td>${weight}</td><td>${style}</td><td>${subset}</td>`;
+                            const inputCell = document.createElement('td');
+                            inputCell.appendChild(fontInput);
+                            row.appendChild(inputCell);
+                            tableBody.appendChild(row);
+                        }
+                    }
+                }
+            }
+
+            exportMissingFontsButton.style.display = 'block';
+            exportWithoutFontsButton.style.display = 'block';
+            exportButton.style.display = 'none';
+
+            exportMissingFontsButton.onclick = () => {
+                const inputs = form.querySelectorAll('input[type="file"]');
+                inputs.forEach((input) => {
+                    const file = input.files[0];
+
+                    if (!file) {
+                        alert('Please provide all missing font files before exporting.');
+                        return;
+                    }
+
+                    const [fontFamily, weight, style, subset] = input.name.split('_');
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const arrayBuffer = e.target.result;
+                        if (arrayBuffer instanceof ArrayBuffer) {
+                            fonts[fontFamily][weight][style].subsets[subset] = new Uint8Array(arrayBuffer);
+
+                            // Check if all files are processed
+                            const allProcessed = Array.from(inputs).every((inp) => inp.files.length > 0);
+                            if (allProcessed) {
+                                parent.postMessage(
+                                    { pluginMessage: { type: 'MISSING_FONTS_RESPONSE', data: { fonts } } },
+                                    '*'
+                                );
+                            }
+                        }
+                    };
+
+                    reader.readAsArrayBuffer(file);
+                });
+            };
+
+            exportWithoutFontsButton.onclick = () => {
+                parent.postMessage({ pluginMessage: { type: 'MISSING_FONTS_RESPONSE', data: { fonts } } }, '*');
+            };
         }
     };
 </script>

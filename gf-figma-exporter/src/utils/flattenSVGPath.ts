@@ -1,3 +1,5 @@
+import MessageBus from '../MessageBus/MessageBus';
+
 // We need to call postMessage on the figma.ui to leverage the browser's SVG capabilities as Figma's plugin environment does not support SVG manipulation natively.
 export default async function flattenSVGPath(
     path: string,
@@ -6,15 +8,16 @@ export default async function flattenSVGPath(
     tolerance = 0.5
 ): Promise<{ x: number; y: number }[]> {
     return new Promise((resolve) => {
-        figma.ui.postMessage({
-            type: 'flatten-svg',
-            options: { path, width, height, tolerance },
+        MessageBus.postMessage('flatten-svg', {
+            path,
+            width,
+            height,
+            tolerance,
         });
 
-        figma.ui.onmessage = (msg) => {
-            if (msg.type === 'flattened-svg-result') {
-                resolve(msg.points);
-            }
-        };
+        MessageBus.on('flattened-svg-result', (data: unknown) => {
+            const points = data as { x: number; y: number }[];
+            resolve(points);
+        });
     });
 }
