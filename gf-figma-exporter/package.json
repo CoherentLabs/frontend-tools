@@ -5,6 +5,7 @@
   "main": "code.js",
   "scripts": {
     "build": "vite build",
+    "build:fonts-metadata": "node node-scripts/generateGoogleFontsMetadata.mjs",
     "lint": "eslint --ext .ts,.tsx --ignore-pattern node_modules .",
     "lint:fix": "eslint --ext .ts,.tsx --ignore-pattern node_modules --fix ."
   },
@@ -13,9 +14,11 @@
   "devDependencies": {
     "@figma/eslint-plugin-figma-plugins": "*",
     "@figma/plugin-typings": "*",
+    "@types/lodash": "^4.17.20",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
     "eslint": "^8.54.0",
+    "google-font-metadata": "^6.0.7",
     "typescript": "^5.3.2",
     "vite": "^7.1.6"
   },
@@ -44,6 +47,7 @@
   "dependencies": {
     "@figma-plugin/helpers": "^0.15.2",
     "jszip": "^3.10.1",
+    "lodash": "^4.17.21",
     "matrix-inverse": "^2.0.0"
   }
 }

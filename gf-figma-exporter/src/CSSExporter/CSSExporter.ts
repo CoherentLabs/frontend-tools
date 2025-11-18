@@ -1,9 +1,19 @@
-import { NodesWithFillsAndStrokes, PrimitiveNodes, SVGNodes } from '../types/commonTypes';
+import { isItalicStyle } from '../FontExporter/utils/parseStyleUtils';
+import { NodesWithFillsAndStrokes, PrimitiveNodes, SVGNodes, TextSegment } from '../types/commonTypes';
 import isNodeSVG from '../utils/isNodeSVG';
 import StyleManager from './StyleManager/StyleManager';
 import { additionalBackgroundStyles, generateBackground, generateBackgroundRect } from './utils/background';
 import { generateBorderRadius, generateBorders } from './utils/border';
 import { generateEffectStyles } from './utils/effects';
+import {
+    getFontName,
+    getFontSize,
+    getLetterSpacing,
+    getLineHeight,
+    getTextCase,
+    getTextColor,
+    getTextDecoration,
+} from './utils/fonts';
 import { generateOpacity } from './utils/opacity';
 import { generatePosition } from './utils/position';
 import { generateSize } from './utils/size';
@@ -15,6 +25,7 @@ class CSSExporter {
     public backgroundStyles: StyleManager;
     public pseudoBeforeStyles: StyleManager;
     public borderStyles: StyleManager;
+    public textStyles: StyleManager;
 
     constructor(node: SceneNode) {
         this.node = node;
@@ -22,6 +33,7 @@ class CSSExporter {
         this.backgroundStyles = new StyleManager();
         this.borderStyles = new StyleManager();
         this.pseudoBeforeStyles = new StyleManager();
+        this.textStyles = new StyleManager();
     }
 
     generateElementStyle() {
@@ -29,9 +41,7 @@ class CSSExporter {
         const { top, left } = generatePosition(this.node as PrimitiveNodes);
         const opacity = generateOpacity((this.node as PrimitiveNodes).opacity);
         const zIndex = generateZIndex(this.node as PrimitiveNodes);
-        const { filter, backDropFilter } = generateEffectStyles(
-            this.node as SVGNodes | NodesWithFillsAndStrokes
-        );
+        const { filter, backDropFilter } = generateEffectStyles(this.node as SVGNodes | NodesWithFillsAndStrokes);
 
         const { topLeftRadius, bottomLeftRadius, bottomRightRadius, topRightRadius } = generateBorderRadius(
             this.node as PrimitiveNodes
@@ -72,7 +82,7 @@ class CSSExporter {
 
         const { x, y, width, height } = await generateBackgroundRect(this.node as NodesWithFillsAndStrokes);
 
-        const {boxShadow} = generateEffectStyles(this.node as SVGNodes | NodesWithFillsAndStrokes);
+        const { boxShadow } = generateEffectStyles(this.node as SVGNodes | NodesWithFillsAndStrokes);
         if (boxShadow) {
             this.backgroundStyles.add('box-shadow', boxShadow);
         }
@@ -127,6 +137,36 @@ class CSSExporter {
             ${this.borderStyles.getCSS()}
             ${pseudoStyles}
         `;
+    }
+
+    static async generateTextElementStyle(textSegment: TextSegment): Promise<string> {
+        const textStyle = new StyleManager();
+        const color = getTextColor(textSegment);
+        const fontSize = getFontSize(textSegment);
+        const letterSpacing = getLetterSpacing(textSegment);
+        const lineHeight = getLineHeight(textSegment);
+        const textCase = getTextCase(textSegment);
+        const fontNames = getFontName(textSegment);
+        const style = isItalicStyle(textSegment.fontName.style) ? 'italic' : 'normal';
+        const textDecoration = getTextDecoration(textSegment);
+
+        textStyle.add('color', color);
+        textStyle.add('font-size', `${fontSize}vh`);
+        textStyle.add('font-weight', `${textSegment.fontWeight}`);
+        textStyle.add('letter-spacing', letterSpacing);
+        textStyle.add('line-height', lineHeight);
+        textStyle.add('text-transform', textCase);
+        textStyle.add('font-family', `${fontNames}`);
+        textStyle.add('font-style', `${style}`);
+
+        if (textDecoration) {
+            textStyle.add('text-decoration', textDecoration.style);
+            textStyle.add('text-decoration-color', textDecoration.color);
+            textStyle.add('text-decoration-thickness', textDecoration.thickness);
+            textStyle.add('text-underline-offset', textDecoration.offset);
+        }
+
+        return textStyle.getCSS();
     }
 }
 

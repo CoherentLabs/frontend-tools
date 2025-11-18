@@ -1,5 +1,8 @@
 import generateCode from './factory';
-import { GFImage } from './types/commonTypes';
+import FontExporter from './FontExporter/FontExporter';
+// import FontExporter from './FontExporter/FontExporter';
+import { GFFont, GFImage } from './types/commonTypes';
+import createCSSFontRules from './utils/createCSSFontRules';
 import generateCSSBoilerplate from './utils/cssBoilerplate';
 import { currentPageSize } from './utils/currentPage';
 import generateHTMLBoilerplate from './utils/htmlBoilerplate';
@@ -10,6 +13,7 @@ type ExporterResult = {
         html: string;
         css: string;
         images: Array<{ name: string; data: Uint8Array | null }>;
+        fonts?: GFFont;
     };
 };
 
@@ -19,12 +23,16 @@ async function getPages(): Promise<ExporterResult> {
 
     for (const page of pages) {
         currentPageSize.set({ width: page.width, height: page.height });
+        await FontExporter.init(page as FrameNode);
+        console.log(FontExporter.fontMap);
         const { html, css, images } = await generateCode(page as FrameNode);
+
         
         results[sanitizeNames(page.name)] = {
             html: generateHTMLBoilerplate(html, page.name),
-            css: generateCSSBoilerplate() + css,
+            css: createCSSFontRules() + generateCSSBoilerplate() + css,
             images,
+            fonts: FontExporter.fontMap as GFFont,
         };
     }
 
@@ -32,7 +40,7 @@ async function getPages(): Promise<ExporterResult> {
 }
 
 export async function getNodes(children: readonly SceneNode[]): Promise<{ html: string; css: string; images: GFImage[]}> {
-    const results: { html: string; css: string; images: GFImage[] } = { html: '', css: '', images: [] };
+    const results: { html: string; css: string; images: GFImage[] } = { html: '', css: '', images: []};
 
     if (!children || children.length === 0) {
         return results;

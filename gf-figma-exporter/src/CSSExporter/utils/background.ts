@@ -165,7 +165,7 @@ export async function generateBackgroundRect(node: NodesWithFillsAndStrokes): Pr
 
     const bbox = await getPathBBox(fillGeometry[0].data);
 
-    if (!bbox || !shouldExportBackground(node.fills)) {
+    if (!bbox || !shouldExportBackground(node)) {
         return { x: 0, y: 0, width: 100, height: 100 } as DOMRect;
     }
 

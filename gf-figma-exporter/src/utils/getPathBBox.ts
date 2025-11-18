@@ -1,14 +1,12 @@
+import MessageBus from '../MessageBus/MessageBus';
+
 export default function getPathBBox(path: string): Promise<DOMRect> {
     return new Promise((resolve) => {
-        figma.ui.postMessage({
-            type: 'path-bbox',
-            options: { path },
-        });
+        MessageBus.postMessage('path-bbox', { path });
 
-        figma.ui.onmessage = (msg) => {
-            if (msg.type === 'path-bbox-result') {
-                resolve(msg.bbox);
-            }
-        };
+        MessageBus.on('path-bbox-result', (data: unknown) => {
+            const bbox = data as DOMRect;
+            resolve(bbox);
+        });
     });
 }

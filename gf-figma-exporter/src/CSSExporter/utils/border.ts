@@ -7,7 +7,7 @@ import { linearGradientHandle } from '../../utils/gradientUtils';
 import isNodeSVG from '../../utils/isNodeSVG';
 import isBasicStroke from '../../utils/isStrokeBasic';
 
-export function generateBorderRadius(node: PrimitiveNodes): {
+export function generateBorderRadius(node: PrimitiveNodes | TextNode): {
     topLeftRadius: string;
     bottomLeftRadius: string;
     bottomRightRadius: string;
@@ -20,6 +20,11 @@ export function generateBorderRadius(node: PrimitiveNodes): {
     if (node.type === 'ELLIPSE' && node.cornerRadius !== figma.mixed) {
         return { topLeftRadius: `50%`, bottomLeftRadius: `50%`, bottomRightRadius: `50%`, topRightRadius: `50%` };
     }
+
+    if (node.type === 'TEXT') {
+        return { topLeftRadius: '0vh', bottomLeftRadius: '0vh', bottomRightRadius: '0vh', topRightRadius: '0vh' };
+    }
+
     const { topLeftRadius, topRightRadius, bottomRightRadius, bottomLeftRadius } = node as RectangleNode | FrameNode;
 
     return {
