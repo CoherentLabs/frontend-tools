@@ -17,6 +17,9 @@ export default class GFBaseNode {
     }
 
     async createHTML(): Promise<string> {
+        if ('fills' in this.node && this.node.fills !== figma.mixed && this.node.fills.length === 0) {
+            return `<div class="${this.className}"></div>`;
+        }
         return `<div class="${this.className}"><div class="${this.className}${BACKGROUND_SUFFIX}"></div></div>`;
     }
 

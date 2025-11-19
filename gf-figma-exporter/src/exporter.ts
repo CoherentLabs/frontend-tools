@@ -23,8 +23,8 @@ async function getPages(): Promise<ExporterResult> {
 
     for (const page of pages) {
         currentPageSize.set({ width: page.width, height: page.height });
+        FontExporter.clear();
         await FontExporter.init(page as FrameNode);
-        console.log(FontExporter.fontMap);
         const { html, css, images } = await generateCode(page as FrameNode);
 
         

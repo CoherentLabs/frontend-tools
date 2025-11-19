@@ -20,6 +20,7 @@ const NODE_TYPES = {
     ELLIPSE: GFEllipse,
     SVG: GFSVGNode,
     TEXT: GFTextNode,
+    INSTANCE: GFGroup,
 };
 const TYPES = {
     FRAME: 'FRAME',
@@ -32,6 +33,7 @@ const TYPES = {
     POLYGON: 'POLYGON',
     BOOLEAN_OPERATION: 'BOOLEAN_OPERATION',
     TEXT: 'TEXT',
+    INSTANCE: 'INSTANCE',
 };
 
 async function generateCode(node: SceneNode): Promise<FactoryResult> {
@@ -49,7 +51,7 @@ async function generateCode(node: SceneNode): Promise<FactoryResult> {
     if (NodeClassRef) {
         //@ts-expect-error We are sure that the node is of correct type here, so this cast is safe. If we don't want to use ts-expect-error, we have to create separate classes for each node type which is redundant.
         const instance = new NodeClassRef(node);
-        if (node.type === 'FRAME' || node.type === 'GROUP') {
+        if (node.type === 'FRAME' || node.type === 'GROUP' || node.type === 'INSTANCE') {
             await (instance as GFFrame).init();
         }
         result.html += await instance.createHTML();

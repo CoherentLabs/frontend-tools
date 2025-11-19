@@ -62,6 +62,16 @@ class FontExporter {
         this.fontMap = Object.assign({}, this.googleFonts, this.missingFonts, this.backupFonts);
     }
 
+    public clear(): void {
+        this.page = null;
+        this.fontMap = {};
+        this.usedFonts = [];
+        this.missingFonts = {};
+        this.googleFonts = {};
+        this.textSegments = [];
+        this.backupFonts = {};
+    }
+
     private async waitForUserFonts(): Promise<void> {
         return new Promise((resolve) => {
             MessageBus.postMessage('MISSING_FONTS_DETECTED', { fonts: this.missingFonts });
