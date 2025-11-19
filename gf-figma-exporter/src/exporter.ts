@@ -24,7 +24,6 @@ async function getPages(): Promise<ExporterResult> {
         currentPageSize.set({ width: page.width, height: page.height });
         FontExporter.clear();
         await FontExporter.init(page as FrameNode);
-        
         const { html, css, images } = await generateCode(page as FrameNode);
         
         results[sanitizeNames(page.name)] = {
