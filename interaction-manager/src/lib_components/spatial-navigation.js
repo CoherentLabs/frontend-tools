@@ -304,7 +304,7 @@ class SpatialNavigation {
     moveFocus(direction) {
         if (!this.enabled) return;
 
-        const activeElement = this.checkActiveElementInGroup();
+        const activeElement = (this.isActiveElementInGroup() && document.activeElement) || this.lastFocusedElement;
 
         const currentArea = this.getCurrentArea(activeElement);
         if (!currentArea) return console.error('The active element is not in a focusable area!');
@@ -569,19 +569,20 @@ class SpatialNavigation {
     }
 
     /**
-     * Checks if a given element is a focusable area
-     * @returns {boolean}
-     */
-    isActiveElementInGroup() {
-        return Object.values(this.navigatableElements).some(group => group.elements.includes(document.activeElement));
+    * Checks if a given element is in a focusable area
+    * @param {HTMLElement} element
+    * @returns {boolean}
+    */
+    isElementInGroup(element) {
+        return Object.values(this.navigatableElements).some(group => group.elements.includes(element));
     }
 
     /**
-     * Checks if the active element is within a group and returns the last focused element if it isn't.
-     * @returns {HTMLElement}
+     * Checks if the currently active element is in a focusable area
+     * @returns {boolean}
      */
-    checkActiveElementInGroup() {
-        return this.isActiveElementInGroup(document.activeElement) ? document.activeElement : this.lastFocusedElement;
+    isActiveElementInGroup() {
+        return this.isElementInGroup(document.activeElement);
     }
 
     /**
