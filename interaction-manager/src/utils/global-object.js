@@ -161,10 +161,10 @@ class IM {
     }
 
     /**
-   * Removes a gamepad function entry from the registry
-   * @param {GamepadFunction} functionEntry - The entry to remove
-   * @returns {void}
-   */
+     * Removes a gamepad function entry from the registry
+     * @param {GamepadFunction} functionEntry - The entry to remove
+     * @returns {void}
+     */
     removeGamepadFunction(functionEntry) {
         const index = _IM.gamepadFunctions.indexOf(functionEntry);
         if (index !== -1) _IM.gamepadFunctions.splice(index, 1);

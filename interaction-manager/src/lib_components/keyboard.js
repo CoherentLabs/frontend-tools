@@ -99,11 +99,11 @@ class Keyboard {
             const combinationsWithCallback = keyCombinations.filter(combination => combination.callbacks.includes(callback));
 
             if (combinationsWithCallback.length === 0) {
-                return console.error("You are trying to remove a non-existent callback from this key combination!")
+                return console.error("You are trying to remove a non-existent callback from this key combination!");
             }
 
             combinationsWithCallback.forEach((combination) => {
-                const cbIndex = combination.callbacks.indexOf(callback)
+                const cbIndex = combination.callbacks.indexOf(callback);
                 combination.callbacks.splice(cbIndex, 1);
 
                 if (combination.callbacks.length === 0) {
@@ -112,7 +112,7 @@ class Keyboard {
             })
         } else {
             keyCombinations.forEach((combination) => {
-                IM.removeKeyboardFunction(combination)
+                IM.removeKeyboardFunction(combination);
             })
         }
 

@@ -96,11 +96,7 @@ class Gamepad {
             });
         }
 
-        _IM.gamepadFunctions.push({
-            actions: options.actions,
-            callbacks: [options.callback],
-            type: options.type,
-        });
+        _IM.gamepadFunctions.push({...options, callbacks: [options.callback]});
     }
 
     /**
@@ -277,7 +273,7 @@ class Gamepad {
             if (typeof callback === 'string') return Actions.execute(callback, value);
     
             callback(value);
-        })
+        });
     }
 }
 

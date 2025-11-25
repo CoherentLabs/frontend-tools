@@ -99,7 +99,7 @@ class SpatialNavigation {
     add(navigatableElements) {
         if (!this.enabled) return;
 
-        // if all elements are HTMLELements 
+        // if all elements are HTMLElements 
         if (navigatableElements.every(el => el instanceof HTMLElement)) {
             navigatableElements.forEach(element => this.makeFocusable(element));
             this.setNavigationAreaProperties('default', navigatableElements);

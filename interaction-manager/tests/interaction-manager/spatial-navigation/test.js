@@ -116,7 +116,7 @@ describe('Spatial navigation - HTMLElement support', () => {
         elements.forEach((el) => {
             assert.strictEqual(document.activeElement, el, `Expected ${el} to be focused`);
             simulateKeyPress('ARROW_RIGHT');
-        })
+        });
     });
 
     it('Should support HTMLElement refs in object syntax', () => {
@@ -151,7 +151,7 @@ describe('Spatial navigation - HTMLElement support', () => {
         expectedElements.forEach((el) => {
             assert.strictEqual(document.activeElement, el, `Expected ${el} to be focused`);
             simulateKeyPress('ARROW_RIGHT');
-        })
+        });
     });
 
     it('Should make HTMLElement refs focusable', () => {

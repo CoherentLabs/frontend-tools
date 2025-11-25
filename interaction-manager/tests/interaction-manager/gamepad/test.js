@@ -198,12 +198,12 @@ describe('Gamepad', () => {
 
         interactionManager.gamepad.on({
             actions: registeredGamepadButtons,
-            callback: () => callback1,
+            callback: callback1,
         });
 
         interactionManager.gamepad.on({
             actions: registeredGamepadButtons,
-            callback: () => callback2,
+            callback: callback2,
         });
 
         interactionManager.gamepad.off(registeredGamepadButtons);
