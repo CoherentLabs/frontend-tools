@@ -2,6 +2,8 @@
 title: Gamepad
 ---
 
+import { Badge } from '@astrojs/starlight/components'
+
 The gamepad object allows for easier gamepad set up. It uses the Gamepad API to create helper functions to listen for button presses or joystick movement.
 
 To start listening for connected gamepads, you first need to enable it. To do that you need to set the following:
@@ -168,14 +170,91 @@ gamepad.on({
 });
 ```
 
-## .off([actions])
+### Registering Multiple Callbacks :badge[2.4.4]{variant="note"}
 
-Removes a registered gamepad action.
+You can now register multiple callbacks or actions for the same action combination and type. All callbacks will be executed in the order they were registered.
 
 ```js
+// Register first callback
+gamepad.on({
+    actions: [0],
+    callback: () => console.log('First callback'),
+    type: 'press'
+});
+
+// Register second callback for the same action
+gamepad.on({
+    actions: [0],
+    callback: () => console.log('Second callback'),
+    type: 'press'
+});
+
+// When button 0 is pressed, both callbacks will execute:
+// Output: 'First callback'
+// Output: 'Second callback'
+```
+
+This is particularly useful when different parts of your application need to respond to the same gamepad input without having to manually manage callback registration and unregistration.
+
+:::caution
+Attempting to register the exact same callback reference or action twice will result in an error to prevent accidental duplicates.
+:::
+
+## .off([actions], callback)
+
+Removes a registered gamepad action or a specific callback from an action.
+
+### actions
+
+The actions array is an array of the gamepad actions you want to remove.
+
+### callback (optional)
+
+The specific callback function or action name you want to remove from the action combination. If not provided, all callbacks for the action will be removed.
+
+### Removing All Callbacks
+
+If you provide only the actions array, all callbacks registered for that action combination will be removed across all types (press, hold).
+
+```js
+// Remove all callbacks for this action
 gamepad.off(['left.joystick']);
 ```
 
 You will need to provide the exact actions you have registered in order to remove them.
 
 For example if you have registered an action using a `playstation` alias, you will also need to remove it using the same alias.
+
+### Removing a Specific Callback
+
+To remove only a specific callback while keeping others, pass the callback reference as the second parameter:
+
+```js
+const myCallback = () => console.log('My callback');
+
+gamepad.on({
+    actions: [0],
+    callback: myCallback,
+    type: 'press'
+});
+
+// Later, remove only this specific callback
+gamepad.off([0], myCallback);
+```
+
+This is useful when multiple callbacks are registered for the same action:
+
+```js
+const callback1 = () => console.log('First');
+const callback2 = () => console.log('Second');
+
+gamepad.on({ actions: [0], callback: callback1, type: 'press' });
+gamepad.on({ actions: [0], callback: callback2, type: 'press' });
+
+// Remove only callback1, callback2 will still execute
+gamepad.off([0], callback1);
+```
+
+:::caution
+Anonymous arrow functions (`() => {}`) cannot be removed individually since they don't have a reference. To remove specific callbacks, always store them in a variable first, similar to how `removeEventListener` works in the DOM.
+:::

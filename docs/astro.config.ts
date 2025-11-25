@@ -82,7 +82,8 @@ async function getConfig() {
         ),
 
         { label: 'Getting Started', autogenerate: { directory: 'interaction-manager/getting-started' } },
-        { label: 'Features', autogenerate: { directory: 'interaction-manager/features' } }
+        { label: 'Features', autogenerate: { directory: 'interaction-manager/features' } },
+        generateChangelog('interaction-manager'),
       ],
     },
     {

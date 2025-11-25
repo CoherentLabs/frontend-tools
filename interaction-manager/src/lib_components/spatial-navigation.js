@@ -36,11 +36,22 @@ class SpatialNavigation {
 
     /**
      * Initializes the spatial navigation
-     * @param {string[]|Object[]} navigatableElements
-     * @param {string} navigatableElements[].area
-     * @param {string[]} navigatableElements[].elements
-     * @param {number} overlap
+     * @param {string[]|Object[]|HTMLElement[]} navigatableElements - Array of selector strings, objects with area/elements, or HTMLElement references
+     * @param {string} navigatableElements[].area - Name of the navigation area
+     * @param {(string|HTMLElement)[]} navigatableElements[].elements - Array of selector strings or HTMLElement references
+     * @param {number} overlap - Overlap percentage (0-1) for determining if elements are on the same axis
      * @returns {void}
+     * @example
+     * // Using selector strings
+     * spatialNavigation.init(['.menu-item', '#header']);
+     *
+     * // Using HTMLElement references
+     * spatialNavigation.init([element1, element2]);
+     *
+     * // Using object syntax with mixed selectors and HTMLElements
+     * spatialNavigation.init([
+     *   { area: 'menu', elements: ['.item', element1, '#button'] }
+     * ]);
      */
     init(navigatableElements = [], overlap) {
         if (this.enabled) return;
@@ -70,12 +81,30 @@ class SpatialNavigation {
     }
     /**
      * Add new elements to area or new area
-     * @param {string[]|Object[]} navigatableElements
-     * @param {string} navigatableElements[].area
-     * @param {string[]} navigatableElements[].elements
+     * @param {string[]|Object[]|HTMLElement[]} navigatableElements - Array of selector strings, objects with area/elements, or HTMLElement references
+     * @param {string} navigatableElements[].area - Name of the navigation area
+     * @param {(string|HTMLElement)[]} navigatableElements[].elements - Array of selector strings or HTMLElement references
+     * @example
+     * // Add selector strings to default area
+     * spatialNavigation.add(['.new-item']);
+     *
+     * // Add HTMLElement references to default area
+     * spatialNavigation.add([element1, element2]);
+     *
+     * // Add to named area with mixed types
+     * spatialNavigation.add([
+     *   { area: 'sidebar', elements: ['.link', element1] }
+     * ]);
      */
     add(navigatableElements) {
         if (!this.enabled) return;
+
+        // if all elements are HTMLElements 
+        if (navigatableElements.every(el => el instanceof HTMLElement)) {
+            navigatableElements.forEach(element => this.makeFocusable(element));
+            this.setNavigationAreaProperties('default', navigatableElements);
+            return;
+        }
 
         navigatableElements.forEach((navArea) => {
             typeof navArea === 'string' ? this.handleString(navArea) : this.handleObject(navArea);
@@ -94,7 +123,7 @@ class SpatialNavigation {
 
         this.navigatableElements[area].elements.forEach(element => element.removeAttribute('tabindex'));
 
-        this.navigatableElements[area] = {};
+        delete this.navigatableElements[area];
     }
 
     /**
@@ -114,16 +143,21 @@ class SpatialNavigation {
 
     /**
      * Gets elements from object and saves them to a focusable group
-     * @param {Object} navArea
-     * @param {string} navArea.area
-     * @param {string[]} navArea.elements
+     * @param {Object} navArea - Navigation area configuration
+     * @param {string} navArea.area - Name of the navigation area
+     * @param {(string|HTMLElement)[]} navArea.elements - Array of selector strings or HTMLElement references
      * @returns {void}
      */
     handleObject(navArea) {
         const domElements = navArea.elements.reduce((acc, el) => {
+            if (el instanceof HTMLElement) {
+                acc.push(el);
+                this.makeFocusable(el);
+                return acc;
+            }
+
             const elements = document.querySelectorAll(el);
             elements.forEach(this.makeFocusable);
-
             acc.push(...elements);
             return acc;
         }, []);
@@ -270,7 +304,7 @@ class SpatialNavigation {
     moveFocus(direction) {
         if (!this.enabled) return;
 
-        const activeElement = this.checkActiveElementInGroup();
+        const activeElement = (this.isActiveElementInGroup() && document.activeElement) || this.lastFocusedElement;
 
         const currentArea = this.getCurrentArea(activeElement);
         if (!currentArea) return console.error('The active element is not in a focusable area!');
@@ -535,19 +569,20 @@ class SpatialNavigation {
     }
 
     /**
-     * Checks if a given element is a focusable area
-     * @returns {boolean}
-     */
-    isActiveElementInGroup() {
-        return Object.values(this.navigatableElements).some(group => group.elements.includes(document.activeElement));
+    * Checks if a given element is in a focusable area
+    * @param {HTMLElement} element
+    * @returns {boolean}
+    */
+    isElementInGroup(element) {
+        return Object.values(this.navigatableElements).some(group => group.elements.includes(element));
     }
 
     /**
-     * Checks if the active element is within a group and returns the last focused element if it isn't.
-     * @returns {HTMLElement}
+     * Checks if the currently active element is in a focusable area
+     * @returns {boolean}
      */
-    checkActiveElementInGroup() {
-        return this.isActiveElementInGroup(document.activeElement) ? document.activeElement : this.lastFocusedElement;
+    isActiveElementInGroup() {
+        return this.isElementInGroup(document.activeElement);
     }
 
     /**

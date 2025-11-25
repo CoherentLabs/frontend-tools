@@ -26,7 +26,7 @@ class Keyboard {
     /**
      * @param {Object} options
      * @param {string[]} options.keys - Array of keys you want to use, allows only combination of modifier and regular keys
-     * @param {function | string} options.callback - Function or action to be executed on the key combination
+     * @param {string | Function} options.callback - Function(s) or action(s) to be executed on the key combination
      * @param {string[]} options.type - Type of key action you want to use.
      * @returns {void}
      */
@@ -55,23 +55,32 @@ class Keyboard {
 
         options.type.forEach((type) => {
             const registeredKeys = IM.getKeys(options.keys);
+            const existingEntry = registeredKeys.find(key => key.type === type);
 
-            if (registeredKeys.length > 0 && registeredKeys.some(key => key.type === type)) {
-                return console.error('You are trying to overwrite an existing key combination! To do that, first remove it with .off([keys]) then add it again');
+            if (existingEntry) {
+                return IM.addCallbackToEntry(existingEntry, options.callback, {
+                    identifier: `Keys: [${options.keys.join(', ')}]`,
+                    type: type
+                });
             }
 
             if (type === 'lift' && options.keys.length > 1) return console.error('You can only have a single key trigger an action on lift');
 
-            _IM.keyboardFunctions.push({ ...options, type });
+            _IM.keyboardFunctions.push({
+                keys: options.keys,
+                type,
+                callbacks: [options.callback]
+            });
         });
     }
 
     /**
-     *
+     * Removes either a key combination or a callback from the provided key combination
      * @param {string[]} keys - Key combination you want to remove from the listener
+     * @param {string | Function} callback - Callback or action you want to remove 
      * @returns {void}
      */
-    off(keys) {
+    off(keys, callback) {
         keys = [
             ...new Set(
                 keys.map((key) => {
@@ -81,13 +90,30 @@ class Keyboard {
             ),
         ];
 
-        let keyCombinationCount = IM.getKeys(keys).length;
+        const keyCombinations = IM.getKeys(keys);
+
+        let keyCombinationCount = keyCombinations.length;
         if (keyCombinationCount === 0) return console.error('You are trying to remove a non-existent key combination!');
 
-        while (keyCombinationCount > 0) {
-            const keyCombinationIndex = IM.getKeysIndex(keys);
-            _IM.keyboardFunctions.splice(keyCombinationIndex, 1);
-            keyCombinationCount--;
+        if (callback) {
+            const combinationsWithCallback = keyCombinations.filter(combination => combination.callbacks.includes(callback));
+
+            if (combinationsWithCallback.length === 0) {
+                return console.error("You are trying to remove a non-existent callback from this key combination!");
+            }
+
+            combinationsWithCallback.forEach((combination) => {
+                const cbIndex = combination.callbacks.indexOf(callback);
+                combination.callbacks.splice(cbIndex, 1);
+
+                if (combination.callbacks.length === 0) {
+                    IM.removeKeyboardFunction(combination)
+                }
+            })
+        } else {
+            keyCombinations.forEach((combination) => {
+                IM.removeKeyboardFunction(combination);
+            })
         }
 
         if (_IM.keyboardFunctions.length === 0) {
@@ -117,7 +143,7 @@ class Keyboard {
 
             if (key.type === 'hold' && !event.repeat) return;
 
-            this.executeCallback(event, key);
+            this.executeCallbacks(event, key);
         });
     }
 
@@ -135,7 +161,7 @@ class Keyboard {
         if (registeredKeys.length === 0) return;
 
         registeredKeys.forEach((key) => {
-            if (key.type === 'lift' && key.keys.indexOf(keyPressed) !== -1) this.executeCallback(event, key);
+            if (key.type === 'lift' && key.keys.indexOf(keyPressed) !== -1) this.executeCallbacks(event, key);
         });
     }
 
@@ -154,15 +180,17 @@ class Keyboard {
      * @param {KeyboardEvent} event
      * @param {Object} registeredKeys
      * @param {string[]} registeredKeys.keys - Array of keys you want to use, allows only combination of modifier and regular keys
-     * @param {function | string} registeredKeys.callback - Function or action to be executed on the key combination
+     * @param {(function | string)[]} registeredKeys.callbacks - Functions or actions to be executed on the key combination
      * @param {('press'|'hold'|'lift')} registeredKeys.type - Type of key action you want to use.
      * @return {void}
      * @private
      */
-    executeCallback(event, registeredKeys) {
-        if (typeof registeredKeys.callback === 'string') return Actions.execute(registeredKeys.callback, event);
+    executeCallbacks(event, registeredKeys) {
+        registeredKeys.callbacks.forEach((callback) => {
+            if (typeof callback === 'string') return Actions.execute(callback, event);
 
-        registeredKeys.callback(event);
+            callback(event);
+        })
     }
 }
 
