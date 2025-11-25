@@ -1,10 +1,11 @@
 import GFEllipse from './nodes/Ellipse/Ellipse';
 import GFFrame from './nodes/Frame/Frame';
 import GFGroup from './nodes/Group/Group';
+import GFMask from './nodes/Mask/Mask';
 import GFRectangle from './nodes/Rectangle/Rectangle';
 import GFSVGNode from './nodes/SVGNode/SVGNode';
 import GFTextNode from './nodes/Text/TextNode';
-import { GFImage } from './types/commonTypes';
+import { ExportableNodes, GFImage } from './types/commonTypes';
 import isNodeSVG from './utils/isNodeSVG';
 
 interface FactoryResult {
@@ -21,6 +22,7 @@ const NODE_TYPES = {
     SVG: GFSVGNode,
     TEXT: GFTextNode,
     INSTANCE: GFGroup,
+    MASK: GFMask,
 };
 const TYPES = {
     FRAME: 'FRAME',
@@ -34,14 +36,15 @@ const TYPES = {
     BOOLEAN_OPERATION: 'BOOLEAN_OPERATION',
     TEXT: 'TEXT',
     INSTANCE: 'INSTANCE',
+    MASK: 'MASK',
 };
 
-async function generateCode(node: SceneNode): Promise<FactoryResult> {
+async function generateCode(node: ExportableNodes): Promise<FactoryResult> {
     const result = { html: '', css: '', images: [] as GFImage[] };
 
     if (!node.visible) return result;
 
-    let type: SceneNode['type'] | "SVG" = node.type;
+    let type: ExportableNodes['type'] | "SVG" = node.type;
 
     if (!Object.prototype.hasOwnProperty.call(TYPES, type)) return result;
 
@@ -51,7 +54,7 @@ async function generateCode(node: SceneNode): Promise<FactoryResult> {
     if (NodeClassRef) {
         //@ts-expect-error We are sure that the node is of correct type here, so this cast is safe. If we don't want to use ts-expect-error, we have to create separate classes for each node type which is redundant.
         const instance = new NodeClassRef(node);
-        if (node.type === 'FRAME' || node.type === 'GROUP' || node.type === 'INSTANCE') {
+        if (node.type === 'FRAME' || node.type === 'GROUP' || node.type === 'INSTANCE' || node.type === 'MASK') {
             await (instance as GFFrame).init();
         }
         result.html += await instance.createHTML();

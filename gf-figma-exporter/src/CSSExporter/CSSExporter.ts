@@ -1,5 +1,5 @@
 import { isItalicStyle } from '../FontExporter/utils/parseStyleUtils';
-import { NodesWithFillsAndStrokes, PrimitiveNodes, SVGNodes, TextSegment } from '../types/commonTypes';
+import { ExportableNodes, NodesWithFillsAndStrokes, PrimitiveNodes, SVGNodes, TextSegment } from '../types/commonTypes';
 import isNodeSVG from '../utils/isNodeSVG';
 import StyleManager from './StyleManager/StyleManager';
 import { additionalBackgroundStyles, generateBackground, generateBackgroundRect } from './utils/background';
@@ -20,14 +20,14 @@ import { generateSize } from './utils/size';
 import { generateZIndex } from './utils/zIndex';
 
 class CSSExporter {
-    public node: SceneNode;
+    public node: ExportableNodes;
     public style: StyleManager;
     public backgroundStyles: StyleManager;
     public pseudoBeforeStyles: StyleManager;
     public borderStyles: StyleManager;
     public textStyles: StyleManager;
 
-    constructor(node: SceneNode) {
+    constructor(node: ExportableNodes) {
         this.node = node;
         this.style = new StyleManager();
         this.backgroundStyles = new StyleManager();
@@ -66,7 +66,7 @@ class CSSExporter {
             this.style.add('backdrop-filter', backDropFilter);
         }
 
-        if ((this.node as NodesWithFillsAndStrokes).strokeAlign === 'INSIDE') {
+        if ((this.node as NodesWithFillsAndStrokes).strokeAlign === 'INSIDE' && this.node.isMask === false) {
             this.style.add('overflow', 'hidden');
         }
 

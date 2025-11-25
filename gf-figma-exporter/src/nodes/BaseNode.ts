@@ -1,16 +1,16 @@
 import CSSExporter from '../CSSExporter/CSSExporter';
 import ImageExporter from '../ImageExporter/ImageExporter';
-import { GFImage, NodesWithFillsAndStrokes } from '../types/commonTypes';
+import { ExportableNodes, GFImage, NodesWithFillsAndStrokes } from '../types/commonTypes';
 import { BACKGROUND_SUFFIX } from '../utils/constants';
 import generateClassName from '../utils/generateClassName';
 
 export default class GFBaseNode {
-    public node: SceneNode;
+    public node: ExportableNodes;
     public className: string;
     public images: GFImage[] = [];
     public additionalCSS: string;
 
-    constructor(node: SceneNode) {
+    constructor(node: ExportableNodes) {
         this.node = node;
         this.className = generateClassName(this.node.name, this.node.id);
         this.additionalCSS = '';

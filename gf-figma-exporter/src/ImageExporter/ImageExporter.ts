@@ -1,4 +1,4 @@
-import { NodesWithFillsAndStrokes } from '../types/commonTypes';
+import { ExportableNodes, MaskNode, NodesWithFillsAndStrokes } from '../types/commonTypes';
 import toggleChildren from '../utils/toggleChildren';
 import handleImage from './utils/handleImages';
 import shouldExportBackground from './utils/shouldExportBackground';
@@ -18,10 +18,12 @@ interface GFBackgroundAndStroke {
 
 class ImageExporter {
     async export(node: NodesWithFillsAndStrokes): Promise<GFBackgroundAndStroke> {
+
         const result: GFBackgroundAndStroke = {
             background: null,
             border: null,
         };
+
 
         result.background = await this.exportBackgroundImage(node);
         result.border = await this.exportStrokeImage(node);
@@ -95,6 +97,24 @@ class ImageExporter {
             name,
             data,
         };
+    }
+
+    async exportImage(node: ExportableNodes): Promise<{ name: string; data: Uint8Array | null } | null> {
+        return await handleImage((node as SceneNode), 'full', 'PNG');
+    }
+
+    async exportMaskImage(node: MaskNode): Promise<{ name: string; data: Uint8Array | null } | null> {
+        node.originalNode.isMask = false;
+
+        const originalName = node.originalNode.name;
+        node.originalNode.name = node.name;
+
+        const result = await this.exportImage(node.originalNode);
+
+        node.originalNode.name = originalName;
+
+        node.originalNode.isMask = true;
+        return result;
     }
 
 }

@@ -1,7 +1,7 @@
 import generateCode from './factory';
 import FontExporter from './FontExporter/FontExporter';
 // import FontExporter from './FontExporter/FontExporter';
-import { GFFont, GFImage } from './types/commonTypes';
+import { ExportableNodes, GFFont, GFImage } from './types/commonTypes';
 import createCSSFontRules from './utils/createCSSFontRules';
 import generateCSSBoilerplate from './utils/cssBoilerplate';
 import { currentPageSize } from './utils/currentPage';
@@ -39,7 +39,7 @@ async function getPages(): Promise<ExporterResult> {
     return results;
 }
 
-export async function getNodes(children: readonly SceneNode[]): Promise<{ html: string; css: string; images: GFImage[]}> {
+export async function getNodes(children: readonly ExportableNodes[]): Promise<{ html: string; css: string; images: GFImage[]}> {
     const results: { html: string; css: string; images: GFImage[] } = { html: '', css: '', images: []};
 
     if (!children || children.length === 0) {
