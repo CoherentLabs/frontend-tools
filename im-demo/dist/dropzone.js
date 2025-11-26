@@ -101,7 +101,7 @@ var dropzone = (() => {
         /**
          *
          * @param {string[]} keys Array of key combinations
-         * @returns {string[]} Key combination from the _IM global object
+         * @returns {KeyboardFunction[]} Array of keyboard function objects
          */
         getKeys(keys) {
           return _IM.keyboardFunctions.filter((keyFunction) => keyFunction.keys.every((key) => keys.includes(key)));
@@ -116,9 +116,10 @@ var dropzone = (() => {
         }
         /**
          *
-         * @param {Array} actions Array of actions
-         * @param {string} type Type of action
-         * @returns {Object} Action from the _IM global object
+         * @param {Object} options
+         * @param {Array} options.actions - Array of actions
+         * @param {string} options.type - Type of action
+         * @returns {GamepadFunction} Gamepad function object from the _IM global object
          */
         getGamepadAction({ actions, type }) {
           return _IM.gamepadFunctions.find((gpFunc) => {
@@ -127,9 +128,8 @@ var dropzone = (() => {
         }
         /**
          *
-         * @param {Array} actions Array of actions
-         * @param {string} type Type of action
-         * @returns {Object} Action from the _IM global object
+         * @param {Array} actions - Array of actions
+         * @returns {GamepadFunction[]} Array of gamepad function objects from the _IM global object
          */
         getGamepadActions(actions) {
           return _IM.gamepadFunctions.filter(
@@ -146,8 +146,8 @@ var dropzone = (() => {
         }
         /**
          *
-         * @param {string} action Action to search for
-         * @returns {Object}
+         * @param {string} action - Action to search for
+         * @returns {ActionFunction} Action function object
          */
         getAction(action) {
           return _IM.actions.find((actionObj) => actionObj.name === action);
@@ -159,6 +159,55 @@ var dropzone = (() => {
          */
         getActionIndex(action) {
           return _IM.actions.findIndex((actionObj) => actionObj.name === action);
+        }
+        /**
+         * Checks if a callback already exists in a registered function entry
+         * @param {KeyboardFunction | GamepadFunction} functionEntry - The function entry to check
+         * @param {Function | string} callback - The callback to search for
+         * @returns {boolean} True if callback exists, false otherwise
+         */
+        hasDuplicateCallback(functionEntry, callback) {
+          return functionEntry.callbacks.some((cb) => cb === callback);
+        }
+        /**
+         * Adds a callback to an existing function entry if it's not a duplicate
+         * @param {KeyboardFunction | GamepadFunction} functionEntry - The function entry to add the callback to
+         * @param {Function | string} callback - The callback to add
+         * @param {Object} errorContext - Context information for error messages
+         * @param {string} errorContext.identifier - String identifying the keys/actions (e.g., "Keys: [A, B]")
+         * @param {string} errorContext.type - The type of action (press, hold, lift)
+         */
+        addCallbackToEntry(functionEntry, callback, errorContext) {
+          if (this.hasDuplicateCallback(functionEntry, callback)) {
+            const callbackType = typeof callback === "string" ? "action" : "function";
+            const callbackName = typeof callback === "string" ? callback : "(anonymous function)";
+            return console.error(
+              `Duplicate callback detected!
+${errorContext.identifier}
+Type: '${errorContext.type}'
+Callback: ${callbackName}
+This ${callbackType} is already registered for this combination and type. To update it, first remove with the .off() method.`
+            );
+          }
+          return functionEntry.callbacks.push(callback);
+        }
+        /**
+        * Removes a keyboard function entry from the registry
+        * @param {KeyboardFunction} functionEntry - The entry to remove
+        * @returns {void}
+        */
+        removeKeyboardFunction(functionEntry) {
+          const index = _IM.keyboardFunctions.indexOf(functionEntry);
+          if (index !== -1) _IM.keyboardFunctions.splice(index, 1);
+        }
+        /**
+         * Removes a gamepad function entry from the registry
+         * @param {GamepadFunction} functionEntry - The entry to remove
+         * @returns {void}
+         */
+        removeGamepadFunction(functionEntry) {
+          const index = _IM.gamepadFunctions.indexOf(functionEntry);
+          if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
         }
       };
       global_object_default = new IM();

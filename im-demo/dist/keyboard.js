@@ -27,7 +27,7 @@ var keyboard = (() => {
         /**
          *
          * @param {string[]} keys Array of key combinations
-         * @returns {string[]} Key combination from the _IM global object
+         * @returns {KeyboardFunction[]} Array of keyboard function objects
          */
         getKeys(keys) {
           return _IM.keyboardFunctions.filter((keyFunction) => keyFunction.keys.every((key) => keys.includes(key)));
@@ -42,9 +42,10 @@ var keyboard = (() => {
         }
         /**
          *
-         * @param {Array} actions Array of actions
-         * @param {string} type Type of action
-         * @returns {Object} Action from the _IM global object
+         * @param {Object} options
+         * @param {Array} options.actions - Array of actions
+         * @param {string} options.type - Type of action
+         * @returns {GamepadFunction} Gamepad function object from the _IM global object
          */
         getGamepadAction({ actions, type }) {
           return _IM.gamepadFunctions.find((gpFunc) => {
@@ -53,9 +54,8 @@ var keyboard = (() => {
         }
         /**
          *
-         * @param {Array} actions Array of actions
-         * @param {string} type Type of action
-         * @returns {Object} Action from the _IM global object
+         * @param {Array} actions - Array of actions
+         * @returns {GamepadFunction[]} Array of gamepad function objects from the _IM global object
          */
         getGamepadActions(actions) {
           return _IM.gamepadFunctions.filter(
@@ -72,8 +72,8 @@ var keyboard = (() => {
         }
         /**
          *
-         * @param {string} action Action to search for
-         * @returns {Object}
+         * @param {string} action - Action to search for
+         * @returns {ActionFunction} Action function object
          */
         getAction(action) {
           return _IM.actions.find((actionObj) => actionObj.name === action);
@@ -85,6 +85,55 @@ var keyboard = (() => {
          */
         getActionIndex(action) {
           return _IM.actions.findIndex((actionObj) => actionObj.name === action);
+        }
+        /**
+         * Checks if a callback already exists in a registered function entry
+         * @param {KeyboardFunction | GamepadFunction} functionEntry - The function entry to check
+         * @param {Function | string} callback - The callback to search for
+         * @returns {boolean} True if callback exists, false otherwise
+         */
+        hasDuplicateCallback(functionEntry, callback) {
+          return functionEntry.callbacks.some((cb) => cb === callback);
+        }
+        /**
+         * Adds a callback to an existing function entry if it's not a duplicate
+         * @param {KeyboardFunction | GamepadFunction} functionEntry - The function entry to add the callback to
+         * @param {Function | string} callback - The callback to add
+         * @param {Object} errorContext - Context information for error messages
+         * @param {string} errorContext.identifier - String identifying the keys/actions (e.g., "Keys: [A, B]")
+         * @param {string} errorContext.type - The type of action (press, hold, lift)
+         */
+        addCallbackToEntry(functionEntry, callback, errorContext) {
+          if (this.hasDuplicateCallback(functionEntry, callback)) {
+            const callbackType = typeof callback === "string" ? "action" : "function";
+            const callbackName = typeof callback === "string" ? callback : "(anonymous function)";
+            return console.error(
+              `Duplicate callback detected!
+${errorContext.identifier}
+Type: '${errorContext.type}'
+Callback: ${callbackName}
+This ${callbackType} is already registered for this combination and type. To update it, first remove with the .off() method.`
+            );
+          }
+          return functionEntry.callbacks.push(callback);
+        }
+        /**
+        * Removes a keyboard function entry from the registry
+        * @param {KeyboardFunction} functionEntry - The entry to remove
+        * @returns {void}
+        */
+        removeKeyboardFunction(functionEntry) {
+          const index = _IM.keyboardFunctions.indexOf(functionEntry);
+          if (index !== -1) _IM.keyboardFunctions.splice(index, 1);
+        }
+        /**
+         * Removes a gamepad function entry from the registry
+         * @param {GamepadFunction} functionEntry - The entry to remove
+         * @returns {void}
+         */
+        removeGamepadFunction(functionEntry) {
+          const index = _IM.gamepadFunctions.indexOf(functionEntry);
+          if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
         }
       };
       global_object_default = new IM();
@@ -261,7 +310,7 @@ var keyboard = (() => {
         /**
          * @param {Object} options
          * @param {string[]} options.keys - Array of keys you want to use, allows only combination of modifier and regular keys
-         * @param {function | string} options.callback - Function or action to be executed on the key combination
+         * @param {string | Function} options.callback - Function(s) or action(s) to be executed on the key combination
          * @param {string[]} options.type - Type of key action you want to use.
          * @returns {void}
          */
@@ -284,19 +333,28 @@ var keyboard = (() => {
           if (!Array.isArray(options.type)) options.type = [options.type];
           options.type.forEach((type) => {
             const registeredKeys = global_object_default.getKeys(options.keys);
-            if (registeredKeys.length > 0 && registeredKeys.some((key) => key.type === type)) {
-              return console.error("You are trying to overwrite an existing key combination! To do that, first remove it with .off([keys]) then add it again");
+            const existingEntry = registeredKeys.find((key) => key.type === type);
+            if (existingEntry) {
+              return global_object_default.addCallbackToEntry(existingEntry, options.callback, {
+                identifier: `Keys: [${options.keys.join(", ")}]`,
+                type
+              });
             }
             if (type === "lift" && options.keys.length > 1) return console.error("You can only have a single key trigger an action on lift");
-            _IM.keyboardFunctions.push({ ...options, type });
+            _IM.keyboardFunctions.push({
+              keys: options.keys,
+              type,
+              callbacks: [options.callback]
+            });
           });
         }
         /**
-         *
+         * Removes either a key combination or a callback from the provided key combination
          * @param {string[]} keys - Key combination you want to remove from the listener
+         * @param {string | Function} callback - Callback or action you want to remove 
          * @returns {void}
          */
-        off(keys) {
+        off(keys, callback) {
           keys = [
             ...new Set(
               keys.map((key) => {
@@ -305,12 +363,25 @@ var keyboard = (() => {
               })
             )
           ];
-          let keyCombinationCount = global_object_default.getKeys(keys).length;
+          const keyCombinations = global_object_default.getKeys(keys);
+          let keyCombinationCount = keyCombinations.length;
           if (keyCombinationCount === 0) return console.error("You are trying to remove a non-existent key combination!");
-          while (keyCombinationCount > 0) {
-            const keyCombinationIndex = global_object_default.getKeysIndex(keys);
-            _IM.keyboardFunctions.splice(keyCombinationIndex, 1);
-            keyCombinationCount--;
+          if (callback) {
+            const combinationsWithCallback = keyCombinations.filter((combination) => combination.callbacks.includes(callback));
+            if (combinationsWithCallback.length === 0) {
+              return console.error("You are trying to remove a non-existent callback from this key combination!");
+            }
+            combinationsWithCallback.forEach((combination) => {
+              const cbIndex = combination.callbacks.indexOf(callback);
+              combination.callbacks.splice(cbIndex, 1);
+              if (combination.callbacks.length === 0) {
+                global_object_default.removeKeyboardFunction(combination);
+              }
+            });
+          } else {
+            keyCombinations.forEach((combination) => {
+              global_object_default.removeKeyboardFunction(combination);
+            });
           }
           if (_IM.keyboardFunctions.length === 0) {
             document.removeEventListener("keydown", this.onKeyDown);
@@ -333,7 +404,7 @@ var keyboard = (() => {
             if (key.type === "press" && event.repeat) return;
             if (key.type !== "press" && key.type !== "hold") return;
             if (key.type === "hold" && !event.repeat) return;
-            this.executeCallback(event, key);
+            this.executeCallbacks(event, key);
           });
         }
         /**
@@ -348,7 +419,7 @@ var keyboard = (() => {
           const registeredKeys = global_object_default.getKeys(keyPressed);
           if (registeredKeys.length === 0) return;
           registeredKeys.forEach((key) => {
-            if (key.type === "lift" && key.keys.indexOf(keyPressed) !== -1) this.executeCallback(event, key);
+            if (key.type === "lift" && key.keys.indexOf(keyPressed) !== -1) this.executeCallbacks(event, key);
           });
         }
         /**
@@ -365,14 +436,16 @@ var keyboard = (() => {
          * @param {KeyboardEvent} event
          * @param {Object} registeredKeys
          * @param {string[]} registeredKeys.keys - Array of keys you want to use, allows only combination of modifier and regular keys
-         * @param {function | string} registeredKeys.callback - Function or action to be executed on the key combination
+         * @param {(function | string)[]} registeredKeys.callbacks - Functions or actions to be executed on the key combination
          * @param {('press'|'hold'|'lift')} registeredKeys.type - Type of key action you want to use.
          * @return {void}
          * @private
          */
-        executeCallback(event, registeredKeys) {
-          if (typeof registeredKeys.callback === "string") return actions_default.execute(registeredKeys.callback, event);
-          registeredKeys.callback(event);
+        executeCallbacks(event, registeredKeys) {
+          registeredKeys.callbacks.forEach((callback) => {
+            if (typeof callback === "string") return actions_default.execute(callback, event);
+            callback(event);
+          });
         }
       };
       keyboard_default = new Keyboard();

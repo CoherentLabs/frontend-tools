@@ -118,7 +118,7 @@ var gamepad = (() => {
         /**
          *
          * @param {string[]} keys Array of key combinations
-         * @returns {string[]} Key combination from the _IM global object
+         * @returns {KeyboardFunction[]} Array of keyboard function objects
          */
         getKeys(keys) {
           return _IM.keyboardFunctions.filter((keyFunction) => keyFunction.keys.every((key) => keys.includes(key)));
@@ -133,9 +133,10 @@ var gamepad = (() => {
         }
         /**
          *
-         * @param {Array} actions Array of actions
-         * @param {string} type Type of action
-         * @returns {Object} Action from the _IM global object
+         * @param {Object} options
+         * @param {Array} options.actions - Array of actions
+         * @param {string} options.type - Type of action
+         * @returns {GamepadFunction} Gamepad function object from the _IM global object
          */
         getGamepadAction({ actions, type }) {
           return _IM.gamepadFunctions.find((gpFunc) => {
@@ -144,9 +145,8 @@ var gamepad = (() => {
         }
         /**
          *
-         * @param {Array} actions Array of actions
-         * @param {string} type Type of action
-         * @returns {Object} Action from the _IM global object
+         * @param {Array} actions - Array of actions
+         * @returns {GamepadFunction[]} Array of gamepad function objects from the _IM global object
          */
         getGamepadActions(actions) {
           return _IM.gamepadFunctions.filter(
@@ -163,8 +163,8 @@ var gamepad = (() => {
         }
         /**
          *
-         * @param {string} action Action to search for
-         * @returns {Object}
+         * @param {string} action - Action to search for
+         * @returns {ActionFunction} Action function object
          */
         getAction(action) {
           return _IM.actions.find((actionObj) => actionObj.name === action);
@@ -176,6 +176,55 @@ var gamepad = (() => {
          */
         getActionIndex(action) {
           return _IM.actions.findIndex((actionObj) => actionObj.name === action);
+        }
+        /**
+         * Checks if a callback already exists in a registered function entry
+         * @param {KeyboardFunction | GamepadFunction} functionEntry - The function entry to check
+         * @param {Function | string} callback - The callback to search for
+         * @returns {boolean} True if callback exists, false otherwise
+         */
+        hasDuplicateCallback(functionEntry, callback) {
+          return functionEntry.callbacks.some((cb) => cb === callback);
+        }
+        /**
+         * Adds a callback to an existing function entry if it's not a duplicate
+         * @param {KeyboardFunction | GamepadFunction} functionEntry - The function entry to add the callback to
+         * @param {Function | string} callback - The callback to add
+         * @param {Object} errorContext - Context information for error messages
+         * @param {string} errorContext.identifier - String identifying the keys/actions (e.g., "Keys: [A, B]")
+         * @param {string} errorContext.type - The type of action (press, hold, lift)
+         */
+        addCallbackToEntry(functionEntry, callback, errorContext) {
+          if (this.hasDuplicateCallback(functionEntry, callback)) {
+            const callbackType = typeof callback === "string" ? "action" : "function";
+            const callbackName = typeof callback === "string" ? callback : "(anonymous function)";
+            return console.error(
+              `Duplicate callback detected!
+${errorContext.identifier}
+Type: '${errorContext.type}'
+Callback: ${callbackName}
+This ${callbackType} is already registered for this combination and type. To update it, first remove with the .off() method.`
+            );
+          }
+          return functionEntry.callbacks.push(callback);
+        }
+        /**
+        * Removes a keyboard function entry from the registry
+        * @param {KeyboardFunction} functionEntry - The entry to remove
+        * @returns {void}
+        */
+        removeKeyboardFunction(functionEntry) {
+          const index = _IM.keyboardFunctions.indexOf(functionEntry);
+          if (index !== -1) _IM.keyboardFunctions.splice(index, 1);
+        }
+        /**
+         * Removes a gamepad function entry from the registry
+         * @param {GamepadFunction} functionEntry - The entry to remove
+         * @returns {void}
+         */
+        removeGamepadFunction(functionEntry) {
+          const index = _IM.gamepadFunctions.indexOf(functionEntry);
+          if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
         }
       };
       global_object_default = new IM();
@@ -281,8 +330,7 @@ var gamepad = (() => {
          * @param {Object} options
          * @param {string[] | number[]} options.actions - Action to trigger the callback. Can be name of button or joystick
          * @param {'press' | 'hold'} options.type - The type of action to trigger the callback. The available options are hold and press.
-         * @param {function} options.callback - Callback to trigger on the set action
-         * @param {number} options.gamepadNumber - The number of the gamepad that you want to trigger the callback on. Use -1 for all gamepads
+         * @param {function | string} options.callback - Function(s) or action(s) to be triggered on the set action
          * @returns {void}
          */
         on(options) {
@@ -295,22 +343,39 @@ var gamepad = (() => {
           if (options.actions.length > 1 && isAxisAlias) {
             return console.error(`You can't use an axis action in a combination with a button action`);
           }
-          if (global_object_default.getGamepadAction(options)) {
-            return console.error(
-              "You have already registered a callback for this action. If you want to overwrite it, remove it first with .off([actions])"
-            );
+          const existingEntry = global_object_default.getGamepadAction(options);
+          if (existingEntry) {
+            return global_object_default.addCallbackToEntry(existingEntry, options.callback, {
+              identifier: `Actions: [${options.actions.join(", ")}]`,
+              type: options.type
+            });
           }
-          _IM.gamepadFunctions.push(options);
+          _IM.gamepadFunctions.push({ ...options, callbacks: [options.callback] });
         }
         /**
-         * Removes registered actions
+         * Removes either an action or a callback from the provided action
          * @param {Array} actions - Array containing the action you want to remove
+         * @param {string | Function} callback - Callback or action you want to remove 
          * @returns {void}
          */
-        off(actions) {
-          const actionsIndex = global_object_default.getGamepadActionIndex(actions.map(this.sanitizeAction));
-          if (actionsIndex === -1) return console.error("You are trying to remove a non-existent action!");
-          _IM.gamepadFunctions.splice(actionsIndex, 1);
+        off(actions, callback) {
+          const matchingActions = global_object_default.getGamepadActions(actions.map(this.sanitizeAction));
+          if (matchingActions.length === 0) {
+            return console.error("You are trying to remove a non-existent action!");
+          }
+          if (callback) {
+            const actionsWithCallback = matchingActions.filter((action) => action.callbacks.includes(callback));
+            if (actionsWithCallback.length === 0) return console.error("You are trying to remove a non-existent callback from this action!");
+            actionsWithCallback.forEach((action) => {
+              const cbIndex = action.callbacks.indexOf(callback);
+              action.callbacks.splice(cbIndex, 1);
+              if (action.callbacks.length === 0) {
+                global_object_default.removeGamepadFunction(action);
+              }
+            });
+          } else {
+            matchingActions.forEach((action) => global_object_default.removeGamepadFunction(action));
+          }
         }
         /**
          * Loop that handles button presses and axis movement
@@ -350,7 +415,7 @@ var gamepad = (() => {
           if (!gamepadActions.length === 0) return;
           if (this._pressedAction) {
             if (!gamepadActions.includes(this._pressedAction)) {
-              this.executeCallback(this._pressedAction, this._pressedAction.actions);
+              this.executeCallbacks(this._pressedAction, this._pressedAction.actions);
             }
             this._pressedAction = null;
           }
@@ -359,7 +424,7 @@ var gamepad = (() => {
               this._pressedAction = gamepadAction;
               return;
             }
-            this.executeCallback(gamepadAction, pressedButtons.buttons);
+            this.executeCallbacks(gamepadAction, pressedButtons.buttons);
           });
         }
         /* eslint-disable max-lines-per-function */
@@ -373,32 +438,32 @@ var gamepad = (() => {
           joystickActions.forEach((jAction) => {
             switch (jAction.actions[0]) {
               case "left.joystick":
-                return this.executeCallback(jAction, [axes[0], axes[1]]);
+                return this.executeCallbacks(jAction, [axes[0], axes[1]]);
               case "right.joystick":
-                return this.executeCallback(jAction, [axes[2], axes[3]]);
+                return this.executeCallbacks(jAction, [axes[2], axes[3]]);
               case "left.joystick.down":
-                if (axes[1] > AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[0], axes[1]]);
+                if (axes[1] > AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[0], axes[1]]);
                 break;
               case "left.joystick.up":
-                if (axes[1] < -AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[0], axes[1]]);
+                if (axes[1] < -AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[0], axes[1]]);
                 break;
               case "left.joystick.left":
-                if (axes[0] < -AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[0], axes[1]]);
+                if (axes[0] < -AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[0], axes[1]]);
                 break;
               case "left.joystick.right":
-                if (axes[0] > AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[0], axes[1]]);
+                if (axes[0] > AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[0], axes[1]]);
                 break;
               case "right.joystick.down":
-                if (axes[3] > AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[2], axes[3]]);
+                if (axes[3] > AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[2], axes[3]]);
                 break;
               case "right.joystick.up":
-                if (axes[3] < -AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[2], axes[3]]);
+                if (axes[3] < -AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[2], axes[3]]);
                 break;
               case "right.joystick.left":
-                if (axes[2] < -AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[2], axes[3]]);
+                if (axes[2] < -AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[2], axes[3]]);
                 break;
               case "right.joystick.right":
-                if (axes[2] > AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[2], axes[3]]);
+                if (axes[2] > AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[2], axes[3]]);
                 break;
             }
           });
@@ -429,15 +494,17 @@ var gamepad = (() => {
           return _IM.gamepadFunctions.filter((gpFunc) => this.mappings.axisAliases.includes(gpFunc.actions[0]));
         }
         /**
-         * Executes the callback from the registered action
+         * Executes the callbacks from the registered action
          * @param {Object} action
          * @param {any} value
          * @returns {void}
          * @private
          */
-        executeCallback(action, value) {
-          if (typeof action.callback === "string") return actions_default.execute(action.callback, value);
-          action.callback(value);
+        executeCallbacks(action, value) {
+          action.callbacks.forEach((callback) => {
+            if (typeof callback === "string") return actions_default.execute(callback, value);
+            callback(value);
+          });
         }
       };
       gamepad_default = new Gamepad();

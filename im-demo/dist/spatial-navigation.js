@@ -36,7 +36,7 @@ var spatialNavigation = (() => {
         /**
          *
          * @param {string[]} keys Array of key combinations
-         * @returns {string[]} Key combination from the _IM global object
+         * @returns {KeyboardFunction[]} Array of keyboard function objects
          */
         getKeys(keys) {
           return _IM.keyboardFunctions.filter((keyFunction) => keyFunction.keys.every((key) => keys.includes(key)));
@@ -51,9 +51,10 @@ var spatialNavigation = (() => {
         }
         /**
          *
-         * @param {Array} actions Array of actions
-         * @param {string} type Type of action
-         * @returns {Object} Action from the _IM global object
+         * @param {Object} options
+         * @param {Array} options.actions - Array of actions
+         * @param {string} options.type - Type of action
+         * @returns {GamepadFunction} Gamepad function object from the _IM global object
          */
         getGamepadAction({ actions, type }) {
           return _IM.gamepadFunctions.find((gpFunc) => {
@@ -62,9 +63,8 @@ var spatialNavigation = (() => {
         }
         /**
          *
-         * @param {Array} actions Array of actions
-         * @param {string} type Type of action
-         * @returns {Object} Action from the _IM global object
+         * @param {Array} actions - Array of actions
+         * @returns {GamepadFunction[]} Array of gamepad function objects from the _IM global object
          */
         getGamepadActions(actions) {
           return _IM.gamepadFunctions.filter(
@@ -81,8 +81,8 @@ var spatialNavigation = (() => {
         }
         /**
          *
-         * @param {string} action Action to search for
-         * @returns {Object}
+         * @param {string} action - Action to search for
+         * @returns {ActionFunction} Action function object
          */
         getAction(action) {
           return _IM.actions.find((actionObj) => actionObj.name === action);
@@ -94,6 +94,55 @@ var spatialNavigation = (() => {
          */
         getActionIndex(action) {
           return _IM.actions.findIndex((actionObj) => actionObj.name === action);
+        }
+        /**
+         * Checks if a callback already exists in a registered function entry
+         * @param {KeyboardFunction | GamepadFunction} functionEntry - The function entry to check
+         * @param {Function | string} callback - The callback to search for
+         * @returns {boolean} True if callback exists, false otherwise
+         */
+        hasDuplicateCallback(functionEntry, callback) {
+          return functionEntry.callbacks.some((cb) => cb === callback);
+        }
+        /**
+         * Adds a callback to an existing function entry if it's not a duplicate
+         * @param {KeyboardFunction | GamepadFunction} functionEntry - The function entry to add the callback to
+         * @param {Function | string} callback - The callback to add
+         * @param {Object} errorContext - Context information for error messages
+         * @param {string} errorContext.identifier - String identifying the keys/actions (e.g., "Keys: [A, B]")
+         * @param {string} errorContext.type - The type of action (press, hold, lift)
+         */
+        addCallbackToEntry(functionEntry, callback, errorContext) {
+          if (this.hasDuplicateCallback(functionEntry, callback)) {
+            const callbackType = typeof callback === "string" ? "action" : "function";
+            const callbackName = typeof callback === "string" ? callback : "(anonymous function)";
+            return console.error(
+              `Duplicate callback detected!
+${errorContext.identifier}
+Type: '${errorContext.type}'
+Callback: ${callbackName}
+This ${callbackType} is already registered for this combination and type. To update it, first remove with the .off() method.`
+            );
+          }
+          return functionEntry.callbacks.push(callback);
+        }
+        /**
+        * Removes a keyboard function entry from the registry
+        * @param {KeyboardFunction} functionEntry - The entry to remove
+        * @returns {void}
+        */
+        removeKeyboardFunction(functionEntry) {
+          const index = _IM.keyboardFunctions.indexOf(functionEntry);
+          if (index !== -1) _IM.keyboardFunctions.splice(index, 1);
+        }
+        /**
+         * Removes a gamepad function entry from the registry
+         * @param {GamepadFunction} functionEntry - The entry to remove
+         * @returns {void}
+         */
+        removeGamepadFunction(functionEntry) {
+          const index = _IM.gamepadFunctions.indexOf(functionEntry);
+          if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
         }
       };
       global_object_default = new IM();
@@ -270,7 +319,7 @@ var spatialNavigation = (() => {
         /**
          * @param {Object} options
          * @param {string[]} options.keys - Array of keys you want to use, allows only combination of modifier and regular keys
-         * @param {function | string} options.callback - Function or action to be executed on the key combination
+         * @param {string | Function} options.callback - Function(s) or action(s) to be executed on the key combination
          * @param {string[]} options.type - Type of key action you want to use.
          * @returns {void}
          */
@@ -293,19 +342,28 @@ var spatialNavigation = (() => {
           if (!Array.isArray(options.type)) options.type = [options.type];
           options.type.forEach((type) => {
             const registeredKeys = global_object_default.getKeys(options.keys);
-            if (registeredKeys.length > 0 && registeredKeys.some((key) => key.type === type)) {
-              return console.error("You are trying to overwrite an existing key combination! To do that, first remove it with .off([keys]) then add it again");
+            const existingEntry = registeredKeys.find((key) => key.type === type);
+            if (existingEntry) {
+              return global_object_default.addCallbackToEntry(existingEntry, options.callback, {
+                identifier: `Keys: [${options.keys.join(", ")}]`,
+                type
+              });
             }
             if (type === "lift" && options.keys.length > 1) return console.error("You can only have a single key trigger an action on lift");
-            _IM.keyboardFunctions.push({ ...options, type });
+            _IM.keyboardFunctions.push({
+              keys: options.keys,
+              type,
+              callbacks: [options.callback]
+            });
           });
         }
         /**
-         *
+         * Removes either a key combination or a callback from the provided key combination
          * @param {string[]} keys - Key combination you want to remove from the listener
+         * @param {string | Function} callback - Callback or action you want to remove 
          * @returns {void}
          */
-        off(keys) {
+        off(keys, callback) {
           keys = [
             ...new Set(
               keys.map((key) => {
@@ -314,12 +372,25 @@ var spatialNavigation = (() => {
               })
             )
           ];
-          let keyCombinationCount = global_object_default.getKeys(keys).length;
+          const keyCombinations = global_object_default.getKeys(keys);
+          let keyCombinationCount = keyCombinations.length;
           if (keyCombinationCount === 0) return console.error("You are trying to remove a non-existent key combination!");
-          while (keyCombinationCount > 0) {
-            const keyCombinationIndex = global_object_default.getKeysIndex(keys);
-            _IM.keyboardFunctions.splice(keyCombinationIndex, 1);
-            keyCombinationCount--;
+          if (callback) {
+            const combinationsWithCallback = keyCombinations.filter((combination) => combination.callbacks.includes(callback));
+            if (combinationsWithCallback.length === 0) {
+              return console.error("You are trying to remove a non-existent callback from this key combination!");
+            }
+            combinationsWithCallback.forEach((combination) => {
+              const cbIndex = combination.callbacks.indexOf(callback);
+              combination.callbacks.splice(cbIndex, 1);
+              if (combination.callbacks.length === 0) {
+                global_object_default.removeKeyboardFunction(combination);
+              }
+            });
+          } else {
+            keyCombinations.forEach((combination) => {
+              global_object_default.removeKeyboardFunction(combination);
+            });
           }
           if (_IM.keyboardFunctions.length === 0) {
             document.removeEventListener("keydown", this.onKeyDown);
@@ -342,7 +413,7 @@ var spatialNavigation = (() => {
             if (key.type === "press" && event.repeat) return;
             if (key.type !== "press" && key.type !== "hold") return;
             if (key.type === "hold" && !event.repeat) return;
-            this.executeCallback(event, key);
+            this.executeCallbacks(event, key);
           });
         }
         /**
@@ -357,7 +428,7 @@ var spatialNavigation = (() => {
           const registeredKeys = global_object_default.getKeys(keyPressed);
           if (registeredKeys.length === 0) return;
           registeredKeys.forEach((key) => {
-            if (key.type === "lift" && key.keys.indexOf(keyPressed) !== -1) this.executeCallback(event, key);
+            if (key.type === "lift" && key.keys.indexOf(keyPressed) !== -1) this.executeCallbacks(event, key);
           });
         }
         /**
@@ -374,14 +445,16 @@ var spatialNavigation = (() => {
          * @param {KeyboardEvent} event
          * @param {Object} registeredKeys
          * @param {string[]} registeredKeys.keys - Array of keys you want to use, allows only combination of modifier and regular keys
-         * @param {function | string} registeredKeys.callback - Function or action to be executed on the key combination
+         * @param {(function | string)[]} registeredKeys.callbacks - Functions or actions to be executed on the key combination
          * @param {('press'|'hold'|'lift')} registeredKeys.type - Type of key action you want to use.
          * @return {void}
          * @private
          */
-        executeCallback(event, registeredKeys) {
-          if (typeof registeredKeys.callback === "string") return actions_default.execute(registeredKeys.callback, event);
-          registeredKeys.callback(event);
+        executeCallbacks(event, registeredKeys) {
+          registeredKeys.callbacks.forEach((callback) => {
+            if (typeof callback === "string") return actions_default.execute(callback, event);
+            callback(event);
+          });
         }
       };
       keyboard_default = new Keyboard();
@@ -536,8 +609,7 @@ var spatialNavigation = (() => {
          * @param {Object} options
          * @param {string[] | number[]} options.actions - Action to trigger the callback. Can be name of button or joystick
          * @param {'press' | 'hold'} options.type - The type of action to trigger the callback. The available options are hold and press.
-         * @param {function} options.callback - Callback to trigger on the set action
-         * @param {number} options.gamepadNumber - The number of the gamepad that you want to trigger the callback on. Use -1 for all gamepads
+         * @param {function | string} options.callback - Function(s) or action(s) to be triggered on the set action
          * @returns {void}
          */
         on(options) {
@@ -550,22 +622,39 @@ var spatialNavigation = (() => {
           if (options.actions.length > 1 && isAxisAlias) {
             return console.error(`You can't use an axis action in a combination with a button action`);
           }
-          if (global_object_default.getGamepadAction(options)) {
-            return console.error(
-              "You have already registered a callback for this action. If you want to overwrite it, remove it first with .off([actions])"
-            );
+          const existingEntry = global_object_default.getGamepadAction(options);
+          if (existingEntry) {
+            return global_object_default.addCallbackToEntry(existingEntry, options.callback, {
+              identifier: `Actions: [${options.actions.join(", ")}]`,
+              type: options.type
+            });
           }
-          _IM.gamepadFunctions.push(options);
+          _IM.gamepadFunctions.push({ ...options, callbacks: [options.callback] });
         }
         /**
-         * Removes registered actions
+         * Removes either an action or a callback from the provided action
          * @param {Array} actions - Array containing the action you want to remove
+         * @param {string | Function} callback - Callback or action you want to remove 
          * @returns {void}
          */
-        off(actions) {
-          const actionsIndex = global_object_default.getGamepadActionIndex(actions.map(this.sanitizeAction));
-          if (actionsIndex === -1) return console.error("You are trying to remove a non-existent action!");
-          _IM.gamepadFunctions.splice(actionsIndex, 1);
+        off(actions, callback) {
+          const matchingActions = global_object_default.getGamepadActions(actions.map(this.sanitizeAction));
+          if (matchingActions.length === 0) {
+            return console.error("You are trying to remove a non-existent action!");
+          }
+          if (callback) {
+            const actionsWithCallback = matchingActions.filter((action) => action.callbacks.includes(callback));
+            if (actionsWithCallback.length === 0) return console.error("You are trying to remove a non-existent callback from this action!");
+            actionsWithCallback.forEach((action) => {
+              const cbIndex = action.callbacks.indexOf(callback);
+              action.callbacks.splice(cbIndex, 1);
+              if (action.callbacks.length === 0) {
+                global_object_default.removeGamepadFunction(action);
+              }
+            });
+          } else {
+            matchingActions.forEach((action) => global_object_default.removeGamepadFunction(action));
+          }
         }
         /**
          * Loop that handles button presses and axis movement
@@ -605,7 +694,7 @@ var spatialNavigation = (() => {
           if (!gamepadActions.length === 0) return;
           if (this._pressedAction) {
             if (!gamepadActions.includes(this._pressedAction)) {
-              this.executeCallback(this._pressedAction, this._pressedAction.actions);
+              this.executeCallbacks(this._pressedAction, this._pressedAction.actions);
             }
             this._pressedAction = null;
           }
@@ -614,7 +703,7 @@ var spatialNavigation = (() => {
               this._pressedAction = gamepadAction;
               return;
             }
-            this.executeCallback(gamepadAction, pressedButtons.buttons);
+            this.executeCallbacks(gamepadAction, pressedButtons.buttons);
           });
         }
         /* eslint-disable max-lines-per-function */
@@ -628,32 +717,32 @@ var spatialNavigation = (() => {
           joystickActions.forEach((jAction) => {
             switch (jAction.actions[0]) {
               case "left.joystick":
-                return this.executeCallback(jAction, [axes[0], axes[1]]);
+                return this.executeCallbacks(jAction, [axes[0], axes[1]]);
               case "right.joystick":
-                return this.executeCallback(jAction, [axes[2], axes[3]]);
+                return this.executeCallbacks(jAction, [axes[2], axes[3]]);
               case "left.joystick.down":
-                if (axes[1] > AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[0], axes[1]]);
+                if (axes[1] > AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[0], axes[1]]);
                 break;
               case "left.joystick.up":
-                if (axes[1] < -AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[0], axes[1]]);
+                if (axes[1] < -AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[0], axes[1]]);
                 break;
               case "left.joystick.left":
-                if (axes[0] < -AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[0], axes[1]]);
+                if (axes[0] < -AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[0], axes[1]]);
                 break;
               case "left.joystick.right":
-                if (axes[0] > AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[0], axes[1]]);
+                if (axes[0] > AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[0], axes[1]]);
                 break;
               case "right.joystick.down":
-                if (axes[3] > AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[2], axes[3]]);
+                if (axes[3] > AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[2], axes[3]]);
                 break;
               case "right.joystick.up":
-                if (axes[3] < -AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[2], axes[3]]);
+                if (axes[3] < -AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[2], axes[3]]);
                 break;
               case "right.joystick.left":
-                if (axes[2] < -AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[2], axes[3]]);
+                if (axes[2] < -AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[2], axes[3]]);
                 break;
               case "right.joystick.right":
-                if (axes[2] > AXIS_THRESHOLD) return this.executeCallback(jAction, [axes[2], axes[3]]);
+                if (axes[2] > AXIS_THRESHOLD) return this.executeCallbacks(jAction, [axes[2], axes[3]]);
                 break;
             }
           });
@@ -684,15 +773,17 @@ var spatialNavigation = (() => {
           return _IM.gamepadFunctions.filter((gpFunc) => this.mappings.axisAliases.includes(gpFunc.actions[0]));
         }
         /**
-         * Executes the callback from the registered action
+         * Executes the callbacks from the registered action
          * @param {Object} action
          * @param {any} value
          * @returns {void}
          * @private
          */
-        executeCallback(action, value) {
-          if (typeof action.callback === "string") return actions_default.execute(action.callback, value);
-          action.callback(value);
+        executeCallbacks(action, value) {
+          action.callbacks.forEach((callback) => {
+            if (typeof callback === "string") return actions_default.execute(callback, value);
+            callback(value);
+          });
         }
       };
       gamepad_default = new Gamepad();
@@ -721,11 +812,22 @@ var spatialNavigation = (() => {
         }
         /**
          * Initializes the spatial navigation
-         * @param {string[]|Object[]} navigatableElements
-         * @param {string} navigatableElements[].area
-         * @param {string[]} navigatableElements[].elements
-         * @param {number} overlap
+         * @param {string[]|Object[]|HTMLElement[]} navigatableElements - Array of selector strings, objects with area/elements, or HTMLElement references
+         * @param {string} navigatableElements[].area - Name of the navigation area
+         * @param {(string|HTMLElement)[]} navigatableElements[].elements - Array of selector strings or HTMLElement references
+         * @param {number} overlap - Overlap percentage (0-1) for determining if elements are on the same axis
          * @returns {void}
+         * @example
+         * // Using selector strings
+         * spatialNavigation.init(['.menu-item', '#header']);
+         *
+         * // Using HTMLElement references
+         * spatialNavigation.init([element1, element2]);
+         *
+         * // Using object syntax with mixed selectors and HTMLElements
+         * spatialNavigation.init([
+         *   { area: 'menu', elements: ['.item', element1, '#button'] }
+         * ]);
          */
         init(navigatableElements = [], overlap) {
           if (this.enabled) return;
@@ -751,12 +853,28 @@ var spatialNavigation = (() => {
         }
         /**
          * Add new elements to area or new area
-         * @param {string[]|Object[]} navigatableElements
-         * @param {string} navigatableElements[].area
-         * @param {string[]} navigatableElements[].elements
+         * @param {string[]|Object[]|HTMLElement[]} navigatableElements - Array of selector strings, objects with area/elements, or HTMLElement references
+         * @param {string} navigatableElements[].area - Name of the navigation area
+         * @param {(string|HTMLElement)[]} navigatableElements[].elements - Array of selector strings or HTMLElement references
+         * @example
+         * // Add selector strings to default area
+         * spatialNavigation.add(['.new-item']);
+         *
+         * // Add HTMLElement references to default area
+         * spatialNavigation.add([element1, element2]);
+         *
+         * // Add to named area with mixed types
+         * spatialNavigation.add([
+         *   { area: 'sidebar', elements: ['.link', element1] }
+         * ]);
          */
         add(navigatableElements) {
           if (!this.enabled) return;
+          if (navigatableElements.every((el) => el instanceof HTMLElement)) {
+            navigatableElements.forEach((element) => this.makeFocusable(element));
+            this.setNavigationAreaProperties("default", navigatableElements);
+            return;
+          }
           navigatableElements.forEach((navArea) => {
             typeof navArea === "string" ? this.handleString(navArea) : this.handleObject(navArea);
           });
@@ -770,7 +888,7 @@ var spatialNavigation = (() => {
           if (!this.enabled) return;
           if (!this.navigatableElements[area]) return console.error(`The area '${area}' you are trying to remove doesn't exist`);
           this.navigatableElements[area].elements.forEach((element) => element.removeAttribute("tabindex"));
-          this.navigatableElements[area] = {};
+          delete this.navigatableElements[area];
         }
         /**
          * Get elements from selector and save them to the default group
@@ -785,13 +903,18 @@ var spatialNavigation = (() => {
         }
         /**
          * Gets elements from object and saves them to a focusable group
-         * @param {Object} navArea
-         * @param {string} navArea.area
-         * @param {string[]} navArea.elements
+         * @param {Object} navArea - Navigation area configuration
+         * @param {string} navArea.area - Name of the navigation area
+         * @param {(string|HTMLElement)[]} navArea.elements - Array of selector strings or HTMLElement references
          * @returns {void}
          */
         handleObject(navArea) {
           const domElements = navArea.elements.reduce((acc, el) => {
+            if (el instanceof HTMLElement) {
+              acc.push(el);
+              this.makeFocusable(el);
+              return acc;
+            }
             const elements = document.querySelectorAll(el);
             elements.forEach(this.makeFocusable);
             acc.push(...elements);
@@ -923,7 +1046,7 @@ var spatialNavigation = (() => {
          */
         moveFocus(direction) {
           if (!this.enabled) return;
-          const activeElement = this.checkActiveElementInGroup();
+          const activeElement = this.isActiveElementInGroup() && document.activeElement || this.lastFocusedElement;
           const currentArea = this.getCurrentArea(activeElement);
           if (!currentArea) return console.error("The active element is not in a focusable area!");
           const { elements, distance, overflow } = currentArea;
@@ -1151,18 +1274,19 @@ var spatialNavigation = (() => {
           this.focusFirst(area);
         }
         /**
-         * Checks if a given element is a focusable area
+        * Checks if a given element is in a focusable area
+        * @param {HTMLElement} element
+        * @returns {boolean}
+        */
+        isElementInGroup(element) {
+          return Object.values(this.navigatableElements).some((group) => group.elements.includes(element));
+        }
+        /**
+         * Checks if the currently active element is in a focusable area
          * @returns {boolean}
          */
         isActiveElementInGroup() {
-          return Object.values(this.navigatableElements).some((group) => group.elements.includes(document.activeElement));
-        }
-        /**
-         * Checks if the active element is within a group and returns the last focused element if it isn't.
-         * @returns {HTMLElement}
-         */
-        checkActiveElementInGroup() {
-          return this.isActiveElementInGroup(document.activeElement) ? document.activeElement : this.lastFocusedElement;
+          return this.isElementInGroup(document.activeElement);
         }
         /**
          * Removes the focus from a focused element in a group
