@@ -5,7 +5,7 @@
   "main": "dist/interaction-manager.js",
   "module": "esm/interaction-manager.js",
   "scripts": {
-    "publish:package": "npm i&&npm run build",
+    "publish:package": "npm i&&npm run build&&npm publish",
     "build": "node scripts/build-im.js",
     "test": "node tests/index.js"
   },

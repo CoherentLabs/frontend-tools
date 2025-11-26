@@ -183,8 +183,8 @@ async function getConfig() {
         customCss: ['./src/styles/custom.css'],
         plugins: [
           starlightThemeRapide(),
-          starlightLinksValidator(),
           starlightHeadingBadges(),
+          starlightLinksValidator(),
           starlightSidebarTopics(sideBarTopics, {
             topics: documentations.reduce((acc, doc) => {
               acc[doc] = [`/${doc}/changelog`];
