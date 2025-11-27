@@ -212,28 +212,27 @@ class FontExporter {
 
         const backupFonts: FontWeightData = {};
 
-        for (const fontFamily of Object.keys(usedFontsInPage)) {
-            for (const weight of Object.keys(usedFontsInPage[fontFamily])) {
-                if (!backupFonts[weight]) backupFonts[weight] = {};
-                for (const style of Object.keys(usedFontsInPage[fontFamily][weight])) {
-                    if (!backupFonts[weight][style]) {
-                        backupFonts[weight][style] = {
-                            subsets: {},
-                            fontName: BACKUP_FONT_NAME,
-                        };
-                    }
-                    const subsets = usedFontsInPage[fontFamily][weight][style].subsets;
-                    for (const subset of Object.keys(subsets)) {
-                        if (!backupFonts[weight][style].subsets[subset]) {
-                            backupFonts[weight][style].subsets[subset] = await this.getFontData({
-                                fontName: BACKUP_FONT_ID,
-                                italic: style === 'italic',
-                                weight: parseInt(weight, 10),
-                                subset,
-                            });
-                        }
-                    }
+        for (const [_fontFamily, weights] of Object.entries(usedFontsInPage)) {
+            for (const [weight, styles] of Object.entries(weights)) {
+            if (!backupFonts[weight]) backupFonts[weight] = {};
+            for (const [style, fontData] of Object.entries(styles)) {
+                if (!backupFonts[weight][style]) {
+                backupFonts[weight][style] = {
+                    subsets: {},
+                    fontName: BACKUP_FONT_NAME,
+                };
                 }
+                for (const subset of Object.keys(fontData.subsets)) {
+                if (!backupFonts[weight][style].subsets[subset]) {
+                    backupFonts[weight][style].subsets[subset] = await this.getFontData({
+                    fontName: BACKUP_FONT_ID,
+                    italic: style === 'italic',
+                    weight: parseInt(weight, 10),
+                    subset,
+                    });
+                }
+                }
+            }
             }
         }
 
