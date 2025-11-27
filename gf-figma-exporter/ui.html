@@ -33,10 +33,10 @@
                 }
 
                 if (fonts && Object.keys(fonts).length > 0) {
-                    for (const font of Object.keys(fonts)) {
-                        for (const weight of Object.keys(fonts[font])) {
-                            for (const style of Object.keys(fonts[font][weight])) {
-                                for (const [subset, data] of Object.entries(fonts[font][weight][style].subsets)) {
+                    for (const [font, fontWeights] of Object.entries(fonts)) {
+                        for (const [weight, weightStyles] of Object.entries(fontWeights)) {
+                            for (const [style, styleData] of Object.entries(weightStyles)) {
+                                for (const [subset, data] of Object.entries(styleData.subsets)) {
                                     if (data) {
                                         jszip.file(`${name}/fonts/${font}-${style}_${weight}_${subset}.ttf`, data);
                                     }
@@ -142,13 +142,13 @@
             table.appendChild(tableBody);
             form.appendChild(table);
 
-            for (const font of Object.keys(fonts)) {
-                for (const weight of Object.keys(fonts[font])) {
-                    for (const style of Object.keys(fonts[font][weight])) {
-                        for (const subset of Object.keys(fonts[font][weight][style].subsets)) {
+            for (const [font] of Object.entries(fonts)) {
+                for (const [weight] of Object.entries(fonts[font])) {
+                    for (const [style] of Object.entries(fonts[font][weight])) {
+                        for (const [subset] of Object.entries(fonts[font][weight][style].subsets)) {
                             const fontInput = document.createElement('input');
                             fontInput.type = 'file';
-                            fontInput.accept = '.ttf';
+                            fontInput.accept = '.ttf,.ttc,.otf,.otc';
 
                             fontInput.name = `${font}_${weight}_${style}_${subset}`;
 
