@@ -1,6 +1,5 @@
 import generateCode from './factory';
 import FontExporter from './FontExporter/FontExporter';
-// import FontExporter from './FontExporter/FontExporter';
 import { GFFont, GFImage } from './types/commonTypes';
 import createCSSFontRules from './utils/createCSSFontRules';
 import generateCSSBoilerplate from './utils/cssBoilerplate';
@@ -24,9 +23,8 @@ async function getPages(): Promise<ExporterResult> {
     for (const page of pages) {
         currentPageSize.set({ width: page.width, height: page.height });
         await FontExporter.init(page as FrameNode);
-        console.log(FontExporter.fontMap);
+        
         const { html, css, images } = await generateCode(page as FrameNode);
-
         
         results[sanitizeNames(page.name)] = {
             html: generateHTMLBoilerplate(html, page.name),
