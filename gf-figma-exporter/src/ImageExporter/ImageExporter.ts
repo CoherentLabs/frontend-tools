@@ -3,7 +3,7 @@ import toggleChildren from '../utils/toggleChildren';
 import handleImage from './utils/handleImages';
 import shouldExportBackground from './utils/shouldExportBackground';
 import shouldExportStroke from './utils/shouldExportStroke';
-import { hideEffects, hideFills, hideStrokes, restoreEffects, restoreFills, restoreStrokes } from './utils/toggleUtils';
+import { disableMask, enableMask, hideEffects, hideFills, hideStrokes, restoreEffects, restoreFills, restoreStrokes } from './utils/toggleUtils';
 
 interface GFBackgroundAndStroke {
     background: {
@@ -36,11 +36,13 @@ class ImageExporter {
     ): Promise<{ name: string; data: Uint8Array | null } | null> {
         if (!shouldExportBackground(node)) return null;
 
+        
         if (node.type === 'FRAME') {
             // Temporarily hide children to avoid exporting them in the background image
             toggleChildren(node, false);
         }
-
+        
+        const isMasked = node.getPluginData('masked-by') !== '';
         const strokes = node.strokes;
         const effects = node.effects;
 
@@ -48,6 +50,7 @@ class ImageExporter {
 
         hideStrokes(node);
         hideEffects(node);
+        if (isMasked) await disableMask(node);
 
         const { name, data } = await handleImage(node, 'background', 'PNG');
         if (!data) return null;
@@ -59,6 +62,7 @@ class ImageExporter {
 
         restoreStrokes(node, strokes);
         restoreEffects(node, effects);
+        if (isMasked) await enableMask(node);
 
         return {
             name,
@@ -69,7 +73,7 @@ class ImageExporter {
     async exportStrokeImage(node: NodesWithFillsAndStrokes): Promise<{ name: string; data: Uint8Array | null } | null> {
         if (!shouldExportStroke(node)) return null;
 
-
+        const isMasked = node.getPluginData('masked-by') !== '';
         const fills = node.fills;
         const effects = node.effects;
         // Hide fills and effects to export only the stroke
@@ -81,12 +85,14 @@ class ImageExporter {
 
         hideFills(node);
         hideEffects(node);
+        if (isMasked) await disableMask(node);
 
         const { name, data } = await handleImage(node, 'border', 'PNG');
         if (!data) return null;
 
         restoreFills(node, fills);
         restoreEffects(node, effects);
+        if (isMasked) await enableMask(node);
 
         if (node.type === 'FRAME') {
             // Restore children visibility

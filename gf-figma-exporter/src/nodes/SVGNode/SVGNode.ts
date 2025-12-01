@@ -50,7 +50,7 @@ export default class GFSVGNode extends GFBaseNode {
 
         return `
         .${this.className} {
-            ${CSSExporterInstance.generateElementStyle()}
+            ${await CSSExporterInstance.generateElementStyle()}
         }
 
         .${this.className}${BACKGROUND_SUFFIX} {

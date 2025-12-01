@@ -85,7 +85,7 @@ class GFMask extends BaseNode {
 
         return `
         .${this.className} {
-            ${CSSExporterInstance.generateElementStyle()}
+            ${await CSSExporterInstance.generateElementStyle()}
         }
 
         ${this.additionalCSS}`;

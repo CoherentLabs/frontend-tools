@@ -39,13 +39,7 @@ class GFFrame extends GFBaseNode {
 
                 if (index > currentIndex && nodes.length > 0) {
                     const lastNode = nodes[nodes.length - 1] as MaskNode;
-                    (child as SceneNode).setPluginData('mask-x', `${(lastNode.originalNode as SceneNode).x}`);
-                    (child as SceneNode).setPluginData('mask-y', `${(lastNode.originalNode as SceneNode).y}`);
-                    (child as SceneNode).setPluginData('mask-height', `${(lastNode.originalNode as SceneNode).height}`);
-                    
-                    if (child.type === 'GROUP') {
-                        (child as GroupNode).setPluginData('is-inside-mask', 'true');
-                    }
+                    (child as SceneNode).setPluginData('masked-by', lastNode.id);
                     lastNode.maskChildren.push(child);
                     return nodes;
                 }

@@ -54,7 +54,7 @@ export default class GFBaseNode {
 
         return `
         .${this.className} {
-            ${CSSExporterInstance.generateElementStyle()}
+            ${await CSSExporterInstance.generateElementStyle()}
         }
 
         .${this.className}${BACKGROUND_SUFFIX} {

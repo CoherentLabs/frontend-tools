@@ -13,7 +13,7 @@ class GFGroup extends GFFrame {
 
         return `
         .${this.className} {
-            ${CSSExporterInstance.generateElementStyle()}
+            ${await CSSExporterInstance.generateElementStyle()}
         }
         
         ${this.additionalCSS}

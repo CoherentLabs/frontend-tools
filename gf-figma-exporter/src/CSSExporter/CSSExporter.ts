@@ -36,9 +36,9 @@ class CSSExporter {
         this.textStyles = new StyleManager();
     }
 
-    generateElementStyle() {
+    async generateElementStyle() {
         const { width, height } = generateSize(this.node);
-        const { top, left } = generatePosition(this.node as PrimitiveNodes);
+        const { top, left } = await generatePosition(this.node as PrimitiveNodes);
         const opacity = generateOpacity((this.node as PrimitiveNodes).opacity);
         const zIndex = generateZIndex(this.node as PrimitiveNodes);
         const { filter, backDropFilter } = generateEffectStyles(this.node as SVGNodes | NodesWithFillsAndStrokes);

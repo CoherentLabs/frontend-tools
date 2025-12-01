@@ -36,7 +36,7 @@ class GFTextNode {
         CSSExporterInstance.style.add('margin', '0'); // Reset default margin for <p> tag
         
         let css = `.${this.className} {
-            ${CSSExporterInstance.generateElementStyle()}
+            ${await CSSExporterInstance.generateElementStyle()}
         }
         \n\n`;
         for (const [index, segment] of this.textSegments.entries()) {
