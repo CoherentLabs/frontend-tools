@@ -9,7 +9,7 @@ type FilteredGamefaceCommands = Omit<GamefaceCommandsMethods, '_ws' | '_cohtmlJS
 type FilteredUtilMethods = Omit<UtilMethods, '_retryInner' | 'getPressedKey'>;
 
 declare global {
-    var gf: FilteredGamefaceCommands & FilteredUtilMethods & { KEYS: typeof Utils.KEYS };
+    var gf: FilteredGamefaceCommands & FilteredUtilMethods & { KEYS: typeof Utils.KEYS, GAMEPAD_BUTTONS: typeof Utils.GAMEPAD_BUTTONS };
 }
 
 export { };

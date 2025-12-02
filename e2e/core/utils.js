@@ -126,6 +126,26 @@ class Utils {
         EQUAL: 187,
         SYSTEM: 91,
     };
+
+    GAMEPAD_BUTTONS = {
+        FACE_BUTTON_DOWN: 0,
+        FACE_BUTTON_RIGHT: 1,
+        FACE_BUTTON_LEFT: 2,
+        FACE_BUTTON_TOP: 3,
+        LEFT_SHOULDER: 4,
+        RIGHT_SHOULDER: 5,
+        LEFT_SHOULDER_BOTTOM: 6,
+        RIGHT_SHOULDER_BOTTOM: 7,
+        SELECT: 8,
+        START: 9,
+        LEFT_ANALOGUE_STICK: 10,
+        RIGHT_ANALOGUE_STICK: 11,
+        PAD_UP: 12,
+        PAD_DOWN: 13,
+        PAD_LEFT: 14,
+        PAD_RIGHT: 15,
+        CENTER_BUTTON: 16,
+    }
 }
 
 module.exports = new Utils();

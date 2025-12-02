@@ -1,0 +1,23 @@
+---
+title: 'gf.disconnectGamepad'
+---
+
+## `gf.disconnectGamepad(id): Promise<void>`
+
+Disconnects a previously connected gamepad and removes it from the registry.
+
+Internally the method uses [`gamepad.disconnect`](/e2e/api/gamefacegamepad/disconnect). You can either disconnect the gamepad using this method or use `gamepad.disconnect` directly.
+
+If the gamepad does not exist, an error is thrown.
+
+## Usage
+
+```js ins="await gf.disconnectGamepad('my-gamepad');"
+describe('Gamepad tests', function () {
+    it('Disconnects an existing gamepad', async () => {
+        await gf.connectGamepad('my-gamepad');
+        // ...
+        await gf.disconnectGamepad('my-gamepad');
+    });
+});
+```

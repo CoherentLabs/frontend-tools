@@ -5,6 +5,7 @@
 
 :root {
     --sl-sidebar-width: 20rem;
+    --sl-content-width: 60rem;
 }
 
 .download-link {

@@ -1,0 +1,24 @@
+---
+title: 'gamepad.moveLeftStick'
+---
+
+## `gamepad.moveLeftStick(x: number, y: number): Promise<void>`
+
+Moves the **left analog stick** to a specific position.
+
+The stick coordinates must be values between `-1` and `1`.
+
+* `x` — horizontal axis (left `-1` to right `1`)
+* `y` — vertical axis (up `-1` to down `1`)
+
+## Usage
+
+```js ins="await gamepad.moveLeftStick(0.5, -1);"
+describe('Gamepad tests', function () {
+    it('Moves the left analog stick', async () => {
+        const gamepad = await gf.createGamepad();
+
+        await gamepad.moveLeftStick(0.5, -1);
+    });
+});
+```

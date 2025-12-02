@@ -333,7 +333,7 @@ class DOMElement {
             const computedStyles = await this.styles();
             for (const [key, value] of Object.entries(styles)) {
                 if (computedStyles[key] !== value) {
-                    throw new Error(`Style "${key}" with value "${computedStyles[key]}" not found in node with id - ${this.nodeId}. Received "${value}" value for the ${key} property instead.`);
+                    throw new Error(`Style "${key}" with value "${styles[key]}" not found in node with id - ${this.nodeId}. Received "${computedStyles[key]}" value for the ${key} property instead.`);
                 }
             }
             return true;

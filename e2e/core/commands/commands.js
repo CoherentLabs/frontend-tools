@@ -3,6 +3,7 @@ const { DOMElement, DOMElements } = require("./dom-element");
 const { eventEmitter, waitDevtoolsEvent } = require("../event-emitter");
 const path = require('path');
 const URL = require('url');
+const GamefaceGamepad = require('./gamepad');
 
 function isURL(input) {
     try {
@@ -117,6 +118,10 @@ class GamefaceCommandsBase {
 class GamefaceCommands extends GamefaceCommandsBase {
     constructor(player, ws) {
         super(player, ws);
+        /**
+         * @type {Map<string, GamefaceGamepad>}
+         */
+        this.gamepads = new Map();
         this.get = this.get.bind(this);
         this.getAll = this.getAll.bind(this);
         this.contains = this.contains.bind(this);
@@ -151,6 +156,66 @@ class GamefaceCommands extends GamefaceCommandsBase {
         this.scrollTo = this.scrollTo.bind(this);
         this.scrollToTop = this.scrollToTop.bind(this);
         this.scrollToBottom = this.scrollToBottom.bind(this);
+        this.connectGamepad = this.connectGamepad.bind(this);
+        this.disconnectGamepad = this.disconnectGamepad.bind(this);
+        this.getGamepad = this.getGamepad.bind(this);
+    }
+
+
+    /**
+     * Asynchronously creates and registers a GamefaceGamepad for the provided identifier.
+     *
+     * Instantiates a new GamefaceGamepad with this context and the supplied id, awaits
+     * its initialization, stores it in this.gamepads keyed by the created gamepad's id,
+     * and returns the created gamepad instance.
+     *
+     * @async
+     * @param {string} id - Identifier for the gamepad to connect.
+     * @returns {Promise<GamefaceGamepad>} Promise that resolves to the created and registered GamefaceGamepad.
+     * @throws {Error} If instantiation or initialization of the GamefaceGamepad fails.
+     */
+    async connectGamepad(id) {
+        global.log.debug(`Connecting new gamepad with id - ${id}.`);
+
+        if (!id) throw new Error('Connecting a gamepad without id is not permitted. Please provide id when executing gf.connectGamepad!');
+        if (this.gamepads.has(id)) throw new Error(`Trying to connect gamepad with id - ${id} that has been already connected.`);
+
+        const gamepad = await new GamefaceGamepad(this, id);
+        this.gamepads.set(gamepad.id, gamepad);
+        return gamepad;
+    }
+
+    /**
+     * Disconnects a connected gamepad and removes it from the internal registry.
+     *
+     * Calls the connected gamepad's async disconnect() method and, once it
+     * completes, deletes the gamepad entry from this.gamepads.
+     *
+     * @async
+     * @param {string} id - Identifier of the gamepad to disconnect.
+     * @returns {Promise<void>} Resolves when the gamepad has been disconnected and removed.
+     * @throws {Error} If no gamepad with the given id is currently connected.
+     */
+    async disconnectGamepad(id) {
+        global.log.debug(`Disconnecting gamepad with id - ${id}.`);
+
+        if (!this.gamepads.has(id)) throw new Error(`Gamepad with id "${id}" is not connected.`);
+        await this.gamepads.get(id).disconnect();
+        this.gamepads.delete(id);
+    }
+
+    /**
+     * Retrieve a connected gamepad by its identifier.
+     *
+     * @param {string} id - The identifier of the gamepad to retrieve.
+     * @throws {Error} If no gamepad with the given id is connected (message: `Gamepad with id "<id>" is not connected.`).
+     * @returns {GamefaceGamepad} The gamepad instance associated with the provided id.
+     */
+    getGamepad(id) {
+        global.log.debug(`Getting gamepad object with id - ${id}.`);
+
+        if (!this.gamepads.has(id)) throw new Error(`Gamepad with id "${id}" is not connected.`);
+        return this.gamepads.get(id);
     }
 
     /**
