@@ -18,10 +18,11 @@ type ExporterResult = {
 
 async function getPages(): Promise<ExporterResult> {
     const results = {} as ExporterResult;
-    const pages = figma.currentPage.children.filter((node) => node.visible && node.type === 'FRAME');
+    const pages= figma.currentPage.children.filter((node) => node.visible && node.type === 'FRAME');
 
     for (const page of pages) {
         currentPageSize.set({ width: page.width, height: page.height });
+        (page as FrameNode).clipsContent = false;
         FontExporter.clear();
         await FontExporter.init(page as FrameNode);
         const { html, css, images } = await generateCode(page as FrameNode);
@@ -32,6 +33,8 @@ async function getPages(): Promise<ExporterResult> {
             images,
             fonts: FontExporter.fontMap as GFFont,
         };
+
+        (page as FrameNode).clipsContent = true;
     }
 
     return results;

@@ -17,6 +17,7 @@ import {
 import { generateOpacity } from './utils/opacity';
 import { generatePosition } from './utils/position';
 import { generateSize } from './utils/size';
+import { generateTransformStyle } from './utils/transforms';
 import { generateZIndex } from './utils/zIndex';
 
 class CSSExporter {
@@ -47,6 +48,8 @@ class CSSExporter {
             this.node as PrimitiveNodes
         );
 
+        const transform = generateTransformStyle(this.node as PrimitiveNodes);
+
         this.style.add('font-size', '1vh');
         this.style.add('width', width);
         this.style.add('height', height);
@@ -66,8 +69,14 @@ class CSSExporter {
             this.style.add('backdrop-filter', backDropFilter);
         }
 
-        if ((this.node as NodesWithFillsAndStrokes).strokeAlign === 'INSIDE' && this.node.isMask === false) {
-            this.style.add('overflow', 'hidden');
+        // if ((this.node as NodesWithFillsAndStrokes).strokeAlign === 'INSIDE' && this.node.isMask === false && this.node.ty) {
+        //     this.style.add('overflow', 'hidden');
+        // }
+
+        if (transform) {
+            this.style.add('transform', transform);
+            this.style.add('transform-origin', 'top left');
+
         }
 
         return this.style.getCSS();

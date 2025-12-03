@@ -1,4 +1,4 @@
-import { PrimitiveNodes } from '../../types/commonTypes';
+import {  PrimitiveNodes } from '../../types/commonTypes';
 import { getPercentage } from '../../utils/convertUnits';
 import getMaskedBy from '../../utils/getMaskedBy';
 import getParentSize from '../../utils/parentSize';
