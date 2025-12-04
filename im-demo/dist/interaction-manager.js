@@ -1211,13 +1211,17 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     removeKeyActions() {
       if (this.registeredKeys.size !== 0) {
-        this.registeredKeys.forEach((key) => keyboard_default.off([key]));
-        this.registeredKeys.clear();
         directions.forEach((direction) => {
-          actions_default.remove(`move-focus-${direction}`);
-          gamepad_default.off([`playstation.d-pad-${direction}`]);
+          const actionName = `move-focus-${direction}`;
+          for (const key of this.activeKeys[direction]) {
+            keyboard_default.off([key], actionName);
+          }
+          actions_default.remove(actionName);
+          gamepad_default.off([`playstation.d-pad-${direction}`], actionName);
           if (this.clearCurrentActiveKeys) this.activeKeys[direction] = [];
         });
+        this.registeredKeys.clear();
+        this.clearCurrentActiveKeys = false;
       }
     }
     /**
