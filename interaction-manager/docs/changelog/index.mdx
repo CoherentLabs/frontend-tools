@@ -4,7 +4,11 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 2.4.4 :badge[Latest]{variant="note"}
+## 2.4.5 :badge[Latest]{variant="note"}
+
+<Badge text="Fix" variant="caution" size="small" /> Fixed [Spatial Navigation](/interaction-manager/features/spatial-navigation/) to only remove the navigation actions from keys instead of removing the keys entirely from the action system, preventing other registered actions or callbacks on the same keys from being broken.
+
+## 2.4.4
 
 <Badge text="Feature" variant="success" size="small" /> Added support for multiple callbacks per key combination and type in [Keyboard](/interaction-manager/features/keyboard/#registering-multiple-callbacks).
 
