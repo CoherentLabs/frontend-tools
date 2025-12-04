@@ -503,14 +503,19 @@ class SpatialNavigation {
      */
     removeKeyActions() {
         if (this.registeredKeys.size !== 0) {
-            this.registeredKeys.forEach(key => keyboard.off([key]));
-            this.registeredKeys.clear();
-
             directions.forEach((direction) => {
-                actions.remove(`move-focus-${direction}`);
-                gamepad.off([`playstation.d-pad-${direction}`]);
-                if (this.clearCurrentActiveKeys ) this.activeKeys[direction] = [];
+                const actionName = `move-focus-${direction}`;
+
+                for (const key of this.activeKeys[direction]) {
+                    keyboard.off([key], actionName);
+                }
+
+                actions.remove(actionName);
+                gamepad.off([`playstation.d-pad-${direction}`], actionName);
+                if (this.clearCurrentActiveKeys) this.activeKeys[direction] = [];
             });
+            this.registeredKeys.clear();
+            this.clearCurrentActiveKeys = false;
         }
     }
 
