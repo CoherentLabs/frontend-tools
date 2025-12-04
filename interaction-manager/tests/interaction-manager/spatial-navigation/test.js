@@ -174,3 +174,68 @@ describe('Spatial navigation - HTMLElement support', () => {
         assert.strictEqual(defaultArea.elements[1], element2, 'Expected second element in area');
     });
 });
+
+describe('Spatial navigation - Pause/Resume functionality', () => {
+    beforeEach(async () => {
+        await setupTestPage(createTemplate());
+        interactionManager.spatialNavigation.init([
+            { area: 'squares', elements: ['.square'] },
+        ]);
+        interactionManager.spatialNavigation.focusFirst('squares');
+    });
+
+    afterEach(() => {
+        cleanTestPage('.test-container');
+        interactionManager.spatialNavigation.deinit();
+    });
+
+    it('Should not move focus when paused', () => {
+        const initialElement = document.querySelector('.square-1');
+        assert.strictEqual(document.activeElement, initialElement, 'Expected to start at square-1');
+
+        interactionManager.spatialNavigation.pause();
+
+        simulateKeyPress('ARROW_RIGHT');
+        assert.strictEqual(document.activeElement, initialElement, 'Expected focus to remain on square-1 after pressing right while paused');
+
+        simulateKeyPress('ARROW_DOWN');
+        assert.strictEqual(document.activeElement, initialElement, 'Expected focus to remain on square-1 after pressing down while paused');
+    });
+
+    it('Should resume navigation after calling resume()', () => {
+        const initialElement = document.querySelector('.square-1');
+        const expectedElement = document.querySelector('.square-2');
+
+        interactionManager.spatialNavigation.pause();
+        simulateKeyPress('ARROW_RIGHT');
+        assert.strictEqual(document.activeElement, initialElement, 'Expected focus to remain on square-1 while paused');
+
+        interactionManager.spatialNavigation.resume();
+        simulateKeyPress('ARROW_RIGHT');
+        assert.strictEqual(document.activeElement, expectedElement, 'Expected focus to move to square-2 after resuming');
+    });
+
+    it('Should handle multiple pause/resume cycles correctly', () => {
+        const square1 = document.querySelector('.square-1');
+        const square2 = document.querySelector('.square-2');
+        const square3 = document.querySelector('.square-3');
+
+        assert.strictEqual(document.activeElement, square1, 'Expected to start at square-1');
+
+        interactionManager.spatialNavigation.pause();
+        simulateKeyPress('ARROW_RIGHT');
+        assert.strictEqual(document.activeElement, square1, 'Expected to stay at square-1 (first pause)');
+
+        interactionManager.spatialNavigation.resume();
+        simulateKeyPress('ARROW_RIGHT');
+        assert.strictEqual(document.activeElement, square2, 'Expected to move to square-2 (first resume)');
+
+        interactionManager.spatialNavigation.pause();
+        simulateKeyPress('ARROW_RIGHT');
+        assert.strictEqual(document.activeElement, square2, 'Expected to stay at square-2 (second pause)');
+
+        interactionManager.spatialNavigation.resume();
+        simulateKeyPress('ARROW_RIGHT');
+        assert.strictEqual(document.activeElement, square3, 'Expected to move to square-3 (second resume)');
+    });
+});
