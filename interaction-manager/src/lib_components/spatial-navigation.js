@@ -32,6 +32,7 @@ class SpatialNavigation {
         this.clearCurrentActiveKeys = false;
         this.overlapPercentage = 0.5;
         this.lastFocusedElement = null;
+        this.paused = false;
     }
 
     /**
@@ -438,6 +439,7 @@ class SpatialNavigation {
     registerKeyActions() {
         directions.forEach((direction) => {
             const callback = () => {
+                if (this.paused) return
                 this.moveFocus(direction);
             };
             actions.register(`move-focus-${direction}`, callback);
@@ -595,6 +597,20 @@ class SpatialNavigation {
      */
     clearFocus() {
         if (this.isActiveElementInGroup()) document.activeElement.blur();
+    }
+
+    /**
+     * Pauses the spatial navigation functionality
+     */
+    pause() {
+        this.paused = true;
+    }
+
+    /**
+     * Resumes the spatial navigation functionality
+     */
+    resume() {
+        this.paused = false;
     }
 }
 
