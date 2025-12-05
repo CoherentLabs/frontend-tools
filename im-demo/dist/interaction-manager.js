@@ -803,6 +803,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       this.clearCurrentActiveKeys = false;
       this.overlapPercentage = 0.5;
       this.lastFocusedElement = null;
+      this.paused = false;
     }
     /**
      * Initializes the spatial navigation
@@ -1158,6 +1159,7 @@ This ${callbackType} is already registered for this combination and type. To upd
     registerKeyActions() {
       directions.forEach((direction) => {
         const callback = () => {
+          if (this.paused) return;
           this.moveFocus(direction);
         };
         actions_default.register(`move-focus-${direction}`, callback);
@@ -1291,6 +1293,18 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     clearFocus() {
       if (this.isActiveElementInGroup()) document.activeElement.blur();
+    }
+    /**
+     * Pauses the spatial navigation functionality
+     */
+    pause() {
+      this.paused = true;
+    }
+    /**
+     * Resumes the spatial navigation functionality
+     */
+    resume() {
+      this.paused = false;
     }
   };
   var spatial_navigation_default = new SpatialNavigation();
