@@ -1,6 +1,6 @@
 import { getNodes } from '../../exporter';
 import { ExportableNodes, FrameAndGroup, MaskNode } from '../../types/commonTypes';
-import { BACKGROUND_SUFFIX } from '../../utils/constants';
+import { BACKGROUND_SUFFIX, FLEX_SUFFIX } from '../../utils/constants';
 import createMaskNode from '../../utils/createMaskNode';
 import getMaskIndexes from '../../utils/getMaskIndexes';
 import GFBaseNode from '../BaseNode';
@@ -17,7 +17,14 @@ class GFFrame extends GFBaseNode {
 
     configureMaskNodes() {
         if (!('children' in this.node) || this.node.children.length === 0) return;
-        
+
+        // Clear any existing plugin data from previous runs
+        (this.node.children as SceneNode[]).forEach((child) => {
+            if ('setPluginData' in child) {
+                child.setPluginData('masked-by', '');
+            }
+        });
+
         const maskIndexes = getMaskIndexes(this.node.children as ExportableNodes[]);
         if (maskIndexes.length === 0) return;
 
@@ -31,14 +38,24 @@ class GFFrame extends GFBaseNode {
                 }
 
                 if (maskIndexes.includes(index)) {
-                    const maskNode = createMaskNode(child);
-                    nodes.push(maskNode as ExportableNodes);
+                    if (child.type === 'FRAME' && !child.isMask) {
+                        nodes.push(child);
+                    } else {
+                        const maskNode = createMaskNode(child);
+                        nodes.push(maskNode as ExportableNodes);
+                    }
                     currentIndex = index;
                     return nodes;
                 }
 
                 if (index > currentIndex && nodes.length > 0) {
                     const lastNode = nodes[nodes.length - 1] as MaskNode;
+
+                    if (lastNode.type !== 'MASK') {
+                        nodes.push(child);
+                        return nodes;
+                    }
+
                     (child as SceneNode).setPluginData('masked-by', lastNode.id);
                     lastNode.maskChildren.push(child);
                     return nodes;
@@ -67,7 +84,9 @@ class GFFrame extends GFBaseNode {
     async createHTML(): Promise<string> {
         return `<div class="${this.className}">
             <div class="${this.className}${BACKGROUND_SUFFIX}"></div>
+            ${this.isAutoLayout ? `<div class="${this.className}${FLEX_SUFFIX}">` : ''}
             ${this.html}
+            ${this.isAutoLayout ? `</div>` : ''}
         </div>`;
     }
 }

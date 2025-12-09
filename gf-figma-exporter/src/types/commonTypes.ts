@@ -51,3 +51,23 @@ export interface TextSegment {
 
 export interface GFFont extends FontMapData {}
 
+export interface FlexContainerStyles {
+    direction: string;
+    justifyContent: string;
+    alignItems: string;
+    alignContent: string;
+    wrap: string;
+}
+
+export interface FlexItemStyles {
+    flex: string;
+    alignSelf: string;
+    gap: string;
+}
+
+export interface Paddings {
+    paddingTop: number;
+    paddingRight: number;
+    paddingBottom: number;
+    paddingLeft: number;
+}

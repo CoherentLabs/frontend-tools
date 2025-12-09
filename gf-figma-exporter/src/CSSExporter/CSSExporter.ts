@@ -1,10 +1,19 @@
 import { isItalicStyle } from '../FontExporter/utils/parseStyleUtils';
-import { ExportableNodes, NodesWithFillsAndStrokes, PrimitiveNodes, SVGNodes, TextSegment } from '../types/commonTypes';
+import {
+    AvailableNode,
+    ExportableNodes,
+    NodesWithFillsAndStrokes,
+    PrimitiveNodes,
+    SVGNodes,
+    TextSegment,
+} from '../types/commonTypes';
+import isFlexItem from '../utils/isFlexItem';
 import isNodeSVG from '../utils/isNodeSVG';
 import StyleManager from './StyleManager/StyleManager';
 import { additionalBackgroundStyles, generateBackground, generateBackgroundRect } from './utils/background';
 import { generateBorderRadius, generateBorders } from './utils/border';
 import { generateEffectStyles } from './utils/effects';
+import { calculateGap, generateFlexContainerStyles, generateFlexItemStyles } from './utils/flex';
 import {
     getFontName,
     getFontSize,
@@ -15,8 +24,9 @@ import {
     getTextDecoration,
 } from './utils/fonts';
 import { generateOpacity } from './utils/opacity';
+import { generatePaddings } from './utils/padding';
 import { generatePosition } from './utils/position';
-import { generateSize } from './utils/size';
+import { generateFlexSize, generateSize } from './utils/size';
 import { generateTransformStyle } from './utils/transforms';
 import { generateZIndex } from './utils/zIndex';
 
@@ -27,6 +37,7 @@ class CSSExporter {
     public pseudoBeforeStyles: StyleManager;
     public borderStyles: StyleManager;
     public textStyles: StyleManager;
+    public flexContainerStyles: StyleManager;
 
     constructor(node: ExportableNodes) {
         this.node = node;
@@ -35,10 +46,11 @@ class CSSExporter {
         this.borderStyles = new StyleManager();
         this.pseudoBeforeStyles = new StyleManager();
         this.textStyles = new StyleManager();
+        this.flexContainerStyles = new StyleManager();
     }
 
     async generateElementStyle() {
-        const { width, height } = generateSize(this.node);
+        const { width, height } = generateSize(this.node as AvailableNode);
         const { top, left } = await generatePosition(this.node as PrimitiveNodes);
         const opacity = generateOpacity((this.node as PrimitiveNodes).opacity);
         const zIndex = generateZIndex(this.node as PrimitiveNodes);
@@ -69,17 +81,90 @@ class CSSExporter {
             this.style.add('backdrop-filter', backDropFilter);
         }
 
-        // if ((this.node as NodesWithFillsAndStrokes).strokeAlign === 'INSIDE' && this.node.isMask === false && this.node.ty) {
-        //     this.style.add('overflow', 'hidden');
-        // }
-
         if (transform) {
             this.style.add('transform', transform);
             this.style.add('transform-origin', 'top left');
-
         }
 
+        this.setFlexElementStyle();
+        this.setPaddings();
+
         return this.style.getCSS();
+    }
+
+    setFlexContainerStyle() {
+        if (this.node.type !== 'FRAME' && this.node.type !== 'INSTANCE') return;
+
+        const { direction, alignContent, alignItems, justifyContent, wrap } = generateFlexContainerStyles(
+            this.node as FrameNode
+        );
+
+        const { width, height } = generateFlexSize(this.node as AvailableNode);
+        const gap = calculateGap(this.node.children[0] as AvailableNode);
+
+        this.flexContainerStyles.add('width', width);
+        this.flexContainerStyles.add('height', height);
+        this.flexContainerStyles.add('display', 'flex');
+        this.flexContainerStyles.add('flex-direction', direction);
+        this.flexContainerStyles.add('flex-wrap', wrap);
+        this.flexContainerStyles.add('justify-content', justifyContent);
+        this.flexContainerStyles.add('align-items', alignItems);
+        this.flexContainerStyles.add('align-content', alignContent);
+        if (gap !== '0') {
+            if (direction === 'column') {
+                this.flexContainerStyles.add('margin-top', `-${gap}`);
+            } else {
+                this.flexContainerStyles.add('margin-left', `-${gap}`);
+            }
+            if (wrap !== 'nowrap') {
+                if (direction === 'column') {
+                    this.flexContainerStyles.add('margin-left', `-${gap}`);
+                } else {
+                    this.flexContainerStyles.add('margin-top', `-${gap}`);
+                }
+            }
+        }
+
+        return this.flexContainerStyles.getCSS();
+    }
+
+    private setFlexElementStyle() {
+        if (!isFlexItem(this.node as AvailableNode)) return;
+
+        const { alignSelf, gap, flex } = generateFlexItemStyles(this.node as AvailableNode);
+        const { wrap, direction } = generateFlexContainerStyles(
+            (this.node as AvailableNode).parent as FrameNode | ComponentNode | InstanceNode
+        );
+        this.style.add('position', 'relative'); // Flex items should not have absolute positioning
+        this.style.add('flex', flex);
+        this.style.add('align-self', alignSelf);
+        this.style.remove('top');
+        this.style.remove('left');
+        if (gap !== '0') {
+            if (direction === 'column') {
+                this.style.add('margin-top', gap);
+            } else {
+                this.style.add('margin-left', gap);
+            }
+            if (wrap !== 'nowrap') {
+                if (direction === 'column') {
+                    this.style.add('margin-left', gap);
+                } else {
+                    this.style.add('margin-top', gap);
+                }
+            }
+        }
+    }
+
+    private setPaddings() {
+        if (this.node.type !== 'FRAME') return;
+
+        const { paddingTop, paddingRight, paddingBottom, paddingLeft } = generatePaddings(this.node as FrameNode);
+
+        this.style.add('padding-top', `${paddingTop}vh`);
+        this.style.add('padding-right', `${paddingRight}vh`);
+        this.style.add('padding-bottom', `${paddingBottom}vh`);
+        this.style.add('padding-left', `${paddingLeft}vh`);
     }
 
     async generateBackgroundElementStyle() {

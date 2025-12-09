@@ -1,7 +1,8 @@
 import CSSExporter from '../CSSExporter/CSSExporter';
 import ImageExporter from '../ImageExporter/ImageExporter';
 import { ExportableNodes, GFImage, NodesWithFillsAndStrokes } from '../types/commonTypes';
-import { BACKGROUND_SUFFIX } from '../utils/constants';
+import { isAutoLayoutNode } from '../utils/autoLayoutUtils';
+import { BACKGROUND_SUFFIX, FLEX_SUFFIX } from '../utils/constants';
 import generateClassName from '../utils/generateClassName';
 
 export default class GFBaseNode {
@@ -9,11 +10,13 @@ export default class GFBaseNode {
     public className: string;
     public images: GFImage[] = [];
     public additionalCSS: string;
+    public isAutoLayout: boolean;
 
     constructor(node: ExportableNodes) {
         this.node = node;
         this.className = generateClassName(this.node.name, this.node.id);
         this.additionalCSS = '';
+        this.isAutoLayout = isAutoLayoutNode(node as FrameNode);
     }
 
     async createHTML(): Promise<string> {
@@ -60,6 +63,10 @@ export default class GFBaseNode {
         .${this.className}${BACKGROUND_SUFFIX} {
             ${await CSSExporterInstance.generateBackgroundElementStyle()}
         }
+
+        ${this.isAutoLayout ? `.${this.className}${FLEX_SUFFIX} {
+            ${CSSExporterInstance.setFlexContainerStyle()}
+        }` : ''}
 
         ${beforePseudo}
         ${afterPseudo}
