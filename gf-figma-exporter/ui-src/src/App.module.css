@@ -1,0 +1,246 @@
+.App {
+    width: 100%;
+    height: 100%;
+    background-color: #0a0a0a;
+    color: white;
+}
+
+.StartingText {
+    font-size: 24px;
+    width: 100%;
+    text-align: center;
+    font-weight: 300;
+    padding-top: 20px;
+}
+
+.ButtonContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 80px;
+}
+
+.Button {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 252px;
+    height: 36px;
+
+    border: 2px solid #ffffff;
+    border-radius: 7px;
+    font-size: 20px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.TriggeredButton {
+    pointer-events: none;
+    height: 14px;
+    transition-delay: 0.3s;
+}
+
+.TriggeredButton::after {
+    content: '';
+    position: absolute;
+    width: 0%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    animation: exportAnimation 0.3s forwards;
+}
+
+.Progress {
+    display: none;
+    padding: 1px;
+    width: 100%;
+    height: 70%;
+}
+
+.ProgressBar {
+    background-image: linear-gradient(to right, #3e42b8, #4b9ae6, #00dcff);
+    background-size: 252px 100%;
+    height: 100%;
+    border-radius: 5px;
+    width: 0%;
+    transition: width 0.2s ease-in-out;
+}
+
+.ProgressText {
+    margin-top: 10px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.TriggeredButton .Progress {
+    display: block;
+}
+
+@keyframes exportAnimation {
+    0% {
+        width: 0%;
+        opacity: 1;
+    }
+    90% {
+        width: 100%;
+        opacity: 1;
+    }
+    100% {
+        width: 100%;
+        opacity: 0;
+    }
+}
+
+.MissingFontsContainer {
+    margin-top: 5px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.MissingFontsText {
+    font-size: 14px;
+    color: white;
+    font-weight: 500;
+}
+
+.MissingFontsTextSub {
+    margin-top: 5px;
+    font-size: 12px;
+    color: #00dcff;
+}
+
+.MissingFontsUpload {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+table {
+    color: white;
+    width: 100%;
+    margin-top: 4px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #141414;
+}
+
+tbody tr {
+    border-top: 2px solid #222222;
+}
+
+tr {
+    height: 30px;
+    width: 100%;
+}
+
+th {
+    text-align: left;
+    padding-bottom: 5px;
+    color: #666666;
+}
+
+th,
+td {
+    padding: 10px;
+}
+
+.ScrollableTable {
+    max-height: 150px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+select {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #1e1e1e;
+    color: white;
+    border: 1px solid #444444;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.TableFooter {
+    margin-top: 10px;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    padding-right: 10px;
+    box-sizing: border-box;
+}
+
+.FooterButton {
+    width: 37%;
+    height: 24px;
+    border: 2px solid #ffffff;
+    border-radius: 7px;
+    font-size: 12px;
+    background-color: transparent;
+    color: white;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.FooterButton:hover {
+    background-color: #ffffff;
+    color: #0a0a0a;
+}
+
+
+
+.ToastContainer {
+    padding: 12px 16px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+    color: #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    min-width: 300px;
+    text-align: center;
+    font-size: 14px;
+
+}
+
+.ToastCloseButton {
+    background-color: white;
+    border: 3px solid #4b9ae6;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 20px;
+    color: #4b9ae6
+}
+
+.ToastCloseButton:hover {
+    background-color: #4b9ae6;
+    color: white;
+}
+
+.FooterButtonRed {
+    border-color: #F5436A;
+    color: #F5436A;
+}
+
+.FooterButtonRed:hover {
+    background-color: #F5436A;
+    color: white;
+}

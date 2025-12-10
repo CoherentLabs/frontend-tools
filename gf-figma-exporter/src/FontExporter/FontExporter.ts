@@ -75,8 +75,10 @@ class FontExporter {
     private async waitForUserFonts(): Promise<void> {
         return new Promise((resolve) => {
             MessageBus.postMessage('MISSING_FONTS_DETECTED', { fonts: this.missingFonts });
+            figma.ui.resize(500, 700);
             MessageBus.on('MISSING_FONTS_RESPONSE', (data) => {
                 this.missingFonts = (data as { fonts: FontMapData }).fonts;
+                figma.ui.resize(500, 250);
                 resolve();
             });
         });
