@@ -597,9 +597,10 @@ class GamefaceCommands extends GamefaceCommandsBase {
      * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed.
      * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed.
      * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed.
+     * @param {boolean} [repeat = false] - Indicates if the key event should be marked as a repeat (key held down).
      * @returns {Promise<void>} A promise that resolves when the key event is dispatched.
      */
-    async _keyEvent(type, key, options) {
+    async _keyEvent(type, key, options, repeat = false) {
         if (!key) {
             global.log.warn(`The key argument when executing key event is not specified!`);
             return;
@@ -607,13 +608,14 @@ class GamefaceCommands extends GamefaceCommandsBase {
 
         const modifiers = getPressedKey(options)
         const keyCode = typeof key === 'number' ? key : key.charCodeAt(0);
-
-        await this.sendCommand('Input.dispatchKeyEvent', {
+        const params = {
             type,
             modifiers,
             keyIdentifier: keyCode,
             windowsVirtualKeyCode: keyCode
-        });
+        }
+        if (repeat) params.autoRepeat = true;
+        await this.sendCommand('Input.dispatchKeyEvent', params);
     }
 
     /**
@@ -632,9 +634,9 @@ class GamefaceCommands extends GamefaceCommandsBase {
         global.log.debug(`\n[GamefaceCommands] Key press event with "${key}" ${count} times.`);
 
         for (let i = 0; i < count; i++) {
-            await this.keyDown(key, options);
-            await this._keyEvent('char', key, options);
-            await this.keyUp(key, options);
+            await this._keyEvent('keyDown', key, options, count > 1);
+            await this._keyEvent('char', key, options, count > 1);
+            await this._keyEvent('keyUp', key, options, count > 1);
         }
     }
 
@@ -654,7 +656,7 @@ class GamefaceCommands extends GamefaceCommandsBase {
         global.log.debug(`\n[GamefaceCommands] Key down event with "${key}" ${count} times.`);
 
         for (let i = 0; i < count; i++) {
-            await this._keyEvent('keyDown', key, options);
+            await this._keyEvent('keyDown', key, options, count > 1);
         }
     }
 
@@ -674,7 +676,7 @@ class GamefaceCommands extends GamefaceCommandsBase {
         global.log.debug(`\n[GamefaceCommands] Key up event with "${key}" ${count} times.`);
 
         for (let i = 0; i < count; i++) {
-            await this._keyEvent('keyUp', key, options);
+            await this._keyEvent('keyUp', key, options, count > 1);
         }
     }
 
