@@ -2,3 +2,9 @@ docs
 package-lock.json
 *.tgz
 scripts
+src
+tsconfig.json
+jsconfig.json
+vite.config.mjs
+*.log
+types/internal.d.ts
