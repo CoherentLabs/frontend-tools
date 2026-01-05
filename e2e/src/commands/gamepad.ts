@@ -35,26 +35,6 @@ export class GamefaceGamepad {
         this.pressedKeys = new Set();
         this.id = id;
         this.gamefaceCommands = gamefaceCommands;
-
-        // @ts-ignore
-        return new Promise(async (resolve, reject) => {
-            global.log.debug(`Connecting gamepad with id - ${this.id}.`);
-
-            await this.gamefaceCommands.executeScript((id) => {
-                if (!window._gamepads) {
-                    window._gamepads = [];
-                    navigator.getGamepads = () => window._gamepads;
-                }
-                if (!window._getGamepad) {
-                    window._getGamepad = (id) => window._gamepads.find(gp => gp.id === id);
-                }
-
-                window._gamepads.push({ id, axes: [0, 0, 0, 0], buttons: Array(17).fill({}).map(() => ({ touched: false, value: 0, pressed: false })) });
-                window.dispatchEvent(new Event('gamepadconnected'));
-            }, this.id)
-
-            return resolve(this);
-        })
     }
 
     /**
@@ -71,11 +51,16 @@ export class GamefaceGamepad {
                 navigator.getGamepads = () => window._gamepads;
             }
 
+            if (!window._getGamepad) {
+                window._getGamepad = (id) => window._gamepads.find(gp => gp.id === id);
+            }
+
             window._gamepads.push({
                 id,
                 axes: [0, 0, 0, 0],
                 buttons: Array(17).fill(null).map(() => ({ touched: false, value: 0, pressed: false }))
             });
+
             window.dispatchEvent(new Event('gamepadconnected'));
         }, instance.id);
 

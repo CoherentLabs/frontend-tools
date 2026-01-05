@@ -131,7 +131,7 @@ describe('Test gamepad buttons and axes', function () {
     Object.values(gf.GAMEPAD_BUTTONS).forEach((button) => {
         if (button === gf.GAMEPAD_BUTTONS.CENTER_BUTTON) return;
 
-        it(`Should hold ${button} button for 1000ms`, async () => {
+        it(`Should hold ${button} button`, async () => {
             const gamepad = gf.getGamepad(GAMEPAD_ID);
             const element = await gf.get(`#${button}`);
             assert.equal(await element.getAttribute('fill'), '#A9A8A9');
