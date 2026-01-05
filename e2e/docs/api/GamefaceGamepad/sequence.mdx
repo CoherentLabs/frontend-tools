@@ -1,0 +1,31 @@
+---
+title: 'gamepad.sequence'
+---
+
+## `gamepad.sequence(steps: Step[]): Promise<void>`
+
+Executes a sequence of button presses in order.
+
+Useful for simulating UI navigation flows, such as stepping through menus or triggering chained actions.
+
+Each `Step` can be:
+- a **number** (button key)
+- an **object** `{ key: number, timeout?: number }`
+
+`timeout` lets you define how long to hold the key before it is released.
+
+## Usage
+
+```js
+describe('Gamepad tests', function () {
+    it('Runs a sequence of button presses', async () => {
+        const gamepad = await gf.createGamepad();
+
+        await gamepad.sequence([
+            { key: gamepad.KEYS.DPAD_UP, timeout: 100 },
+            { key: gamepad.KEYS.DPAD_DOWN, timeout: 150 },
+            gamepad.KEYS.A, // single quick press with default timeout of 210ms
+            { key: gamepad.KEYS.B, timeout: 200 },
+        ]);
+    });
+});

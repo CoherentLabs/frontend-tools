@@ -65,7 +65,7 @@ async function getConfig() {
         {
           label: 'API Reference',
           collapsed: true,
-          autogenerate: { directory: 'e2e/api', collapsed: false },
+          autogenerate: { directory: 'e2e/api', collapsed: true },
 
         },
       ],

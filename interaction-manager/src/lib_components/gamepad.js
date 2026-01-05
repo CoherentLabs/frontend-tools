@@ -168,7 +168,7 @@ class Gamepad {
             { buttonIndexes: [], buttons: [] }
         );
 
-        const gamepadActions = IM.getGamepadActions(pressedButtons.buttonIndexes);
+        const gamepadActions = IM.getGamepadActions(pressedButtons.buttonIndexes, false);
         if (!gamepadActions.length === 0) return;
 
         if (this._pressedAction) {

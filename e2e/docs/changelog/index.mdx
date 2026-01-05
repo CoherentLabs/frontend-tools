@@ -4,7 +4,25 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 2.0.0 :badge[Latest]{variant="note"}
+## 2.1.0 :badge[Latest]{variant="note"}
+
+<Badge text="Feature" variant="success" size="small" /> Introduced new methods for simulating and testing gamepad interactions.
+
+The newly added methods include:
+
+* [gf.connectGamepad](/e2e/api/gf/gamepad/connectgamepad/)
+* [gf.disconnectGamepad](/e2e/api/gf/gamepad/disconnectgamepad/)
+* [gf.getGamepad](/e2e/api/gf/gamepad/getgamepad/)
+* [gamepad.press](/e2e/api/gamefacegamepad/press/)
+* [gamepad.hold](/e2e/api/gamefacegamepad/hold/)
+* [gamepad.release](/e2e/api/gamefacegamepad/release/)
+* [gamepad.disconnect](/e2e/api/gamefacegamepad/disconnect/)
+* [gamepad.sequence](/e2e/api/gamefacegamepad/sequence/)
+* [gamepad.moveLeftStick](/e2e/api/gamefacegamepad/moveleftstick/)
+* [gamepad.moveRightStick](/e2e/api/gamefacegamepad/moverightstick/)
+* [gamepad.resetSticks](/e2e/api/gamefacegamepad/resetsticks/)
+
+## 2.0.0
 
 <Badge text="Change" variant="danger" size="small" /> Renamed `gf.moveMouse` method to `gf.mouseMove` for consistency with other mouse-related methods (breaking).
 
@@ -30,11 +48,11 @@ The newly added methods include:
 * [element.waitForVisibility](/e2e/api/domelement/assertmethods/waitforvisibility/)
 * [element.waitForVisibilityInScrollableArea](/e2e/api/domelement/assertmethods/waitforvisibilityinscrollablearea/)
 
-<Badge text="Feature" variant="success" size="small" /> Added the [gf.scrollTo](/e2e/api/gf/scrollto/) method to scroll the page to a specific position.
+<Badge text="Feature" variant="success" size="small" /> Added the [gf.scrollTo](/e2e/api/gf/page/scrollto/) method to scroll the page to a specific position.
 
-<Badge text="Feature" variant="success" size="small" /> Added the [gf.scrollToTop](/e2e/api/gf/scrolltotop/) method to scroll the page to the top.
+<Badge text="Feature" variant="success" size="small" /> Added the [gf.scrollToTop](/e2e/api/gf/page/scrolltotop/) method to scroll the page to the top.
 
-<Badge text="Feature" variant="success" size="small" /> Added the [gf.scrollToBottom](/e2e/api/gf/scrolltobottom/) method to scroll the page to the bottom.
+<Badge text="Feature" variant="success" size="small" /> Added the [gf.scrollToBottom](/e2e/api/gf/page/scrolltobottom/) method to scroll the page to the bottom.
 
 ## 1.0.2
 

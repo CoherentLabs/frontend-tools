@@ -4,7 +4,11 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 2.5.5 :badge[Latest]{variant="note"}
+## 2.5.6 :badge[Latest]{variant="note"}
+
+<Badge text="Fix" variant="caution" size="small" /> Gamepad actions are now triggered correctly even when combined. Callbacks for individual actions (e.g., `'pad-up'`) will fire even if multiple actions are executed simultaneously (e.g., `'pad-up'` + `'pad-down'`).
+
+## 2.5.5
 
 <Badge text="Feature" variant="success" size="small" /> Added [pause()](/interaction-manager/features/spatial-navigation/#pause) and [resume()](/interaction-manager/features/spatial-navigation/#resume) methods to [Spatial Navigation](/interaction-manager/features/spatial-navigation/) for temporarily disabling and re-enabling navigation actions.
 

@@ -1,0 +1,18 @@
+---
+title: 'gf.connectGamepad'
+---
+
+## `gf.connectGamepad(id: string): Promise<GamefaceGamepad>`
+
+Creates and connects a new virtual gamepad.
+
+This method instantiates a new [`GamefaceGamepad`](/e2e/api/gamefacegamepad), initializes it, registers it in the internal gamepad list, and returns the ready-to-use instance.
+
+## Usage
+
+```js ins="const gamepad = await gf.connectGamepad('my-gamepad');"
+describe('Gamepad tests', function () {
+    it('Connects a new gamepad', async () => {
+        const gamepad = await gf.connectGamepad('my-gamepad');
+    });
+});
