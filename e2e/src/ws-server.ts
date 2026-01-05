@@ -1,36 +1,39 @@
-const WebSocket = require('ws');
-const axios = require('axios');
-const { retryIfFails, sleep } = require('./utils');
-const gamefaceCommands = require('./commands/commands');
-const { sendCommands, sendCommand } = gamefaceCommands;
-const { player, killPlayer } = require('./player');
-const SPEC_TIMEOUT = 10000;
-const path = require('path')
+import WebSocket from 'ws';
+import axios from 'axios';
+import { retryIfFails } from './utils';
+import { gamefaceCommands } from './commands/commands';
+import { player, killPlayer } from './player';
+import * as path from 'path';
+import Mocha from 'mocha';
 
-class WSServer {
+const SPEC_TIMEOUT = 10000;
+``
+const { sendCommands, sendCommand } = gamefaceCommands;
+
+export class WSServer {
+    public wsServerUrl: string = '';
+    public debuggingPort: number | string = '9444';
+    private _ws: WebSocket | null = null;
+
     constructor() {
-        this.wsServerUrl = '';
-        this.debuggingPort = '9444';
-        this._ws = null;
         this.createClient = this.createClient.bind(this);
         this.getWebSocketDebuggerUrl = this.getWebSocketDebuggerUrl.bind(this);
         this.runTests = this.runTests.bind(this);
         this.closeClient = this.closeClient.bind(this);
     }
 
-    get ws() {
+    get ws(): WebSocket | null {
         return this._ws;
     }
 
-    set ws(value) {
+    set ws(value: WebSocket | null) {
         this._ws = value;
     }
 
     /**
      * Will get the websocket debugger URL from the DevTools
-     * @returns {Promise<string>} WebSocket Debugger URL
      */
-    async getWebSocketDebuggerUrl() {
+    async getWebSocketDebuggerUrl(): Promise<string> {
         global.log.debug(`Establishing connection with the Gameface DevTools server on port ${this.debuggingPort}.`);
         try {
             return await retryIfFails(async () => {
@@ -47,27 +50,30 @@ class WSServer {
                 ],
                 exit: 1
             });
+            throw error;
         }
     }
 
     /**
      * Creates a WebSocket client
-     * @param {number} debuggingPort 
      */
-    async createClient(debuggingPort) {
+    async createClient(debuggingPort: number): Promise<void> {
         this.debuggingPort = debuggingPort;
         this.ws = new WebSocket(await this.getWebSocketDebuggerUrl());
 
         gamefaceCommands.player = player;
-        gamefaceCommands.cohtmlJSPath = path.join(global.config.gamefacePath, '..', '..', 'Samples', 'uiresources', 'library', 'cohtml.js').replace(/\\/g, '/');
+        gamefaceCommands.cohtmlJSPath = path.join(global.config.gamefacePath!, '..', '..', 'Samples', 'uiresources', 'library', 'cohtml.js').replace(/\\/g, '/');
         gamefaceCommands.ws = this.ws;
     }
 
     /**
      * Will establish a connection with the Gameface DevTools and run the tests
-     * @param {Mocha} mocha
      */
-    async runTests(mocha) {
+    async runTests(mocha: Mocha): Promise<void> {
+        if (!this.ws) {
+            throw new Error("WebSocket client not created.");
+        }
+
         this.ws.on('open', async () => {
             try {
                 global.log.debug(`Connected to the Gameface Devtools server on port ${this.debuggingPort}.`);
@@ -79,10 +85,10 @@ class WSServer {
 
                 global.log.debug('Gameface player is ready to execute tests.');
 
-                mocha.bail(global.config.bail);
+                mocha.bail(global.config.bail!);
                 mocha.timeout(global.config.specTimeout || SPEC_TIMEOUT);
-                mocha.run(async (failures) => {
-                    this.ws.close();
+                mocha.run(async (failures: number) => {
+                    this.ws!.close();
                     if (failures) global.log.error(`Failed tests: ${failures}`, {
                         exit: false
                     });
@@ -114,9 +120,10 @@ class WSServer {
         });
     }
 
-    async closeClient() {
+    async closeClient(): Promise<void> {
         if (this.ws) this.ws.close();
     }
 }
 
-module.exports = new WSServer();
+export const wsServer = new WSServer();
+export const { createClient, closeClient, runTests } = wsServer;

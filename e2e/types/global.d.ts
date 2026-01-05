@@ -1,15 +1,57 @@
-import { GamefaceCommandsMethods } from './gamefaceCommands';
-import Utils from '../core/utils';
+import { gamefaceCommands } from '../dist/commands/commands';
+import { Utils } from '../dist/utils';
 
-type UtilMethods = {
-    [K in keyof typeof Utils as typeof Utils[K] extends Function ? K : never]: typeof Utils[K];
+type IGamefaceCommandsMethods = {
+    [K in keyof typeof gamefaceCommands as typeof gamefaceCommands[K] extends Function ? K : never]: typeof gamefaceCommands[K];
 };
 
-type FilteredGamefaceCommands = Omit<GamefaceCommandsMethods, '_ws' | '_cohtmlJSPath' | 'handleMessage' | 'rootNodeId' | 'ws' | 'cohtmlJSPath' | 'player'>;
-type FilteredUtilMethods = Omit<UtilMethods, '_retryInner' | 'getPressedKey'>;
+type IGamefaceCommands = IGamefaceCommandsMethods;
+type IUtils = Utils;
+
+type GamefaceExclusions =
+    | '_ws'
+    | '_cohtmlJSPath'
+    | 'handleMessage'
+    | 'rootNodeId'
+    | 'ws'
+    | 'cohtmlJSPath'
+    | 'player'
+    | 'pendingCommands';
+
+type UtilsExclusions =
+    | '_retryInner'
+    | 'getPressedKey';
+
+type FilteredGamefaceCommands = Omit<IGamefaceCommands, GamefaceExclusions>;
+type FilteredUtilMethods = Omit<IUtils, UtilsExclusions>;
 
 declare global {
-    var gf: FilteredGamefaceCommands & FilteredUtilMethods & { KEYS: typeof Utils.KEYS, GAMEPAD_BUTTONS: typeof Utils.GAMEPAD_BUTTONS };
+    var gf: FilteredGamefaceCommands & FilteredUtilMethods;
+}
+
+export interface GamefaceE2EConfig {
+    /** 
+     * Specifies the path to your Player.exe. 
+     */
+    gamefacePath?: string;
+
+    /** 
+     * Specifies the path to your test .spec.js or .spec.ts files. 
+     * Supports glob patterns (e.g. "tests/*.spec.js").
+     */
+    tests?: string;
+
+    /** 
+     * Sets the timeout for tests in spec files in milliseconds. 
+     * The default is 10 seconds (10000). 
+     */
+    specTimeout?: number;
+
+    /** 
+     * Enables bailing on the first failure. 
+     * If true, the test run stops immediately after a test fails.
+     */
+    bail?: boolean;
 }
 
 export { };

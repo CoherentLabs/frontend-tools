@@ -1,11 +1,12 @@
-const { globSync } = require('glob');
-const { spawnPlayer, killPlayer } = require('./player');
-const { createClient, closeClient, runTests } = require('./ws-server');
-const path = require('node:path');
-const { cwd } = require('node:process');
-const { Command, Flags, Errors } = require('@oclif/core');
-const fs = require('node:fs');
-const Mocha = require('mocha');
+import { globSync } from 'glob';
+import { spawnPlayer, killPlayer } from './player';
+import { createClient, closeClient, runTests } from './ws-server';
+import * as path from 'node:path';
+import { cwd } from 'node:process';
+import { Command, Flags, Errors } from '@oclif/core';
+import * as fs from 'node:fs';
+import Mocha from 'mocha';
+import { setupGlobals } from './commands/setup-mocha';
 
 class GamefaceE2E extends Command {
     static description = 'Gameface e2e cli';
@@ -35,12 +36,17 @@ class GamefaceE2E extends Command {
         }),
     };
 
+    private tests?: string;
+    private gamefacePath?: string;
+    private specTimeout?: number;
+    private bail?: boolean;
 
-    setConfig(flags) {
+    setConfig(flags: { [key: string]: any }) {
         global.config = {};
 
         const configPath = path.join(cwd(), flags.config || 'gameface-e2e-config.js');
         this.debug(`Config file path is: ${configPath}`);
+
         if (fs.existsSync(configPath)) {
             const config = require(configPath);
 
@@ -51,7 +57,6 @@ class GamefaceE2E extends Command {
         } else {
             this.warn(`Unable to find config file with path: ${configPath}. Please make sure this file exists!`);
         }
-
 
         if (!this.tests && !flags.tests) {
             this.error("No test .spec files specified!", {
@@ -79,11 +84,10 @@ class GamefaceE2E extends Command {
         }
 
         global.config.gamefacePath = flags.gamefacePath || this.gamefacePath;
-
         global.config.bail = flags.bail || this.bail;
     }
 
-    async catch(error) {
+    async catch(error: any) {
         await closeClient();
 
         // From child process the catch will be triggered but the error handling will be done automatically
@@ -95,13 +99,12 @@ class GamefaceE2E extends Command {
                 console.error(error);
             }
         }
-
         this.exit(1);
     }
 
-    async initMocha() {
+    async initMocha(): Promise<Mocha> {
         const mocha = new Mocha();
-        const specFiles = await globSync(this.tests);
+        const specFiles = await globSync(this.tests!); // logic ensures this is set
         if (!specFiles.length) {
             this.error("No test files were found!", {
                 code: "NO_TEST_FILES",
@@ -114,7 +117,7 @@ class GamefaceE2E extends Command {
             });
         }
 
-        mocha.addFile(path.join(__dirname, './commands/setup-mocha.js'));
+        setupGlobals();
 
         for (const file of specFiles) {
             mocha.addFile(path.resolve(cwd(), file));
@@ -124,12 +127,13 @@ class GamefaceE2E extends Command {
     }
 
     async run() {
+        // Mocking global.log to map to oclif logging methods
         global.log = {
-            error: this.error.bind(this),
+            error: this.error.bind(this) as any,
             log: this.log.bind(this),
             debug: this.debug.bind(this),
             warn: this.warn.bind(this)
-        }
+        };
 
         const { flags } = await this.parse(GamefaceE2E);
         this.setConfig(flags);
@@ -146,4 +150,4 @@ class GamefaceE2E extends Command {
     }
 }
 
-module.exports = GamefaceE2E;
+export default GamefaceE2E;

@@ -4,7 +4,11 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 2.1.1 :badge[Latest]{variant="note"}
+## 2.2.0 :badge[Latest]{variant="note"}
+
+<Badge text="New" variant="tip" size="small" /> **TypeScript Migration**: Converted project to TypeScript for improved safety and developer experience. API types are now globally available, allowing for automatic IDE support in .`spec.js` files without explicit imports.
+
+## 2.1.1
 
 <Badge text="Fix" variant="danger" size="small" /> Calling `keyUp`, `keyDown`, or `keyPress` on `DOMElement` or `gf` objects with `count` greater than 1 now dispatches keyboard events with the `repeat` property set to `true`.
 

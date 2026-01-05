@@ -1,15 +1,21 @@
-const RETRY_INTERVAL = 100;
+export const RETRY_INTERVAL = 100;
 
-class Utils {
+export interface KeyOptions {
+    altKey?: boolean;
+    ctrlKey?: boolean;
+    metaKey?: boolean;
+    shiftKey?: boolean;
+}
+
+export class Utils {
     constructor() {
         this.retryIfFails = this.retryIfFails.bind(this);
     }
 
-    _retryInner(action, resolve, reject, remainingCount) {
+    private _retryInner(action: () => Promise<any>, resolve: (value: any) => void, reject: (reason?: any) => void, remainingCount: number): void {
         action().then(resolve).catch((error) => {
             if (remainingCount) {
                 remainingCount--;
-
                 setTimeout(() => {
                     this._retryInner(action, resolve, reject, remainingCount);
                 }, RETRY_INTERVAL);
@@ -21,11 +27,8 @@ class Utils {
 
     /**
      * Retries the given action if it fails, up to a specified number of attempts.
-     * @param {Function} action - The action to be retried.
-     * @param {number} [retryCount=10] - The number of retry attempts. Defaults to 10.
-     * @returns {Promise} A promise that resolves if the action succeeds within the retry attempts, or rejects if all attempts fail.
      */
-    retryIfFails(action, retryCount = 10) {
+    public retryIfFails<T>(action: () => Promise<T>, retryCount: number = 10): Promise<T> {
         return new Promise((resolve, reject) => {
             this._retryInner(action, resolve, reject, retryCount);
         });
@@ -33,24 +36,15 @@ class Utils {
 
     /**
      * Pauses the execution for a specified amount of time.
-     * @param {number} time - The amount of time to sleep in milliseconds.
-     * @returns {Promise<void>} A promise that resolves after the specified time has elapsed.
      */
-    async sleep(time) {
+    public async sleep(time: number): Promise<void> {
         return new Promise((r) => setTimeout(r, time));
     }
 
     /**
      * Determines which modifier key is pressed based on the provided options object.
-     * @param {Object} options - An object containing the state of modifier keys.
-     * @param {boolean} [options.altKey=false] - Indicates if the Alt key is pressed.
-     * @param {boolean} [options.ctrlKey=false] - Indicates if the Control key is pressed.
-     * @param {boolean} [options.metaKey=false] - Indicates if the Meta (Command/Windows) key is pressed.
-     * @param {boolean} [options.shiftKey=false] - Indicates if the Shift key is pressed.
-     * @returns {number} A numeric value representing the pressed key:
-     *                   1 for Alt, 2 for Control, 4 for Meta, 8 for Shift, and 0 if none are pressed.
      */
-    getPressedKey(options) {
+    public getPressedKey(options?: KeyOptions): number {
         if (options?.altKey) return 1;
         if (options?.ctrlKey) return 2;
         if (options?.metaKey) return 4;
@@ -58,10 +52,7 @@ class Utils {
         return 0;
     }
 
-    /**
-     * A mapping of key codes for various keyboard keys.
-     */
-    KEYS = {
+    public KEYS = {
         ALT: 18,
         ARROW_DOWN: 40,
         ARROW_LEFT: 37,
@@ -127,7 +118,7 @@ class Utils {
         SYSTEM: 91,
     };
 
-    GAMEPAD_BUTTONS = {
+    public GAMEPAD_BUTTONS = {
         FACE_BUTTON_DOWN: 0,
         FACE_BUTTON_RIGHT: 1,
         FACE_BUTTON_LEFT: 2,
@@ -145,7 +136,8 @@ class Utils {
         PAD_LEFT: 14,
         PAD_RIGHT: 15,
         CENTER_BUTTON: 16,
-    }
+    };
 }
 
-module.exports = new Utils();
+export const utils = new Utils();
+export const { retryIfFails, sleep, getPressedKey, KEYS, GAMEPAD_BUTTONS } = utils;
