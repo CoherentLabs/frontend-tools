@@ -6,7 +6,7 @@
     "run-test": "node ./scripts/test.js --port=54321",
     "dev:host": "http-server ./examples -p 54321",
     "test": "npm run build&&start-server-and-test dev:host http://localhost:54321/ run-test",
-    "publish:package": "npm run build&&npm publish"
+    "publish:package": "npm i&&npm run build&&npm publish"
   },
   "dependencies": {
     "@oclif/core": "^4.2.8",

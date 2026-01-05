@@ -6,6 +6,10 @@ The `coherent-gameface-interaction-manager` is a JS library for the most common 
 
 The library’s aim is to provide an easy implementation for things like gamepad controls, spatial-navigation, drag and drop, resizing, rotating and panzoom.
 
+## Documentation
+
+For more information on how to use the `coherent-gameface-interaction-manager` you can refer to the [Documentation](https://frontend-tools.coherent-labs.com/interaction-manager/getting-started).
+
 ## Getting Started
 
 To get started, you will first need to install the `coherent-gameface-interaction-manager` after that you can create different interactions based on your project needs.
@@ -40,7 +44,3 @@ You can also download and load them as individual scripts
 ```html
 <script src="coherent-gameface-interaction-manager/dist/keyboard.min.js"></script>
 ```
-
-## Documentation
-
-For more information on how to use the `coherent-gameface-interaction-manager` you can refer to the [Documentation](https://frontend-tools/interaction-manager/getting-started).
