@@ -4,7 +4,13 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 2.1.0 :badge[Latest]{variant="note"}
+## 2.1.1 :badge[Latest]{variant="note"}
+
+<Badge text="Fix" variant="danger" size="small" /> Calling `keyUp`, `keyDown`, or `keyPress` on `DOMElement` or `gf` objects with `count` greater than 1 now dispatches keyboard events with the `repeat` property set to `true`.
+
+<Badge text="Fix" variant="danger" size="small" /> `DOMElement` methods - `waitForSize` and `waitForPositionOnScreen` - now correctly handle cases where only one dimension (`width` or `height` for size, `x` or `y` for position) is specified.
+
+## 2.1.0
 
 <Badge text="Feature" variant="success" size="small" /> Introduced new methods for simulating and testing gamepad interactions.
 

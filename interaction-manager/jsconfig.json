@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "types": [
+            "mocha"
+        ],
+    },
+    "include": [
+        "./",
+        "../e2e/types"
+    ]
+}

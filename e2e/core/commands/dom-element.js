@@ -636,7 +636,12 @@ class DOMElement {
             const currentPosition = await this.getPositionOnScreen();
             if (!currentPosition) throw new Error(`Unable to get position on screen of node with id - ${this.nodeId}.`);
 
-            if (currentPosition.x === position.x && currentPosition.y === position.y) return true;
+            const hasX = position.x !== undefined;
+            const hasY = position.y !== undefined;
+
+            if (hasX && !hasY && currentPosition.x === position.x) return true;
+            if (hasY && !hasX && currentPosition.y === position.y) return true;
+            if (hasX && hasY && currentPosition.x === position.x && currentPosition.y === position.y) return true;
 
             throw new Error(`Node with id - ${this.nodeId} is not at the expected position on screen. Expected: ${JSON.stringify(position)}, but got: ${JSON.stringify(currentPosition)}.`);
         });
@@ -680,6 +685,8 @@ class DOMElement {
             const currentSize = await this.getSize();
             if (!currentSize) throw new Error(`Unable to get size of node with id - ${this.nodeId}.`);
 
+            if (size.width !== undefined && size.height === undefined && currentSize.width === size.width) return true;
+            if (size.height !== undefined && size.width === undefined && currentSize.height === size.height) return true;
             if (currentSize.width === size.width && currentSize.height === size.height) return true;
 
             throw new Error(`Node with id - ${this.nodeId} is not at the expected size. Expected: ${JSON.stringify(size)}, but got: ${JSON.stringify(currentSize)}.`);
@@ -1158,9 +1165,10 @@ class DOMElement {
      * @param {boolean} [options.ctrlKey] - Indicates if the Ctrl key is pressed.
      * @param {boolean} [options.metaKey] - Indicates if the Meta key is pressed.
      * @param {boolean} [options.shiftKey] - Indicates if the Shift key is pressed.
+     * @param {boolean} [repeat = false] - Indicates if the key event should be marked as a repeat event.
      * @returns {Promise<null|void>} Resolves with `null` if the operation is not supported, otherwise resolves when the event is dispatched.
      */
-    async _keyEvent(event, key, options) {
+    async _keyEvent(event, key, options, repeat = false) {
         if (this.node.nodeType === 3) {
             global.log.warn(`Trying to dispatch ${event} on text node that is not supported!`);
             return null;
@@ -1168,7 +1176,7 @@ class DOMElement {
 
         await this.focus();
         // @ts-ignore
-        await this.gamefaceCommands._keyEvent(event, key, options);
+        await this.gamefaceCommands._keyEvent(event, key, options, repeat);
     }
 
     /**
@@ -1187,7 +1195,7 @@ class DOMElement {
         global.log.debug(`\n[DOMElement] Key down with "${key}" ${count} times.`);
 
         for (let i = 0; i < count; i++) {
-            await this._keyEvent('keyDown', key, options);
+            await this._keyEvent('keyDown', key, options, count > 1);
         }
     }
 
@@ -1207,7 +1215,7 @@ class DOMElement {
         global.log.debug(`\n[DOMElement] Key up with "${key}" ${count} times.`);
 
         for (let i = 0; i < count; i++) {
-            await this._keyEvent('keyUp', key, options);
+            await this._keyEvent('keyUp', key, options, count > 1);
         }
     }
 

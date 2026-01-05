@@ -7,7 +7,9 @@
   "scripts": {
     "publish:package": "npm i&&npm run build&&npm publish",
     "build": "node scripts/build-im.js",
-    "test": "node tests/index.js"
+    "run-test": "node ./tests/interaction-manager/index.js --port=54321",
+    "dev:host": "http-server -p 54321",
+    "test": "start-server-and-test dev:host http://localhost:54321/ run-test"
   },
   "repository": {
     "type": "git",
@@ -29,17 +31,11 @@
     }
   },
   "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "chai": "^4.3.10",
     "esbuild": "^0.25.6",
     "fs-extra": "^11.3.0",
-    "chai": "^4.3.10",
-    "karma": "^6.4.4",
-    "karma-chai": "^0.1.0",
-    "karma-chrome-launcher": "^3.2.0",
-    "karma-html2js-preprocessor": "^1.1.0",
-    "karma-jasmine": "^4.0.2",
-    "karma-sinon": "^1.0.5",
-    "karma-spec-reporter": "0.0.36",
-    "karma-webpack": "^5.0.1",
-    "kill-port": "^2.0.1"
+    "kill-port": "^2.0.1",
+    "start-server-and-test": "^2.0.12"
   }
 }
