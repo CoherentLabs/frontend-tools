@@ -57,9 +57,9 @@ var keyboard = (() => {
          * @param {Array} actions - Array of actions
          * @returns {GamepadFunction[]} Array of gamepad function objects from the _IM global object
          */
-        getGamepadActions(actions) {
+        getGamepadActions(actions, exactMatch = true) {
           return _IM.gamepadFunctions.filter(
-            (gpFunc) => gpFunc.actions.every((action) => actions.includes(action)) && gpFunc.actions.length === actions.length
+            (gpFunc) => gpFunc.actions.every((action) => actions.includes(action)) && (exactMatch ? gpFunc.actions.length === actions.length : true)
           );
         }
         /**

@@ -79,9 +79,9 @@ var interactionManager = (() => {
      * @param {Array} actions - Array of actions
      * @returns {GamepadFunction[]} Array of gamepad function objects from the _IM global object
      */
-    getGamepadActions(actions) {
+    getGamepadActions(actions, exactMatch = true) {
       return _IM.gamepadFunctions.filter(
-        (gpFunc) => gpFunc.actions.every((action) => actions.includes(action)) && gpFunc.actions.length === actions.length
+        (gpFunc) => gpFunc.actions.every((action) => actions.includes(action)) && (exactMatch ? gpFunc.actions.length === actions.length : true)
       );
     }
     /**
@@ -671,7 +671,7 @@ This ${callbackType} is already registered for this combination and type. To upd
         },
         { buttonIndexes: [], buttons: [] }
       );
-      const gamepadActions = global_object_default.getGamepadActions(pressedButtons.buttonIndexes);
+      const gamepadActions = global_object_default.getGamepadActions(pressedButtons.buttonIndexes, false);
       if (!gamepadActions.length === 0) return;
       if (this._pressedAction) {
         if (!gamepadActions.includes(this._pressedAction)) {
