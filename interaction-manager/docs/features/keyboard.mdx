@@ -10,45 +10,51 @@ The keyboard object provides an easy to use way to set up keys to perform differ
  In version 2.4.4 we added support for registering multiple callbacks for the same key combination and type, allowing for more flexible event handling.
 :::
 
-## .on([keyAction])
+## .on(options)
 
 Sets up a key action. You can add multiple actions with a single `.on` call.
 
-```js
-interactionManager.keyboard.on([keyAction])
+```ts
+type KeyboardOptions = {
+    keys: (string | number)[];
+    callback: string | ((event: KeyboardEvent) => void);
+    type?: KeyboardEventType | KeyboardEventType[];
+};
+
+keyboard.on(options: KeyboardOptions)
 ```
 
-### keyAction
+### options
 
 #### keys
 
 Type:
 
-```js
-type keys = string[] | number[]
+```ts
+type keys = (string | number)[]
 ```
 
-The `keys` array are the keys that will trigger the callback. Putting multiple keys will treat them as a key combination.
+The `keys` array are the keys that will trigger the callback. Putting multiple keys will treat them as a key combination. The keys are normalized, so duplicates are removed and keycodes are converted to key names.
 
 For example, the following code will trigger the callback when pressing 'A', 'B' and 'C' keys on the keyboard at the same time
 
-```js
+```ts
 keyboard.on({
     keys: ['A', 'B', 'C'],
     callback: () => {},
 })
 ```
 
-Apart from using strings for keys, you can also use keycodes or the 'KEYS' global object.
+Apart from using strings for keys, you can also use keycodes or the 'KEYS' global object. The `KEYS` object is available on the `window` object and contains all the available key names and keycodes.
 
-```js
+```ts
 keyboard.on({
     keys: [65, 66, 67],
     callback: () => {},
 })
 ```
 
-```js
+```ts
 keyboard.on({
     keys: [KEYS.A, KEYS.B, KEYS.C],
     callback: () => {},
@@ -59,24 +65,24 @@ keyboard.on({
 
 Type:
 
-```js
-type callback = (() => void) | string
+```ts
+type callback = ((event: KeyboardEvent) => void) | string
 ```
 
-The `callback` property is the function that will be triggered when the keys from the `keys` array are pressed.
+The `callback` property is the function that will be triggered when the keys from the `keys` array are pressed. The `KeyboardEvent` is passed as a parameter to the callback.
 
 You can either write your function inside the object
 
-```js
+```ts
 keyboard.on({
     keys: ['A', 'B', 'C'],
-    callback: () => doSomething(),
+    callback: (event: KeyboardEvent) => doSomething(event),
 });
 ```
 
 or if you have a registered action, you can pass it here
 
-```js
+```ts
 keyboard.on({
     keys: ['A', 'B', 'C'],
     callback: 'registered-action',
@@ -87,45 +93,49 @@ keyboard.on({
 
 Type:
 
-```js
-type type = string[]
+```ts
+type type = KeyboardEventType | KeyboardEventType[]
 ```
 
 The `type` property shows the type of key interaction that the callback will be triggered on. You can pass the following interaction types: `press`, `hold` and `lift`.
 
 This example will trigger the callback on a key press. If you press and hold the key it will only trigger once.
 
-```js
+```ts
 keyboard.on({
     keys: ['A', 'B', 'C'],
     callback: () => doSomething(),
-    type: ['press']
+    type: 'press'
 });
 ```
 
 This example will trigger the callback when you hold the key. If you press the key and release it immediately it won't trigger anything.
 
-```js
+```ts
 keyboard.on({
     keys: ['A', 'B', 'C'],
     callback: () => doSomething(),
-    type: ['hold']
+    type: 'hold'
 });
 ```
 
 This example will trigger the callback when you lift your finger from the key. The callback will only trigger when you release the keys.
 
-```js
+```ts
 keyboard.on({
-    keys: ['A', 'B', 'C'],
+    keys: ['A'],
     callback: () => doSomething(),
-    type: ['lift']
+    type: 'lift'
 });
 ```
 
+:::caution
+You can only have a single key to trigger an action on `lift`. Using multiple keys will result in an error.
+:::
+
 This example will trigger the callback when you press the key and also when you hold it.
 
-```js
+```ts
 keyboard.on({
     keys: ['A', 'B', 'C'],
     callback: () => doSomething(),
@@ -137,19 +147,19 @@ keyboard.on({
 
 You can now register multiple callbacks or actions for the same key combination and type. All callbacks will be executed in the order they were registered.
 
-```js
+```ts
 // Register first callback
 keyboard.on({
     keys: ['A'],
     callback: () => console.log('First callback'),
-    type: ['press']
+    type: 'press'
 });
 
 // Register second callback for the same key combination
 keyboard.on({
     keys: ['A'],
     callback: () => console.log('Second callback'),
-    type: ['press']
+    type: 'press'
 });
 
 // When 'A' is pressed, both callbacks will execute:
@@ -163,9 +173,13 @@ This is particularly useful when different parts of your application need to res
 Attempting to register the exact same callback reference or action twice will result in an error to prevent accidental duplicates.
 :::
 
-## .off([keys], callback)
+## .off(keys, callback)
 
-Removes an already set up key combination or a specific callback from a key combination.
+Removes an already set up key combination or a specific callback from a key combination. If there are no more registered key combinations, the event listeners will be automatically removed.
+
+```ts
+keyboard.off(keys: (string | number)[], callback?: string | Function)
+```
 
 ### keys
 
@@ -179,18 +193,18 @@ The specific callback function or action name you want to remove from the key co
 
 If you provide only the keys array, all callbacks registered for that key combination will be removed across all types (press, hold, lift).
 
-```js
+```ts
 // Remove all callbacks for this key combination
 keyboard.off(['A', 'B', 'C'])
 ```
 
 If you have added the key combination as keycodes or using the KEYS global object you need to remove them the same way:
 
-```js
+```ts
 keyboard.off([65, 66, 67])
 ```
 
-```js
+```ts
 keyboard.off([KEYS.A, KEYS.B, KEYS.C])
 ```
 
@@ -198,13 +212,13 @@ keyboard.off([KEYS.A, KEYS.B, KEYS.C])
 
 To remove only a specific callback while keeping others, pass the callback as the second parameter:
 
-```js
+```ts
 const myCallback = () => console.log('My callback');
 
 keyboard.on({
     keys: ['A'],
     callback: myCallback,
-    type: ['press']
+    type: 'press'
 });
 
 // Later, remove only this specific callback
@@ -213,12 +227,12 @@ keyboard.off(['A'], myCallback);
 
 This is useful when multiple callbacks are registered for the same key combination:
 
-```js
+```ts
 const callback1 = () => console.log('First');
 const callback2 = () => console.log('Second');
 
-keyboard.on({ keys: ['A'], callback: callback1, type: ['press'] });
-keyboard.on({ keys: ['A'], callback: callback2, type: ['press'] });
+keyboard.on({ keys: ['A'], callback: callback1, type: 'press' });
+keyboard.on({ keys: ['A'], callback: callback2, type: 'press' });
 
 // Remove only callback1, callback2 will still execute
 keyboard.off(['A'], callback1);

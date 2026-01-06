@@ -212,7 +212,7 @@ describe('Spatial navigation - HTMLElement support', () => {
             const element2 = document.querySelector('.square-2');
             interactionManager.spatialNavigation.init([element1]);
             interactionManager.spatialNavigation.add([element2]);
-            const defaultArea = interactionManager.spatialNavigation.navigatableElements.default;
+            const defaultArea = interactionManager.spatialNavigation.areas.default;
             return defaultArea.elements.length === 2 && defaultArea.elements[0] === element1 && defaultArea.elements[1] === element2;
         });
 

@@ -3,66 +3,46 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import mappings from '../utils/gamepad-mappings';
-import IM from '../utils/global-object';
+import mappings, { AxisInput, ButtonInput, InternalAction, GamepadInput } from '../utils/gamepad-mappings';
+import IM, { GamepadFunction } from '../utils/global-object';
 import Actions from './actions';
 
 const AXIS_THRESHOLD = 0.9;
-const ACTION_TYPES = ['press', 'hold'];
+const ACTION_TYPES = ['press', 'hold'] as const;
 
+export type GamepadEventType = typeof ACTION_TYPES[number];
+
+type ButtonGamepadOptions = {
+    actions: ButtonInput[],
+    type?: 'hold' | 'press',
+    callback: ((buttons: GamepadButton[]) => void) | string
+};
+
+type AxisGamepadOptions = {
+    actions: AxisInput[],
+    type?: 'hold',
+    callback: ((axes: [number, number]) => void) | string
+};
 /**
  * Gamepad class that handles all gamepad interactions
  */
 class Gamepad {
-    // eslint-disable-next-line require-jsdoc
+    gamepadEnabled = false
+    pollingInterval = 200;
+    private pollingIntervalRef?: NodeJS.Timeout;
+    private _pressedAction: GamepadFunction | null = null;
+    private _pressedButtons: GamepadButton[] = [];
+
     constructor() {
-        this.mappings = mappings;
-        this.pollingStarted = false;
-        this.gamepadEnabled = false;
-
-        this.onGamepadConnected = this.onGamepadConnected.bind(this);
         this.sanitizeAction = this.sanitizeAction.bind(this);
-
-        this.pollingInterval = 200;
-
-        this._pressedAction = null;
     }
 
     /**
      * Allow gamepads to be connected
-     * @param {boolean} isEnabled
      */
-    set enabled(isEnabled) {
+    set enabled(isEnabled: boolean) {
         this.gamepadEnabled = isEnabled;
-        this.gamepadEnabled ? this.init() : this.deinit();
-    }
-
-    /**
-     * Attaches the event listeners for the gamepads
-     * @private
-     */
-    init() {
-        window.addEventListener('gamepadconnected', this.onGamepadConnected);
-    }
-
-    /**
-     * Removes any attached event listeners for gamepads
-     * @private
-     */
-    deinit() {
-        window.removeEventListener('gamepadconnected', this.onGamepadConnected);
-    }
-
-    /**
-     * Starts polling on the first connected
-     * @returns {void}
-     * @private
-     */
-    onGamepadConnected() {
-        if (this.pollingStarted) return;
-
-        this.pollingStarted = true;
-        this.startPolling();
+        this.gamepadEnabled ? this.startPolling() : this.stopPolling();
     }
 
     /**
@@ -71,41 +51,39 @@ class Gamepad {
      * @param {string[] | number[]} options.actions - Action to trigger the callback. Can be name of button or joystick
      * @param {'press' | 'hold'} options.type - The type of action to trigger the callback. The available options are hold and press.
      * @param {function | string} options.callback - Function(s) or action(s) to be triggered on the set action
-     * @returns {void}
      */
-    on(options) {
-        options.actions = options.actions.map(this.sanitizeAction);
+    on(options: ButtonGamepadOptions): void;
+    on(options: AxisGamepadOptions): void;
+    on(options: ButtonGamepadOptions | AxisGamepadOptions) {
+        const actions = options.actions.map(this.sanitizeAction);
+        const isAxisAlias = mappings.axisAliases.some(alias => actions.includes(alias));
+        const type = options.type && ACTION_TYPES.includes(options.type) ? options.type : 'hold';
 
-        const isAxisAlias = this.mappings.axisAliases.some(alias => options.actions.includes(alias));
-
-        if (!options.type || !ACTION_TYPES.includes(options.type)) options.type = 'hold';
-
-        if (options.type === 'press' && isAxisAlias) {
+        if (type === 'press' && isAxisAlias) {
             return console.error(`You can't use an axis action with a 'press' type!`);
         }
 
-        if (options.actions.length > 1 && isAxisAlias) {
+        if (actions.length > 1 && isAxisAlias) {
             return console.error(`You can't use an axis action in a combination with a button action`);
         }
 
-        const existingEntry = IM.getGamepadAction(options);
+        const existingEntry = IM.getGamepadAction({actions, type});
         if (existingEntry) {
             return IM.addCallbackToEntry(existingEntry, options.callback, {
-                identifier: `Actions: [${options.actions.join(', ')}]`,
-                type: options.type
+                identifier: `Actions: [${actions.join(', ')}]`,
+                type
             });
         }
 
-        _IM.gamepadFunctions.push({...options, callbacks: [options.callback]});
+        _IM.gamepadFunctions.push({actions, type, callbacks: [options.callback]});
     }
 
     /**
      * Removes either an action or a callback from the provided action
      * @param {Array} actions - Array containing the action you want to remove
      * @param {string | Function} callback - Callback or action you want to remove 
-     * @returns {void}
      */
-    off(actions, callback) {
+    off(actions: GamepadInput[], callback?: Function | string) {
         const matchingActions = IM.getGamepadActions(actions.map(this.sanitizeAction));
 
         if (matchingActions.length === 0) {
@@ -118,7 +96,7 @@ class Gamepad {
 
             actionsWithCallback.forEach((action) => {
                 const cbIndex = action.callbacks.indexOf(callback);
-                action.callbacks.splice(cbIndex, 1);  // Remove from callbacks array
+                action.callbacks.splice(cbIndex, 1);
 
                 if (action.callbacks.length === 0) {
                     IM.removeGamepadFunction(action)  
@@ -131,33 +109,30 @@ class Gamepad {
 
     /**
      * Loop that handles button presses and axis movement
-     * @returns {void}
-     * @private
      */
-    startPolling() {
-        const gamepads = navigator.getGamepads();
+    private startPolling() {
+        this.pollingIntervalRef = setInterval(() => {
+            const gamepads = navigator.getGamepads();
 
-        if (gamepads.length === 0) {
-            this.pollingStarted = false;
-            return;
-        }
+            if (gamepads.length === 0) return;
 
-        gamepads.forEach((gamepad, index) => {
-            if (!gamepad) return;
-            this.handleButtons(gamepad.buttons, index);
-            this.handleJoysticks(gamepad.axes);
-        });
-
-        setTimeout(this.startPolling.bind(this), this.pollingInterval);
+            gamepads.forEach((gamepad) => {
+                if (!gamepad) return;
+                this.handleButtons(gamepad.buttons);
+                this.handleJoysticks(gamepad.axes);
+            });
+        }, this.pollingInterval);
     }
 
-    /**
-     *
-     * @param {Object[]} buttons
-     * @private
-     */
-    handleButtons(buttons) {
-        const pressedButtons = buttons.reduce(
+    private stopPolling() {
+        if (this.pollingIntervalRef) clearInterval(this.pollingIntervalRef);
+    }
+
+    private handleButtons(buttons: readonly GamepadButton[]) {
+        const pressedButtons = buttons.reduce<{
+          buttonIndexes: number[];
+          buttons: GamepadButton[];
+        }>(
             (acc, el, index) => {
                 if (el.pressed) {
                     acc.buttonIndexes.push(index);
@@ -169,18 +144,19 @@ class Gamepad {
         );
 
         const gamepadActions = IM.getGamepadActions(pressedButtons.buttonIndexes, false);
-        if (!gamepadActions.length === 0) return;
 
         if (this._pressedAction) {
             if (!gamepadActions.includes(this._pressedAction)) {
-                this.executeCallbacks(this._pressedAction, this._pressedAction.actions);
+                this.executeCallbacks(this._pressedAction, this._pressedButtons);
             }
             this._pressedAction = null;
+            this._pressedButtons = [];
         }
 
         gamepadActions.forEach((gamepadAction) => {
             if (gamepadAction.type === 'press') {
                 this._pressedAction = gamepadAction;
+                this._pressedButtons = pressedButtons.buttons;
                 return;
             }
 
@@ -189,12 +165,7 @@ class Gamepad {
     }
 
     /* eslint-disable max-lines-per-function */
-    /**
-     *
-     * @param {number[]} axes
-     * @private
-     */
-    handleJoysticks(axes) {
+    private handleJoysticks(axes: readonly number[]) {
         const joystickActions = this.getJoystickActions();
 
         joystickActions.forEach((jAction) => {
@@ -230,49 +201,38 @@ class Gamepad {
             }
         });
     }
-    /* eslint-enable max-lines-per-function */
 
     /**
      * Convert button aliases to indexes or keep joystick aliases
      * @param {string | number} action - Actions to convert
-     * @returns {string | number} - Converted action strings
-     * @private
      */
-    sanitizeAction(action) {
+    private sanitizeAction(action: GamepadInput): InternalAction {
         if (typeof action === 'number') return action;
 
-        if (this.mappings.axisAliases.includes(action.toLowerCase())) return action.toLowerCase();
+        const actionName = action.toLowerCase();
+        if ((mappings.axisAliases as readonly string[]).includes(actionName)) return actionName as AxisInput;
+        
+        const key = mappings.aliases[actionName as keyof typeof mappings.aliases];
+        if (key) return mappings[key];
 
-        if (typeof action === 'string') {
-            const key = this.mappings.aliases[action.toLowerCase()];
-            if (!key) return console.error(`You have entered a non-supported button alias ${action}`);
-            return this.mappings[key];
-        }
-
-        return action;
+        throw new Error(`You have entered a non-supported button alias: ${action}`);
     }
 
     /**
      * Gets all registered Joystick actions
-     * @returns {Object[]} - Joystick actions
-     * @private
      */
-    getJoystickActions() {
-        return _IM.gamepadFunctions.filter(gpFunc => this.mappings.axisAliases.includes(gpFunc.actions[0]));
+    private getJoystickActions() {
+        return _IM.gamepadFunctions.filter(gpFunc => mappings.axisAliases.includes(gpFunc.actions[0] as AxisInput));
     }
 
     /**
      * Executes the callbacks from the registered action
-     * @param {Object} action
-     * @param {any} value
-     * @returns {void}
-     * @private
      */
-    executeCallbacks(action, value) {
+    private executeCallbacks(action: GamepadFunction, value: GamepadButton[] | number[]): void {
         action.callbacks.forEach(callback => {
             if (typeof callback === 'string') return Actions.execute(callback, value);
     
-            callback(value);
+            (callback as Function)(value);
         });
     }
 }

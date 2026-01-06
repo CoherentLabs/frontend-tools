@@ -10,18 +10,28 @@ Put and lift the finger from the screen quickly
 
 Usage
 
-```js
+```ts
 touchGestures.tap(tapOptions)
 ```
 
 ### tapOptions
 
+```ts
+interface TapOptions {
+    element: HTMLElement | string;
+    callback: Function;
+    tapsNumber?: number;
+    tapTime?: number;
+    betweenTapsTime?: number;
+}
+```
+
 #### element
 
 Type:
 
-```js
-type element = string || HTMLElement
+```ts
+type element = string | HTMLElement
 ```
 
 The element or element selector to attach the tap.
@@ -30,8 +40,8 @@ The element or element selector to attach the tap.
 
 Type:
 
-```js
-type callback = () => {}
+```ts
+type callback = () => void;
 ```
 
 The function called on tap
@@ -40,7 +50,7 @@ The function called on tap
 
 Type:
 
-```js
+```ts
 type tapsNumber = number
 ```
 
@@ -52,7 +62,7 @@ The number of taps to trigger the callback
 
 Type:
 
-```js
+```ts
 type tapTime = number
 ```
 
@@ -64,7 +74,7 @@ Time in milliseconds between putting down and lifting the finger from the screen
 
 Type:
 
-```js
+```ts
 type betweenTapsTime = number
 ```
 
@@ -78,18 +88,26 @@ Put and lift the finger after a set amount of time
 
 Usage
 
-```js
+```ts
 touchGestures.hold(holdOptions)
 ```
 
 ### holdOptions
 
+```ts
+interface HoldOptions {
+    element: HTMLElement | string;
+    callback: Function;
+    time?: number;
+}
+```
+
 #### element
 
 Type:
 
-```js
-type element = string || HTMLElement
+```ts
+type element = string | HTMLElement
 ```
 
 The element or element selector to attach the hold.
@@ -98,8 +116,8 @@ The element or element selector to attach the hold.
 
 Type:
 
-```js
-type callback = () => {}
+```ts
+type callback = () => void;
 ```
 
 The function called when the hold time is up.
@@ -108,7 +126,7 @@ The function called when the hold time is up.
 
 Type:
 
-```js
+```ts
 type time = number
 ```
 
@@ -122,18 +140,34 @@ Put a finger on the screen and move it around to drag. Drag stops when the finge
 
 Usage
 
-```js
+```ts
 touchGestures.drag(dragOptions)
 ```
 
 ### dragOptions
 
+```ts
+interface DragOptions {
+    element: HTMLElement | string;
+    onDragStart?: (event: GestureEventData) => void;
+    onDrag?: (position: { x: number, y: number }) => void;
+    onDragEnd?: (position: { x: number, y: number }) => void;
+}
+
+interface GestureEventData {
+    x: number;
+    y: number;
+    target: EventTarget | null;
+    currentTarget: EventTarget | null;
+}
+```
+
 #### element
 
 Type:
 
-```js
-type element = string || HTMLElement
+```ts
+type element = string | HTMLElement
 ```
 
 The element or element selector to attach the drag.
@@ -142,13 +176,8 @@ The element or element selector to attach the drag.
 
 Type:
 
-```js
-type callback = ({
-    x: number,
-    y: number,
-    target: HTMLElement,
-    currentTarget: HTMLElement
-}) => {}
+```ts
+type onDragStart = (event: GestureEventData) => void;
 ```
 
 The function called when you start dragging
@@ -157,11 +186,8 @@ The function called when you start dragging
 
 Type:
 
-```js
-type callback = ({
-    x: number,
-    y: number,
-}) => {}
+```ts
+type onDrag = (position: { x: number, y: number }) => void;
 ```
 
 The function called when you drag
@@ -170,11 +196,8 @@ The function called when you drag
 
 Type:
 
-```js
-type callback = ({
-    x: number,
-    y: number,
-}) => {}
+```ts
+type onDragEnd = (position: { x: number, y: number }) => void;
 ```
 
 The function called when you stop dragging
@@ -185,18 +208,28 @@ Put a finger on the screen and move it in a set direction quickly and then lift 
 
 Usage
 
-```js
+```ts
 touchGestures.swipe(swipeOptions)
 ```
 
 ### swipeOptions
 
+```ts
+type GestureDirection = 'top' | 'bottom' | 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+
+interface SwipeOptions {
+    element: HTMLElement | string;
+    callback: (direction?: GestureDirection) => void;
+    touchNumber?: number;
+}
+```
+
 #### element
 
 Type:
 
-```js
-type element = string || HTMLElement
+```ts
+type element = string | HTMLElement
 ```
 
 The element or element selector to attach the swipe.
@@ -205,8 +238,8 @@ The element or element selector to attach the swipe.
 
 Type:
 
-```js
-type callback = (direction = string) => {}
+```ts
+type callback = (direction?: GestureDirection) => void;
 ```
 
 The function called when the swipe is done.
@@ -217,7 +250,7 @@ The direction of the swipe can be the following: `top`, `bottom`, `left`, `right
 
 Type:
 
-```js
+```ts
 type touchNumber = number
 ```
 
@@ -231,18 +264,25 @@ Put two fingers on the screen and start moving them in opposite directions. Brin
 
 Usage
 
-```js
+```ts
 touchGestures.pinch(pinchOptions)
 ```
 
 ### pinchOptions
 
+```ts
+interface PinchOptions {
+    element: HTMLElement | string;
+    callback: ({ pinchDelta, midpoint }: { pinchDelta: number, midpoint: { x: number, y: number } }) => void;
+}
+```
+
 #### element
 
 Type:
 
-```js
-type element = string || HTMLElement
+```ts
+type element = string | HTMLElement
 ```
 
 The element or element selector to attach the pinch.
@@ -251,11 +291,11 @@ The element or element selector to attach the pinch.
 
 Type:
 
-```js
-type callback = (pinchDelta = string) => {}
+```ts
+type callback = ({ pinchDelta, midpoint }: { pinchDelta: number, midpoint: { x: number, y: number } }) => void;
 ```
 
-The function called on pinch/stretch. The `pinchDelta` is either `40` for stretching or `-40` for pinching.
+The function called on pinch/stretch. The `pinchDelta` is either `40` for stretching or `-40` for pinching. The `midpoint` is the point between the two fingers.
 
 ## rotate
 
@@ -263,18 +303,25 @@ Put two fingers on the screen and start moving them in a clockwise or counter-cl
 
 Usage
 
-```js
+```ts
 touchGestures.rotate(rotateOptions)
 ```
 
 ### rotateOptions
 
+```ts
+interface RotateOptions {
+    element: HTMLElement | string;
+    callback: (angle: number) => void;
+}
+```
+
 #### element
 
 Type:
 
-```js
-type element = string || HTMLElement
+```ts
+type element = string | HTMLElement
 ```
 
 The element or element selector to attach the rotate.
@@ -283,8 +330,8 @@ The element or element selector to attach the rotate.
 
 Type:
 
-```js
-type callback = (angle = number) => {}
+```ts
+type callback = (angle: number) => void;
 ```
 
 The function called on rotate. Provides an angle between 0 and 360 degrees.
@@ -296,7 +343,7 @@ To remove a gesture you will need to save it to a variable and then call the `re
 
 For Example
 
-```js
+```ts
 const tap = touchGestures.tap({
     element: '.tap-container',
     callback: () => {}
@@ -311,7 +358,7 @@ Touch gestures are available in the other IM modules, however they need to be en
 
 For Example
 
-```js
+```ts
 const square = new draggable({ element: '.square' });
 
 square.touchEnabled = true // You can now drag the square around using your fingers

@@ -3,3 +3,4 @@ tests
 package-lock.json
 scripts
 src
+tsconfig.json
