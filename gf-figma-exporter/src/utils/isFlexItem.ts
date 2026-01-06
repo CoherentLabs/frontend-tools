@@ -1,13 +1,9 @@
-import { AvailableNode } from "../types/commonTypes";
+import { AvailableNode } from '../types/commonTypes';
 
 export default function isFlexItem(node: AvailableNode): boolean {
-    if (
-        !('parent' in node) ||
-        !node.parent ||
-        (node.parent &&
-            (node.parent.type === 'FRAME' || node.parent.type === 'INSTANCE') &&
-            node.parent.layoutMode === 'NONE')
-    )
-        return false;
+    if (!node) return false;
+    if (!node.parent) return false;
+    if (node.parent.type !== 'FRAME' && node.parent.type !== 'INSTANCE') return false;
+    if (node.parent.layoutMode === 'NONE') return false;
     return true;
 }

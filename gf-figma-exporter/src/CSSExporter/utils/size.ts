@@ -1,5 +1,6 @@
-import { AvailableNode } from '../../types/commonTypes';
+import { AvailableNode, NodesWithFillsAndStrokes } from '../../types/commonTypes';
 import { convertPXtoVH } from '../../utils/convertUnits';
+import { generateBackgroundRect } from './background';
 
 export function generateSize(node: AvailableNode): { width: string; height: string } {
     const width = `${convertPXtoVH(node.width).toFixed(2)}vh`;
@@ -11,9 +12,8 @@ export function generateSize(node: AvailableNode): { width: string; height: stri
     };
 }
 
-export function generateFlexSize(node: AvailableNode): { width: string; height: string } {
-    let width = `${convertPXtoVH(node.width).toFixed(2)}vh`;
-    let height = `${convertPXtoVH(node.height).toFixed(2)}vh`;
+export async function generateFlexSize(node: AvailableNode): Promise<{ width: string; height: string }> {
+    let { width, height} = await generateBackgroundRect(node as NodesWithFillsAndStrokes);
 
     if (node.type === 'FRAME' || node.type === 'INSTANCE') {
         if (node.layoutSizingHorizontal === 'HUG') {

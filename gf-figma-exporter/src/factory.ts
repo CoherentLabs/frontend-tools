@@ -21,7 +21,7 @@ const NODE_TYPES = {
     ELLIPSE: GFEllipse,
     SVG: GFSVGNode,
     TEXT: GFTextNode,
-    INSTANCE: GFGroup,
+    INSTANCE: GFFrame,
     MASK: GFMask,
 };
 const TYPES = {

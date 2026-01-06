@@ -8,11 +8,10 @@ import {
     diamondGradientHandle,
 } from '../../utils/gradientUtils';
 import hasImage from '../../utils/hasImage';
-import isNodeSVG from '../../utils/isNodeSVG';
 import getPathBBox from '../../utils/getPathBBox';
-import { getPercentage } from '../../utils/convertUnits';
-import shouldExportBackground from '../../ImageExporter/utils/shouldExportBackground';
+import { convertPXtoVH, getPercentage } from '../../utils/convertUnits';
 import getExportableEffects from '../../utils/exportableEffect';
+import { generateSize } from './size';
 
 export const SPECIAL_FILL_TYPES = ['GRADIENT_RADIAL', 'GRADIENT_DIAMOND'];
 
@@ -52,7 +51,6 @@ export function generateBackground(node: NodesWithFillsAndStrokes): string {
         if (!fill.visible) continue;
         switch (fill.type) {
             case 'SOLID': {
-
                 const { r, g, b } = fill.color;
                 const a = fill.opacity !== undefined ? fill.opacity : 1;
                 backgroundArrays.push(createRGBAColor(r, g, b, a));
@@ -60,7 +58,6 @@ export function generateBackground(node: NodesWithFillsAndStrokes): string {
             }
 
             case 'GRADIENT_LINEAR': {
-
                 const { gradient } = linearGradientHandle(fill, node.width, node.height, node.x, node.y);
                 backgroundArrays.unshift(gradient);
                 break;
@@ -75,7 +72,6 @@ export function generateBackground(node: NodesWithFillsAndStrokes): string {
             }
 
             case 'GRADIENT_ANGULAR': {
-
                 const { gradient } = angularGradientHandle(fill, node.width, node.height);
                 backgroundArrays.unshift(gradient);
                 break;
@@ -150,29 +146,41 @@ export function additionalBackgroundStyles(node: NodesWithFillsAndStrokes): stri
     return result;
 }
 
-export async function generateBackgroundRect(node: NodesWithFillsAndStrokes): Promise<DOMRect> {
+export async function generateBackgroundRect(
+    node: NodesWithFillsAndStrokes
+): Promise<{ x: number; y: number; width: string; height: string }> {
     const { fillGeometry } = node;
+
+    let x = 0;
+    let y = 0;
+    let { width, height } = generateSize(node);
 
     // If there is no fillGeometry or it's empty, return a sensible default rect
     if (!fillGeometry || fillGeometry.length === 0) {
-        return { x: 0, y: 0, width: 100, height: 100 } as DOMRect;
+        return { x, y, width, height };
     }
 
     // Only proceed for SVG nodes
-    if (!isNodeSVG(node)) {
-        return { x: 0, y: 0, width: 100, height: 100 } as DOMRect;
-    }
+    // if (!isNodeSVG(node)) {
+
+    //     return { x, y, width, height } as DOMRect;
+    // }
 
     const bbox = await getPathBBox(fillGeometry[0].data);
 
-    if (!bbox || !shouldExportBackground(node)) {
-        return { x: 0, y: 0, width: 100, height: 100 } as DOMRect;
+    if (!bbox) {
+        return { x, y, width, height };
     }
 
+    x = getPercentage(bbox.x, node.width);
+    y = getPercentage(bbox.y, node.height);
+    width = convertPXtoVH(bbox.width).toFixed(2);
+    height = convertPXtoVH(bbox.height).toFixed(2);
+
     return {
-        x: getPercentage(bbox.x, node.width),
-        y: getPercentage(bbox.y, node.height),
-        width: getPercentage(bbox.width, node.width),
-        height: getPercentage(bbox.height, node.height),
-    } as DOMRect;
+        x,
+        y,
+        width,
+        height,
+    };
 }

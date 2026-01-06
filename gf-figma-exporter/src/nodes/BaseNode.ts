@@ -65,7 +65,7 @@ export default class GFBaseNode {
         }
 
         ${this.isAutoLayout ? `.${this.className}${FLEX_SUFFIX} {
-            ${CSSExporterInstance.setFlexContainerStyle()}
+            ${await CSSExporterInstance.setFlexContainerStyle()}
         }` : ''}
 
         ${beforePseudo}

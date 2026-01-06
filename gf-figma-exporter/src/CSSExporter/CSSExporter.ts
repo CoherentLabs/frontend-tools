@@ -92,18 +92,18 @@ class CSSExporter {
         return this.style.getCSS();
     }
 
-    setFlexContainerStyle() {
+    async setFlexContainerStyle() {
         if (this.node.type !== 'FRAME' && this.node.type !== 'INSTANCE') return;
 
         const { direction, alignContent, alignItems, justifyContent, wrap } = generateFlexContainerStyles(
             this.node as FrameNode
         );
 
-        const { width, height } = generateFlexSize(this.node as AvailableNode);
+        const { width, height } = await generateFlexSize(this.node as AvailableNode);
         const gap = calculateGap(this.node.children[0] as AvailableNode);
 
-        this.flexContainerStyles.add('width', width);
-        this.flexContainerStyles.add('height', height);
+        this.flexContainerStyles.add('width', `${width}vh`);
+        this.flexContainerStyles.add('height', `${height}vh`);
         this.flexContainerStyles.add('display', 'flex');
         this.flexContainerStyles.add('flex-direction', direction);
         this.flexContainerStyles.add('flex-wrap', wrap);
@@ -176,13 +176,15 @@ class CSSExporter {
 
         const { x, y, width, height } = await generateBackgroundRect(this.node as NodesWithFillsAndStrokes);
 
+        console.log('background rect for ', this.node.name, { x, y, width, height });
+
         const { boxShadow } = generateEffectStyles(this.node as SVGNodes | NodesWithFillsAndStrokes);
         if (boxShadow) {
             this.backgroundStyles.add('box-shadow', boxShadow);
         }
 
-        this.backgroundStyles.add('width', `${width}%`);
-        this.backgroundStyles.add('height', `${height}%`);
+        this.backgroundStyles.add('width', `${width}vh`);
+        this.backgroundStyles.add('height', `${height}vh`);
         this.backgroundStyles.add('position', 'absolute');
         this.backgroundStyles.add('top', `${y}%`);
         this.backgroundStyles.add('left', `${x}%`);
