@@ -3,8 +3,8 @@ import { convertPXtoVH } from '../../utils/convertUnits';
 import { generateBackgroundRect } from './background';
 
 export function generateSize(node: AvailableNode): { width: string; height: string } {
-    const width = `${convertPXtoVH(node.width).toFixed(2)}vh`;
-    const height = `${convertPXtoVH(node.height).toFixed(2)}vh`;
+    const width = `${convertPXtoVH(node.width).toFixed(2)}`;
+    const height = `${convertPXtoVH(node.height).toFixed(2)}`;
 
     return {
         width,

@@ -177,6 +177,7 @@ export async function generateBackgroundRect(
     width = convertPXtoVH(bbox.width).toFixed(2);
     height = convertPXtoVH(bbox.height).toFixed(2);
 
+
     return {
         x,
         y,

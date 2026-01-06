@@ -63,8 +63,8 @@ class CSSExporter {
         const transform = generateTransformStyle(this.node as PrimitiveNodes);
 
         this.style.add('font-size', '1vh');
-        this.style.add('width', width);
-        this.style.add('height', height);
+        this.style.add('width',`${width}vh`);
+        this.style.add('height', `${height}vh`);
         this.style.add('position', 'absolute');
         this.style.add('top', top);
         this.style.add('left', left);
@@ -102,8 +102,8 @@ class CSSExporter {
         const { width, height } = await generateFlexSize(this.node as AvailableNode);
         const gap = calculateGap(this.node.children[0] as AvailableNode);
 
-        this.flexContainerStyles.add('width', `${width}vh`);
-        this.flexContainerStyles.add('height', `${height}vh`);
+        this.flexContainerStyles.add('width', `100%`);
+        this.flexContainerStyles.add('height', `100%`);
         this.flexContainerStyles.add('display', 'flex');
         this.flexContainerStyles.add('flex-direction', direction);
         this.flexContainerStyles.add('flex-wrap', wrap);
@@ -175,8 +175,6 @@ class CSSExporter {
         const zIndex = generateZIndex(this.node as PrimitiveNodes);
 
         const { x, y, width, height } = await generateBackgroundRect(this.node as NodesWithFillsAndStrokes);
-
-        console.log('background rect for ', this.node.name, { x, y, width, height });
 
         const { boxShadow } = generateEffectStyles(this.node as SVGNodes | NodesWithFillsAndStrokes);
         if (boxShadow) {

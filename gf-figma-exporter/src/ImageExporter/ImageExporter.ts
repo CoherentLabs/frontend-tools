@@ -1,11 +1,10 @@
 import { ExportableNodes, MaskNode, NodesWithFillsAndStrokes } from '../types/commonTypes';
+import { currentPageSize } from '../utils/currentPage';
 import toggleChildren from '../utils/toggleChildren';
 import handleImage from './utils/handleImages';
 import shouldExportBackground from './utils/shouldExportBackground';
 import shouldExportStroke from './utils/shouldExportStroke';
 import {
-    disableMask,
-    enableMask,
     hideEffects,
     hideFills,
     hideStrokes,
@@ -45,71 +44,57 @@ class ImageExporter {
     ): Promise<{ name: string; data: Uint8Array | null } | null> {
         if (!shouldExportBackground(node)) return null;
 
-        if (node.type === 'FRAME') {
-            // Temporarily hide children to avoid exporting them in the background image
-            toggleChildren(node, false);
-        }
-
-        const strokes = node.strokes;
-        const effects = node.effects;
-        const rotation = node.rotation;
-
-        // Hide strokes and effects to export only the background
-
-        hideStrokes(node);
-        hideEffects(node);
-        await disableMask(node);
-        removeRotation(node);
-
-        const { name, data } = await handleImage(node, 'background', 'PNG');
-        if (!data) return null;
-
-        if (node.type === 'FRAME') {
-            // Restore children visibility
-            toggleChildren(node, true);
-        }
-
-        restoreStrokes(node, strokes);
-        restoreEffects(node, effects);
-        await enableMask(node);
-        restoreRotation(node, rotation);
-
-        return {
-            name,
-            data,
-        };
+        return await this.exportCleanImage(node, 'background');
     }
 
     async exportStrokeImage(node: NodesWithFillsAndStrokes): Promise<{ name: string; data: Uint8Array | null } | null> {
         if (!shouldExportStroke(node)) return null;
 
-        const fills = node.fills;
+        return await this.exportCleanImage(node, 'border');
+    }
+
+    private async exportCleanImage(
+        node: NodesWithFillsAndStrokes,
+        type: 'background' | 'border' | 'full'
+    ): Promise<{ name: string; data: Uint8Array | null } | null> {
+        const clone = node.clone() as NodesWithFillsAndStrokes;
+        const exportStage = figma.createFrame();
+        exportStage.name = 'TEMP EXPORT STAGE';
+        exportStage.fills = []; // Transparent
+        exportStage.x = 100000; // Move far away so user doesn't see flicker
+        exportStage.resize(currentPageSize.width, currentPageSize.height);
+        figma.currentPage.appendChild(exportStage);
+        exportStage.appendChild(clone);
+
+        if (clone.type === 'FRAME') {
+            // Temporarily hide children to avoid exporting them in the background image
+            toggleChildren(clone, false);
+        }
+
+        const strokes = clone.strokes;
+        const fills = clone.fills;
         const effects = node.effects;
         const rotation = node.rotation;
-        // Hide fills and effects to export only the stroke
 
-        if (node.type === 'FRAME') {
-            // Temporarily hide children to avoid exporting them in the background image
-            toggleChildren(node, false);
-        }
+        // Hide strokes and effects to export only the background
 
-        hideFills(node);
-        hideEffects(node);
-        removeRotation(node);
-        await disableMask(node);
+        type === 'border' ? hideFills(clone) : hideStrokes(clone);
+        hideEffects(clone);
+        removeRotation(clone);
 
-        const { name, data } = await handleImage(node, 'border', 'PNG');
+        const { name, data } = await handleImage(clone, type, 'PNG', node.id);
         if (!data) return null;
 
-        restoreFills(node, fills);
-        restoreEffects(node, effects);
-        restoreRotation(node, rotation);
-        await enableMask(node);
-
-        if (node.type === 'FRAME') {
+        if (clone.type === 'FRAME') {
             // Restore children visibility
-            toggleChildren(node, true);
+            toggleChildren(clone, true);
         }
+
+        type === 'border' ? restoreFills(clone, fills) : restoreStrokes(clone, strokes);
+        restoreEffects(clone, effects);
+        restoreRotation(clone, rotation);
+
+        exportStage.remove();
 
         return {
             name,

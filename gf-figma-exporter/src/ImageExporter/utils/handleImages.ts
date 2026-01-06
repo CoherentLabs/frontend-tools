@@ -5,10 +5,10 @@ interface GFImageResult {
     data: Uint8Array | null;
 }
 
-async function handleImage(node: SceneNode, type: 'background' | 'border' |  'full', format: ExportSettings['format']): Promise<GFImageResult> {
+async function handleImage(node: SceneNode, type: 'background' | 'border' |  'full', format: ExportSettings['format'], originalID?: string): Promise<GFImageResult> {
     const result: GFImageResult = { name: '', data: null };
     result.data = await node.exportAsync({ format });
-    result.name = generateImageName(node.name, node.id, type);
+    result.name = generateImageName(node.name, originalID ? originalID : node.id, type);
 
     return result;
 }
