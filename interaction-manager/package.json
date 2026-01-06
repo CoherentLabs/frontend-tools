@@ -1,12 +1,16 @@
 {
   "name": "coherent-gameface-interaction-manager",
-  "version": "2.5.6",
+  "version": "2.6.0",
   "description": "Library for the most common UI interactions",
   "main": "dist/interaction-manager.js",
   "module": "esm/interaction-manager.js",
+  "types": "dist/types/interaction-manager.d.ts",
   "scripts": {
     "publish:package": "npm i&&npm run build&&npm publish",
-    "build": "node scripts/build-im.js",
+    "build": "node scripts/build-im.js && tsc",
+    "build:bundle": "node scripts/build-im.js",
+    "build:types": "tsc",
+    "typecheck": "tsc --noEmit",
     "run-test": "node ./tests/interaction-manager/index.js --port=54321",
     "dev:host": "http-server -p 54321",
     "test": "start-server-and-test dev:host http://localhost:54321/ run-test"
@@ -35,7 +39,16 @@
     "chai": "^4.3.10",
     "esbuild": "^0.25.6",
     "fs-extra": "^11.3.0",
+    "karma": "^6.4.4",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^3.2.0",
+    "karma-html2js-preprocessor": "^1.1.0",
+    "karma-jasmine": "^4.0.2",
+    "karma-sinon": "^1.0.5",
+    "karma-spec-reporter": "0.0.36",
+    "karma-webpack": "^5.0.1",
     "kill-port": "^2.0.1",
+    "typescript": "^5.9.3",
     "start-server-and-test": "^2.0.12"
   }
 }

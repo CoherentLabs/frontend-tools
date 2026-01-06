@@ -35,7 +35,14 @@ function buildInteractionManager() {
                 format: build.format,
             };
 
-            if (build.globalName) options.globalName = kebabToCamelCase(entry.name);
+            if (build.globalName) {
+                const globalName = kebabToCamelCase(entry.name);
+                options.globalName = globalName;
+
+                options.footer = {
+                    js: `if (typeof ${globalName} !== 'undefined' && ${globalName}.default) { ${globalName} = ${globalName}.default; }`
+                };
+            }
 
             const buildResult = esbuild.buildSync(options);
             const buildResultMinified = esbuild.buildSync({
@@ -61,9 +68,9 @@ function getEntryPoints() {
     const itemsInFolder = fs.readdirSync(pathToFiles, { encoding: 'utf-8' });
     return itemsInFolder.reduce((acc, el) => {
         const pathToFile = `${pathToFiles}/${el}`;
-        if (!fs.statSync(pathToFile).isFile() && path.extname(el) !== 'js') return acc;
+        if (!fs.statSync(pathToFile).isFile() && path.extname(el) !== 'ts') return acc;
 
-        acc.push({ path: pathToFile, name: path.basename(el, '.js') });
+        acc.push({ path: pathToFile, name: path.basename(el, '.ts') });
         return acc;
     }, []);
 }

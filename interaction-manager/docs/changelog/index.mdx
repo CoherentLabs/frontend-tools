@@ -4,6 +4,12 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
+## 2.6.0 :badge[Latest]{variant="note"}
+
+<Badge text="Feature" variant="success" size="small" /> Migrated the entire codebase to TypeScript. The library now includes native type definitions for better developer experience.
+
+<Badge text="Fix" variant="caution" size="small" /> Resolved timing mismatches in [Gamepad](/interaction-manager/features/spatial-navigation/) by removing the `gamepadconnected` listener. Polling now begins explicitly when the `enabled` property is set to `true`.
+
 ## 2.5.6 :badge[Latest]{variant="note"}
 
 <Badge text="Fix" variant="caution" size="small" /> Gamepad actions are now triggered correctly even when combined. Callbacks for individual actions (e.g., `'pad-up'`) will fire even if multiple actions are executed simultaneously (e.g., `'pad-up'` + `'pad-down'`).
