@@ -1,13 +1,30 @@
+"use strict";
 var touchGestures = (() => {
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
   var __getOwnPropNames = Object.getOwnPropertyNames;
-  var __esm = (fn, res) => function __init() {
-    return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __export = (target, all) => {
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
   };
-  var __commonJS = (cb, mod) => function __require() {
-    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
   };
+  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // src/utils/gesture-utils.js
+  // src/touch-gestures.ts
+  var touch_gestures_exports = {};
+  __export(touch_gestures_exports, {
+    default: () => touch_gestures_default2
+  });
+
+  // src/utils/gesture-utils.ts
   function getDirection(diffX, diffY) {
     const MIN_SWIPE_OFFSET = 200;
     if (diffY < 0 && diffX > -MIN_SWIPE_OFFSET && diffX < MIN_SWIPE_OFFSET) return "top";
@@ -22,12 +39,8 @@ var touchGestures = (() => {
   function getElement(element) {
     return element instanceof HTMLElement ? element : document.querySelector(element);
   }
-  var init_gesture_utils = __esm({
-    "src/utils/gesture-utils.js"() {
-    }
-  });
 
-  // src/utils/utility-functions.js
+  // src/utils/utility-functions.ts
   function toDeg(rad) {
     return rad * 180 / Math.PI;
   }
@@ -42,475 +55,431 @@ var touchGestures = (() => {
       y: (y1 + y2) / 2
     };
   }
-  var init_utility_functions = __esm({
-    "src/utils/utility-functions.js"() {
-    }
-  });
 
-  // src/lib_components/touch-gestures.js
-  var MULTIPLE_TOUCHES_MIN_NUMBER, TouchGestures, touch_gestures_default;
-  var init_touch_gestures = __esm({
-    "src/lib_components/touch-gestures.js"() {
-      init_gesture_utils();
-      init_utility_functions();
-      MULTIPLE_TOUCHES_MIN_NUMBER = 2;
-      TouchGestures = class {
+  // src/lib_components/touch-gestures.ts
+  var MULTIPLE_TOUCHES_MIN_NUMBER = 2;
+  var TouchGestures = class {
+    constructor() {
+      this.activeTouches = /* @__PURE__ */ new Map();
+    }
+    /**
+     * Hold gesture - triggers after holding for specified time
+     * @param {Object} options
+     * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
+     * @param {function} options.callback - Function to be executed on touch
+     * @param {number} [options.time=1000] - Time in milliseconds for the press
+     */
+    hold(options) {
+      if (!options) return console.error("Options not provided for hold!");
+      let holdTimer;
+      const element = getElement(options.element);
+      if (!element) return console.error("Element not found!");
+      const onHold = ({ touches }) => {
+        this.activeTouches.set(touches[0].identifier, touches[0]);
+        holdTimer = setTimeout(() => {
+          if (!options.callback) return;
+          options.callback();
+        }, options.time || 1e3);
+      };
+      const onHoldEnd = ({ touches }) => {
+        this.activeTouches.delete(touches[0].identifier);
+        clearTimeout(holdTimer);
+      };
+      element.addEventListener("touchstart", onHold);
+      element.addEventListener("touchend", onHoldEnd);
+      return {
         /**
-         * @typedef {Object} gestureReturnObject
-         * @property {function} gesture.remove - Removes the gesture and detaches the event listeners
+         * Removes the event listeners
          */
-        /* eslint-disable-next-line require-jsdoc */
-        constructor() {
-          this.activeTouches = /* @__PURE__ */ new Map();
-        }
-        /**
-         *
-         * @param {Object} options
-         * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
-         * @param {function} options.callback - Function to be executed on touch
-         * @param {number} [options.time=1000] - Time in milliseconds for the press
-         * @returns {gestureReturnObject}
-         */
-        hold(options) {
-          if (!options) return console.error("Options not provided for hold!");
-          let holdTimer;
-          const element = getElement(options.element);
-          if (!element) return console.error("Element not found!");
-          const onHold = ({ touches }) => {
-            this.activeTouches.set(touches[0].identifier, touches[0]);
-            holdTimer = setTimeout(() => {
-              if (!options.callback) return;
-              options.callback();
-            }, options.time || 1e3);
-          };
-          const onHoldEnd = ({ touches }) => {
-            this.activeTouches.delete(touches[0].identifier);
-            clearTimeout(holdTimer);
-          };
-          element.addEventListener("touchstart", onHold);
-          element.addEventListener("touchend", onHoldEnd);
-          return {
-            /**
-             * Removes the event listeners
-             */
-            remove() {
-              element.removeEventListener("touchstart", onHold);
-              element.removeEventListener("touchend", onHoldEnd);
-            }
-          };
-        }
-        /**
-         *
-         * @param {Object} options
-         * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
-         * @param {function} options.callback - Function to be executed on touch
-         * @param {number} [options.tapsNumber=1] - Number of taps necessary for the callback to be executed
-         * @param {number} [options.tapTime=200] - Time in milliseconds between putting down the finger and lifting it up
-         * @param {number} [options.betweenTapsTime=500] - Time in milliseconds between two sequential taps
-         * @returns {gestureReturnObject}
-         */
-        tap(options) {
-          if (!options) return console.error("Options not provided for tap!");
-          let tapTimer, betweenTapsTimer;
-          let isTap = true;
-          let tapCount = options.tapsNumber || 1;
-          const element = getElement(options.element);
-          if (!element) return console.error("Element not found!");
-          const onTap = ({ touches }) => {
-            this.activeTouches.set(touches[0].identifier, touches[0]);
-            clearTimeout(betweenTapsTimer);
-            isTap = true;
-            tapTimer = setTimeout(() => {
-              isTap = false;
-            }, options.tapTime || 200);
-          };
-          const onTapEnd = ({ touches }) => {
-            this.activeTouches.delete(touches[0].identifier);
-            clearTimeout(tapTimer);
-            if (!isTap) return;
-            tapCount--;
-            betweenTapsTimer = setTimeout(() => {
-              tapCount = options.tapsNumber || 1;
-              clearTimeout(betweenTapsTimer);
-            }, options.betweenTapsTime || 500);
-            if (tapCount !== 0 || !options.callback) return;
-            options.callback();
-            isTap = true;
-            clearTimeout(tapTimer);
-            tapCount = options.tapsNumber || 1;
-          };
-          element.addEventListener("touchstart", onTap);
-          element.addEventListener("touchend", onTapEnd);
-          return {
-            /**
-             * Removes the event listeners
-             */
-            remove() {
-              element.removeEventListener("touchstart", onTap);
-              element.removeEventListener("touchend", onTapEnd);
-            }
-          };
-        }
-        /**
-         *
-         * @param {Object} options
-         * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
-         * @param {function} options.onDragStart - Function to be executed on drag start
-         * @param {function} options.onDrag - Function to be executed on drag
-         * @param {function} options.onDragEnd - Function to be executed on drag end
-         * @returns {gestureReturnObject}
-         */
-        drag(options) {
-          if (!options) return console.error("Options not provided for drag!");
-          const element = getElement(options.element);
-          if (!element) return console.error("Element not found!");
-          const onDragStart = ({ touches, target, currentTarget }) => {
-            this.activeTouches.set(touches[0].identifier, touches[0]);
-            document.addEventListener("touchmove", onDrag);
-            document.addEventListener("touchend", onDragEnd);
-            if (!options.onDragStart) return;
-            options.onDragStart({ x: touches[0].clientX, y: touches[0].clientY, target, currentTarget });
-          };
-          const onDrag = ({ touches }) => {
-            if (!this.activeTouches.has(touches[0].identifier)) return;
-            if (!options.onDrag) return;
-            options.onDrag({ x: touches[0].clientX, y: touches[0].clientY });
-          };
-          const onDragEnd = ({ touches }) => {
-            this.activeTouches.delete(touches[0].identifier);
-            document.removeEventListener("touchmove", onDrag);
-            document.removeEventListener("touchend", onDragEnd);
-            if (!options.onDragEnd) return;
-            options.onDragEnd({ x: touches[0].clientX, y: touches[0].clientY });
-          };
-          element.addEventListener("touchstart", onDragStart);
-          return {
-            /**
-             * Removes the event listeners
-             */
-            remove() {
-              element.removeEventListener("touchstart", onDragStart);
-            }
-          };
-        }
-        /**
-         *
-         * @param {Object} options
-         * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
-         * @param {function} options.callback - Function to be executed on touch- Directions of the swipe
-         * @param {number} options.touchNumber - Number of fingers necessary for the swipe
-         * @returns {gestureReturnObject}
-         */
-        swipe(options) {
-          if (!options) return console.error("Options not provided for swipe!");
-          let swipeTimer, direction, distance;
-          let isSwipe = true;
-          const SWIPE_MIN_DISTANCE = 100;
-          options.touchNumber ||= 1;
-          const element = getElement(options.element);
-          if (!element) return console.error("Element not found!");
-          const onSwipeStart = ({ touches }) => {
-            this.activeTouches.set(touches[0].identifier, touches[0]);
-            if (this.activeTouches.size > options.touchNumber) {
-              document.removeEventListener("touchmove", onSwipe);
-              document.removeEventListener("touchend", onSwipeEnd);
-            }
-            if (this.activeTouches.size !== options.touchNumber) return;
-            swipeTimer = setTimeout(() => {
-              isSwipe = false;
-              clearTimeout(swipeTimer);
-              swipeTimer = null;
-            }, 1e3);
-            document.addEventListener("touchmove", onSwipe);
-            document.addEventListener("touchend", onSwipeEnd);
-          };
-          const onSwipe = ({ touches }) => {
-            if (!this.activeTouches.has(touches[0].identifier)) return;
-            const { clientX: startX, clientY: startY } = this.activeTouches.get(touches[0].identifier);
-            const diffX = touches[0].clientX - startX;
-            const diffY = touches[0].clientY - startY;
-            direction = getDirection(diffX, diffY);
-            distance = distanceBetweenTwoPoints(startX, startY, touches[0].clientX, touches[0].clientY);
-          };
-          const onSwipeEnd = ({ touches }) => {
-            this.activeTouches.delete(touches[0].identifier);
-            if (this.activeTouches.size !== 0) return;
-            document.removeEventListener("touchmove", onSwipe);
-            document.removeEventListener("touchend", onSwipeEnd);
-            if (isSwipeComplete()) {
-              options.callback(direction);
-            }
-            clearTimeout(swipeTimer);
-            isSwipe = true;
-            swipeTimer = null;
-          };
-          const isSwipeComplete = () => {
-            return isSwipe && options.callback && direction && distance > SWIPE_MIN_DISTANCE;
-          };
-          element.addEventListener("touchstart", onSwipeStart);
-          return {
-            /**
-             * Removes the event listeners
-             */
-            remove() {
-              element.removeEventListener("touchstart", onSwipeStart);
-            }
-          };
-        }
-        /**
-         *
-         * @param {Object} options
-         * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
-         * @param {function} options.callback - Function to be executed on touch
-         * @returns {gestureReturnObject}
-         */
-        pinch(options) {
-          if (!options) return console.error("Options not provided for pinch!");
-          let distance;
-          const PINCH_DELTA_NUMBER = 40;
-          const element = getElement(options.element);
-          if (!element) return console.error("Element not found!");
-          const onPinchStart = ({ touches }) => {
-            this.activeTouches.set(touches[0].identifier, touches[0]);
-            if (this.activeTouches.size < MULTIPLE_TOUCHES_MIN_NUMBER) return;
-            document.addEventListener("touchmove", onPinch);
-            document.addEventListener("touchend", onPinchEnd);
-            distance = distanceBetweenTwoPoints(
-              this.activeTouches.get(0).clientX,
-              this.activeTouches.get(0).clientY,
-              this.activeTouches.get(1).clientX,
-              this.activeTouches.get(1).clientY
-            );
-          };
-          const onPinch = ({ touches }) => {
-            if (this.activeTouches.size !== MULTIPLE_TOUCHES_MIN_NUMBER) return;
-            this.activeTouches.set(touches[0].identifier, touches[0]);
-            const newDistance = distanceBetweenTwoPoints(
-              this.activeTouches.get(0).clientX,
-              this.activeTouches.get(0).clientY,
-              this.activeTouches.get(1).clientX,
-              this.activeTouches.get(1).clientY
-            );
-            const pinchDelta = Math.sign(newDistance - distance) * PINCH_DELTA_NUMBER;
-            distance = newDistance;
-            const midpoint = getMidPoint(
-              this.activeTouches.get(0).clientX,
-              this.activeTouches.get(0).clientY,
-              this.activeTouches.get(1).clientX,
-              this.activeTouches.get(1).clientY
-            );
-            if (options.callback) options.callback({ pinchDelta, midpoint });
-          };
-          const onPinchEnd = ({ touches }) => {
-            this.activeTouches.delete(touches[0].identifier);
-            if (this.activeTouches.size !== 0) return;
-            document.removeEventListener("touchmove", onPinch);
-            document.removeEventListener("touchend", onPinchEnd);
-          };
-          element.addEventListener("touchstart", onPinchStart);
-          return {
-            /**
-             * Removes the event listeners
-             */
-            remove() {
-              element.removeEventListener("touchstart", onPinchStart);
-            }
-          };
-        }
-        /**
-         *
-         * @param {Object} options
-         * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
-         * @param {function} options.callback - Function to be executed on touch
-         * @returns {gestureReturnObject}
-         */
-        rotate(options) {
-          if (!options) return console.error("Options not provided for rotate!");
-          let angle = 0;
-          let initialAngle;
-          const element = getElement(options.element);
-          if (!element) return console.error("Element not found!");
-          const onRotate = ({ touches }) => {
-            if (this.activeTouches.size < MULTIPLE_TOUCHES_MIN_NUMBER) return;
-            this.activeTouches.set(touches[0].identifier, touches[0]);
-            angle = getAngle() - initialAngle;
-            if (options.callback) options.callback(angle);
-          };
-          const onRotateStart = ({ touches }) => {
-            this.activeTouches.set(touches[0].identifier, touches[0]);
-            if (this.activeTouches.size !== MULTIPLE_TOUCHES_MIN_NUMBER) return;
-            initialAngle = getAngle() - angle;
-            document.addEventListener("touchmove", onRotate);
-            document.addEventListener("touchend", onRotateEnd);
-          };
-          const onRotateEnd = ({ touches }) => {
-            this.activeTouches.delete(touches[0].identifier);
-            document.removeEventListener("touchmove", onRotate);
-            document.removeEventListener("touchend", onRotateEnd);
-          };
-          element.addEventListener("touchstart", onRotateStart);
-          const getAngle = () => {
-            const fullRotation = 360;
-            const rotationOffset = 90;
-            const offsetY = this.activeTouches.get(0).clientY - this.activeTouches.get(1).clientY;
-            const offsetX = this.activeTouches.get(0).clientX - this.activeTouches.get(1).clientX;
-            return (toDeg(Math.atan2(offsetY, offsetX)) + fullRotation + rotationOffset) % fullRotation;
-          };
-          return {
-            /**
-             * Removes the event listeners
-             */
-            remove() {
-              element.removeEventListener("touchstart", onRotateStart);
-            }
-          };
+        remove() {
+          element.removeEventListener("touchstart", onHold);
+          element.removeEventListener("touchend", onHoldEnd);
         }
       };
-      touch_gestures_default = new TouchGestures();
     }
-  });
+    /**
+     * Tap gesture - single or multi-tap detection
+     * @param {Object} options
+     * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
+     * @param {function} options.callback - Function to be executed on touch
+     * @param {number} [options.tapsNumber=1] - Number of taps necessary for the callback to be executed
+     * @param {number} [options.tapTime=200] - Time in milliseconds between putting down the finger and lifting it up
+     * @param {number} [options.betweenTapsTime=500] - Time in milliseconds between two sequential taps
+     */
+    tap(options) {
+      if (!options) return console.error("Options not provided for tap!");
+      let tapTimer, betweenTapsTimer;
+      let isTap = true;
+      let tapCount = options.tapsNumber || 1;
+      const element = getElement(options.element);
+      if (!element) return console.error("Element not found!");
+      const onTap = ({ touches }) => {
+        this.activeTouches.set(touches[0].identifier, touches[0]);
+        clearTimeout(betweenTapsTimer);
+        isTap = true;
+        tapTimer = setTimeout(() => {
+          isTap = false;
+        }, options.tapTime || 200);
+      };
+      const onTapEnd = ({ touches }) => {
+        this.activeTouches.delete(touches[0].identifier);
+        clearTimeout(tapTimer);
+        if (!isTap) return;
+        tapCount--;
+        betweenTapsTimer = setTimeout(() => {
+          tapCount = options.tapsNumber || 1;
+          clearTimeout(betweenTapsTimer);
+        }, options.betweenTapsTime || 500);
+        if (tapCount !== 0 || !options.callback) return;
+        options.callback();
+        isTap = true;
+        clearTimeout(tapTimer);
+        tapCount = options.tapsNumber || 1;
+      };
+      element.addEventListener("touchstart", onTap);
+      element.addEventListener("touchend", onTapEnd);
+      return {
+        /**
+         * Removes the event listeners
+         */
+        remove() {
+          element.removeEventListener("touchstart", onTap);
+          element.removeEventListener("touchend", onTapEnd);
+        }
+      };
+    }
+    /**
+     * Drag gesture - tracks touch movement
+     * @param {Object} options
+     * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
+     * @param {function} options.onDragStart - Function to be executed on drag start
+     * @param {function} options.onDrag - Function to be executed on drag
+     * @param {function} options.onDragEnd - Function to be executed on drag end
+     */
+    drag(options) {
+      if (!options) return console.error("Options not provided for drag!");
+      const element = getElement(options.element);
+      if (!element) return console.error("Element not found!");
+      const onDragStart = ({ touches, target, currentTarget }) => {
+        this.activeTouches.set(touches[0].identifier, touches[0]);
+        document.addEventListener("touchmove", onDrag);
+        document.addEventListener("touchend", onDragEnd);
+        if (!options.onDragStart) return;
+        options.onDragStart({ x: touches[0].clientX, y: touches[0].clientY, target, currentTarget });
+      };
+      const onDrag = ({ touches }) => {
+        if (!this.activeTouches.has(touches[0].identifier)) return;
+        if (!options.onDrag) return;
+        options.onDrag({ x: touches[0].clientX, y: touches[0].clientY });
+      };
+      const onDragEnd = ({ touches }) => {
+        this.activeTouches.delete(touches[0].identifier);
+        document.removeEventListener("touchmove", onDrag);
+        document.removeEventListener("touchend", onDragEnd);
+        if (!options.onDragEnd) return;
+        options.onDragEnd({ x: touches[0].clientX, y: touches[0].clientY });
+      };
+      element.addEventListener("touchstart", onDragStart);
+      return {
+        /**
+         * Removes the event listeners
+         */
+        remove() {
+          element.removeEventListener("touchstart", onDragStart);
+        }
+      };
+    }
+    /**
+     * Swipe gesture - detects directional swipes
+     * @param {Object} options
+     * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
+     * @param {function} options.callback - Function to be executed on touch- Directions of the swipe
+     * @param {number} options.touchNumber - Number of fingers necessary for the swipe
+     */
+    swipe(options) {
+      if (!options) return console.error("Options not provided for swipe!");
+      let swipeTimer;
+      let direction;
+      let distance;
+      let isSwipe = true;
+      const SWIPE_MIN_DISTANCE = 100;
+      options.touchNumber ||= 1;
+      const element = getElement(options.element);
+      if (!element) return console.error("Element not found!");
+      const onSwipeStart = ({ touches }) => {
+        this.activeTouches.set(touches[0].identifier, touches[0]);
+        if (this.activeTouches.size > options.touchNumber) {
+          document.removeEventListener("touchmove", onSwipe);
+          document.removeEventListener("touchend", onSwipeEnd);
+        }
+        if (this.activeTouches.size !== options.touchNumber) return;
+        swipeTimer = setTimeout(() => {
+          isSwipe = false;
+          clearTimeout(swipeTimer);
+          swipeTimer = null;
+        }, 1e3);
+        document.addEventListener("touchmove", onSwipe);
+        document.addEventListener("touchend", onSwipeEnd);
+      };
+      const onSwipe = ({ touches }) => {
+        if (!this.activeTouches.has(touches[0].identifier)) return;
+        const startTouch = this.activeTouches.get(touches[0].identifier);
+        if (!startTouch) return;
+        const { clientX: startX, clientY: startY } = startTouch;
+        const diffX = touches[0].clientX - startX;
+        const diffY = touches[0].clientY - startY;
+        direction = getDirection(diffX, diffY);
+        distance = distanceBetweenTwoPoints(startX, startY, touches[0].clientX, touches[0].clientY);
+      };
+      const onSwipeEnd = ({ touches }) => {
+        this.activeTouches.delete(touches[0].identifier);
+        if (this.activeTouches.size !== 0) return;
+        document.removeEventListener("touchmove", onSwipe);
+        document.removeEventListener("touchend", onSwipeEnd);
+        if (isSwipeComplete()) {
+          options.callback(direction);
+        }
+        clearTimeout(swipeTimer);
+        isSwipe = true;
+        swipeTimer = null;
+      };
+      const isSwipeComplete = () => {
+        return isSwipe && direction && distance && distance > SWIPE_MIN_DISTANCE;
+      };
+      element.addEventListener("touchstart", onSwipeStart);
+      return {
+        /**
+         * Removes the event listeners
+         */
+        remove() {
+          element.removeEventListener("touchstart", onSwipeStart);
+        }
+      };
+    }
+    /**
+     * Pinch gesture - two-finger pinch zoom
+     * @param {Object} options
+     * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
+     * @param {function} options.callback - Function to be executed on touch
+     */
+    pinch(options) {
+      if (!options) return console.error("Options not provided for pinch!");
+      let distance;
+      const PINCH_DELTA_NUMBER = 40;
+      const element = getElement(options.element);
+      if (!element) return console.error("Element not found!");
+      const onPinchStart = ({ touches }) => {
+        this.activeTouches.set(touches[0].identifier, touches[0]);
+        if (this.activeTouches.size < MULTIPLE_TOUCHES_MIN_NUMBER) return;
+        const touch0 = this.activeTouches.get(0);
+        const touch1 = this.activeTouches.get(1);
+        if (!touch0 || !touch1) return;
+        document.addEventListener("touchmove", onPinch);
+        document.addEventListener("touchend", onPinchEnd);
+        distance = distanceBetweenTwoPoints(
+          touch0.clientX,
+          touch0.clientY,
+          touch1.clientX,
+          touch1.clientY
+        );
+      };
+      const onPinch = ({ touches }) => {
+        if (this.activeTouches.size !== MULTIPLE_TOUCHES_MIN_NUMBER) return;
+        this.activeTouches.set(touches[0].identifier, touches[0]);
+        const touch1 = this.activeTouches.get(0);
+        const touch2 = this.activeTouches.get(1);
+        if (!touch1 || !touch2) return;
+        const newDistance = distanceBetweenTwoPoints(
+          touch1.clientX,
+          touch1.clientY,
+          touch2.clientX,
+          touch2.clientY
+        );
+        const pinchDelta = Math.sign(newDistance - distance) * PINCH_DELTA_NUMBER;
+        distance = newDistance;
+        const midpoint = getMidPoint(
+          touch1.clientX,
+          touch1.clientY,
+          touch2.clientX,
+          touch2.clientY
+        );
+        if (options.callback) options.callback({ pinchDelta, midpoint });
+      };
+      const onPinchEnd = ({ touches }) => {
+        this.activeTouches.delete(touches[0].identifier);
+        if (this.activeTouches.size !== 0) return;
+        document.removeEventListener("touchmove", onPinch);
+        document.removeEventListener("touchend", onPinchEnd);
+      };
+      element.addEventListener("touchstart", onPinchStart);
+      return {
+        /**
+         * Removes the event listeners
+         */
+        remove() {
+          element.removeEventListener("touchstart", onPinchStart);
+        }
+      };
+    }
+    /**
+     *
+     * @param {Object} options
+     * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
+     * @param {function} options.callback - Function to be executed on touch
+     */
+    rotate(options) {
+      if (!options) return console.error("Options not provided for rotate!");
+      let angle = 0;
+      let initialAngle = 0;
+      const element = getElement(options.element);
+      if (!element) return console.error("Element not found!");
+      const onRotate = ({ touches }) => {
+        if (this.activeTouches.size < MULTIPLE_TOUCHES_MIN_NUMBER) return;
+        this.activeTouches.set(touches[0].identifier, touches[0]);
+        angle = getAngle() - initialAngle;
+        if (options.callback) options.callback(angle);
+      };
+      const onRotateStart = ({ touches }) => {
+        this.activeTouches.set(touches[0].identifier, touches[0]);
+        if (this.activeTouches.size !== MULTIPLE_TOUCHES_MIN_NUMBER) return;
+        initialAngle = getAngle() - angle;
+        document.addEventListener("touchmove", onRotate);
+        document.addEventListener("touchend", onRotateEnd);
+      };
+      const onRotateEnd = ({ touches }) => {
+        this.activeTouches.delete(touches[0].identifier);
+        document.removeEventListener("touchmove", onRotate);
+        document.removeEventListener("touchend", onRotateEnd);
+      };
+      element.addEventListener("touchstart", onRotateStart);
+      const getAngle = () => {
+        const fullRotation = 360;
+        const rotationOffset = 90;
+        const offsetY = this.activeTouches.get(0).clientY - this.activeTouches.get(1).clientY;
+        const offsetX = this.activeTouches.get(0).clientX - this.activeTouches.get(1).clientX;
+        return (toDeg(Math.atan2(offsetY, offsetX)) + fullRotation + rotationOffset) % fullRotation;
+      };
+      return {
+        /**
+         * Removes the event listeners
+         */
+        remove() {
+          element.removeEventListener("touchstart", onRotateStart);
+        }
+      };
+    }
+  };
+  var touch_gestures_default = new TouchGestures();
 
-  // src/utils/global-object.js
-  var IM, global_object_default;
-  var init_global_object = __esm({
-    "src/utils/global-object.js"() {
-      IM = class _IM2 {
-        // eslint-disable-next-line require-jsdoc
-        constructor() {
-          this.actions = [];
-          this.keyboardFunctions = [];
-          this.gamepadFunctions = [];
-        }
-        /**
-         * Initialize global object
-         */
-        init() {
-          if (!window._IM) window._IM = new _IM2();
-        }
-        /**
-         *
-         * @param {string[]} keys Array of key combinations
-         * @returns {KeyboardFunction[]} Array of keyboard function objects
-         */
-        getKeys(keys) {
-          return _IM.keyboardFunctions.filter((keyFunction) => keyFunction.keys.every((key) => keys.includes(key)));
-        }
-        /**
-         *
-         * @param {string[]} keys Array of key combinations
-         * @returns {number} Index of key combination in _IM
-         */
-        getKeysIndex(keys) {
-          return _IM.keyboardFunctions.findIndex((keyFunction) => keyFunction.keys.every((key) => keys.includes(key)));
-        }
-        /**
-         *
-         * @param {Object} options
-         * @param {Array} options.actions - Array of actions
-         * @param {string} options.type - Type of action
-         * @returns {GamepadFunction} Gamepad function object from the _IM global object
-         */
-        getGamepadAction({ actions, type }) {
-          return _IM.gamepadFunctions.find((gpFunc) => {
-            return gpFunc.actions.every((action) => actions.includes(action)) && gpFunc.type === type && gpFunc.actions.length === actions.length;
-          });
-        }
-        /**
-         *
-         * @param {Array} actions - Array of actions
-         * @returns {GamepadFunction[]} Array of gamepad function objects from the _IM global object
-         */
-        getGamepadActions(actions, exactMatch = true) {
-          return _IM.gamepadFunctions.filter(
-            (gpFunc) => gpFunc.actions.every((action) => actions.includes(action)) && (exactMatch ? gpFunc.actions.length === actions.length : true)
-          );
-        }
-        /**
-         *
-         * @param {Array} actions Array of actions
-         * @returns {number} Index of an action from the _IM global object
-         */
-        getGamepadActionIndex(actions) {
-          return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions.includes(action)));
-        }
-        /**
-         *
-         * @param {string} action - Action to search for
-         * @returns {ActionFunction} Action function object
-         */
-        getAction(action) {
-          return _IM.actions.find((actionObj) => actionObj.name === action);
-        }
-        /**
-         *
-         * @param {string} action Action to search for
-         * @returns {number}
-         */
-        getActionIndex(action) {
-          return _IM.actions.findIndex((actionObj) => actionObj.name === action);
-        }
-        /**
-         * Checks if a callback already exists in a registered function entry
-         * @param {KeyboardFunction | GamepadFunction} functionEntry - The function entry to check
-         * @param {Function | string} callback - The callback to search for
-         * @returns {boolean} True if callback exists, false otherwise
-         */
-        hasDuplicateCallback(functionEntry, callback) {
-          return functionEntry.callbacks.some((cb) => cb === callback);
-        }
-        /**
-         * Adds a callback to an existing function entry if it's not a duplicate
-         * @param {KeyboardFunction | GamepadFunction} functionEntry - The function entry to add the callback to
-         * @param {Function | string} callback - The callback to add
-         * @param {Object} errorContext - Context information for error messages
-         * @param {string} errorContext.identifier - String identifying the keys/actions (e.g., "Keys: [A, B]")
-         * @param {string} errorContext.type - The type of action (press, hold, lift)
-         */
-        addCallbackToEntry(functionEntry, callback, errorContext) {
-          if (this.hasDuplicateCallback(functionEntry, callback)) {
-            const callbackType = typeof callback === "string" ? "action" : "function";
-            const callbackName = typeof callback === "string" ? callback : "(anonymous function)";
-            return console.error(
-              `Duplicate callback detected!
+  // src/utils/global-object.ts
+  var IM = class _IM2 {
+    constructor() {
+      // eslint-disable-next-line require-jsdoc
+      this.actions = [];
+      this.keyboardFunctions = [];
+      this.gamepadFunctions = [];
+    }
+    /**
+     * Initialize global object
+     */
+    init() {
+      if (!window._IM) window._IM = new _IM2();
+    }
+    /**
+     * Get keyboard functions matching the given keys
+     */
+    getKeys(keys) {
+      return _IM.keyboardFunctions.filter((keyFunction) => keyFunction.keys.every((key) => keys.includes(key)));
+    }
+    /**
+     * Get the index of a keyboard function matching the given keys
+     */
+    getKeysIndex(keys) {
+      return _IM.keyboardFunctions.findIndex((keyFunction) => keyFunction.keys.every((key) => keys.includes(key)));
+    }
+    /**
+     * Get a gamepad function matching the given button actions and type
+     */
+    getGamepadAction({ actions, type }) {
+      return _IM.gamepadFunctions.find((gpFunc) => {
+        return gpFunc.actions.every((action) => actions.includes(action)) && gpFunc.type === type && gpFunc.actions.length === actions.length;
+      });
+    }
+    /**
+     * Get all gamepad functions matching the given button actions
+     */
+    getGamepadActions(actions, exactMatch = true) {
+      return _IM.gamepadFunctions.filter(
+        (gpFunc) => gpFunc.actions.every((action) => actions.includes(action)) && (exactMatch ? gpFunc.actions.length === actions.length : true)
+      );
+    }
+    /**
+     * Get the index of a gamepad function matching the given button actions
+     */
+    getGamepadActionIndex(actions) {
+      return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions.includes(action)));
+    }
+    /**
+     * Get an action by name
+     * @param {string} action - Action to search for
+     */
+    getAction(action) {
+      return _IM.actions.find((actionObj) => actionObj.name === action);
+    }
+    /**
+     * Get the index of an action by name
+     */
+    getActionIndex(action) {
+      return _IM.actions.findIndex((actionObj) => actionObj.name === action);
+    }
+    /**
+     * Checks if a callback already exists in a registered function entry
+     */
+    hasDuplicateCallback(functionEntry, callback) {
+      return functionEntry.callbacks.some((cb) => cb === callback);
+    }
+    /**
+     * Adds a callback to an existing function entry if it's not a duplicate
+     * @param {KeyboardFunction | GamepadFunction} functionEntry - The function entry to add the callback to
+     * @param {Function | string} callback - The callback to add
+     * @param {Object} errorContext - Context information for error messages
+     * @param {string} errorContext.identifier - String identifying the keys/actions (e.g., "Keys: [A, B]")
+     * @param {string} errorContext.type - The type of action (press, hold, lift)
+     */
+    addCallbackToEntry(functionEntry, callback, errorContext) {
+      if (this.hasDuplicateCallback(functionEntry, callback)) {
+        const callbackType = typeof callback === "string" ? "action" : "function";
+        const callbackName = typeof callback === "string" ? callback : "(anonymous function)";
+        return console.error(
+          `Duplicate callback detected!
 ${errorContext.identifier}
 Type: '${errorContext.type}'
 Callback: ${callbackName}
 This ${callbackType} is already registered for this combination and type. To update it, first remove with the .off() method.`
-            );
-          }
-          return functionEntry.callbacks.push(callback);
-        }
-        /**
-        * Removes a keyboard function entry from the registry
-        * @param {KeyboardFunction} functionEntry - The entry to remove
-        * @returns {void}
-        */
-        removeKeyboardFunction(functionEntry) {
-          const index = _IM.keyboardFunctions.indexOf(functionEntry);
-          if (index !== -1) _IM.keyboardFunctions.splice(index, 1);
-        }
-        /**
-         * Removes a gamepad function entry from the registry
-         * @param {GamepadFunction} functionEntry - The entry to remove
-         * @returns {void}
-         */
-        removeGamepadFunction(functionEntry) {
-          const index = _IM.gamepadFunctions.indexOf(functionEntry);
-          if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
-        }
-      };
-      global_object_default = new IM();
+        );
+      }
+      return functionEntry.callbacks.push(callback);
     }
-  });
+    /**
+     * Removes a keyboard function entry from the registry
+     */
+    removeKeyboardFunction(functionEntry) {
+      const index = _IM.keyboardFunctions.indexOf(functionEntry);
+      if (index !== -1) _IM.keyboardFunctions.splice(index, 1);
+    }
+    /**
+     * Removes a gamepad function entry from the registry
+     */
+    removeGamepadFunction(functionEntry) {
+      const index = _IM.gamepadFunctions.indexOf(functionEntry);
+      if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
+    }
+  };
+  var global_object_default = new IM();
 
-  // src/touch-gestures.js
-  var require_touch_gestures = __commonJS({
-    "src/touch-gestures.js"(exports, module) {
-      init_touch_gestures();
-      init_global_object();
-      global_object_default.init();
-      module.exports = touch_gestures_default;
-    }
-  });
-  return require_touch_gestures();
+  // src/touch-gestures.ts
+  global_object_default.init();
+  var touch_gestures_default2 = touch_gestures_default;
+  return __toCommonJS(touch_gestures_exports);
 })();
+if (typeof touchGestures !== 'undefined' && touchGestures.default) { touchGestures = touchGestures.default; }

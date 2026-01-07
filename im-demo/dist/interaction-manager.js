@@ -1,3 +1,4 @@
+"use strict";
 var interactionManager = (() => {
   var __defProp = Object.defineProperty;
   var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -17,7 +18,7 @@ var interactionManager = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // src/interaction-manager.js
+  // src/interaction-manager.ts
   var interaction_manager_exports = {};
   __export(interaction_manager_exports, {
     actions: () => actions_default,
@@ -32,10 +33,10 @@ var interactionManager = (() => {
     zoom: () => zoom_default
   });
 
-  // src/utils/global-object.js
+  // src/utils/global-object.ts
   var IM = class _IM2 {
-    // eslint-disable-next-line require-jsdoc
     constructor() {
+      // eslint-disable-next-line require-jsdoc
       this.actions = [];
       this.keyboardFunctions = [];
       this.gamepadFunctions = [];
@@ -47,27 +48,19 @@ var interactionManager = (() => {
       if (!window._IM) window._IM = new _IM2();
     }
     /**
-     *
-     * @param {string[]} keys Array of key combinations
-     * @returns {KeyboardFunction[]} Array of keyboard function objects
+     * Get keyboard functions matching the given keys
      */
     getKeys(keys) {
       return _IM.keyboardFunctions.filter((keyFunction) => keyFunction.keys.every((key) => keys.includes(key)));
     }
     /**
-     *
-     * @param {string[]} keys Array of key combinations
-     * @returns {number} Index of key combination in _IM
+     * Get the index of a keyboard function matching the given keys
      */
     getKeysIndex(keys) {
       return _IM.keyboardFunctions.findIndex((keyFunction) => keyFunction.keys.every((key) => keys.includes(key)));
     }
     /**
-     *
-     * @param {Object} options
-     * @param {Array} options.actions - Array of actions
-     * @param {string} options.type - Type of action
-     * @returns {GamepadFunction} Gamepad function object from the _IM global object
+     * Get a gamepad function matching the given button actions and type
      */
     getGamepadAction({ actions, type }) {
       return _IM.gamepadFunctions.find((gpFunc) => {
@@ -75,9 +68,7 @@ var interactionManager = (() => {
       });
     }
     /**
-     *
-     * @param {Array} actions - Array of actions
-     * @returns {GamepadFunction[]} Array of gamepad function objects from the _IM global object
+     * Get all gamepad functions matching the given button actions
      */
     getGamepadActions(actions, exactMatch = true) {
       return _IM.gamepadFunctions.filter(
@@ -85,34 +76,26 @@ var interactionManager = (() => {
       );
     }
     /**
-     *
-     * @param {Array} actions Array of actions
-     * @returns {number} Index of an action from the _IM global object
+     * Get the index of a gamepad function matching the given button actions
      */
     getGamepadActionIndex(actions) {
       return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions.includes(action)));
     }
     /**
-     *
+     * Get an action by name
      * @param {string} action - Action to search for
-     * @returns {ActionFunction} Action function object
      */
     getAction(action) {
       return _IM.actions.find((actionObj) => actionObj.name === action);
     }
     /**
-     *
-     * @param {string} action Action to search for
-     * @returns {number}
+     * Get the index of an action by name
      */
     getActionIndex(action) {
       return _IM.actions.findIndex((actionObj) => actionObj.name === action);
     }
     /**
      * Checks if a callback already exists in a registered function entry
-     * @param {KeyboardFunction | GamepadFunction} functionEntry - The function entry to check
-     * @param {Function | string} callback - The callback to search for
-     * @returns {boolean} True if callback exists, false otherwise
      */
     hasDuplicateCallback(functionEntry, callback) {
       return functionEntry.callbacks.some((cb) => cb === callback);
@@ -140,18 +123,14 @@ This ${callbackType} is already registered for this combination and type. To upd
       return functionEntry.callbacks.push(callback);
     }
     /**
-    * Removes a keyboard function entry from the registry
-    * @param {KeyboardFunction} functionEntry - The entry to remove
-    * @returns {void}
-    */
+     * Removes a keyboard function entry from the registry
+     */
     removeKeyboardFunction(functionEntry) {
       const index = _IM.keyboardFunctions.indexOf(functionEntry);
       if (index !== -1) _IM.keyboardFunctions.splice(index, 1);
     }
     /**
      * Removes a gamepad function entry from the registry
-     * @param {GamepadFunction} functionEntry - The entry to remove
-     * @returns {void}
      */
     removeGamepadFunction(functionEntry) {
       const index = _IM.gamepadFunctions.indexOf(functionEntry);
@@ -160,8 +139,8 @@ This ${callbackType} is already registered for this combination and type. To upd
   };
   var global_object_default = new IM();
 
-  // src/utils/keyboard-mappings.js
-  var keyboard_mappings_default = {
+  // src/utils/keyboard-mappings.ts
+  var mappings = {
     ALT: 18,
     ARROW_DOWN: 40,
     ARROW_LEFT: 37,
@@ -262,14 +241,13 @@ This ${callbackType} is already registered for this combination and type. To upd
     EQUAL: 187,
     SYSTEM: 91
   };
+  var mappingsKeys = Object.keys(mappings);
+  var keyboard_mappings_default = mappings;
 
-  // src/lib_components/actions.js
+  // src/lib_components/actions.ts
   var Actions = class {
     /**
      * Register an action
-     * @param {string} action - Function alias that allows you to save functions and reuse them
-     * @param {function} callback
-     * @returns {void}
      */
     register(action, callback) {
       if (global_object_default.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
@@ -277,8 +255,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Remove a registered action
-     * @param {string} action - Name of action you want to remove
-     * @returns {void}
      */
     remove(action) {
       const actionIndex = global_object_default.getActionIndex(action);
@@ -287,9 +263,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Trigger an action
-     * @param {string} action - Name of action you want to execute
-     * @param {any} value - Value that is passed to the callback
-     * @returns {void}
      */
     execute(action, value) {
       const actionObject = global_object_default.getAction(action);
@@ -299,11 +272,9 @@ This ${callbackType} is already registered for this combination and type. To upd
   };
   var actions_default = new Actions();
 
-  // src/lib_components/keyboard.js
+  // src/lib_components/keyboard.ts
   var Keyboard = class {
-    /* eslint-disable-next-line require-jsdoc */
     constructor() {
-      this.mappings = keyboard_mappings_default;
       this.eventListenerAttached = false;
       this.keysPressed = /* @__PURE__ */ new Set();
       this.onKeyDown = this.onKeyDown.bind(this);
@@ -311,41 +282,34 @@ This ${callbackType} is already registered for this combination and type. To upd
       if (!window.KEYS) window.KEYS = keyboard_mappings_default;
     }
     /**
-     * @param {Object} options
-     * @param {string[]} options.keys - Array of keys you want to use, allows only combination of modifier and regular keys
-     * @param {string | Function} options.callback - Function(s) or action(s) to be executed on the key combination
-     * @param {string[]} options.type - Type of key action you want to use.
-     * @returns {void}
+     * Registers keyboard event listeners
+     * @param options - Configuration object
+     * @param options.keys - Array of keys (e.g., ['A', 'SHIFT']) or key codes
+     * @param options.callback - Function or action name to execute
+     * @param options.type - Event type(s): 'press', 'hold', or 'lift' (can be single or array)
      */
     on(options) {
-      options.keys = [
-        ...new Set(
-          options.keys.map((key) => {
-            key = typeof key === "number" ? this.keyCodeToString(key) : key;
-            return key.toUpperCase();
-          })
-        )
-      ];
-      const incorrectKeys = options.keys.filter((key) => !this.mappings[key]);
+      const keys = this.normalizeKeys(options.keys);
+      const incorrectKeys = keys.filter((key) => !keyboard_mappings_default[key]);
       if (incorrectKeys.length > 0) return console.error(`The following keys [${incorrectKeys.join(", ")}] you have entered are incorrect! `);
       if (!this.eventListenerAttached) {
         document.addEventListener("keydown", this.onKeyDown);
         document.addEventListener("keyup", this.onKeyUp);
         this.eventListenerAttached = true;
       }
-      if (!Array.isArray(options.type)) options.type = [options.type];
-      options.type.forEach((type) => {
-        const registeredKeys = global_object_default.getKeys(options.keys);
+      const types = !options.type ? ["press"] : Array.isArray(options.type) ? options.type : [options.type];
+      types.forEach((type) => {
+        const registeredKeys = global_object_default.getKeys(keys);
         const existingEntry = registeredKeys.find((key) => key.type === type);
         if (existingEntry) {
           return global_object_default.addCallbackToEntry(existingEntry, options.callback, {
-            identifier: `Keys: [${options.keys.join(", ")}]`,
+            identifier: `Keys: [${keys.join(", ")}]`,
             type
           });
         }
-        if (type === "lift" && options.keys.length > 1) return console.error("You can only have a single key trigger an action on lift");
+        if (type === "lift" && keys.length > 1) return console.error("You can only have a single key trigger an action on lift");
         _IM.keyboardFunctions.push({
-          keys: options.keys,
+          keys,
           type,
           callbacks: [options.callback]
         });
@@ -353,22 +317,13 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Removes either a key combination or a callback from the provided key combination
-     * @param {string[]} keys - Key combination you want to remove from the listener
-     * @param {string | Function} callback - Callback or action you want to remove 
-     * @returns {void}
+     * @param keys - Key combination you want to remove (e.g., ['A', 'SHIFT'])
+     * @param callback - Optional specific callback or action to remove
      */
     off(keys, callback) {
-      keys = [
-        ...new Set(
-          keys.map((key) => {
-            key = typeof key === "number" ? this.keyCodeToString(key) : key;
-            return key.toUpperCase();
-          })
-        )
-      ];
+      keys = this.normalizeKeys(keys);
       const keyCombinations = global_object_default.getKeys(keys);
-      let keyCombinationCount = keyCombinations.length;
-      if (keyCombinationCount === 0) return console.error("You are trying to remove a non-existent key combination!");
+      if (keyCombinations.length === 0) return console.error("You are trying to remove a non-existent key combination!");
       if (callback) {
         const combinationsWithCallback = keyCombinations.filter((combination) => combination.callbacks.includes(callback));
         if (combinationsWithCallback.length === 0) {
@@ -394,12 +349,10 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Handles when key is pressed
-     * @param {KeyboardEvent} event
-     * @returns {void}
-     * @private
      */
     onKeyDown(event) {
       const keyPressed = this.keyCodeToString(event.keyCode);
+      if (!keyPressed) return;
       this.keysPressed.add(keyPressed);
       const registeredKeys = global_object_default.getKeys([...this.keysPressed]);
       if (registeredKeys.length === 0) return;
@@ -412,14 +365,12 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Handles when key is released
-     * @param {KeyboardEvent} event
-     * @returns {void}
-     * @private
      */
     onKeyUp(event) {
       const keyPressed = this.keyCodeToString(event.keyCode);
+      if (!keyPressed) return;
       this.keysPressed.delete(keyPressed);
-      const registeredKeys = global_object_default.getKeys(keyPressed);
+      const registeredKeys = global_object_default.getKeys([keyPressed]);
       if (registeredKeys.length === 0) return;
       registeredKeys.forEach((key) => {
         if (key.type === "lift" && key.keys.indexOf(keyPressed) !== -1) this.executeCallbacks(event, key);
@@ -427,12 +378,23 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Convert keyCode to string representing key
-     * @param {number} code
-     * @returns {string}
-     * @private
      */
     keyCodeToString(code) {
-      return Object.keys(this.mappings).find((key) => this.mappings[key] === code);
+      return mappingsKeys.find((key) => keyboard_mappings_default[key] === code);
+    }
+    /**
+     * Removes duplicates and converts KeyCodes to valid KeyName strings
+     */
+    normalizeKeys(keys) {
+      const normalizedKeys = keys.map((key) => {
+        if (typeof key === "number") {
+          const name = this.keyCodeToString(key);
+          if (!name) throw new Error(`Invalid KeyCode: ${key}`);
+          return name;
+        }
+        return key.toUpperCase();
+      });
+      return [...new Set(normalizedKeys)];
     }
     /**
      * Executes the registered callbacks. Has to be invoked from the onKeyDown and onKeyUp functions
@@ -441,8 +403,6 @@ This ${callbackType} is already registered for this combination and type. To upd
      * @param {string[]} registeredKeys.keys - Array of keys you want to use, allows only combination of modifier and regular keys
      * @param {(function | string)[]} registeredKeys.callbacks - Functions or actions to be executed on the key combination
      * @param {('press'|'hold'|'lift')} registeredKeys.type - Type of key action you want to use.
-     * @return {void}
-     * @private
      */
     executeCallbacks(event, registeredKeys) {
       registeredKeys.callbacks.forEach((callback) => {
@@ -453,8 +413,8 @@ This ${callbackType} is already registered for this combination and type. To upd
   };
   var keyboard_default = new Keyboard();
 
-  // src/utils/gamepad-mappings.js
-  var gamepad_mappings_default = {
+  // src/utils/gamepad-mappings.ts
+  var mappings2 = {
     FACE_BUTTON_DOWN: 0,
     FACE_BUTTON_RIGHT: 1,
     FACE_BUTTON_LEFT: 2,
@@ -477,10 +437,10 @@ This ${callbackType} is already registered for this combination and type. To upd
       "face-button-left": "FACE_BUTTON_LEFT",
       "face-button-right": "FACE_BUTTON_RIGHT",
       "face-button-top": "FACE_BUTTON_TOP",
-      "left-sholder": "LEFT_SHOULDER",
-      "right-sholder": "RIGHT_SHOULDER",
-      "left-sholder-bottom": "LEFT_SHOULDER_BOTTOM",
-      "right-sholder-bottom": "RIGHT_SHOULDER_BOTTOM",
+      "left-shoulder": "LEFT_SHOULDER",
+      "right-shoulder": "RIGHT_SHOULDER",
+      "left-shoulder-bottom": "LEFT_SHOULDER_BOTTOM",
+      "right-shoulder-bottom": "RIGHT_SHOULDER_BOTTOM",
       select: "SELECT",
       start: "START",
       "left-analogue-stick": "LEFT_ANALOGUE_STICK",
@@ -538,85 +498,49 @@ This ${callbackType} is already registered for this combination and type. To upd
       "right.joystick.right"
     ]
   };
+  var gamepad_mappings_default = mappings2;
 
-  // src/lib_components/gamepad.js
+  // src/lib_components/gamepad.ts
   var AXIS_THRESHOLD = 0.9;
   var ACTION_TYPES = ["press", "hold"];
   var Gamepad = class {
-    // eslint-disable-next-line require-jsdoc
     constructor() {
-      this.mappings = gamepad_mappings_default;
-      this.pollingStarted = false;
       this.gamepadEnabled = false;
-      this.onGamepadConnected = this.onGamepadConnected.bind(this);
-      this.sanitizeAction = this.sanitizeAction.bind(this);
       this.pollingInterval = 200;
       this._pressedAction = null;
+      this._pressedButtons = [];
+      this.sanitizeAction = this.sanitizeAction.bind(this);
     }
     /**
      * Allow gamepads to be connected
-     * @param {boolean} isEnabled
      */
     set enabled(isEnabled) {
       this.gamepadEnabled = isEnabled;
-      this.gamepadEnabled ? this.init() : this.deinit();
+      this.gamepadEnabled ? this.startPolling() : this.stopPolling();
     }
-    /**
-     * Attaches the event listeners for the gamepads
-     * @private
-     */
-    init() {
-      window.addEventListener("gamepadconnected", this.onGamepadConnected);
-    }
-    /**
-     * Removes any attached event listeners for gamepads
-     * @private
-     */
-    deinit() {
-      window.removeEventListener("gamepadconnected", this.onGamepadConnected);
-    }
-    /**
-     * Starts polling on the first connected
-     * @returns {void}
-     * @private
-     */
-    onGamepadConnected() {
-      if (this.pollingStarted) return;
-      this.pollingStarted = true;
-      this.startPolling();
-    }
-    /**
-     *
-     * @param {Object} options
-     * @param {string[] | number[]} options.actions - Action to trigger the callback. Can be name of button or joystick
-     * @param {'press' | 'hold'} options.type - The type of action to trigger the callback. The available options are hold and press.
-     * @param {function | string} options.callback - Function(s) or action(s) to be triggered on the set action
-     * @returns {void}
-     */
     on(options) {
-      options.actions = options.actions.map(this.sanitizeAction);
-      const isAxisAlias = this.mappings.axisAliases.some((alias) => options.actions.includes(alias));
-      if (!options.type || !ACTION_TYPES.includes(options.type)) options.type = "hold";
-      if (options.type === "press" && isAxisAlias) {
+      const actions = options.actions.map(this.sanitizeAction);
+      const isAxisAlias = gamepad_mappings_default.axisAliases.some((alias) => actions.includes(alias));
+      const type = options.type && ACTION_TYPES.includes(options.type) ? options.type : "hold";
+      if (type === "press" && isAxisAlias) {
         return console.error(`You can't use an axis action with a 'press' type!`);
       }
-      if (options.actions.length > 1 && isAxisAlias) {
+      if (actions.length > 1 && isAxisAlias) {
         return console.error(`You can't use an axis action in a combination with a button action`);
       }
-      const existingEntry = global_object_default.getGamepadAction(options);
+      const existingEntry = global_object_default.getGamepadAction({ actions, type });
       if (existingEntry) {
         return global_object_default.addCallbackToEntry(existingEntry, options.callback, {
-          identifier: `Actions: [${options.actions.join(", ")}]`,
-          type: options.type
+          identifier: `Actions: [${actions.join(", ")}]`,
+          type
         });
       }
-      _IM.gamepadFunctions.push({ ...options, callbacks: [options.callback] });
+      _IM.gamepadFunctions.push({ actions, type, callbacks: [options.callback] });
     }
     /**
      * Removes either an action or a callback from the provided action
      * @param {Array} actions - Array containing the action you want to remove
      * @param {string | Function} callback - Callback or action you want to remove 
-     * @returns {void}
      */
     off(actions, callback) {
       const matchingActions = global_object_default.getGamepadActions(actions.map(this.sanitizeAction));
@@ -639,27 +563,21 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Loop that handles button presses and axis movement
-     * @returns {void}
-     * @private
      */
     startPolling() {
-      const gamepads = navigator.getGamepads();
-      if (gamepads.length === 0) {
-        this.pollingStarted = false;
-        return;
-      }
-      gamepads.forEach((gamepad, index) => {
-        if (!gamepad) return;
-        this.handleButtons(gamepad.buttons, index);
-        this.handleJoysticks(gamepad.axes);
-      });
-      setTimeout(this.startPolling.bind(this), this.pollingInterval);
+      this.pollingIntervalRef = setInterval(() => {
+        const gamepads = navigator.getGamepads();
+        if (gamepads.length === 0) return;
+        gamepads.forEach((gamepad) => {
+          if (!gamepad) return;
+          this.handleButtons(gamepad.buttons);
+          this.handleJoysticks(gamepad.axes);
+        });
+      }, this.pollingInterval);
     }
-    /**
-     *
-     * @param {Object[]} buttons
-     * @private
-     */
+    stopPolling() {
+      if (this.pollingIntervalRef) clearInterval(this.pollingIntervalRef);
+    }
     handleButtons(buttons) {
       const pressedButtons = buttons.reduce(
         (acc, el, index) => {
@@ -672,27 +590,23 @@ This ${callbackType} is already registered for this combination and type. To upd
         { buttonIndexes: [], buttons: [] }
       );
       const gamepadActions = global_object_default.getGamepadActions(pressedButtons.buttonIndexes, false);
-      if (!gamepadActions.length === 0) return;
       if (this._pressedAction) {
         if (!gamepadActions.includes(this._pressedAction)) {
-          this.executeCallbacks(this._pressedAction, this._pressedAction.actions);
+          this.executeCallbacks(this._pressedAction, this._pressedButtons);
         }
         this._pressedAction = null;
+        this._pressedButtons = [];
       }
       gamepadActions.forEach((gamepadAction) => {
         if (gamepadAction.type === "press") {
           this._pressedAction = gamepadAction;
+          this._pressedButtons = pressedButtons.buttons;
           return;
         }
         this.executeCallbacks(gamepadAction, pressedButtons.buttons);
       });
     }
     /* eslint-disable max-lines-per-function */
-    /**
-     *
-     * @param {number[]} axes
-     * @private
-     */
     handleJoysticks(axes) {
       const joystickActions = this.getJoystickActions();
       joystickActions.forEach((jAction) => {
@@ -728,37 +642,26 @@ This ${callbackType} is already registered for this combination and type. To upd
         }
       });
     }
-    /* eslint-enable max-lines-per-function */
     /**
      * Convert button aliases to indexes or keep joystick aliases
      * @param {string | number} action - Actions to convert
-     * @returns {string | number} - Converted action strings
-     * @private
      */
     sanitizeAction(action) {
       if (typeof action === "number") return action;
-      if (this.mappings.axisAliases.includes(action.toLowerCase())) return action.toLowerCase();
-      if (typeof action === "string") {
-        const key = this.mappings.aliases[action.toLowerCase()];
-        if (!key) return console.error(`You have entered a non-supported button alias ${action}`);
-        return this.mappings[key];
-      }
-      return action;
+      const actionName = action.toLowerCase();
+      if (gamepad_mappings_default.axisAliases.includes(actionName)) return actionName;
+      const key = gamepad_mappings_default.aliases[actionName];
+      if (key) return gamepad_mappings_default[key];
+      throw new Error(`You have entered a non-supported button alias: ${action}`);
     }
     /**
      * Gets all registered Joystick actions
-     * @returns {Object[]} - Joystick actions
-     * @private
      */
     getJoystickActions() {
-      return _IM.gamepadFunctions.filter((gpFunc) => this.mappings.axisAliases.includes(gpFunc.actions[0]));
+      return _IM.gamepadFunctions.filter((gpFunc) => gamepad_mappings_default.axisAliases.includes(gpFunc.actions[0]));
     }
     /**
      * Executes the callbacks from the registered action
-     * @param {Object} action
-     * @param {any} value
-     * @returns {void}
-     * @private
      */
     executeCallbacks(action, value) {
       action.callbacks.forEach((callback) => {
@@ -769,7 +672,7 @@ This ${callbackType} is already registered for this combination and type. To upd
   };
   var gamepad_default = new Gamepad();
 
-  // src/utils/utility-functions.js
+  // src/utils/utility-functions.ts
   function toDeg(rad) {
     return rad * 180 / Math.PI;
   }
@@ -791,14 +694,13 @@ This ${callbackType} is already registered for this combination and type. To upd
     };
   }
 
-  // src/lib_components/spatial-navigation.js
+  // src/lib_components/spatial-navigation.ts
   var directions = ["down", "up", "left", "right"];
   var defaultKeysState = { up: ["arrow_up"], down: ["arrow_down"], right: ["arrow_right"], left: ["arrow_left"] };
   var SpatialNavigation = class {
-    // eslint-disable-next-line require-jsdoc
     constructor() {
       this.enabled = false;
-      this.navigatableElements = { default: { elements: [], distance: 0, overflow: { x: 0, y: 0 } } };
+      this.areas = { default: { elements: [], distance: 0, overflow: { x: 0, y: 0 } } };
       this.registeredKeys = /* @__PURE__ */ new Set();
       this.clearCurrentActiveKeys = false;
       this.overlapPercentage = 0.5;
@@ -807,11 +709,10 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Initializes the spatial navigation
-     * @param {string[]|Object[]|HTMLElement[]} navigatableElements - Array of selector strings, objects with area/elements, or HTMLElement references
-     * @param {string} navigatableElements[].area - Name of the navigation area
-     * @param {(string|HTMLElement)[]} navigatableElements[].elements - Array of selector strings or HTMLElement references
+     * @param {string[]|Object[]|HTMLElement[]} navigableElements - Array of selector strings, objects with area/elements, or HTMLElement references
+     * @param {string} navigableElements[].area - Name of the navigation area
+     * @param {(string|HTMLElement)[]} navigableElements[].elements - Array of selector strings or HTMLElement references
      * @param {number} overlap - Overlap percentage (0-1) for determining if elements are on the same axis
-     * @returns {void}
      * @example
      * // Using selector strings
      * spatialNavigation.init(['.menu-item', '#header']);
@@ -824,10 +725,10 @@ This ${callbackType} is already registered for this combination and type. To upd
      *   { area: 'menu', elements: ['.item', element1, '#button'] }
      * ]);
      */
-    init(navigatableElements = [], overlap) {
+    init(navigableElements = [], overlap) {
       if (this.enabled) return;
       this.enabled = true;
-      this.add(navigatableElements);
+      this.add(navigableElements);
       this.activeKeys = JSON.parse(JSON.stringify(defaultKeysState));
       this.registerKeyActions();
       if (overlap && 0 <= overlap && overlap <= 1) {
@@ -836,21 +737,20 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Deinitialize the spatial navigation
-     * @returns {void}
      */
     deinit() {
       if (!this.enabled) return;
       this.enabled = false;
-      this.navigatableElements = { default: { elements: [], distance: 0, overflow: { x: 0, y: 0 } } };
+      this.areas = { default: { elements: [], distance: 0, overflow: { x: 0, y: 0 } } };
       this.removeKeyActions();
       this.overlapPercentage = 0.5;
       this.lastFocusedElement = null;
     }
     /**
      * Add new elements to area or new area
-     * @param {string[]|Object[]|HTMLElement[]} navigatableElements - Array of selector strings, objects with area/elements, or HTMLElement references
-     * @param {string} navigatableElements[].area - Name of the navigation area
-     * @param {(string|HTMLElement)[]} navigatableElements[].elements - Array of selector strings or HTMLElement references
+     * @param {string[]|Object[]|HTMLElement[]} navigableElements - Array of selector strings, objects with area/elements, or HTMLElement references
+     * @param {string} navigableElements[].area - Name of the navigation area
+     * @param {(string|HTMLElement)[]} navigableElements[].elements - Array of selector strings or HTMLElement references
      * @example
      * // Add selector strings to default area
      * spatialNavigation.add(['.new-item']);
@@ -863,35 +763,33 @@ This ${callbackType} is already registered for this combination and type. To upd
      *   { area: 'sidebar', elements: ['.link', element1] }
      * ]);
      */
-    add(navigatableElements) {
+    add(navigableElements) {
       if (!this.enabled) return;
-      if (navigatableElements.every((el) => el instanceof HTMLElement)) {
-        navigatableElements.forEach((element) => this.makeFocusable(element));
-        this.setNavigationAreaProperties("default", navigatableElements);
+      if (navigableElements.every((el) => el instanceof HTMLElement)) {
+        navigableElements.forEach((element) => this.makeFocusable(element));
+        this.setNavigationAreaProperties("default", navigableElements);
         return;
       }
-      navigatableElements.forEach((navArea) => {
+      navigableElements.forEach((navArea) => {
         typeof navArea === "string" ? this.handleString(navArea) : this.handleObject(navArea);
       });
     }
     /**
      * Remove an area from the focusable groups
-     * @param {string} area area to be removed
-     * @returns {void}
+     * @param area area to be removed
      */
     remove(area = "default") {
       if (!this.enabled) return;
-      if (!this.navigatableElements[area]) return console.error(`The area '${area}' you are trying to remove doesn't exist`);
-      this.navigatableElements[area].elements.forEach((element) => element.removeAttribute("tabindex"));
-      delete this.navigatableElements[area];
+      if (!this.areas[area]) return console.error(`The area '${area}' you are trying to remove doesn't exist`);
+      this.areas[area].elements.forEach((element) => element.removeAttribute("tabindex"));
+      delete this.areas[area];
     }
     /**
      * Get elements from selector and save them to the default group
-     * @param {string} navArea
-     * @returns {void}
+     * @param navArea
      */
     handleString(navArea) {
-      const domElements = document.querySelectorAll(navArea);
+      const domElements = [...document.querySelectorAll(navArea)];
       if (domElements.length === 0) return console.error(`${navArea} is either not a correct selector or the element is not present in the DOM.`);
       domElements.forEach(this.makeFocusable);
       this.setNavigationAreaProperties("default", domElements);
@@ -901,7 +799,6 @@ This ${callbackType} is already registered for this combination and type. To upd
      * @param {Object} navArea - Navigation area configuration
      * @param {string} navArea.area - Name of the navigation area
      * @param {(string|HTMLElement)[]} navArea.elements - Array of selector strings or HTMLElement references
-     * @returns {void}
      */
     handleObject(navArea) {
       const domElements = navArea.elements.reduce((acc, el) => {
@@ -910,30 +807,30 @@ This ${callbackType} is already registered for this combination and type. To upd
           this.makeFocusable(el);
           return acc;
         }
-        const elements = document.querySelectorAll(el);
+        const elements = [...document.querySelectorAll(el)];
         elements.forEach(this.makeFocusable);
         acc.push(...elements);
         return acc;
       }, []);
       if (domElements.length === 0) return console.error(`${navArea.elements.join(", ")} are either not a correct selectors or the elements are not present in the DOM.`);
-      if (!this.navigatableElements[navArea.area]) {
-        this.navigatableElements[navArea.area] = { elements: [], distance: 0 };
+      if (!this.areas[navArea.area]) {
+        this.areas[navArea.area] = { elements: [], distance: 0, overflow: { x: 0, y: 0 } };
       }
       this.setNavigationAreaProperties(navArea.area, domElements);
     }
     /**
-     * @param {string} area - The area to set the properties for
-     * @param {HTMLElement[]} domElements - The elements to be added to the area
+     * @param area - The area to set the properties for
+     * @param domElements - The elements to be added to the area
      */
     setNavigationAreaProperties(area, domElements) {
-      this.navigatableElements[area].elements.push(...domElements);
-      this.navigatableElements[area].distance = this.getElementsDistance(this.navigatableElements[area].elements);
-      this.navigatableElements[area].overflow = this.setOverflowValues(domElements[0].parentElement);
+      this.areas[area].elements.push(...domElements);
+      this.areas[area].distance = this.getElementsDistance(this.areas[area].elements);
+      this.areas[area].overflow = this.setOverflowValues(domElements[0].parentElement);
     }
     /**
      * Calculates the distance between the provided elements and return the max distance
-     * @param {HTMLElement[]} elements
-     * @returns {number} - The max distance between the elements
+     * @param elements
+     * @returns The max distance between the elements
      */
     getElementsDistance(elements) {
       return elements.reduce((acc, el) => {
@@ -959,17 +856,16 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Sets the tabindex of the element that needs to be focused
-     * @param {HTMLElement} element
+     * @param element
      */
     makeFocusable(element) {
-      element.setAttribute("tabindex", 1);
+      element.setAttribute("tabindex", "1");
     }
     /**
-     * Returns the valid focusable elements in the navigatable area
+     * Returns the valid focusable elements in the navigable area
      * @param {HTMLElement} targetElement
      * @param {HTMLElement[]} elements
      * @param {number} distance
-     * @returns {NavigationObject[]}
      */
     getFocusableGroup(targetElement, elements, distance) {
       return elements.reduce((accumulator, element) => {
@@ -992,7 +888,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * @returns {NavigationObject[]}
      */
     getCurrentArea(targetElement) {
-      return Object.values(this.navigatableElements).find((area) => {
+      return Object.values(this.areas).find((area) => {
         if (area.elements.includes(targetElement)) return true;
       });
     }
@@ -1005,7 +901,6 @@ This ${callbackType} is already registered for this combination and type. To upd
      * @param {number} focusedElement.y
      * @param {number} distance
      * @param {{x: number, y: number}} overflow
-     * @returns {NavigationObject}
      */
     getClosestToEdge(direction, elements, focusedElement, distance, overflow) {
       let newDistance, oldDistance;
@@ -1037,7 +932,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     /**
      * Moves the focus in the desired direction
      * @param {string} direction
-     * @returns {void}
      */
     moveFocus(direction) {
       if (!this.enabled) return;
@@ -1076,23 +970,14 @@ This ${callbackType} is already registered for this combination and type. To upd
         this.lastFocusedElement = nextFocusableElement.element;
       }
     }
-    /** Filters the focusable group by the relevant axis by chacking for same axis overlap
-    * @param {string} direction
-    * @param {Array} focusableGroup
-    * @param {Object} currentElement
-    * @returns {Array}
-    */
+    /** Filters the focusable group by the relevant axis by chacking for same axis overlap */
     filterGroupByCurrentAxis(direction, focusableGroup, currentElement) {
       return focusableGroup.filter((element) => {
         if (direction === "left" || direction === "right") return this.isOverlappingX(currentElement, element);
         return this.isOverlappingY(currentElement, element);
       });
     }
-    /** Compares the Y coordinates of two elements and checks for overlap by the specified overlap value
-    * @param {Object} currentElement
-    * @param {Object} nextElement
-    * @returns {boolean}
-    */
+    /** Compares the Y coordinates of two elements and checks for overlap by the specified overlap value */
     isOverlappingX(currentElement, nextElement) {
       const lowerBoundary = Math.min(currentElement.y + currentElement.height, nextElement.y + nextElement.height);
       const topBoundary = Math.max(currentElement.y, nextElement.y);
@@ -1101,11 +986,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       const overlapPercentage = verticalOverlap / minHeight;
       return overlapPercentage >= this.overlapPercentage;
     }
-    /** Compares the X coordinates of two elements and checks for overlap by the specified overlap value
-    * @param {Object} currentElement
-    * @param {Object} nextElement
-    * @returns {boolean}
-    */
+    /** Compares the X coordinates of two elements and checks for overlap by the specified overlap value */
     isOverlappingY(currentElement, nextElement) {
       const rightBoundary = Math.min(currentElement.x + currentElement.width, nextElement.x + nextElement.width);
       const leftBoundary = Math.max(currentElement.x, nextElement.x);
@@ -1114,13 +995,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       const overlapPercentage = horizontalOverlap / minWidth;
       return overlapPercentage >= this.overlapPercentage;
     }
-    /** Returns the next element to focus within the group
-    * @param {string} direction
-    * @param {Array} focusableGroup
-    * @param {number} x
-    * @param {number} y
-    * @returns {Object}
-    */
+    /** Returns the next element to focus within the group */
     findNextElement(direction, focusableGroup, x, y) {
       return focusableGroup.reduce((acc, el) => {
         const deltaX = el.x - x;
@@ -1137,9 +1012,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Get the angle range for the direction
-     * @param {string} direction
-     * @param {number} angle
-     * @returns {boolean}
      */
     getDirectionAngle(direction, angle) {
       switch (direction) {
@@ -1182,6 +1054,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Resets to the original keys state
      */
     resetKeys() {
+      if (!this.enabled) return;
       this.removeKeyActions();
       this.activeKeys = JSON.parse(JSON.stringify(defaultKeysState));
       this.registerKeyActions();
@@ -1189,11 +1062,10 @@ This ${callbackType} is already registered for this combination and type. To upd
     /**
      * Adds or override default direction keys with the specified ones
      * @param {Object} customDirections - { up: 'W', left: 'A', right: 'D', down: 'S' }
-     * @param {Object} options - Optional settings.
-     * @param {Boolean} options.clearCurrentActiveKeys - If true, overrides all keys. Defaults to false.
-     * @returns {void}
+     * @param options.clearCurrentActiveKeys - If true, overrides all keys. Defaults to false.
      */
     changeKeys(customDirections, options = { clearCurrentActiveKeys: false }) {
+      if (!this.enabled) return;
       const customKeysDirections = Object.keys(customDirections);
       if (customKeysDirections.length === 0) return;
       const incorrectDirections = customKeysDirections.filter((direction) => !directions.includes(direction));
@@ -1228,15 +1100,14 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Focuses on the first element in a focusable area
-     * @param {string} area
-     * @returns {void}
      */
     focusFirst(area = "default") {
-      const navigatableElements = this.navigatableElements[area].elements;
-      if (!navigatableElements || navigatableElements.length === 0) {
+      if (!this.enabled) return;
+      const navigableElements = this.areas[area].elements;
+      if (!navigableElements || navigableElements.length === 0) {
         return console.error(`The area '${area}' you are trying to focus doesn't exist or the spatial navigation hasn't been initialized`);
       }
-      this.lastFocusedElement = navigatableElements.find((el) => !el.hasAttribute("disabled"));
+      this.lastFocusedElement = navigableElements.find((el) => !el.hasAttribute("disabled"));
       if (!this.lastFocusedElement) {
         return console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
       }
@@ -1244,19 +1115,17 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Focuses on the last element in a focusable area
-     * @param {string} area
-     * @returns {void}
      */
     focusLast(area = "default") {
       if (!this.enabled) return;
-      const navigatableElements = this.navigatableElements[area].elements;
-      if (!navigatableElements || navigatableElements.length === 0) {
+      const navigableElements = this.areas[area].elements;
+      if (!navigableElements || navigableElements.length === 0) {
         return console.error(`The area '${area}' you are trying to focus doesn't exist or the spatial navigation hasn't been initialized`);
       }
       let element;
-      for (let i = navigatableElements.length - 1; i >= 0; i--) {
-        if (!navigatableElements[i].hasAttribute("disabled")) {
-          element = navigatableElements[i];
+      for (let i = navigableElements.length - 1; i >= 0; i--) {
+        if (!navigableElements[i].hasAttribute("disabled")) {
+          element = navigableElements[i];
           break;
         }
       }
@@ -1268,61 +1137,55 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Changes focus to another area
-     * @param {string} area
      */
     switchArea(area) {
       this.focusFirst(area);
     }
     /**
     * Checks if a given element is in a focusable area
-    * @param {HTMLElement} element
-    * @returns {boolean}
     */
     isElementInGroup(element) {
-      return Object.values(this.navigatableElements).some((group) => group.elements.includes(element));
+      return Object.values(this.areas).some((group) => group.elements.includes(element));
     }
     /**
      * Checks if the currently active element is in a focusable area
-     * @returns {boolean}
      */
     isActiveElementInGroup() {
+      if (!document.activeElement) return false;
       return this.isElementInGroup(document.activeElement);
     }
     /**
      * Removes the focus from a focused element in a group
      */
     clearFocus() {
+      if (!this.enabled) return;
       if (this.isActiveElementInGroup()) document.activeElement.blur();
     }
     /**
      * Pauses the spatial navigation functionality
      */
     pause() {
+      if (!this.enabled) return;
       this.paused = true;
     }
     /**
      * Resumes the spatial navigation functionality
      */
     resume() {
+      if (!this.enabled) return;
       this.paused = false;
     }
   };
   var spatial_navigation_default = new SpatialNavigation();
 
-  // src/utils/drag-base.js
+  // src/utils/drag-base.ts
   var DragBase = class {
-    /**
-     *
-     * @param {Object} options
-     */
     constructor(options) {
+      this.options = options;
       this.draggableElements = [];
       this.draggedElement = null;
       this.enabled = false;
-      this.onMouseDown = this.onMouseDown.bind(this);
-      this.onMouseMove = this.onMouseMove.bind(this);
-      this.onMouseUp = this.onMouseUp.bind(this);
-      this.options = options;
+      this.offset = { x: 0, y: 0 };
     }
     /**
      * Get the index of the dragged item in the draggableElements
@@ -1339,12 +1202,6 @@ This ${callbackType} is already registered for this combination and type. To upd
         y: document.body.scrollTop
       };
     }
-    /**
-     *
-     * @param {number} clientX
-     * @param {number} clientY
-     * @param {HTMLElement} target
-     */
     setPointerOffset(clientX, clientY, target) {
       const { x, y } = target.getBoundingClientRect();
       this.offset = {
@@ -1355,7 +1212,7 @@ This ${callbackType} is already registered for this combination and type. To upd
   };
   var drag_base_default = DragBase;
 
-  // src/utils/gesture-utils.js
+  // src/utils/gesture-utils.ts
   function getDirection(diffX, diffY) {
     const MIN_SWIPE_OFFSET = 200;
     if (diffY < 0 && diffX > -MIN_SWIPE_OFFSET && diffX < MIN_SWIPE_OFFSET) return "top";
@@ -1371,24 +1228,18 @@ This ${callbackType} is already registered for this combination and type. To upd
     return element instanceof HTMLElement ? element : document.querySelector(element);
   }
 
-  // src/lib_components/touch-gestures.js
+  // src/lib_components/touch-gestures.ts
   var MULTIPLE_TOUCHES_MIN_NUMBER = 2;
   var TouchGestures = class {
-    /**
-     * @typedef {Object} gestureReturnObject
-     * @property {function} gesture.remove - Removes the gesture and detaches the event listeners
-     */
-    /* eslint-disable-next-line require-jsdoc */
     constructor() {
       this.activeTouches = /* @__PURE__ */ new Map();
     }
     /**
-     *
+     * Hold gesture - triggers after holding for specified time
      * @param {Object} options
      * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
      * @param {function} options.callback - Function to be executed on touch
      * @param {number} [options.time=1000] - Time in milliseconds for the press
-     * @returns {gestureReturnObject}
      */
     hold(options) {
       if (!options) return console.error("Options not provided for hold!");
@@ -1419,14 +1270,13 @@ This ${callbackType} is already registered for this combination and type. To upd
       };
     }
     /**
-     *
+     * Tap gesture - single or multi-tap detection
      * @param {Object} options
      * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
      * @param {function} options.callback - Function to be executed on touch
      * @param {number} [options.tapsNumber=1] - Number of taps necessary for the callback to be executed
      * @param {number} [options.tapTime=200] - Time in milliseconds between putting down the finger and lifting it up
      * @param {number} [options.betweenTapsTime=500] - Time in milliseconds between two sequential taps
-     * @returns {gestureReturnObject}
      */
     tap(options) {
       if (!options) return console.error("Options not provided for tap!");
@@ -1471,13 +1321,12 @@ This ${callbackType} is already registered for this combination and type. To upd
       };
     }
     /**
-     *
+     * Drag gesture - tracks touch movement
      * @param {Object} options
      * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
      * @param {function} options.onDragStart - Function to be executed on drag start
      * @param {function} options.onDrag - Function to be executed on drag
      * @param {function} options.onDragEnd - Function to be executed on drag end
-     * @returns {gestureReturnObject}
      */
     drag(options) {
       if (!options) return console.error("Options not provided for drag!");
@@ -1513,16 +1362,17 @@ This ${callbackType} is already registered for this combination and type. To upd
       };
     }
     /**
-     *
+     * Swipe gesture - detects directional swipes
      * @param {Object} options
      * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
      * @param {function} options.callback - Function to be executed on touch- Directions of the swipe
      * @param {number} options.touchNumber - Number of fingers necessary for the swipe
-     * @returns {gestureReturnObject}
      */
     swipe(options) {
       if (!options) return console.error("Options not provided for swipe!");
-      let swipeTimer, direction, distance;
+      let swipeTimer;
+      let direction;
+      let distance;
       let isSwipe = true;
       const SWIPE_MIN_DISTANCE = 100;
       options.touchNumber ||= 1;
@@ -1545,7 +1395,9 @@ This ${callbackType} is already registered for this combination and type. To upd
       };
       const onSwipe = ({ touches }) => {
         if (!this.activeTouches.has(touches[0].identifier)) return;
-        const { clientX: startX, clientY: startY } = this.activeTouches.get(touches[0].identifier);
+        const startTouch = this.activeTouches.get(touches[0].identifier);
+        if (!startTouch) return;
+        const { clientX: startX, clientY: startY } = startTouch;
         const diffX = touches[0].clientX - startX;
         const diffY = touches[0].clientY - startY;
         direction = getDirection(diffX, diffY);
@@ -1564,7 +1416,7 @@ This ${callbackType} is already registered for this combination and type. To upd
         swipeTimer = null;
       };
       const isSwipeComplete = () => {
-        return isSwipe && options.callback && direction && distance > SWIPE_MIN_DISTANCE;
+        return isSwipe && direction && distance && distance > SWIPE_MIN_DISTANCE;
       };
       element.addEventListener("touchstart", onSwipeStart);
       return {
@@ -1577,11 +1429,10 @@ This ${callbackType} is already registered for this combination and type. To upd
       };
     }
     /**
-     *
+     * Pinch gesture - two-finger pinch zoom
      * @param {Object} options
      * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
      * @param {function} options.callback - Function to be executed on touch
-     * @returns {gestureReturnObject}
      */
     pinch(options) {
       if (!options) return console.error("Options not provided for pinch!");
@@ -1592,31 +1443,37 @@ This ${callbackType} is already registered for this combination and type. To upd
       const onPinchStart = ({ touches }) => {
         this.activeTouches.set(touches[0].identifier, touches[0]);
         if (this.activeTouches.size < MULTIPLE_TOUCHES_MIN_NUMBER) return;
+        const touch0 = this.activeTouches.get(0);
+        const touch1 = this.activeTouches.get(1);
+        if (!touch0 || !touch1) return;
         document.addEventListener("touchmove", onPinch);
         document.addEventListener("touchend", onPinchEnd);
         distance = distanceBetweenTwoPoints(
-          this.activeTouches.get(0).clientX,
-          this.activeTouches.get(0).clientY,
-          this.activeTouches.get(1).clientX,
-          this.activeTouches.get(1).clientY
+          touch0.clientX,
+          touch0.clientY,
+          touch1.clientX,
+          touch1.clientY
         );
       };
       const onPinch = ({ touches }) => {
         if (this.activeTouches.size !== MULTIPLE_TOUCHES_MIN_NUMBER) return;
         this.activeTouches.set(touches[0].identifier, touches[0]);
+        const touch1 = this.activeTouches.get(0);
+        const touch2 = this.activeTouches.get(1);
+        if (!touch1 || !touch2) return;
         const newDistance = distanceBetweenTwoPoints(
-          this.activeTouches.get(0).clientX,
-          this.activeTouches.get(0).clientY,
-          this.activeTouches.get(1).clientX,
-          this.activeTouches.get(1).clientY
+          touch1.clientX,
+          touch1.clientY,
+          touch2.clientX,
+          touch2.clientY
         );
         const pinchDelta = Math.sign(newDistance - distance) * PINCH_DELTA_NUMBER;
         distance = newDistance;
         const midpoint = getMidPoint(
-          this.activeTouches.get(0).clientX,
-          this.activeTouches.get(0).clientY,
-          this.activeTouches.get(1).clientX,
-          this.activeTouches.get(1).clientY
+          touch1.clientX,
+          touch1.clientY,
+          touch2.clientX,
+          touch2.clientY
         );
         if (options.callback) options.callback({ pinchDelta, midpoint });
       };
@@ -1641,12 +1498,11 @@ This ${callbackType} is already registered for this combination and type. To upd
      * @param {Object} options
      * @param {HTMLElement | string} options.element - Element you want to attach the touch event to
      * @param {function} options.callback - Function to be executed on touch
-     * @returns {gestureReturnObject}
      */
     rotate(options) {
       if (!options) return console.error("Options not provided for rotate!");
       let angle = 0;
-      let initialAngle;
+      let initialAngle = 0;
       const element = getElement(options.element);
       if (!element) return console.error("Element not found!");
       const onRotate = ({ touches }) => {
@@ -1687,49 +1543,28 @@ This ${callbackType} is already registered for this combination and type. To upd
   };
   var touch_gestures_default = new TouchGestures();
 
-  // src/lib_components/draggable.js
+  // src/lib_components/draggable.ts
   var AXIS = ["x", "y"];
   var Draggable = class extends drag_base_default {
-    /**
-     * @typedef {Object} DraggableOptions
-     * @property {string} element
-     * @property {string} restrictTo
-     * @property {string} dragClass
-     * @property {'x'|'y'} lockAxis
-     * @property {function} onDragStart
-     * @property {function} onDragMove
-     * @property {function} onDragEnd
-     */
-    /**
-     *
-     * @param {DraggableOptions} options
-     */
     constructor(options) {
       super(options);
-      const hash = createHash();
-      this.actionName = `drag-around-${hash}`;
-      this.restrict = {
-        top: 0,
-        left: 0,
-        right: Infinity,
-        bottom: Infinity
-      };
-      this._touchEnabled = false;
+      this.actionName = `drag-around-${createHash()}`;
+      this.restrict = { top: 0, left: 0, right: Infinity, bottom: Infinity };
       this.touchEvents = [];
+      this._touchEnabled = false;
+      this.onMouseDown = this.onMouseDown.bind(this);
+      this.onMouseMove = this.onMouseMove.bind(this);
+      this.onMouseUp = this.onMouseUp.bind(this);
       this.init();
     }
     /**
      * Enables or disabled touch events
-     * @param {boolean} enabled
      */
     set touchEnabled(enabled) {
       if (this._touchEnabled === enabled) return;
       this._touchEnabled = enabled;
       this._touchEnabled ? this.addTouchEvents() : this.removeTouchEvents();
     }
-    /**
-     * @returns {void}
-     */
     init() {
       if (this.enabled) return;
       this.draggableElements = document.querySelectorAll(this.options.element);
@@ -1742,7 +1577,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Removes the eventlisteners
-     * @returns {void}
      */
     deinit() {
       if (!this.enabled) return;
@@ -1752,7 +1586,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * mousedown event handler
-     * @param {MouseEvent} event
      */
     onMouseDown(event) {
       this.draggedElement = event.currentTarget;
@@ -1772,7 +1605,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * mousemove event handler
-     * @param {MouseEvent} event
      */
     onMouseMove(event) {
       actions_default.execute(this.actionName, {
@@ -1837,12 +1669,11 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Removes the touch gestures
      */
     removeTouchEvents() {
-      this.touchEvents.forEach((event) => event.remove());
+      this.touchEvents.forEach((event) => event?.remove());
       this.touchEvents = [];
     }
     /**
      * Sets the bounds if a dragged element has to be restricted
-     * @returns {void}
      */
     setRestriction() {
       if (!this.options.restrictTo) return;
@@ -1863,52 +1694,33 @@ This ${callbackType} is already registered for this combination and type. To upd
   };
   var draggable_default = Draggable;
 
-  // src/lib_components/dropzone.js
+  // src/lib_components/dropzone.ts
   var Dropzone = class extends drag_base_default {
-    /**
-     *
-     * @typedef {Object} DropzoneOptions
-     * @property {string} element
-     * @property {string[]} dropzones
-     * @property {string} draggedClass
-     * @property {string} dropzoneActiveClass
-     * @property {'switch'|'add'|'shift'|'none'} dropType If there is already an element in the dropzone
-     * @property {function} onDragStart
-     * @property {function} onDragMove
-     * @property {function} onDragEnd
-     * @property {function} onDropZoneEnter
-     * @property {function} onDropZoneLeave
-     * @property {function} onDrop
-     */
-    /**
-     *
-     * @param {DropzoneOptions} options
-     */
     constructor(options) {
       super(options);
-      const hash = createHash();
       this.dropzones = [];
       this.draggedOver = null;
+      this.touchEvents = [];
+      this._touchEnabled = false;
+      this.options = options;
+      const hash = createHash();
       this.actionName = `drag-and-drop-${hash}`;
       this.automaticAction = `move-to-${hash}`;
+      this.onMouseDown = this.onMouseDown.bind(this);
+      this.onMouseMove = this.onMouseMove.bind(this);
+      this.onMouseUp = this.onMouseUp.bind(this);
       this.onMouseEnter = this.onMouseEnter.bind(this);
       this.onMouseLeave = this.onMouseLeave.bind(this);
-      this._touchEnabled = false;
-      this.touchEvents = [];
       this.init();
     }
     /**
      * Enables or disabled touch events
-     * @param {boolean} enabled
      */
     set touchEnabled(enabled) {
       if (this._touchEnabled === enabled) return;
       this._touchEnabled = enabled;
       this._touchEnabled ? this.addTouchEvents() : this.removeTouchEvents();
     }
-    /**
-     * @returns {void}
-     */
     init() {
       if (this.enabled) return;
       this.draggableElements = document.querySelectorAll(this.options.element);
@@ -1927,7 +1739,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Deinitializes the dragging
-     * @returns {void}
      */
     deinit() {
       if (!this.enabled) return;
@@ -1941,7 +1752,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * mousedown event handler
-     * @param {MouseEvent} event
      */
     onMouseDown(event) {
       this.draggedElement = event.currentTarget;
@@ -1960,7 +1770,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * mousemove event handler
-     * @param {MouseEvent} event
      */
     onMouseMove(event) {
       actions_default.execute(this.actionName, {
@@ -1975,28 +1784,29 @@ This ${callbackType} is already registered for this combination and type. To upd
     onMouseUp() {
       document.removeEventListener("mousemove", this.onMouseMove);
       document.removeEventListener("mouseup", this.onMouseUp);
-      this.draggedElement.style.position = "";
-      this.draggedElement.style.pointerEvents = "";
-      this.draggedElement.style.left = "";
-      this.draggedElement.style.top = "";
-      this.options.onDragEnd && this.options.onDragEnd(this.draggedElement);
-      this.options.dragStyle && this.draggedElement.classList.remove(this.options.dragStyle);
+      if (this.draggedElement) {
+        this.draggedElement.style.position = "";
+        this.draggedElement.style.pointerEvents = "";
+        this.draggedElement.style.left = "";
+        this.draggedElement.style.top = "";
+        this.options.onDragEnd && this.options.onDragEnd(this.draggedElement);
+        this.options.dragStyle && this.draggedElement.classList.remove(this.options.dragStyle);
+      }
       this.draggedOver && this.handleDrop();
       this.draggedElement = null;
     }
     /**
      * Handler for the mouseenter event
-     * @param {MouseEvent} event
-     * @returns {void}
      */
     onMouseEnter(event) {
       if (!this.draggedElement) return;
       this.draggedOver = event.currentTarget;
-      this.options.dropzoneActiveClass && this.draggedOver.classList.add(this.options.dropzoneActiveClass);
+      if (this.options.dropzoneActiveClass) {
+        this.draggedOver.classList.add(this.options.dropzoneActiveClass);
+      }
     }
     /**
      * Handler for the mouseleave event
-     * @returns {void}
      */
     onMouseLeave() {
       if (!this.draggedElement) return;
@@ -2016,7 +1826,6 @@ This ${callbackType} is already registered for this combination and type. To upd
         this.options.onDragMove && this.options.onDragMove({ x, y });
       });
       actions_default.register(this.automaticAction, this.automaticMove.bind(this));
-      this.actionsRegistered = true;
     }
     /**
      * Removes the registered actions
@@ -2041,7 +1850,7 @@ This ${callbackType} is already registered for this combination and type. To upd
               this.onMouseMove({ clientX: x, clientY: y });
               const elementOver = document.elementFromPoint(x, y);
               let dropzone = this.options.dropzones.reduce((acc, dropzone2) => {
-                if (acc) return acc;
+                if (acc || !elementOver) return acc;
                 return acc = elementOver.closest(dropzone2);
               }, null);
               if (!dropzone) {
@@ -2065,7 +1874,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Removes the touch gestures
      */
     removeTouchEvents() {
-      this.touchEvents.forEach((event) => event.remove());
+      this.touchEvents.forEach((event) => event?.remove());
       this.touchEvents = [];
     }
     /**
@@ -2120,8 +1929,8 @@ This ${callbackType} is already registered for this combination and type. To upd
         target: this.draggedElement,
         dropzone: this.draggedOver
       };
-      this.options.onDrop && this.options.onDrop(eventData);
-      if (dropType === "ignore") return;
+      if (this.options.onDrop) this.options.onDrop(eventData);
+      if (dropType === "ignore" || !this.draggedOver) return;
       if (this.draggedOver.children.length === 0) dropType = "add";
       switch (dropType) {
         case "add":
@@ -2131,7 +1940,7 @@ This ${callbackType} is already registered for this combination and type. To upd
           this.shiftElements();
           break;
         case "switch":
-          this.draggedElement.parentNode.appendChild(this.draggedOver.children[0]);
+          this.draggedElement?.parentNode.appendChild(this.draggedOver.children[0]);
           this.draggedOver.appendChild(this.draggedElement);
           break;
         case "none":
@@ -2165,35 +1974,27 @@ This ${callbackType} is already registered for this combination and type. To upd
   };
   var dropzone_default = Dropzone;
 
-  // src/lib_components/rotate.js
+  // src/lib_components/rotate.ts
   var fullRotation = 360;
   var rotationOffset = 90;
   var Rotate = class {
-    /**
-     *
-     * @param {Object} options
-     * @param {string} options.element
-     * @param {number} options.snapAngle Snaps the rotating element to increments of that angle
-     * @param {function} options.onRotation
-     */
     constructor(options) {
-      const hash = createHash();
-      this.options = options;
       this.rotatingElement = null;
       this.elementPosition = { x: 0, y: 0 };
       this.angle = 0;
       this.enabled = false;
-      this.actionName = `rotate-${hash}`;
+      this.initalAngle = 0;
+      this.actionName = `rotate-${createHash()}`;
+      this.touchEvents = null;
+      this._touchEnabled = false;
+      this.options = options;
       this.onMouseDown = this.onMouseDown.bind(this);
       this.onMouseMove = this.onMouseMove.bind(this);
       this.onMouseUp = this.onMouseUp.bind(this);
-      this._touchEnabled = false;
-      this.touchEvents = null;
       this.init();
     }
     /**
      * Enables or disabled touch events
-     * @param {boolean} enabled
      */
     set touchEnabled(enabled) {
       if (this._touchEnabled === enabled) return;
@@ -2202,7 +2003,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Initializes the rotation
-     * @returns {void}
      */
     init() {
       if (this.enabled) return;
@@ -2214,7 +2014,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Deinitilizes the rotation
-     * @returns {void}
      */
     deinit() {
       if (!this.enabled) return;
@@ -2224,7 +2023,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Handles the mousedown event
-     * @param {MouseEvent} event
      */
     onMouseDown(event) {
       document.addEventListener("mousemove", this.onMouseMove);
@@ -2236,7 +2034,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Handles the mousemove event
-     * @param {MouseEvent} event
      */
     onMouseMove(event) {
       this.angle = this.getAngle(event.clientX, event.clientY) - this.initalAngle;
@@ -2288,14 +2085,11 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Removes the touch events
      */
     removeTouchEvents() {
-      this.touchEvents.remove();
+      this.touchEvents?.remove();
       this.touchEvents = null;
     }
     /**
      * Finds the angle from the mouse coordinates based on the center of the element that is rotating
-     * @param {number} x
-     * @param {number} y
-     * @returns {number} Angle in degrees
      */
     getAngle(x, y) {
       const offsetX = x - this.elementPosition.x;
@@ -2305,32 +2099,9 @@ This ${callbackType} is already registered for this combination and type. To upd
   };
   var rotate_default = Rotate;
 
-  // src/lib_components/resize.js
+  // src/lib_components/resize.ts
   var Resize = class {
-    /**
-     *
-     * @typedef {Object} ResizeOptions
-     * @property {string} element
-     * @property {number} edgeWidth
-     * @property {function} onWidthChange
-     * @property {function} onHeightChange
-     * @property {number} widthMin
-     * @property {number} widthMax
-     * @property {number} heightMin
-     * @property {number} heightMax
-     */
-    /**
-     *
-     * @param {ResizeOptions} options
-     */
     constructor(options) {
-      this.options = options;
-      this.options.edgeWidth = options.edgeWidth || 5;
-      this.options.heightMin = this.options.heightMin || 50;
-      this.options.heightMax = this.options.heightMax || window.innerHeight;
-      this.options.widthMin = this.options.widthMin || 50;
-      this.options.widthMax = this.options.widthMax || window.innerWidth;
-      this.resizableElement = null;
       this.enabled = false;
       this.activeEdge = null;
       this.edges = {
@@ -2338,19 +2109,25 @@ This ${callbackType} is already registered for this combination and type. To upd
         right: null,
         bottomRight: null
       };
+      this.elementRect = { x: 0, y: 0 };
+      this.touchEvents = null;
+      this._touchEnabled = false;
       const hash = createHash();
       this.heightAction = `resize-height-${hash}`;
       this.widthAction = `resize-width-${hash}`;
+      this.options = options;
+      this.options.edgeWidth = options.edgeWidth ?? 5;
+      this.options.heightMin = this.options.heightMin ?? 50;
+      this.options.heightMax = this.options.heightMax ?? window.innerHeight;
+      this.options.widthMin = this.options.widthMin ?? 50;
+      this.options.widthMax = this.options.widthMax ?? window.innerWidth;
       this.onMouseDown = this.onMouseDown.bind(this);
       this.onMouseMove = this.onMouseMove.bind(this);
       this.onMouseUp = this.onMouseUp.bind(this);
-      this._touchEnabled = false;
-      this.touchEvents = null;
       this.init();
     }
     /**
      * Enables or disabled touch events
-     * @param {boolean} enabled
      */
     set touchEnabled(enabled) {
       if (this._touchEnabled === enabled) return;
@@ -2359,7 +2136,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Initializes the resizing
-     * @returns {void}
      */
     init() {
       if (this.enabled) return;
@@ -2372,7 +2148,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Deinitilazes the resizing
-     * @returns {void}
      */
     deinit() {
       if (!this.enabled) return;
@@ -2383,8 +2158,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Handles the mousedown event
-     * @param {MouseEvent} event
-     * @returns {void}
      */
     onMouseDown(event) {
       this.activeEdge = this.setEdge(event.target);
@@ -2396,7 +2169,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Handles the mousemove event
-     * @param {MouseEvent} event
      */
     onMouseMove(event) {
       const offsetX = event.clientX - this.elementRect.x;
@@ -2447,13 +2219,11 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Removes the touch events
      */
     removeTouchEvents() {
-      this.touchEvents.remove();
+      this.touchEvents?.remove();
       this.touchEvents = null;
     }
     /**
      * Sets the active edge when resizing. If there is no edge it returns null
-     * @param {HTMLElement} element
-     * @returns {string|null}
      */
     setEdge(element) {
       if (element.dataset.edge) return element.dataset.edge;
@@ -2461,7 +2231,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Checks if the element you are trying to resize has already position relative or absolute set, so it doesn't overwrite them
-     * @returns {void}
      */
     checkPosition() {
       const { position } = getComputedStyle(this.resizableElement);
@@ -2531,42 +2300,24 @@ This ${callbackType} is already registered for this combination and type. To upd
   };
   var resize_default = Resize;
 
-  // src/lib_components/zoom.js
+  // src/lib_components/zoom.ts
   var Zoom = class {
-    /**
-     * @typedef {Object} ZoomOptionsObject
-     * @property {string} options.element
-     * @property {number} options.minZoom
-     * @property {number} options.maxZoom
-     * @property {number} options.zoomFactor
-     * @property {function} options.onZoom
-     */
-    /**
-     *
-     * @param {ZoomOptionsObject} options
-     */
     constructor(options) {
-      const hash = (Math.random() + 1).toString(36).substring(7);
+      this.enabled = false;
+      this.actionName = `pan-and-zoom-${createHash()}`;
+      this.offset = { x: 0, y: 0 };
+      this.transform = { x: 0, y: 0, scale: 1 };
+      this.touchEvents = null;
+      this._touchEnabled = false;
       this.options = options;
       this.options.maxZoom = this.options.maxZoom || Infinity;
       this.options.minZoom = this.options.minZoom || 0.1;
       this.options.zoomFactor = this.options.zoomFactor || 0.1;
-      this.enabled = false;
-      this.actionName = `pan-and-zoom-${hash}`;
-      this.offset = { x: 0, y: 0 };
-      this.transform = {
-        x: 0,
-        y: 0,
-        scale: 1
-      };
       this.onWheel = this.onWheel.bind(this);
-      this._touchEnabled = false;
-      this.touchEvents = null;
       this.init();
     }
     /**
      * Enables or disabled touch events
-     * @param {boolean} enabled
      */
     set touchEnabled(enabled) {
       if (this._touchEnabled === enabled) return;
@@ -2575,7 +2326,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Initialize the pan and zoom
-     * @returns {void}
      */
     init() {
       if (this.enabled) return;
@@ -2588,7 +2338,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Deinitilize the pan and zoom
-     * @returns {void}
      */
     deinit() {
       if (!this.enabled) return;
@@ -2598,7 +2347,6 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     /**
      * Handles the wheel event
-     * @param {MouseEvent} event
      */
     onWheel(event) {
       event.preventDefault();
@@ -2615,7 +2363,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       actions_default.register(this.actionName, ({ x, y, zoomDirection }) => {
         const offset = this.calculateOffsets(x, y);
         this.options.onZoom && this.options.onZoom();
-        const scale = (this.transform.scale - zoomDirection * this.options.zoomFactor).toFixed(5);
+        const scale = Number((this.transform.scale - zoomDirection * this.options.zoomFactor).toFixed(5));
         if (scale < this.options.minZoom || scale > this.options.maxZoom) return;
         const zoomPoint = {
           x: offset.x / this.transform.scale,
@@ -2654,14 +2402,11 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Removes the touch events
      */
     removeTouchEvents() {
-      this.touchEvents.remove();
+      this.touchEvents?.remove();
       this.touchEvents = null;
     }
     /**
      * Calculates the mouse coordinates inside the element
-     * @param {number} x
-     * @param {number} y
-     * @returns {Object}
      */
     calculateOffsets(x, y) {
       const elementRect = this.zoomableElement.getBoundingClientRect();
@@ -2673,7 +2418,8 @@ This ${callbackType} is already registered for this combination and type. To upd
   };
   var zoom_default = Zoom;
 
-  // src/interaction-manager.js
+  // src/interaction-manager.ts
   global_object_default.init();
   return __toCommonJS(interaction_manager_exports);
 })();
+if (typeof interactionManager !== 'undefined' && interactionManager.default) { interactionManager = interactionManager.default; }

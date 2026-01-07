@@ -1,195 +1,166 @@
+"use strict";
 var actions = (() => {
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
   var __getOwnPropNames = Object.getOwnPropertyNames;
-  var __esm = (fn, res) => function __init() {
-    return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __export = (target, all) => {
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
   };
-  var __commonJS = (cb, mod) => function __require() {
-    return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
   };
+  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // src/utils/global-object.js
-  var IM, global_object_default;
-  var init_global_object = __esm({
-    "src/utils/global-object.js"() {
-      IM = class _IM2 {
-        // eslint-disable-next-line require-jsdoc
-        constructor() {
-          this.actions = [];
-          this.keyboardFunctions = [];
-          this.gamepadFunctions = [];
-        }
-        /**
-         * Initialize global object
-         */
-        init() {
-          if (!window._IM) window._IM = new _IM2();
-        }
-        /**
-         *
-         * @param {string[]} keys Array of key combinations
-         * @returns {KeyboardFunction[]} Array of keyboard function objects
-         */
-        getKeys(keys) {
-          return _IM.keyboardFunctions.filter((keyFunction) => keyFunction.keys.every((key) => keys.includes(key)));
-        }
-        /**
-         *
-         * @param {string[]} keys Array of key combinations
-         * @returns {number} Index of key combination in _IM
-         */
-        getKeysIndex(keys) {
-          return _IM.keyboardFunctions.findIndex((keyFunction) => keyFunction.keys.every((key) => keys.includes(key)));
-        }
-        /**
-         *
-         * @param {Object} options
-         * @param {Array} options.actions - Array of actions
-         * @param {string} options.type - Type of action
-         * @returns {GamepadFunction} Gamepad function object from the _IM global object
-         */
-        getGamepadAction({ actions, type }) {
-          return _IM.gamepadFunctions.find((gpFunc) => {
-            return gpFunc.actions.every((action) => actions.includes(action)) && gpFunc.type === type && gpFunc.actions.length === actions.length;
-          });
-        }
-        /**
-         *
-         * @param {Array} actions - Array of actions
-         * @returns {GamepadFunction[]} Array of gamepad function objects from the _IM global object
-         */
-        getGamepadActions(actions, exactMatch = true) {
-          return _IM.gamepadFunctions.filter(
-            (gpFunc) => gpFunc.actions.every((action) => actions.includes(action)) && (exactMatch ? gpFunc.actions.length === actions.length : true)
-          );
-        }
-        /**
-         *
-         * @param {Array} actions Array of actions
-         * @returns {number} Index of an action from the _IM global object
-         */
-        getGamepadActionIndex(actions) {
-          return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions.includes(action)));
-        }
-        /**
-         *
-         * @param {string} action - Action to search for
-         * @returns {ActionFunction} Action function object
-         */
-        getAction(action) {
-          return _IM.actions.find((actionObj) => actionObj.name === action);
-        }
-        /**
-         *
-         * @param {string} action Action to search for
-         * @returns {number}
-         */
-        getActionIndex(action) {
-          return _IM.actions.findIndex((actionObj) => actionObj.name === action);
-        }
-        /**
-         * Checks if a callback already exists in a registered function entry
-         * @param {KeyboardFunction | GamepadFunction} functionEntry - The function entry to check
-         * @param {Function | string} callback - The callback to search for
-         * @returns {boolean} True if callback exists, false otherwise
-         */
-        hasDuplicateCallback(functionEntry, callback) {
-          return functionEntry.callbacks.some((cb) => cb === callback);
-        }
-        /**
-         * Adds a callback to an existing function entry if it's not a duplicate
-         * @param {KeyboardFunction | GamepadFunction} functionEntry - The function entry to add the callback to
-         * @param {Function | string} callback - The callback to add
-         * @param {Object} errorContext - Context information for error messages
-         * @param {string} errorContext.identifier - String identifying the keys/actions (e.g., "Keys: [A, B]")
-         * @param {string} errorContext.type - The type of action (press, hold, lift)
-         */
-        addCallbackToEntry(functionEntry, callback, errorContext) {
-          if (this.hasDuplicateCallback(functionEntry, callback)) {
-            const callbackType = typeof callback === "string" ? "action" : "function";
-            const callbackName = typeof callback === "string" ? callback : "(anonymous function)";
-            return console.error(
-              `Duplicate callback detected!
+  // src/actions.ts
+  var actions_exports = {};
+  __export(actions_exports, {
+    default: () => actions_default2
+  });
+
+  // src/utils/global-object.ts
+  var IM = class _IM2 {
+    constructor() {
+      // eslint-disable-next-line require-jsdoc
+      this.actions = [];
+      this.keyboardFunctions = [];
+      this.gamepadFunctions = [];
+    }
+    /**
+     * Initialize global object
+     */
+    init() {
+      if (!window._IM) window._IM = new _IM2();
+    }
+    /**
+     * Get keyboard functions matching the given keys
+     */
+    getKeys(keys) {
+      return _IM.keyboardFunctions.filter((keyFunction) => keyFunction.keys.every((key) => keys.includes(key)));
+    }
+    /**
+     * Get the index of a keyboard function matching the given keys
+     */
+    getKeysIndex(keys) {
+      return _IM.keyboardFunctions.findIndex((keyFunction) => keyFunction.keys.every((key) => keys.includes(key)));
+    }
+    /**
+     * Get a gamepad function matching the given button actions and type
+     */
+    getGamepadAction({ actions, type }) {
+      return _IM.gamepadFunctions.find((gpFunc) => {
+        return gpFunc.actions.every((action) => actions.includes(action)) && gpFunc.type === type && gpFunc.actions.length === actions.length;
+      });
+    }
+    /**
+     * Get all gamepad functions matching the given button actions
+     */
+    getGamepadActions(actions, exactMatch = true) {
+      return _IM.gamepadFunctions.filter(
+        (gpFunc) => gpFunc.actions.every((action) => actions.includes(action)) && (exactMatch ? gpFunc.actions.length === actions.length : true)
+      );
+    }
+    /**
+     * Get the index of a gamepad function matching the given button actions
+     */
+    getGamepadActionIndex(actions) {
+      return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions.includes(action)));
+    }
+    /**
+     * Get an action by name
+     * @param {string} action - Action to search for
+     */
+    getAction(action) {
+      return _IM.actions.find((actionObj) => actionObj.name === action);
+    }
+    /**
+     * Get the index of an action by name
+     */
+    getActionIndex(action) {
+      return _IM.actions.findIndex((actionObj) => actionObj.name === action);
+    }
+    /**
+     * Checks if a callback already exists in a registered function entry
+     */
+    hasDuplicateCallback(functionEntry, callback) {
+      return functionEntry.callbacks.some((cb) => cb === callback);
+    }
+    /**
+     * Adds a callback to an existing function entry if it's not a duplicate
+     * @param {KeyboardFunction | GamepadFunction} functionEntry - The function entry to add the callback to
+     * @param {Function | string} callback - The callback to add
+     * @param {Object} errorContext - Context information for error messages
+     * @param {string} errorContext.identifier - String identifying the keys/actions (e.g., "Keys: [A, B]")
+     * @param {string} errorContext.type - The type of action (press, hold, lift)
+     */
+    addCallbackToEntry(functionEntry, callback, errorContext) {
+      if (this.hasDuplicateCallback(functionEntry, callback)) {
+        const callbackType = typeof callback === "string" ? "action" : "function";
+        const callbackName = typeof callback === "string" ? callback : "(anonymous function)";
+        return console.error(
+          `Duplicate callback detected!
 ${errorContext.identifier}
 Type: '${errorContext.type}'
 Callback: ${callbackName}
 This ${callbackType} is already registered for this combination and type. To update it, first remove with the .off() method.`
-            );
-          }
-          return functionEntry.callbacks.push(callback);
-        }
-        /**
-        * Removes a keyboard function entry from the registry
-        * @param {KeyboardFunction} functionEntry - The entry to remove
-        * @returns {void}
-        */
-        removeKeyboardFunction(functionEntry) {
-          const index = _IM.keyboardFunctions.indexOf(functionEntry);
-          if (index !== -1) _IM.keyboardFunctions.splice(index, 1);
-        }
-        /**
-         * Removes a gamepad function entry from the registry
-         * @param {GamepadFunction} functionEntry - The entry to remove
-         * @returns {void}
-         */
-        removeGamepadFunction(functionEntry) {
-          const index = _IM.gamepadFunctions.indexOf(functionEntry);
-          if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
-        }
-      };
-      global_object_default = new IM();
+        );
+      }
+      return functionEntry.callbacks.push(callback);
     }
-  });
+    /**
+     * Removes a keyboard function entry from the registry
+     */
+    removeKeyboardFunction(functionEntry) {
+      const index = _IM.keyboardFunctions.indexOf(functionEntry);
+      if (index !== -1) _IM.keyboardFunctions.splice(index, 1);
+    }
+    /**
+     * Removes a gamepad function entry from the registry
+     */
+    removeGamepadFunction(functionEntry) {
+      const index = _IM.gamepadFunctions.indexOf(functionEntry);
+      if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
+    }
+  };
+  var global_object_default = new IM();
 
-  // src/lib_components/actions.js
-  var Actions, actions_default;
-  var init_actions = __esm({
-    "src/lib_components/actions.js"() {
-      init_global_object();
-      Actions = class {
-        /**
-         * Register an action
-         * @param {string} action - Function alias that allows you to save functions and reuse them
-         * @param {function} callback
-         * @returns {void}
-         */
-        register(action, callback) {
-          if (global_object_default.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
-          _IM.actions.push({ name: action, callback });
-        }
-        /**
-         * Remove a registered action
-         * @param {string} action - Name of action you want to remove
-         * @returns {void}
-         */
-        remove(action) {
-          const actionIndex = global_object_default.getActionIndex(action);
-          if (actionIndex === -1) return console.error(`${action} is not a registered action!`);
-          _IM.actions.splice(actionIndex, 1);
-        }
-        /**
-         * Trigger an action
-         * @param {string} action - Name of action you want to execute
-         * @param {any} value - Value that is passed to the callback
-         * @returns {void}
-         */
-        execute(action, value) {
-          const actionObject = global_object_default.getAction(action);
-          if (!actionObject) return console.error(`${action} is not a registered action!`);
-          actionObject.callback(value);
-        }
-      };
-      actions_default = new Actions();
+  // src/lib_components/actions.ts
+  var Actions = class {
+    /**
+     * Register an action
+     */
+    register(action, callback) {
+      if (global_object_default.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
+      _IM.actions.push({ name: action, callback });
     }
-  });
+    /**
+     * Remove a registered action
+     */
+    remove(action) {
+      const actionIndex = global_object_default.getActionIndex(action);
+      if (actionIndex === -1) return console.error(`${action} is not a registered action!`);
+      _IM.actions.splice(actionIndex, 1);
+    }
+    /**
+     * Trigger an action
+     */
+    execute(action, value) {
+      const actionObject = global_object_default.getAction(action);
+      if (!actionObject) return console.error(`${action} is not a registered action!`);
+      actionObject.callback(value);
+    }
+  };
+  var actions_default = new Actions();
 
-  // src/actions.js
-  var require_actions = __commonJS({
-    "src/actions.js"(exports, module) {
-      init_actions();
-      init_global_object();
-      global_object_default.init();
-      module.exports = actions_default;
-    }
-  });
-  return require_actions();
+  // src/actions.ts
+  global_object_default.init();
+  var actions_default2 = actions_default;
+  return __toCommonJS(actions_exports);
 })();
+if (typeof actions !== 'undefined' && actions.default) { actions = actions.default; }
