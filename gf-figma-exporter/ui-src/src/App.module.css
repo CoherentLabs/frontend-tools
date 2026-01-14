@@ -3,10 +3,23 @@
     height: 100%;
     background-color: #0a0a0a;
     color: white;
+    padding-top: 20px;
+    box-sizing: border-box;
+}
+
+.Logo {
+    width: 150px;
+    height: 80px;
+    background-image: url('./assets/logo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 .StartingText {
-    font-size: 24px;
+    font-size: 20px;
     width: 100%;
     text-align: center;
     font-weight: 300;
@@ -113,7 +126,8 @@
 .MissingFontsTextSub {
     margin-top: 5px;
     font-size: 12px;
-    color: #00dcff;
+    color: white;
+    text-align: center;
 }
 
 .MissingFontsUpload {
@@ -188,7 +202,7 @@ select {
     height: 24px;
     border: 2px solid #ffffff;
     border-radius: 7px;
-    font-size: 12px;
+    font-size: 10px;
     background-color: transparent;
     color: white;
     cursor: pointer;
@@ -236,11 +250,11 @@ select {
 }
 
 .FooterButtonRed {
-    border-color: #F5436A;
-    color: #F5436A;
+    border-color: #606060;
+    color: #606060;
 }
 
 .FooterButtonRed:hover {
-    background-color: #F5436A;
-    color: white;
+    background-color: #606060;
+    color: black;
 }

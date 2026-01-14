@@ -73,16 +73,14 @@ const App: Component = () => {
             }
 
             selects.forEach((select) => {
-
                 const [family, weight, style, subset] = select.name.split('_');
                 const fileName = select.value === 'noto' ? null : select.value;
 
                 mappedFonts[family][weight][style].subsets[subset] = fileName ? fontFiles()[fileName] : null;
             });
-            
+
             MessageBus.postMessage('MISSING_FONTS_RESPONSE', { fonts: mappedFonts });
             setMissingFonts({});
-
         });
     };
 
@@ -141,7 +139,6 @@ const App: Component = () => {
         MessageBus.on('MISSING_FONTS_DETECTED', (data) => {
             const { fonts } = data as { fonts: GFFont };
             setMissingFonts(fonts);
-            // parent.postMessage({ pluginMessage: { type: 'MISSING_FONTS_RESPONSE', data: { fonts } } }, '*');
         });
 
         MessageBus.on('export-progress', (data) => {
@@ -153,8 +150,13 @@ const App: Component = () => {
 
     return (
         <div class={styles.App}>
+            <div class={styles.Logo}></div>
             <div class={styles.StartingText}>
-                {exportStarted() ? 'Exporting in progress...' : 'Press the button to get started'}
+                {Object.keys(missingFonts()).length === 0
+                    ? exportStarted()
+                        ? 'Exporting in progress...'
+                        : 'Press the button to get started'
+                    : 'Export Paused: Missing Fonts.'}
             </div>
             <div class={styles.ButtonContainer}>
                 <div
@@ -163,19 +165,24 @@ const App: Component = () => {
                 >
                     {exportStarted() ? '' : 'Export'}
                     <div class={styles.Progress}>
-                        <div class={styles.ProgressBar} style={{ width: `${exportProgress()}%` }}></div>
+                        <div
+                            class={styles.ProgressBar}
+                            style={{
+                                width: `${exportProgress()}%`,
+                                background: `${
+                                    Object.keys(missingFonts()).length === 0
+                                        ? 'linear-gradient(to right, #3e42b8, #4b9ae6, #00dcff)'
+                                        : '#F5BC35'
+                                }`,
+                            }}
+                        ></div>
                     </div>
                 </div>
                 <div class={styles.ProgressText}>{exportMessage()}</div>
             </div>
             <Show when={Object.keys(missingFonts()).length > 0}>
                 <div class={styles.MissingFontsContainer}>
-                    <div class={styles.MissingFontsText}>
-                        Seems that you are missing some fonts required for export.
-                        <div class={styles.MissingFontsTextSub}>
-                            If you don't want to add the missing fonts, we'll export Noto Sans as a fallback.
-                        </div>
-                    </div>
+                    <div class={styles.MissingFontsText}>Missing Fonts Detected</div>
                 </div>
                 <div class={styles.MissingFontsUpload}>
                     <div>Add your font files here:</div>
@@ -242,6 +249,9 @@ const App: Component = () => {
                         </tbody>
                     </table>
                 </div>
+                <div class={styles.MissingFontsTextSub}>
+                    If you don't want to add the missing fonts, we'll export Noto Sans as a fallback.
+                </div>
                 <div class={styles.TableFooter}>
                     <button class={styles.FooterButton} onClick={handleSelectedFontsClick}>
                         Export with selected fonts
@@ -250,7 +260,7 @@ const App: Component = () => {
                         class={`${styles.FooterButton} ${styles.FooterButtonRed}`}
                         onClick={handleContinueWithFallback}
                     >
-                        Export with Noto Sans fallback
+                        Export with fallback
                     </button>
                 </div>
             </Show>

@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "jszip": "^3.10.1",
+    "solid-file-upload": "^1.0.1",
     "solid-js": "^1.9.5",
     "vite-plugin-singlefile": "^2.3.0"
   }
