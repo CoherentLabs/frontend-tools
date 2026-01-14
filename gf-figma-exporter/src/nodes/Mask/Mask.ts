@@ -1,9 +1,9 @@
 import CSSExporter from '../../CSSExporter/CSSExporter';
 import { flattenPathToPolygons } from '../../CSSExporter/utils/clipPath';
-import { generateMaskStyle } from '../../CSSExporter/utils/mask';
+import { generateMaskStyle, getMaskPosition } from '../../CSSExporter/utils/mask';
 import { getNodes } from '../../exporter';
 import ImageExporter from '../../ImageExporter/ImageExporter';
-import { ExportableNodes, MaskNode, SVGNodes } from '../../types/commonTypes';
+import { ExportableNodes, MaskNode, NodesWithFillsAndStrokes, SVGNodes } from '../../types/commonTypes';
 import { combineFillAndStrokeToPathData } from '../../utils/combineFillAndStrokeToPathData';
 import convertLuminanceToAlpha from '../../utils/convertLuminanceToAlpha';
 import BaseNode from '../BaseNode';
@@ -35,9 +35,11 @@ class GFMask extends BaseNode {
 
         if ((this.node as MaskNode).maskType === 'ALPHA') {
             const mask = generateMaskStyle(this.node);
+            const {x, y, width, height} = await getMaskPosition(this.originalNode as NodesWithFillsAndStrokes);
             CSSExporterInstance.style.add('mask-image', `url(${mask})`);
-            CSSExporterInstance.style.add('mask-size', '100% 100%');
+            CSSExporterInstance.style.add('mask-size', `${width}% ${height}%`);
             CSSExporterInstance.style.add('mask-repeat', 'no-repeat');
+            CSSExporterInstance.style.add('mask-position', `${x}% ${y}%`);
 
             const ImageExporterInstance = new ImageExporter();
 
@@ -64,9 +66,12 @@ class GFMask extends BaseNode {
 
         if ((this.node as MaskNode).maskType === 'LUMINANCE') {
             const mask = generateMaskStyle(this.node);
+            const {x, y, width, height} = await getMaskPosition(this.originalNode as NodesWithFillsAndStrokes);
             CSSExporterInstance.style.add('mask-image', `url(${mask})`);
-            CSSExporterInstance.style.add('mask-size', '100% 100%');
+            CSSExporterInstance.style.add('mask-size', `${width}% ${height}%`);
             CSSExporterInstance.style.add('mask-repeat', 'no-repeat');
+            CSSExporterInstance.style.add('mask-position', `${x}% ${y}%`);
+
 
             const ImageExporterInstance = new ImageExporter();
 

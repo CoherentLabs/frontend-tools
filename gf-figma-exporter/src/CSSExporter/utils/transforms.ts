@@ -1,22 +1,14 @@
-export function generateTransformStyle(node: SceneNode): string {
+import { AvailableNode } from "../../types/commonTypes";
+import { getRelativeCssTransform } from "../../utils/transformUtils";
+
+export function generateTransformStyle(node: AvailableNode): string {
     let transform = '';
 
-    const rotation = getRotation(node);
-    if (rotation !== null) {
-        transform += ` rotate(${rotation}deg)`;
-    }
+    const { rotation, scaleX, scaleY } = getRelativeCssTransform(node, node.parent as AvailableNode);
+
+    transform += `rotate(${rotation}deg) `;
+    transform += `scale(${scaleY}, ${scaleX})`;
 
     return transform.trim();
 }
 
-function getRotation(node: SceneNode): number | null {
-    if ('rotation' in node === false) {
-        return null;
-    }
-
-    if (!node.rotation || node.rotation === 0) {
-        return null;
-    }
-
-    return node.rotation * -1; // Invert rotation for CSS
-}

@@ -58,7 +58,7 @@ export function generateBackground(node: NodesWithFillsAndStrokes): string {
             }
 
             case 'GRADIENT_LINEAR': {
-                const { gradient } = linearGradientHandle(fill, node.width, node.height, node.x, node.y);
+                const { gradient } = linearGradientHandle(fill, node.width, node.height);
                 backgroundArrays.unshift(gradient);
                 break;
             }
