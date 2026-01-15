@@ -4,7 +4,29 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 1.0.3 :badge[Latest]{variant="note"}
+## 1.0.4 :badge[Latest]{variant="note"}
+
+<Badge text="Fix" variant="danger" size="small" /> Resolved an issue where inline SVG elements with dynamic children in SolidJS caused runtime errors or silent build failures in production.
+
+The following example now renders correctly:
+
+```tsx
+import { createSignal } from 'solid-js';
+
+const SVGComponent = () => {
+    const arr = Array.from({ length: 5 });
+    const [firstName] = createSignal('first name');
+
+    return <svg viewBox="0 0 200 200" width="300" height="300" >
+        <For each={arr}>
+            {(_, index) => <rect y={index() * 10} width="618" height={(index() + 1) * 10} fill={`#${index() + 4}${index() + 3}${index() + 2}${index() + 1}${index()}9`} />}
+        </For>
+        <text x="20" y="35">{firstName()}</text>
+    </svg>
+}
+```
+
+## 1.0.3
 
 <Badge text="Fix" variant="danger" size="small" /> Resolved issues with using `()` brackets in SolidJS components, which previously caused errors with the plugin. The generated template from the SolidJS plugin, transformed by vite-gameface, contained `(<!>)` in place of `({expression})`, leading to build errors. This update ensures proper transformation of components using `()` brackets, eliminating these errors.
 

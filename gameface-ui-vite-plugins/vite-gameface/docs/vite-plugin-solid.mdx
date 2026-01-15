@@ -1,0 +1,50 @@
+---
+title: Vite Solid Plugin Notice
+sidebar:
+    order: 1
+---
+
+import { Badge } from '@astrojs/starlight/components'
+
+Version [`2.11.7`](https://github.com/solidjs/vite-plugin-solid/releases/tag/vite-plugin-solid%402.11.7) of [`vite-plugin-solid`](https://github.com/solidjs/vite-plugin-solid) introduces new configuration flags to control HTML generation. These flags are critical for preventing HTML parsing warnings in Gameface.
+
+* **`omitNestedClosingTags`**: Set to `false` to prevent SolidJS from omitting closing tags for nested elements.
+* **`omitLastClosingTag`**: Set to `false` to ensure the final closing tag in a block is included.
+* **`omitQuotes`**: Set to `false` to enforce quotes around all attribute values.
+
+If you are using `vite-plugin-solid` version `2.11.7` or later, you can often omit the `vite-gameface` plugin by applying the following configuration:
+
+```ts
+import { defineConfig } from 'vite';
+import solidPlugin from 'vite-plugin-solid';
+
+export default defineConfig({
+    plugins: [
+        solidPlugin({
+            omitNestedClosingTags: false,
+            omitLastClosingTag: false,
+            omitQuotes: false,
+        }),
+    ],
+});
+```
+
+## When is the `vite-gameface plugin` still required?
+
+### Resolving Attribute Concatenation
+
+Even with the configuration above, `vite-plugin-solid` may occasionally generate HTML that causes parsing warnings in Gameface. A common edge case involves SVG elements where attributes are concatenated without spaces (e.g., `<svg viewBox="..."width="300"height="300">`).
+
+The `vite-gameface plugin` resolves these specific formatting issues to ensure a warning-free parsing experience.
+
+### Legacy Compatibility
+
+If you are using an older version of `vite-plugin-solid` (pre-`2.11.7`), you must use the `vite-gameface` plugin to handle unclosed tags and ensure compatibility.
+
+## <Badge text="Important" variant="caution" size="small" /> Empty Text Elements
+
+`SolidJS` sometimes generates empty text elements (whitespace) within containers, such as `<svg ...> </svg>`.
+
+Older versions of `Gameface` include optimizations that strip these empty text elements. This removal can cause JavaScript runtime errors (e.g., `TypeError: Cannot read property 'firstChild' of null`) because `SolidJS` expects these nodes to exist as anchors.
+
+**Solution:** The `vite-gameface` plugin cannot reliably detect or fix these empty text elements. To resolve this issue, you must upgrade to `Gameface` version `2.2.0` or later, which handles empty text nodes correctly.
