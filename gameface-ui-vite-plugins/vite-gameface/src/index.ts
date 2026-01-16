@@ -45,14 +45,14 @@ export default function solidGameface(options: GamefacePluginOptions = {}): Plug
 
             for (const match of matches) {
                 const [fullMatch, templateContent, originalArgs] = match;
-                const start = match.index;
+                const start = match.index!;
                 const end = start + fullMatch.length;
 
                 const hasSVGContext = isSVGFile || (originalArgs && originalArgs.includes('true')) || templateContent.includes('<svg');
 
                 let preFixedTemplate = templateContent;
                 if (hasSVGContext) preFixedTemplate = fixSVGAttributes(preFixedTemplate);
-                preFixedTemplate = fixComments(templateContent);
+                preFixedTemplate = fixComments(preFixedTemplate);
 
                 const doc = parseDocument(preFixedTemplate, {
                     lowerCaseTags: false,
