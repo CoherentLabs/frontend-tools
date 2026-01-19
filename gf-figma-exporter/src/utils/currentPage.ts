@@ -7,5 +7,5 @@ export const currentPageSize = {
     set({ width, height }: { width: number; height: number }) {
         this.width = width;
         this.height = height;
-    }
+    },
 };

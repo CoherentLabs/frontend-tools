@@ -1,25 +1,8 @@
-import { generateAdditionalStyles, generateClassName, generateCommonStyles } from '../commonNodeMethods';
+import GFBaseNode from '../BaseNode';
 
-class GFEllipse {
-    public node: EllipseNode;
-    public className: string;
-
+class GFEllipse extends GFBaseNode {
     constructor(node: EllipseNode) {
-        this.node = node;
-        this.className = generateClassName(this.node.name, this.node.id);
-    }
-
-    createHTML(): string {
-        return `<div class="${this.className}"></div>`;
-    }
-
-    createCSS(): string {
-        return `
-        .${this.className} {
-           ${generateCommonStyles(this.node)}
-           ${generateAdditionalStyles(this.node)}
-            border-radius: 50%;
-        }`;
+        super(node);
     }
 }
 

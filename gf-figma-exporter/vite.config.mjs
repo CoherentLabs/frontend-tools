@@ -7,7 +7,7 @@ export default defineConfig({
             output: {
                 entryFileNames: 'code.js',
                 dir: './',
-                format: 'es', 
+                format: 'es',
             },
         },
         target: 'esnext',

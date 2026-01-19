@@ -1,37 +1,68 @@
-import GFEllipse from "./nodes/Ellipse/Ellipse";
-import GFFrame from "./nodes/Frame/Frame";
-import GFRectangle from "./nodes/Rectangle/Rectangle";
+import GFEllipse from './nodes/Ellipse/Ellipse';
+import GFFrame from './nodes/Frame/Frame';
+import GFGroup from './nodes/Group/Group';
+import GFMask from './nodes/Mask/Mask';
+import GFRectangle from './nodes/Rectangle/Rectangle';
+import GFSVGNode from './nodes/SVGNode/SVGNode';
+import GFTextNode from './nodes/Text/TextNode';
+import { ExportableNodes, GFImage } from './types/commonTypes';
+import isNodeSVG from './utils/isNodeSVG';
+import { progress } from './utils/updateProgress';
 
 interface FactoryResult {
     html: string;
     css: string;
-
+    images: { name: string; data: Uint8Array | null }[];
 }
-
 
 const NODE_TYPES = {
     RECTANGLE: GFRectangle,
     FRAME: GFFrame,
-    GROUP: GFFrame, // Treat GROUPs like FRAMEs for this purpose
-    ELLIPSE: GFEllipse
-}
+    GROUP: GFGroup,
+    ELLIPSE: GFEllipse,
+    SVG: GFSVGNode,
+    TEXT: GFTextNode,
+    INSTANCE: GFFrame,
+    MASK: GFMask,
+};
 const TYPES = {
-    FRAME: "FRAME",
-    RECTANGLE: "RECTANGLE",
-    ELLIPSE: "ELLIPSE",
-    GROUP: "GROUP"
-}
-function generateCode(node: SceneNode): FactoryResult {
-    const result = { html: '', css: '' };
-     
-    if (!Object.prototype.hasOwnProperty.call(TYPES, node.type)) return result;
+    FRAME: 'FRAME',
+    RECTANGLE: 'RECTANGLE',
+    ELLIPSE: 'ELLIPSE',
+    GROUP: 'GROUP',
+    VECTOR: 'VECTOR',
+    LINE: 'LINE',
+    STAR: 'STAR',
+    POLYGON: 'POLYGON',
+    BOOLEAN_OPERATION: 'BOOLEAN_OPERATION',
+    TEXT: 'TEXT',
+    INSTANCE: 'INSTANCE',
+    MASK: 'MASK',
+};
 
-    const NodeClassRef = NODE_TYPES[node.type as keyof typeof NODE_TYPES];
+async function generateCode(node: ExportableNodes): Promise<FactoryResult> {
+    const result = { html: '', css: '', images: [] as GFImage[] };
+
+    if (!node.visible) return result;
+
+    progress.update(`Processing node: ${node.name}`);
+
+    let type: ExportableNodes['type'] | "SVG" = node.type;
+
+    if (!Object.prototype.hasOwnProperty.call(TYPES, type)) return result;
+
+    if (isNodeSVG(node)) type = 'SVG';
+
+    const NodeClassRef = NODE_TYPES[type as keyof typeof NODE_TYPES];
     if (NodeClassRef) {
-        //@ts-expect-error
+        //@ts-expect-error We are sure that the node is of correct type here, so this cast is safe. If we don't want to use ts-expect-error, we have to create separate classes for each node type which is redundant.
         const instance = new NodeClassRef(node);
-        result.html += instance.createHTML();
-        result.css += instance.createCSS();
+        if (node.type === 'FRAME' || node.type === 'GROUP' || node.type === 'INSTANCE' || node.type === 'MASK') {
+            await (instance as GFFrame).init();
+        }
+        result.html += await instance.createHTML();
+        result.css += await instance.createCSS();
+        result.images = result.images.concat(instance.images);
     }
     return result;
 }
