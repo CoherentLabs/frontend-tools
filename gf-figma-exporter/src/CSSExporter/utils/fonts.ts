@@ -168,3 +168,22 @@ export function getFontName(textSegment: TextSegment): string {
 
     return result.join(', ');
 }
+
+export function getTextStroke(node: TextNode): { color: string; width: string } | null {
+    if (node.strokes.length === 0) {
+        return null;
+    }
+
+    const stroke = node.strokes[0]; // Assuming only solid strokes are used
+    if (stroke.type !== 'SOLID') {
+        return null;
+    }
+
+    const color = createRGBAColor(stroke.color.r, stroke.color.g, stroke.color.b, stroke.opacity);
+    if (node.strokeWeight === 0 || node.strokeWeight === undefined || node.strokeWeight === figma.mixed) {
+        return null;
+    }
+    const width = convertPXtoVH(node.strokeWeight).toFixed(2);
+
+    return { color, width };
+}

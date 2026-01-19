@@ -1,7 +1,9 @@
-import {  PrimitiveNodes } from '../../types/commonTypes';
+import { AvailableNode, PrimitiveNodes } from '../../types/commonTypes';
 import { getPercentage } from '../../utils/convertUnits';
+import getMaskBoundingBox from '../../utils/getMaskBoundingBox';
 import getMaskedBy from '../../utils/getMaskedBy';
 import getParentSize from '../../utils/parentSize';
+import { getRelativeCssTransform } from '../../utils/transformUtils';
 
 export async function generatePosition(node: PrimitiveNodes): Promise<{ left: string; top: string }> {
     const parent = node.parent;
@@ -15,58 +17,57 @@ export async function generatePosition(node: PrimitiveNodes): Promise<{ left: st
     const dimensions = await getEffectiveDimensions(node, parent as SceneNode);
 
     return {
-        left: getPercentage(position.x, dimensions.width) + '%',
-        top: getPercentage(position.y, dimensions.height) + '%',
+        left: getPercentage(position.x, dimensions.width).toFixed(2) + '%',
+        top: getPercentage(position.y, dimensions.height).toFixed(2) + '%',
     };
 }
 
 async function getAdjustedPosition(node: PrimitiveNodes): Promise<{ x: number; y: number }> {
-    let x = node.x;
-    let y = node.y;
-    const parent = node.parent;
+    const parent = node.parent as AvailableNode | null;
+    const nodeBoundingBox = node.absoluteBoundingBox!;
 
-    // Apply mask position adjustments
-    const maskOffset = await getMaskOffset(node);
-    if (maskOffset) {
-        x -= maskOffset.x;
-        y -= maskOffset.y;
+    let {x, y} = getRelativeCssTransform(node, parent!);
+    
 
+    if (!parent) {
         return { x, y };
     }
+    
+    if (node.isMask) {
+        const parentBoundingBox = parent.absoluteBoundingBox!;
+        x = nodeBoundingBox.x - parentBoundingBox.x;
+        y = nodeBoundingBox.y - parentBoundingBox.y;
+    }
 
-    // Handle group positioning
-    if (parent && parent.type === 'GROUP') {
-        const adjusted = await adjustForGroup(x, y, parent as SceneNode);
-        x = adjusted.x;
-        y = adjusted.y;
+    // If the node is masked, adjust position accordingly
+    const maskOffset = await getMaskOffset(node);
+    if (maskOffset) {
+        x = nodeBoundingBox.x - maskOffset.x;
+        y = nodeBoundingBox.y - maskOffset.y;
     }
 
     return { x, y };
 }
 
 async function getMaskOffset(node: PrimitiveNodes): Promise<{ x: number; y: number } | null> {
+    if (node.getPluginData('masked-by') === '') {
+        return null;
+    }
+
     const maskedBy = await getMaskedBy(node);
 
     if (!maskedBy) {
         return null;
     }
-    //@ts-expect-error x and y exist on SceneNode
-    const maskX = maskedBy.x;
-    //@ts-expect-error x and y exist on SceneNode
-    const maskY = maskedBy.y;
 
-    if (isValidNumber(maskX) && isValidNumber(maskY)) {
-        return { x: maskX, y: maskY };
+    const maskBoundingBox = getMaskBoundingBox(maskedBy as AvailableNode);
+
+    if (!maskBoundingBox) {
+        return null;
     }
 
-    return null;
-}
 
-async function adjustForGroup(x: number, y: number, parent: SceneNode): Promise<{ x: number; y: number }> {
-    const adjustedX = x - parent.x;
-    const adjustedY = y - parent.y;
-
-    return { x: adjustedX, y: adjustedY };
+    return { x: maskBoundingBox.x, y: maskBoundingBox.y };
 }
 
 async function getEffectiveDimensions(
@@ -80,14 +81,16 @@ async function getEffectiveDimensions(
     // Use mask dimensions if available
     const maskedBy = await getMaskedBy(node);
 
-    if (maskedBy) {
-        width = maskedBy.width || width;
-        height = maskedBy.height || height;
+
+    if (maskedBy && node.getPluginData('masked-by') !== '') {
+        const maskBoundingBox = getMaskBoundingBox(maskedBy as AvailableNode);
+
+        if (!maskBoundingBox) {
+            return { width, height };
+        }
+        width = maskBoundingBox.width;
+        height = maskBoundingBox.height;
     }
 
     return { width, height };
-}
-
-function isValidNumber(value: number): boolean {
-    return !isNaN(value) && isFinite(value);
 }

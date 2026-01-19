@@ -1,10 +1,21 @@
-import { AvailableNode, NodesWithFillsAndStrokes } from '../../types/commonTypes';
+import { AvailableNode } from '../../types/commonTypes';
 import { convertPXtoVH } from '../../utils/convertUnits';
-import { generateBackgroundRect } from './background';
+import getMaskBoundingBox from '../../utils/getMaskBoundingBox';
 
 export function generateSize(node: AvailableNode): { width: string; height: string } {
     const width = `${convertPXtoVH(node.width).toFixed(2)}`;
     const height = `${convertPXtoVH(node.height).toFixed(2)}`;
+
+    if (node.isMask) {
+        const maskBoundingBox = getMaskBoundingBox(node);
+
+        if (maskBoundingBox) {
+            return {
+                width: convertPXtoVH(maskBoundingBox.width).toFixed(2),
+                height: convertPXtoVH(maskBoundingBox.height).toFixed(2),
+            };
+        }
+    }
 
     return {
         width,
@@ -13,7 +24,8 @@ export function generateSize(node: AvailableNode): { width: string; height: stri
 }
 
 export async function generateFlexSize(node: AvailableNode): Promise<{ width: string; height: string }> {
-    let { width, height} = await generateBackgroundRect(node as NodesWithFillsAndStrokes);
+    let width = '100%';
+    let height = '100%';
 
     if (node.type === 'FRAME' || node.type === 'INSTANCE') {
         if (node.layoutSizingHorizontal === 'HUG') {

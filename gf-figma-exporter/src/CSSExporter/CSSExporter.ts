@@ -11,6 +11,7 @@ import isFlexItem from '../utils/isFlexItem';
 import isNodeSVG from '../utils/isNodeSVG';
 import StyleManager from './StyleManager/StyleManager';
 import { additionalBackgroundStyles, generateBackground, generateBackgroundRect } from './utils/background';
+import { generateBlendMode } from './utils/blendMode';
 import { generateBorderRadius, generateBorders } from './utils/border';
 import { generateEffectStyles } from './utils/effects';
 import { calculateGap, generateFlexContainerStyles, generateFlexItemStyles } from './utils/flex';
@@ -55,6 +56,10 @@ class CSSExporter {
         const opacity = generateOpacity((this.node as PrimitiveNodes).opacity);
         const zIndex = generateZIndex(this.node as PrimitiveNodes);
         const { filter, backDropFilter } = generateEffectStyles(this.node as SVGNodes | NodesWithFillsAndStrokes);
+        const blendMode = generateBlendMode(this.node as AvailableNode);
+        if (blendMode !== 'normal') {
+            this.style.add('mix-blend-mode', blendMode);
+        }
 
         const { topLeftRadius, bottomLeftRadius, bottomRightRadius, topRightRadius } = generateBorderRadius(
             this.node as PrimitiveNodes
@@ -81,7 +86,7 @@ class CSSExporter {
             this.style.add('backdrop-filter', backDropFilter);
         }
 
-        if (transform) {
+        if (transform && !this.node.isMask) {
             this.style.add('transform', transform);
             this.style.add('transform-origin', 'top left');
         }
@@ -102,8 +107,8 @@ class CSSExporter {
         const { width, height } = await generateFlexSize(this.node as AvailableNode);
         const gap = calculateGap(this.node.children[0] as AvailableNode);
 
-        this.flexContainerStyles.add('width', `100%`);
-        this.flexContainerStyles.add('height', `100%`);
+        this.flexContainerStyles.add('width', width);
+        this.flexContainerStyles.add('height', height);
         this.flexContainerStyles.add('display', 'flex');
         this.flexContainerStyles.add('flex-direction', direction);
         this.flexContainerStyles.add('flex-wrap', wrap);

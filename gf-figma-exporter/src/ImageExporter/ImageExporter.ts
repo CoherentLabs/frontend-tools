@@ -8,11 +8,7 @@ import {
     hideEffects,
     hideFills,
     hideStrokes,
-    removeRotation,
-    restoreEffects,
-    restoreFills,
-    restoreRotation,
-    restoreStrokes,
+    removeTransform,
 } from './utils/toggleUtils';
 
 interface GFBackgroundAndStroke {
@@ -63,6 +59,8 @@ class ImageExporter {
         exportStage.fills = []; // Transparent
         exportStage.x = 100000; // Move far away so user doesn't see flicker
         exportStage.resize(currentPageSize.width, currentPageSize.height);
+        exportStage.clipsContent = false;
+
         figma.currentPage.appendChild(exportStage);
         exportStage.appendChild(clone);
 
@@ -71,28 +69,15 @@ class ImageExporter {
             toggleChildren(clone, false);
         }
 
-        const strokes = clone.strokes;
-        const fills = clone.fills;
-        const effects = node.effects;
-        const rotation = node.rotation;
-
         // Hide strokes and effects to export only the background
 
         type === 'border' ? hideFills(clone) : hideStrokes(clone);
         hideEffects(clone);
-        removeRotation(clone);
+        removeTransform(clone);
 
         const { name, data } = await handleImage(clone, type, 'PNG', node.id);
         if (!data) return null;
 
-        if (clone.type === 'FRAME') {
-            // Restore children visibility
-            toggleChildren(clone, true);
-        }
-
-        type === 'border' ? restoreFills(clone, fills) : restoreStrokes(clone, strokes);
-        restoreEffects(clone, effects);
-        restoreRotation(clone, rotation);
 
         exportStage.remove();
 
@@ -107,16 +92,24 @@ class ImageExporter {
     }
 
     async exportMaskImage(node: MaskNode): Promise<{ name: string; data: Uint8Array | null } | null> {
-        node.originalNode.isMask = false;
+        const clone = (node.originalNode as SceneNode).clone() as NodesWithFillsAndStrokes;
+        const exportStage = figma.createFrame();
+        exportStage.name = 'TEMP EXPORT STAGE';
+        exportStage.fills = []; // Transparent
+        exportStage.x = 100000; // Move far away so user doesn't see flicker
+        exportStage.resize(currentPageSize.width, currentPageSize.height);
+        exportStage.clipsContent = false;
+        
+        figma.currentPage.appendChild(exportStage);
+        exportStage.appendChild(clone);
 
-        const originalName = node.originalNode.name;
-        node.originalNode.name = node.name;
+        clone.name = node.name;
+        clone.isMask = false;
 
-        const result = await this.exportImage(node.originalNode);
+        const result = await handleImage(clone, 'full', 'PNG', node.originalNode.id);
 
-        node.originalNode.name = originalName;
+        exportStage.remove();
 
-        node.originalNode.isMask = true;
         return result;
     }
 

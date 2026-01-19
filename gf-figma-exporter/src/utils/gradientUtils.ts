@@ -1,64 +1,72 @@
 import { extractLinearGradientParamsFromTransform } from '../../node_modules/@figma-plugin/helpers/dist/index';
 import createRGBAColor from './createRGBAColor';
-import {
-    getBottomProjectionOutsideBox,
-    getTopProjectionOutsideBox,
-    mapPercentToPointOnLine,
-    mapPointToPercentOnLine,
-} from './geometryUtils';
-
 import extractRadialOrDiamondGradientParams from './extractRadialOrDiamondGradientParams';
 import mixRgbaColors from './mixRGBAColors';
-
 
 export function linearGradientHandle(
     paint: GradientPaint,
     shapeWidth: number,
     shapeHeight: number,
-    shapeX: number,
-    shapeY: number
 ): { gradient: string } {
     const { start, end } = extractLinearGradientParamsFromTransform(shapeWidth, shapeHeight, paint.gradientTransform);
 
     // Calculate angle in degrees
-    const absoluteEnd = [end[0] + shapeY, end[1] + shapeX];
-    const absoluteStart = [start[0] + shapeY, start[1] + shapeX];
+    // const absoluteEnd = [end[0] + shapeY, end[1] + shapeX];
+    // const absoluteStart = [start[0] + shapeY, start[1] + shapeX];
 
-    const deltaX = absoluteStart[0] - absoluteEnd[0];
-    const deltaY = absoluteStart[1] - absoluteEnd[1];
-    const angleRad = Math.atan2(deltaY, deltaX);
-    const angleDeg = ((angleRad * 180) / Math.PI + 270) % 360; // Convert to degrees and adjust
+    const deltaX = end[0] - start[0];
+    const deltaY = end[1] - start[1];
+    const dyCartesian = -deltaY; // Invert Y axis for Cartesian coordinate system
+    const angleRad = Math.atan2(dyCartesian, deltaX);
+    const angleDeg = (90 - (angleRad * 180) / Math.PI + 360) % 360; // Convert to degrees and adjust
 
     // Get Color Stop start and end
+    const cssRad = (angleDeg * Math.PI) / 180;
 
-    const topLeftProjection = getTopProjectionOutsideBox(
-        { x: start[0], y: start[1] },
-        { x: end[0], y: end[1] },
-        { x: 0, y: 0, width: shapeWidth, height: shapeHeight }
-    );
+    // We project the corners onto the gradient vector to find the CSS 0% and 100%
+    // The gradient line direction vector (normalized):
+    const gx = Math.sin(cssRad);
+    const gy = -Math.cos(cssRad); // Y is flipped in CSS rendering logic
 
-    const bottomLeftProjection = getBottomProjectionOutsideBox(
-        { x: start[0], y: start[1] },
-        { x: end[0], y: end[1] },
-        { x: 0, y: 0, width: shapeWidth, height: shapeHeight }
-    );
+    // Find the extent of the shape along this gradient vector
+    // We project all 4 corners and find min/max projection
+    const corners = [
+        { x: 0, y: 0 },
+        { x: shapeWidth, y: 0 },
+        { x: shapeWidth, y: shapeHeight },
+        { x: 0, y: shapeHeight },
+    ];
 
+    let minProj = Infinity;
+    let maxProj = -Infinity;
+
+    corners.forEach((c) => {
+        // Project corner onto gradient vector: dot product
+        // (Relative to center doesn't matter for length, but helps visualization)
+        const proj = c.x * gx + c.y * gy;
+        if (proj < minProj) minProj = proj;
+        if (proj > maxProj) maxProj = proj;
+    });
+
+    const cssLength = maxProj - minProj;
+
+    // 4. Project Figma Start/End points onto the Gradient Vector
+    const startProj = start[0] * gx + start[1] * gy;
+    const endProj = end[0] * gx + end[1] * gy;
+
+    // 5. Map the Projections to Percentages relative to the CSS Box
+    // CSS 0% is at 'minProj', CSS 100% is at 'maxProj'
+    const getPercent = (proj: number) => (proj - minProj) / cssLength;
+
+    const realStartT = getPercent(startProj);
+    const realEndT = getPercent(endProj);
+
+    // 6. Adjust Stops
+    // NewPercent = StartT + (StopOffset * (EndT - StartT))
     const stops = paint.gradientStops
         .map((stop) => {
-            const { r, g, b, a } = stop.color;
-            const color = createRGBAColor(r, g, b, a);
-            const pointOnGradientLine = mapPercentToPointOnLine(
-                stop.position,
-                { x: start[0], y: start[1] },
-                { x: end[0], y: end[1] }
-            );
-            const percentOnSubLine =
-                angleDeg < 90 || angleDeg > 270 // If the gradient is going upwards or downwards
-                    ? mapPointToPercentOnLine(pointOnGradientLine, bottomLeftProjection!, topLeftProjection!)
-                    : mapPointToPercentOnLine(pointOnGradientLine, topLeftProjection!, bottomLeftProjection!);
-
-            const position = `${(percentOnSubLine * 100).toFixed(2)}%`;
-            return `${color} ${position}`;
+            const finalPercent = realStartT + stop.position * (realEndT - realStartT);
+            return `${createRGBAColor(stop.color.r, stop.color.g, stop.color.b, stop.color.a)} ${(finalPercent * 100).toFixed(2)}%`;
         })
         .join(', ');
 
