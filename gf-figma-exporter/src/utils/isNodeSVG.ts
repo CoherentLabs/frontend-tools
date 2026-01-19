@@ -1,4 +1,4 @@
-export default function isNodeSVG(node: SceneNode): boolean {
+export default function isNodeSVG(node: ExportableNodes): boolean {
     if (node.type === 'VECTOR' || node.type === 'BOOLEAN_OPERATION' || node.type === 'STAR' || node.type === 'LINE' || node.type === 'POLYGON') return true;
 
     if (node.type === 'ELLIPSE' && node.arcData && !isEllipseFullCircle(node)) return true;

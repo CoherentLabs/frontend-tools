@@ -12,6 +12,12 @@ class StyleManager {
         this.rules.delete(rule);
     }
 
+    update(rule: string, declaration: string) {
+        if (this.rules.has(rule)) {
+            this.rules.set(rule, declaration);
+        }
+    }
+
     getCSS(): string {
         let css = '';
         this.rules.forEach((declaration, rule) => {

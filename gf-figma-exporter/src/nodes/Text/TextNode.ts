@@ -3,6 +3,7 @@ import { TextSegment } from '../../types/commonTypes';
 import generateClassName from '../../utils/generateClassName';
 import CSSExporter from '../../CSSExporter/CSSExporter';
 import verticalAlignToFlex from '../../utils/verticalAlignToFlex';
+import { getTextStroke } from '../../CSSExporter/utils/fonts';
 
 class GFTextNode {
     node: TextNode;
@@ -13,6 +14,7 @@ class GFTextNode {
     constructor(node: TextNode) {
         this.node = node;
         this.textSegments = parseTextStyle(node);
+        console.log('Parsed Text Segments:', this.textSegments, 'from node:', node.name);
         this.images = [];
         this.className = generateClassName('text-node', this.node.id);
     }
@@ -30,13 +32,19 @@ class GFTextNode {
         const CSSExporterInstance = new CSSExporter(this.node);
         const textAlign = this.node.textAlignHorizontal;
 
+        const textStroke = getTextStroke(this.node);
+        if (textStroke) {
+            CSSExporterInstance.style.add('text-stroke-color', textStroke.color);
+            CSSExporterInstance.style.add('text-stroke-width', textStroke.width + 'vh');
+        }
+
         CSSExporterInstance.style.add('white-space', 'pre-wrap');
         CSSExporterInstance.style.add('text-align', textAlign.toLowerCase());
         CSSExporterInstance.style.add('align-items', verticalAlignToFlex(this.node.textAlignVertical));
         CSSExporterInstance.style.add('margin', '0'); // Reset default margin for <p> tag
         
         let css = `.${this.className} {
-            ${CSSExporterInstance.generateElementStyle()}
+            ${await CSSExporterInstance.generateElementStyle()}
         }
         \n\n`;
         for (const [index, segment] of this.textSegments.entries()) {

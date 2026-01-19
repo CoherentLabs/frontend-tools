@@ -14,7 +14,7 @@ export async function createClipPath(node: SVGNodes): Promise<string | null> {
     return `polygon(${polygon})`;
 }
 
-async function flattenPathToPolygons(path: string, width: number, height: number): Promise<string> {
+export async function flattenPathToPolygons(path: string, width: number, height: number): Promise<string> {
     const points = await flattenSVGPath(path, width, height, 1);
     if (points.length === 0) return '';
 
