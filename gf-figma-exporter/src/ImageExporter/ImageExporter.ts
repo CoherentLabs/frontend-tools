@@ -1,9 +1,15 @@
 import { ExportableNodes, MaskNode, NodesWithFillsAndStrokes } from '../types/commonTypes';
+import { currentPageSize } from '../utils/currentPage';
 import toggleChildren from '../utils/toggleChildren';
 import handleImage from './utils/handleImages';
 import shouldExportBackground from './utils/shouldExportBackground';
 import shouldExportStroke from './utils/shouldExportStroke';
-import { disableMask, enableMask, hideEffects, hideFills, hideStrokes, restoreEffects, restoreFills, restoreStrokes } from './utils/toggleUtils';
+import {
+    hideEffects,
+    hideFills,
+    hideStrokes,
+    removeTransform,
+} from './utils/toggleUtils';
 
 interface GFBackgroundAndStroke {
     background: {
@@ -18,12 +24,10 @@ interface GFBackgroundAndStroke {
 
 class ImageExporter {
     async export(node: NodesWithFillsAndStrokes): Promise<GFBackgroundAndStroke> {
-
         const result: GFBackgroundAndStroke = {
             background: null,
             border: null,
         };
-
 
         result.background = await this.exportBackgroundImage(node);
         result.border = await this.exportStrokeImage(node);
@@ -36,68 +40,46 @@ class ImageExporter {
     ): Promise<{ name: string; data: Uint8Array | null } | null> {
         if (!shouldExportBackground(node)) return null;
 
-        
-        if (node.type === 'FRAME') {
-            // Temporarily hide children to avoid exporting them in the background image
-            toggleChildren(node, false);
-        }
-        
-        const isMasked = node.getPluginData('masked-by') !== '';
-        const strokes = node.strokes;
-        const effects = node.effects;
-
-        // Hide strokes and effects to export only the background
-
-        hideStrokes(node);
-        hideEffects(node);
-        if (isMasked) await disableMask(node);
-
-        const { name, data } = await handleImage(node, 'background', 'PNG');
-        if (!data) return null;
-
-        if (node.type === 'FRAME') {
-            // Restore children visibility
-            toggleChildren(node, true);
-        }
-
-        restoreStrokes(node, strokes);
-        restoreEffects(node, effects);
-        if (isMasked) await enableMask(node);
-
-        return {
-            name,
-            data,
-        };
+        return await this.exportCleanImage(node, 'background');
     }
 
     async exportStrokeImage(node: NodesWithFillsAndStrokes): Promise<{ name: string; data: Uint8Array | null } | null> {
         if (!shouldExportStroke(node)) return null;
 
-        const isMasked = node.getPluginData('masked-by') !== '';
-        const fills = node.fills;
-        const effects = node.effects;
-        // Hide fills and effects to export only the stroke
+        return await this.exportCleanImage(node, 'border');
+    }
 
-        if (node.type === 'FRAME') {
+    private async exportCleanImage(
+        node: NodesWithFillsAndStrokes,
+        type: 'background' | 'border' | 'full'
+    ): Promise<{ name: string; data: Uint8Array | null } | null> {
+        const clone = node.clone() as NodesWithFillsAndStrokes;
+        const exportStage = figma.createFrame();
+        exportStage.name = 'TEMP EXPORT STAGE';
+        exportStage.fills = []; // Transparent
+        exportStage.x = 100000; // Move far away so user doesn't see flicker
+        exportStage.resize(currentPageSize.width, currentPageSize.height);
+        exportStage.clipsContent = false;
+
+        figma.currentPage.appendChild(exportStage);
+        exportStage.appendChild(clone);
+
+        if (clone.type === 'FRAME') {
             // Temporarily hide children to avoid exporting them in the background image
-            toggleChildren(node, false);
+            toggleChildren(clone, false);
         }
 
-        hideFills(node);
-        hideEffects(node);
-        if (isMasked) await disableMask(node);
+        // Hide strokes and effects to export only the background
 
-        const { name, data } = await handleImage(node, 'border', 'PNG');
+        type === 'border' ? hideFills(clone) : hideStrokes(clone);
+        hideEffects(clone);
+        removeTransform(clone);
+
+        const { name, data } = await handleImage(clone, type, 'PNG', node.id);
         if (!data) return null;
 
-        restoreFills(node, fills);
-        restoreEffects(node, effects);
-        if (isMasked) await enableMask(node);
 
-        if (node.type === 'FRAME') {
-            // Restore children visibility
-            toggleChildren(node, true);
-        }
+        exportStage.remove();
 
         return {
             name,
@@ -106,23 +88,37 @@ class ImageExporter {
     }
 
     async exportImage(node: ExportableNodes): Promise<{ name: string; data: Uint8Array | null } | null> {
-        return await handleImage((node as SceneNode), 'full', 'PNG');
+        return await handleImage(node as SceneNode, 'full', 'PNG');
     }
 
     async exportMaskImage(node: MaskNode): Promise<{ name: string; data: Uint8Array | null } | null> {
-        node.originalNode.isMask = false;
+        const clone = (node.originalNode as SceneNode).clone() as NodesWithFillsAndStrokes;
+        const exportStage = figma.createFrame();
+        exportStage.name = 'TEMP EXPORT STAGE';
+        exportStage.fills = []; // Transparent
+        exportStage.x = 100000; // Move far away so user doesn't see flicker
+        exportStage.resize(currentPageSize.width, currentPageSize.height);
+        exportStage.clipsContent = false;
+        
+        figma.currentPage.appendChild(exportStage);
+        exportStage.appendChild(clone);
 
-        const originalName = node.originalNode.name;
-        node.originalNode.name = node.name;
+        clone.name = node.name;
+        clone.isMask = false;
 
-        const result = await this.exportImage(node.originalNode);
+        const result = await handleImage(clone, 'full', 'PNG', node.originalNode.id);
 
-        node.originalNode.name = originalName;
+        exportStage.remove();
 
-        node.originalNode.isMask = true;
         return result;
     }
 
+    static shouldExportImage(node: NodesWithFillsAndStrokes): boolean {
+        if (shouldExportBackground(node) || shouldExportStroke(node)) {
+            return true;
+        }
+        return false;
+    }
 }
 
 export default ImageExporter;

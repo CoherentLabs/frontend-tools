@@ -7,6 +7,7 @@ import GFSVGNode from './nodes/SVGNode/SVGNode';
 import GFTextNode from './nodes/Text/TextNode';
 import { ExportableNodes, GFImage } from './types/commonTypes';
 import isNodeSVG from './utils/isNodeSVG';
+import { progress } from './utils/updateProgress';
 
 interface FactoryResult {
     html: string;
@@ -21,7 +22,7 @@ const NODE_TYPES = {
     ELLIPSE: GFEllipse,
     SVG: GFSVGNode,
     TEXT: GFTextNode,
-    INSTANCE: GFGroup,
+    INSTANCE: GFFrame,
     MASK: GFMask,
 };
 const TYPES = {
@@ -43,6 +44,8 @@ async function generateCode(node: ExportableNodes): Promise<FactoryResult> {
     const result = { html: '', css: '', images: [] as GFImage[] };
 
     if (!node.visible) return result;
+
+    progress.update(`Processing node: ${node.name}`);
 
     let type: ExportableNodes['type'] | "SVG" = node.type;
 

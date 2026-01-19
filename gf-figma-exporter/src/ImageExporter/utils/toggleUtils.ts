@@ -52,3 +52,18 @@ export async function enableMask(node: ExportableNodes) {
     if (!maskedBy) return;
     maskedBy.isMask = true;
 }
+
+export function removeRotation(node: PrimitiveNodes) {
+    node.rotation = 0;
+}
+
+export function restoreRotation(node: PrimitiveNodes, originalRotation: number) {
+    node.rotation = originalRotation;
+}
+
+export function removeTransform(node: PrimitiveNodes) {
+    node.relativeTransform = [
+        [1, 0, 0],
+        [0, 1, 0],
+    ];
+}

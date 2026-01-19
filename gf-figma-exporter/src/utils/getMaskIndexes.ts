@@ -2,9 +2,8 @@ import { ExportableNodes } from "../types/commonTypes";
 
 export default function getMaskIndexes(nodes: ExportableNodes[]): number[] {
     return nodes
-        .map((node) => 'isMask' in node ? node.isMask : false)
-        .reduce((indexes: number[], isMask: boolean, index: number) => {
-            if (isMask) {
+        .reduce((indexes: number[], node: ExportableNodes, index: number) => {
+            if (node.isMask || node.type === 'FRAME') {
                 indexes.push(index);
             }
             return indexes;

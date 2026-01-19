@@ -142,9 +142,9 @@ function handleBorderWidths(node: NodesWithFillsAndStrokes): string {
     return result;
 }
 
-function calculateElementWidthWithBorder(node: NodesWithFillsAndStrokes, bbox?: DOMRect): string {
+function calculateElementWidthWithBorder(node: NodesWithFillsAndStrokes | SVGNodes, bbox?: DOMRect): string {
     let result = '';
-    const {width, height} = calculateOffsetBorderSize(node, bbox);
+    const {width, height} = node.type === 'VECTOR' ? bbox! : calculateOffsetBorderSize(node, bbox);
 
     result += `width: ${convertPXtoVH(width).toFixed(2)}vh;\n`;
     result += `height: ${convertPXtoVH(height).toFixed(2)}vh;\n`;
