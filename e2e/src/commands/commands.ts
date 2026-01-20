@@ -74,10 +74,10 @@ export class GamefaceCommandsBase {
      * Will send DevTool command to the player
      */
     async sendCommand(method: string, params: any = {}): Promise<any> {
-        global.log.debug(`Executing command with method - ${method}, and params - ${JSON.stringify(params)}`);
-
         const id = Math.floor(Math.random() * 100000) + 1;
         const message = JSON.stringify({ id, method, params });
+
+        global.log.debug(`Executing command - ${message}`);
 
         return new Promise((resolve, reject) => {
             if (!method) return reject(new Error(`Command must have a method property`));
