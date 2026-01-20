@@ -1,0 +1,68 @@
+---
+title: 'element.dragTo'
+---
+
+## `element.dragTo(target: DOMElement | string, targetOffsetX?: number, targetOffsetY?: number): Promise<void>`
+
+Drags the current element to a target element or selector on screen.
+
+Performs a pointer drag from the center of the current element to a destination point computed relative to the target element. The destination offsets default to the center of the target when omitted or NaN, and are clamped so the dragged item remains within the visible bounds of the target.
+
+* **`target`**: The target DOM element or a CSS selector string to locate the target element.
+* **`targetOffsetX`**: (Optional) Horizontal offset in pixels inside the target element to drop onto. If undefined or NaN, defaults to target width / 2 (center).
+* **`targetOffsetY`**: (Optional) Vertical offset in pixels inside the target element to drop onto. If undefined or NaN, defaults to target height / 2 (center).
+* Returns a promise that resolves once the drag sequence (press → move → release) completes.
+
+:::note
+- Dragging is supported only for elements with drag functionality implemented via `mousedown`, `mousemove`, and `mouseup` events.
+- If the current element is not visible, it will be automatically scrolled into view before the drag.
+- The computed destination is adjusted so that the dragged item does not extend outside the target's area.
+:::
+
+:::caution
+Currently the framework is not cappable of dragging element to a target that is not in the visible viewport, you may need to drag the element a bit, scroll the viewport to make the target visible, and then complete the drag operation.
+
+Here is an example of how to achieve this:
+
+```js
+describe('Test script', function () {
+    it('Should drag and drop an element into another element', async () => {
+        const el = (await gf.get(`#draggable`));
+        const dropZoneEl = (await gf.get(`.drop-zone`));
+        await el.drag(500, 700);
+        await gf.scrollTo(0, 900)
+        await el.dragTo(dropZoneEl);
+        assert(await el.waitForPositionOnScreen({ x: 50, y: 570 }));
+    });
+});
+```
+:::
+
+## Usage
+
+### Drag by selector to the center of the target
+
+```js ins="await element.dragTo('#drop-zone');"
+describe('Test script', function () {
+    it('Drag to target by selector', async () => {
+        const element = await gf.get('.draggable-item');
+        await element.dragTo('#drop-zone');
+    });
+});
+```
+
+### Drag by element instance to a specific point inside the target
+
+```js ins="await element.dragTo(targetElement, 10, 20);"
+describe('Test script', function () {
+    it('Drag to target with offset', async () => {
+        const element = await gf.get('.draggable-item');
+        const targetElement = await gf.get('#drop-zone');
+        await element.dragTo(targetElement, 10, 20);
+    });
+});
+```
+
+:::note
+Text elements are not supported for dragging.
+:::
