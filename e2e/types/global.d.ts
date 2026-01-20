@@ -1,11 +1,6 @@
-import { gamefaceCommands } from '../dist/commands/commands';
+import { GamefaceCommands } from '../dist/commands/commands';
 import { Utils } from '../dist/utils';
 
-type IGamefaceCommandsMethods = {
-    [K in keyof typeof gamefaceCommands as typeof gamefaceCommands[K] extends Function ? K : never]: typeof gamefaceCommands[K];
-};
-
-type IGamefaceCommands = IGamefaceCommandsMethods;
 type IUtils = Utils;
 
 type GamefaceExclusions =
@@ -16,13 +11,14 @@ type GamefaceExclusions =
     | 'ws'
     | 'cohtmlJSPath'
     | 'player'
+    | 'commandTimeout'
     | 'pendingCommands';
 
 type UtilsExclusions =
     | '_retryInner'
     | 'getPressedKey';
 
-type FilteredGamefaceCommands = Omit<IGamefaceCommands, GamefaceExclusions>;
+type FilteredGamefaceCommands = Omit<GamefaceCommands, GamefaceExclusions>;
 type FilteredUtilMethods = Omit<IUtils, UtilsExclusions>;
 
 declare global {
