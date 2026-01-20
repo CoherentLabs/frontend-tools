@@ -222,6 +222,48 @@ describe('Test script', function () {
         // Should be 450, 450 because the element is 100x100 and the drag is 500, 500. Mouse is at the center of the element.
         assert(await el.waitForPositionOnScreen({ x: 450, y: 450 }));
     });
+
+    it('Should drag and drop an element inside another element', async () => {
+        const el = (await gf.get(`.draggable-item`));
+        const dropZoneEl = (await gf.get(`.drop-zone`));
+
+        await el.dragTo(dropZoneEl, 50, 50);
+        assert(await el.waitForPositionOnScreen({ x: 40, y: 560 }));
+
+        await el.dragTo(dropZoneEl);
+        assert(await el.waitForPositionOnScreen({ x: 90, y: 610 }));
+
+        await el.dragTo(dropZoneEl, 1000, 1000);
+        assert(await el.waitForPositionOnScreen({ x: 170, y: 690 }));
+
+        await el.dragTo(dropZoneEl, 0, 0);
+        assert(await el.waitForPositionOnScreen({ x: 10, y: 530 }));
+    });
+
+    it('Should drag element inside another element to the right/left and top/bottom', async () => {
+        const el = (await gf.get(`.draggable-item`));
+
+        await el.dragBy(50, 0);
+        assert(await el.waitForPositionOnScreen({ x: 60, y: 530 }));
+
+        await el.dragBy(0, 50);
+        assert(await el.waitForPositionOnScreen({ x: 60, y: 580 }));
+
+        await el.dragBy(-50, 0);
+        assert(await el.waitForPositionOnScreen({ x: 10, y: 580 }));
+
+        await el.dragBy(0, -50);
+        assert(await el.waitForPositionOnScreen({ x: 10, y: 530 }));
+    });
+
+    it('Should drag and drop an element into another element', async () => {
+        const el = (await gf.get(`#draggable`));
+        const dropZoneEl = (await gf.get(`.drop-zone`));
+        await el.drag(500, 700);
+        await gf.scrollTo(0, 900)
+        await el.dragTo(dropZoneEl);
+        assert(await el.waitForPositionOnScreen({ x: 50, y: 570 }));
+    });
 });
 
 describe('Test custom scripts', function () {

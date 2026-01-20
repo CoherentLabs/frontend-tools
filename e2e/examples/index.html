@@ -86,6 +86,7 @@
             width: 100px;
             height: 100px;
             background-color: white;
+            z-index: 10;
         }
 
         #draggable:focus {
@@ -135,6 +136,21 @@
             height: 50px;
             position: relative;
             display: flex;
+        }
+
+        .drop-zone {
+            width: 200px;
+            height: 200px;
+            border: 10px solid black;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .draggable-item {
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            position: absolute;
         }
     </style>
 </head>
@@ -214,6 +230,9 @@
         <button id="wait-for-visibility-false">Hide element</button>
         <button id="wait-for-visibility-true">Show element</button>
         <div id="wait-for-visiblity-assert-element">Wait for visibility element</div>
+    </div>
+    <div class="drop-zone">
+        <div class="draggable-item"></div>
     </div>
     <script>
         document.getElementById('wait-for-visibility-false').addEventListener('click', (event) => {
@@ -303,6 +322,41 @@
             startY = event.clientY - draggableElement.offsetTop;
             document.addEventListener('mousemove', moveElement);
             document.addEventListener('mouseup', stopDragging);
+        });
+
+        const draggableItem = document.querySelector('.draggable-item');
+        const dropZone = document.querySelector('.drop-zone');
+
+        draggableItem.addEventListener('mousedown', (event) => {
+            const zoneRect = dropZone.getBoundingClientRect();
+            const itemRect = draggableItem.getBoundingClientRect();
+
+            const shiftX = event.clientX - itemRect.left;
+            const shiftY = event.clientY - itemRect.top;
+
+            const maxWidth = zoneRect.width - itemRect.width;
+            const maxHeight = zoneRect.height - itemRect.height;
+            const BORDER = 20;
+            function onMouseMove(e) {
+                let newLeft = e.clientX - zoneRect.left - 10 - shiftX;
+                let newTop = e.clientY - zoneRect.top - 10 - shiftY;
+
+                if (newLeft < 0) newLeft = 0;
+                if (newLeft > maxWidth - BORDER) newLeft = maxWidth - BORDER;
+
+                if (newTop < 0) newTop = 0;
+                if (newTop > maxHeight - BORDER) newTop = maxHeight - BORDER;
+                draggableItem.style.left = `${newLeft}px`;
+                draggableItem.style.top = `${newTop}px`;
+            }
+
+            function onMouseUp() {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            }
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
         });
     </script>
 </body>
