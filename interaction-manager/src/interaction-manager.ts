@@ -13,9 +13,19 @@ import rotate from './lib_components/rotate';
 import resize from './lib_components/resize';
 import zoom from './lib_components/zoom';
 import touchGestures from './lib_components/touch-gestures';
+import { KeyName, KeyCode, KeyboardKey } from './utils/keyboard-mappings';
+import { ButtonInput, AxisInput, GamepadInput } from './utils/gamepad-mappings';
 
 import IM from './utils/global-object';
 
 IM.init();
 
 export { keyboard, gamepad, actions, spatialNavigation, draggable, dropzone, rotate, resize, zoom, touchGestures };
+export type {
+    KeyName, 
+    KeyCode, 
+    KeyboardKey,
+    ButtonInput,
+    AxisInput,
+    GamepadInput
+}
