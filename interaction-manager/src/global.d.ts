@@ -28,5 +28,4 @@ declare global {
     }
 }
 
-// 3. Essential: This makes the file a module so 'declare global' works
 export {};

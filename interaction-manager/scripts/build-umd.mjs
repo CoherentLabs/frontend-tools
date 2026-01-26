@@ -30,16 +30,30 @@ const buildUmd = async () => {
             build: {
                 outDir: 'dist',
                 emptyOutDir: false,
-                sourcemap: true,
+                sourcemap: false,
+                minify: false,
                 lib: {
                     entry: resolve(rootDir, `src/${mod}.ts`),
                     name: globalName,
                     formats: ['umd'],
                     fileName: () => `${mod}.js`
                 },
-                rollupOptions: {
-                    external: [], 
-                }
+            }
+        });
+
+        await build({
+            configFile: false, // Ignore the main vite config
+            build: {
+                outDir: 'dist',
+                emptyOutDir: false,
+                sourcemap: true,
+                minify: 'esbuild',
+                lib: {
+                    entry: resolve(rootDir, `src/${mod}.ts`),
+                    name: globalName,
+                    formats: ['umd'],
+                    fileName: () => `${mod}.min.js`
+                },
             }
         });
     }

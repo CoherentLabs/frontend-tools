@@ -19,17 +19,18 @@ export default defineConfig({
             ]
         })
     ],
+    esbuild: {
+        keepNames: true,
+    },
     build: {
         outDir: 'esm',
+        minify: false,
         sourcemap: true,
         lib: {
             entry: resolve(__dirname, 'src/interaction-manager.ts'),
             name: 'interaction-manager',
             formats: ['es'],
-            fileName: (format, name) => `${name}.js`,
-        },
-        rollupOptions: {
-            external: [],
+            fileName: (_, name) => `${name}.js`,
         },
     },
 });
