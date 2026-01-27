@@ -97,6 +97,14 @@ async function getConfig() {
           'https://npmjs.org/vite-gameface'
         ),
         {
+          label: 'Vite Solid Plugin Notice',
+          link: '/gameface-vite-plugin/vite-plugin-solid/',
+          badge: {
+            text: `Important`,
+            variant: 'caution',
+          },
+        },
+        {
           label: 'Getting Started',
           autogenerate: { directory: 'gameface-vite-plugin/getting-started' },
         },
