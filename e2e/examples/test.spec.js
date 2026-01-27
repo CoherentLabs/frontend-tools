@@ -260,7 +260,7 @@ describe('Test script', function () {
         const el = (await gf.get(`#draggable`));
         const dropZoneEl = (await gf.get(`.drop-zone`));
         await el.drag(500, 700);
-        await gf.scrollTo(0, 900)
+        await gf.scrollTo(0, 900);
         await el.dragTo(dropZoneEl);
         assert(await el.waitForPositionOnScreen({ x: 50, y: 570 }));
     });

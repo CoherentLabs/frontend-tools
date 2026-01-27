@@ -20,7 +20,7 @@ Performs a pointer drag from the center of the current element to a destination 
 :::
 
 :::caution
-Currently the framework is not cappable of dragging element to a target that is not in the visible viewport, you may need to drag the element a bit, scroll the viewport to make the target visible, and then complete the drag operation.
+Currently the framework is not capable of dragging element to a target that is not in the visible viewport, you may need to drag the element a bit, scroll the viewport to make the target visible, and then complete the drag operation.
 
 Here is an example of how to achieve this:
 
@@ -30,7 +30,7 @@ describe('Test script', function () {
         const el = (await gf.get(`#draggable`));
         const dropZoneEl = (await gf.get(`.drop-zone`));
         await el.drag(500, 700);
-        await gf.scrollTo(0, 900)
+        await gf.scrollTo(0, 900);
         await el.dragTo(dropZoneEl);
         assert(await el.waitForPositionOnScreen({ x: 50, y: 570 }));
     });

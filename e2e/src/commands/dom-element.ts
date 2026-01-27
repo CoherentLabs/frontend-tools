@@ -1,4 +1,4 @@
-import { retryIfFails, getPressedKey, KeyOptions, sleep } from "../utils";
+import { retryIfFails, getPressedKey, KeyOptions } from "../utils";
 import type { GamefaceCommands } from "./commands";
 
 export class DOMElements extends Array<DOMElement> {
@@ -1005,7 +1005,9 @@ export class DOMElement {
 
         if (!await this.isVisible()) await this.scrollIntoView();
         const [startX, startY] = await this._getCenter();
-        const { width: itemWidth, height: itemHeight } = (await this.getSize())!;
+        const itemSize = await this.getSize();
+        if (!itemSize) throw new Error(`Could not determine size of source element with id - ${this.nodeId}.`);
+        const { width: itemWidth, height: itemHeight } = itemSize;
 
         const targetSize = await targetElement.getSize();
         const targetPosition = await targetElement.getPositionOnScreen();
