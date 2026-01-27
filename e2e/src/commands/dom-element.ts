@@ -918,6 +918,125 @@ export class DOMElement {
     }
 
     /**
+     * Drags the element by the specified offsets (in pixels) relative to the element's center.
+     *
+     * @remarks
+     * - If the target node is a text node (nodeType === 3), dragging is not supported and the method returns early.
+     * - If the element is not visible, the method will attempt to scroll it into view before performing the drag.
+     * - The drag sequence is performed by:
+     *   1. Determining the element's center as the start point.
+     *   2. Performing a mouse press at the start point.
+     *   3. Moving the mouse to the computed target point (start + delta).
+     *   4. Releasing the mouse at the target point.
+     *
+     * @param deltaX - Horizontal offset in pixels to move from the element's center. Defaults to 0.
+     * @param deltaY - Vertical offset in pixels to move from the element's center. Defaults to 0.
+     * @returns A promise that resolves when the drag sequence completes, or rejects if underlying operations fail.
+     */
+    async dragBy(deltaX: number = 0, deltaY: number = 0): Promise<void> {
+        global.log.debug(`\n[DOMElement] Dragging node with id - ${this.nodeId}`);
+        if (this.node.nodeType === 3) {
+            global.log.warn(`Trying to drag text node that is not supported!`);
+            return;
+        }
+        if (!await this.isVisible()) await this.scrollIntoView();
+        const [startX, startY] = await this._getCenter();
+        const targetX = startX + deltaX;
+        const targetY = startY + deltaY;
+        await this.gamefaceCommands.mousePress(startX, startY);
+        await this.gamefaceCommands.mouseMove(targetX, targetY);
+        await this.gamefaceCommands.mouseRelease(targetX, targetY);
+    }
+
+    /**
+     * Drag this DOM element to a target element or selector on screen.
+     *
+     * Performs a pointer drag from the center of the current element to a destination point computed
+     * relative to the target element. If the current element is not visible it will be scrolled into view
+     * before the drag. The destination offsets default to the center of the target when omitted or NaN,
+     * and are clamped so the dragged item remains within the visible bounds of the target, taking the
+     * dragged element's size into account.
+     *
+     * @param target - The target DOM element or a selector string used to locate the target element.
+     *                 If a selector string is provided the element will be resolved before performing the drag.
+     * @param targetOffsetX - Horizontal offset (in pixels) inside the target element to drop onto.
+     *                        If undefined or NaN, defaults to target width / 2 (center).
+     * @param targetOffsetY - Vertical offset (in pixels) inside the target element to drop onto.
+     *                        If undefined or NaN, defaults to target height / 2 (center).
+     *
+     * @returns A promise that resolves once the drag sequence (press → move → release) completes.
+     *
+     * @throws Error if `target` is null or undefined.
+     * @throws Error if a selector string is provided but no matching target element can be found.
+     * @throws Error if the size or screen position of the target element cannot be determined.
+     *
+     * @remarks
+     * - Text nodes are not supported for dragging; in that case the method logs a warning and returns early.
+     * - The computed destination is adjusted so that the dragged item does not extend outside the target's area,
+     *   using half of the dragged item's dimensions as a buffer when clamping.
+     * - The method uses the screen coordinates of the target element to perform the mouse actions.
+     *
+     * @example
+     * // Drag by selector to the center of the target
+     * await element.dragTo('#drop-zone');
+     *
+     * @example
+     * // Drag by element instance to a specific point inside the target
+     * await element.dragTo(targetElement, 10, 20);
+     */
+    async dragTo(target: DOMElement | string, targetOffsetX?: number, targetOffsetY?: number): Promise<void> {
+        if (!target) throw new Error(`Target element for dragTo cannot be null or undefined.`);
+
+        if (this.node.nodeType === 3) {
+            global.log.warn(`Trying to drag text node that is not supported!`);
+            return;
+        }
+
+        let targetElement: DOMElement;
+        if (typeof target === 'string') {
+            const found = await this.gamefaceCommands.get(target);
+            if (!found) throw new Error(`Could not find target element with selector - ${target}.`);
+            targetElement = found;
+        } else {
+            targetElement = target;
+        }
+
+        global.log.debug(`\n[DOMElement] Dragging node ${this.nodeId} into target ${targetElement.nodeId}`);
+
+        if (!await this.isVisible()) await this.scrollIntoView();
+        const [startX, startY] = await this._getCenter();
+        const itemSize = await this.getSize();
+        if (!itemSize) throw new Error(`Could not determine size of source element with id - ${this.nodeId}.`);
+        const { width: itemWidth, height: itemHeight } = itemSize;
+
+        const targetSize = await targetElement.getSize();
+        const targetPosition = await targetElement.getPositionOnScreen();
+
+        if (!targetSize || !targetPosition) {
+            throw new Error(`Could not determine size or position of target element.`);
+        }
+
+        let destX = (targetOffsetX === undefined || isNaN(targetOffsetX)) ? targetSize.width / 2 : targetOffsetX;
+        let destY = (targetOffsetY === undefined || isNaN(targetOffsetY)) ? targetSize.height / 2 : targetOffsetY;
+
+        const minX = 0;
+        const maxX = targetSize.width - (itemWidth / 2);
+
+        const minY = 0;
+        const maxY = targetSize.height - (itemHeight / 2);
+
+        destX = Math.min(Math.max(destX, minX), maxX);
+        destY = Math.min(Math.max(destY, minY), maxY);
+
+        const finalX = targetPosition.x + destX;
+        const finalY = targetPosition.y + destY;
+
+        await this.gamefaceCommands.mousePress(startX, startY);
+        await this.gamefaceCommands.mouseMove(finalX, finalY);
+        await this.gamefaceCommands.mouseRelease(finalX, finalY);
+    }
+
+    /**
      * Scrolls the DOM element by the specified delta values.
      *
      * @param deltaX The amount to scroll horizontally.

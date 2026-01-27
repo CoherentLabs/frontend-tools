@@ -4,7 +4,16 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 2.2.0 :badge[Latest]{variant="note"}
+## 2.3.0 :badge[Latest]{variant="note"}
+
+<Badge text="Feature" variant="success" size="small" /> Introduced new drag methods for enhanced drag-and-drop testing capabilities.
+
+The newly added methods include:
+
+* [element.dragBy](/e2e/api/domelement/interactions/dragby/) - Drags an element by a relative offset from its center.
+* [element.dragTo](/e2e/api/domelement/interactions/dragto/) - Drags an element to a target element or selector with optional offset positioning.
+
+## 2.2.0
 
 <Badge text="New" variant="tip" size="small" /> **TypeScript Migration**: Converted project to TypeScript for improved safety and developer experience. API types are now globally available, allowing for automatic IDE support in .`spec.js` files without explicit imports.
 
