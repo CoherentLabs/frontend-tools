@@ -25,37 +25,24 @@ const buildUmd = async () => {
     for (const mod of modules) {
         const globalName = toCamelCase(mod);
 
-        await build({
+        const config  = (fileName, minify = false, sourcemap = false ) =>  ({
             configFile: false, // Ignore the main vite config
             build: {
                 outDir: 'dist',
                 emptyOutDir: false,
-                sourcemap: false,
-                minify: false,
+                sourcemap: sourcemap,
+                minify: minify,
                 lib: {
                     entry: resolve(rootDir, `src/${mod}.ts`),
                     name: globalName,
                     formats: ['umd'],
-                    fileName: () => `${mod}.js`
+                    fileName
                 },
             }
         });
 
-        await build({
-            configFile: false, // Ignore the main vite config
-            build: {
-                outDir: 'dist',
-                emptyOutDir: false,
-                sourcemap: true,
-                minify: 'esbuild',
-                lib: {
-                    entry: resolve(rootDir, `src/${mod}.ts`),
-                    name: globalName,
-                    formats: ['umd'],
-                    fileName: () => `${mod}.min.js`
-                },
-            }
-        });
+        await build(config(() => `${mod}.js`));  
+        await build(config(() => `${mod}.min.js`, 'esbuild', true));
     }
 };
 
