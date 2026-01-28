@@ -27,8 +27,8 @@ type AxisGamepadOptions = {
  * Gamepad class that handles all gamepad interactions
  */
 class Gamepad {
-    gamepadEnabled = false
-    pollingInterval = 200;
+    private _gamepadEnabled = false
+    private _pollingInterval = 200;
     private pollingIntervalRef?: NodeJS.Timeout;
     private _pressedAction: GamepadFunction | null = null;
     private _pressedButtons: GamepadButton[] = [];
@@ -36,13 +36,21 @@ class Gamepad {
     constructor() {
         this.sanitizeAction = this.sanitizeAction.bind(this);
     }
-
     /**
      * Allow gamepads to be connected
      */
     set enabled(isEnabled: boolean) {
-        this.gamepadEnabled = isEnabled;
-        this.gamepadEnabled ? this.startPolling() : this.stopPolling();
+        this._gamepadEnabled = isEnabled;
+        this._gamepadEnabled ? this.startPolling() : this.stopPolling();
+    }
+
+    set pollingInterval(interval: number) {
+        this._pollingInterval = interval;
+
+        if (this._gamepadEnabled) {
+            if (this.pollingIntervalRef) this.stopPolling();
+            this.startPolling();
+        }
     }
 
     /**
@@ -121,7 +129,7 @@ class Gamepad {
                 this.handleButtons(gamepad.buttons);
                 this.handleJoysticks(gamepad.axes);
             });
-        }, this.pollingInterval);
+        }, this._pollingInterval);
     }
 
     private stopPolling() {
