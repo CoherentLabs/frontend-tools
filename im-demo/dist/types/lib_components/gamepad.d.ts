@@ -15,8 +15,8 @@ type AxisGamepadOptions = {
  * Gamepad class that handles all gamepad interactions
  */
 declare class Gamepad {
-    gamepadEnabled: boolean;
-    pollingInterval: number;
+    private _gamepadEnabled;
+    private _pollingInterval;
     private pollingIntervalRef?;
     private _pressedAction;
     private _pressedButtons;
@@ -25,6 +25,7 @@ declare class Gamepad {
      * Allow gamepads to be connected
      */
     set enabled(isEnabled: boolean);
+    set pollingInterval(interval: number);
     /**
      *
      * @param {Object} options

@@ -250,8 +250,8 @@ This ${callbackType} is already registered for this combination and type. To upd
   var ACTION_TYPES = ["press", "hold"];
   var Gamepad = class {
     constructor() {
-      this.gamepadEnabled = false;
-      this.pollingInterval = 200;
+      this._gamepadEnabled = false;
+      this._pollingInterval = 200;
       this._pressedAction = null;
       this._pressedButtons = [];
       this.sanitizeAction = this.sanitizeAction.bind(this);
@@ -260,8 +260,15 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Allow gamepads to be connected
      */
     set enabled(isEnabled) {
-      this.gamepadEnabled = isEnabled;
-      this.gamepadEnabled ? this.startPolling() : this.stopPolling();
+      this._gamepadEnabled = isEnabled;
+      this._gamepadEnabled ? this.startPolling() : this.stopPolling();
+    }
+    set pollingInterval(interval) {
+      this._pollingInterval = interval;
+      if (this._gamepadEnabled) {
+        if (this.pollingIntervalRef) this.stopPolling();
+        this.startPolling();
+      }
     }
     on(options) {
       const actions = options.actions.map(this.sanitizeAction);
@@ -318,7 +325,7 @@ This ${callbackType} is already registered for this combination and type. To upd
           this.handleButtons(gamepad.buttons);
           this.handleJoysticks(gamepad.axes);
         });
-      }, this.pollingInterval);
+      }, this._pollingInterval);
     }
     stopPolling() {
       if (this.pollingIntervalRef) clearInterval(this.pollingIntervalRef);
