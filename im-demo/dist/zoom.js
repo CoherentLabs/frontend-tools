@@ -1,30 +1,7 @@
-"use strict";
-var zoom = (() => {
-  var __defProp = Object.defineProperty;
-  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-  var __getOwnPropNames = Object.getOwnPropertyNames;
-  var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __export = (target, all) => {
-    for (var name in all)
-      __defProp(target, name, { get: all[name], enumerable: true });
-  };
-  var __copyProps = (to, from, except, desc) => {
-    if (from && typeof from === "object" || typeof from === "function") {
-      for (let key of __getOwnPropNames(from))
-        if (!__hasOwnProp.call(to, key) && key !== except)
-          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-    }
-    return to;
-  };
-  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-
-  // src/zoom.ts
-  var zoom_exports = {};
-  __export(zoom_exports, {
-    default: () => zoom_default2
-  });
-
-  // src/utils/utility-functions.ts
+(function(global, factory) {
+  typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.zoom = factory());
+})(this, (function() {
+  "use strict";
   function toDeg(rad) {
     return rad * 180 / Math.PI;
   }
@@ -42,11 +19,8 @@ var zoom = (() => {
       y: (y1 + y2) / 2
     };
   }
-
-  // src/utils/global-object.ts
-  var IM = class _IM2 {
+  class IM {
     constructor() {
-      // eslint-disable-next-line require-jsdoc
       this.actions = [];
       this.keyboardFunctions = [];
       this.gamepadFunctions = [];
@@ -55,7 +29,7 @@ var zoom = (() => {
      * Initialize global object
      */
     init() {
-      if (!window._IM) window._IM = new _IM2();
+      if (!window._IM) window._IM = new IM();
     }
     /**
      * Get keyboard functions matching the given keys
@@ -72,24 +46,24 @@ var zoom = (() => {
     /**
      * Get a gamepad function matching the given button actions and type
      */
-    getGamepadAction({ actions, type }) {
+    getGamepadAction({ actions: actions2, type }) {
       return _IM.gamepadFunctions.find((gpFunc) => {
-        return gpFunc.actions.every((action) => actions.includes(action)) && gpFunc.type === type && gpFunc.actions.length === actions.length;
+        return gpFunc.actions.every((action) => actions2.includes(action)) && gpFunc.type === type && gpFunc.actions.length === actions2.length;
       });
     }
     /**
      * Get all gamepad functions matching the given button actions
      */
-    getGamepadActions(actions, exactMatch = true) {
+    getGamepadActions(actions2, exactMatch = true) {
       return _IM.gamepadFunctions.filter(
-        (gpFunc) => gpFunc.actions.every((action) => actions.includes(action)) && (exactMatch ? gpFunc.actions.length === actions.length : true)
+        (gpFunc) => gpFunc.actions.every((action) => actions2.includes(action)) && (exactMatch ? gpFunc.actions.length === actions2.length : true)
       );
     }
     /**
      * Get the index of a gamepad function matching the given button actions
      */
-    getGamepadActionIndex(actions) {
-      return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions.includes(action)));
+    getGamepadActionIndex(actions2) {
+      return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions2.includes(action)));
     }
     /**
      * Get an action by name
@@ -146,23 +120,21 @@ This ${callbackType} is already registered for this combination and type. To upd
       const index = _IM.gamepadFunctions.indexOf(functionEntry);
       if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
     }
-  };
-  var global_object_default = new IM();
-
-  // src/lib_components/actions.ts
-  var Actions = class {
+  }
+  const IM$1 = new IM();
+  class Actions {
     /**
      * Register an action
      */
     register(action, callback) {
-      if (global_object_default.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
+      if (IM$1.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
       _IM.actions.push({ name: action, callback });
     }
     /**
      * Remove a registered action
      */
     remove(action) {
-      const actionIndex = global_object_default.getActionIndex(action);
+      const actionIndex = IM$1.getActionIndex(action);
       if (actionIndex === -1) return console.error(`${action} is not a registered action!`);
       _IM.actions.splice(actionIndex, 1);
     }
@@ -170,14 +142,12 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Trigger an action
      */
     execute(action, value) {
-      const actionObject = global_object_default.getAction(action);
+      const actionObject = IM$1.getAction(action);
       if (!actionObject) return console.error(`${action} is not a registered action!`);
       actionObject.callback(value);
     }
-  };
-  var actions_default = new Actions();
-
-  // src/utils/gesture-utils.ts
+  }
+  const actions = new Actions();
   function getDirection(diffX, diffY) {
     const MIN_SWIPE_OFFSET = 200;
     if (diffY < 0 && diffX > -MIN_SWIPE_OFFSET && diffX < MIN_SWIPE_OFFSET) return "top";
@@ -192,10 +162,8 @@ This ${callbackType} is already registered for this combination and type. To upd
   function getElement(element) {
     return element instanceof HTMLElement ? element : document.querySelector(element);
   }
-
-  // src/lib_components/touch-gestures.ts
-  var MULTIPLE_TOUCHES_MIN_NUMBER = 2;
-  var TouchGestures = class {
+  const MULTIPLE_TOUCHES_MIN_NUMBER = 2;
+  class TouchGestures {
     constructor() {
       this.activeTouches = /* @__PURE__ */ new Map();
     }
@@ -505,11 +473,9 @@ This ${callbackType} is already registered for this combination and type. To upd
         }
       };
     }
-  };
-  var touch_gestures_default = new TouchGestures();
-
-  // src/lib_components/zoom.ts
-  var Zoom = class {
+  }
+  const touchGestures = new TouchGestures();
+  class Zoom {
     constructor(options) {
       this.enabled = false;
       this.actionName = `pan-and-zoom-${createHash()}`;
@@ -558,7 +524,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     onWheel(event) {
       event.preventDefault();
-      actions_default.execute(this.actionName, {
+      actions.execute(this.actionName, {
         x: event.clientX,
         y: event.clientY,
         zoomDirection: Math.sign(event.deltaY)
@@ -568,7 +534,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Registers the actions for the pan and zoom
      */
     registerActions() {
-      actions_default.register(this.actionName, ({ x, y, zoomDirection }) => {
+      actions.register(this.actionName, ({ x, y, zoomDirection }) => {
         const offset = this.calculateOffsets(x, y);
         this.options.onZoom && this.options.onZoom();
         const scale = Number((this.transform.scale - zoomDirection * this.options.zoomFactor).toFixed(5));
@@ -589,16 +555,16 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Removes the registered actions
      */
     removeActions() {
-      actions_default.remove(this.actionName);
+      actions.remove(this.actionName);
     }
     /**
      * Add pinch and stretch touch events
      */
     addTouchEvents() {
-      this.touchEvents = touch_gestures_default.pinch({
+      this.touchEvents = touchGestures.pinch({
         element: this.zoomableElement,
         callback: ({ pinchDelta, midpoint }) => {
-          actions_default.execute(this.actionName, {
+          actions.execute(this.actionName, {
             x: midpoint.x,
             y: midpoint.y,
             zoomDirection: Math.sign(pinchDelta) * -1
@@ -623,12 +589,7 @@ This ${callbackType} is already registered for this combination and type. To upd
         y: y - elementRect.y
       };
     }
-  };
-  var zoom_default = Zoom;
-
-  // src/zoom.ts
-  global_object_default.init();
-  var zoom_default2 = zoom_default;
-  return __toCommonJS(zoom_exports);
-})();
-if (typeof zoom !== 'undefined' && zoom.default) { zoom = zoom.default; }
+  }
+  IM$1.init();
+  return Zoom;
+}));

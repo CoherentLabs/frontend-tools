@@ -1,30 +1,7 @@
-"use strict";
-var touchGestures = (() => {
-  var __defProp = Object.defineProperty;
-  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-  var __getOwnPropNames = Object.getOwnPropertyNames;
-  var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __export = (target, all) => {
-    for (var name in all)
-      __defProp(target, name, { get: all[name], enumerable: true });
-  };
-  var __copyProps = (to, from, except, desc) => {
-    if (from && typeof from === "object" || typeof from === "function") {
-      for (let key of __getOwnPropNames(from))
-        if (!__hasOwnProp.call(to, key) && key !== except)
-          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-    }
-    return to;
-  };
-  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-
-  // src/touch-gestures.ts
-  var touch_gestures_exports = {};
-  __export(touch_gestures_exports, {
-    default: () => touch_gestures_default2
-  });
-
-  // src/utils/gesture-utils.ts
+(function(global, factory) {
+  typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.touchGestures = factory());
+})(this, (function() {
+  "use strict";
   function getDirection(diffX, diffY) {
     const MIN_SWIPE_OFFSET = 200;
     if (diffY < 0 && diffX > -MIN_SWIPE_OFFSET && diffX < MIN_SWIPE_OFFSET) return "top";
@@ -39,8 +16,6 @@ var touchGestures = (() => {
   function getElement(element) {
     return element instanceof HTMLElement ? element : document.querySelector(element);
   }
-
-  // src/utils/utility-functions.ts
   function toDeg(rad) {
     return rad * 180 / Math.PI;
   }
@@ -55,10 +30,8 @@ var touchGestures = (() => {
       y: (y1 + y2) / 2
     };
   }
-
-  // src/lib_components/touch-gestures.ts
-  var MULTIPLE_TOUCHES_MIN_NUMBER = 2;
-  var TouchGestures = class {
+  const MULTIPLE_TOUCHES_MIN_NUMBER = 2;
+  class TouchGestures {
     constructor() {
       this.activeTouches = /* @__PURE__ */ new Map();
     }
@@ -368,13 +341,10 @@ var touchGestures = (() => {
         }
       };
     }
-  };
-  var touch_gestures_default = new TouchGestures();
-
-  // src/utils/global-object.ts
-  var IM = class _IM2 {
+  }
+  const TouchGestures$1 = new TouchGestures();
+  class IM {
     constructor() {
-      // eslint-disable-next-line require-jsdoc
       this.actions = [];
       this.keyboardFunctions = [];
       this.gamepadFunctions = [];
@@ -383,7 +353,7 @@ var touchGestures = (() => {
      * Initialize global object
      */
     init() {
-      if (!window._IM) window._IM = new _IM2();
+      if (!window._IM) window._IM = new IM();
     }
     /**
      * Get keyboard functions matching the given keys
@@ -474,12 +444,8 @@ This ${callbackType} is already registered for this combination and type. To upd
       const index = _IM.gamepadFunctions.indexOf(functionEntry);
       if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
     }
-  };
-  var global_object_default = new IM();
-
-  // src/touch-gestures.ts
-  global_object_default.init();
-  var touch_gestures_default2 = touch_gestures_default;
-  return __toCommonJS(touch_gestures_exports);
-})();
-if (typeof touchGestures !== 'undefined' && touchGestures.default) { touchGestures = touchGestures.default; }
+  }
+  const IM$1 = new IM();
+  IM$1.init();
+  return TouchGestures$1;
+}));

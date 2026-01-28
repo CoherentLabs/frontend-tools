@@ -1,38 +1,12 @@
-"use strict";
-var spatialNavigation = (() => {
-  var __defProp = Object.defineProperty;
-  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-  var __getOwnPropNames = Object.getOwnPropertyNames;
-  var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __export = (target, all) => {
-    for (var name in all)
-      __defProp(target, name, { get: all[name], enumerable: true });
-  };
-  var __copyProps = (to, from, except, desc) => {
-    if (from && typeof from === "object" || typeof from === "function") {
-      for (let key of __getOwnPropNames(from))
-        if (!__hasOwnProp.call(to, key) && key !== except)
-          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-    }
-    return to;
-  };
-  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-
-  // src/spatial-navigation.ts
-  var spatial_navigation_exports = {};
-  __export(spatial_navigation_exports, {
-    default: () => spatial_navigation_default2
-  });
-
-  // src/utils/utility-functions.ts
+(function(global, factory) {
+  typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.spatialNavigation = factory());
+})(this, (function() {
+  "use strict";
   function toDeg(rad) {
     return rad * 180 / Math.PI;
   }
-
-  // src/utils/global-object.ts
-  var IM = class _IM2 {
+  class IM {
     constructor() {
-      // eslint-disable-next-line require-jsdoc
       this.actions = [];
       this.keyboardFunctions = [];
       this.gamepadFunctions = [];
@@ -41,7 +15,7 @@ var spatialNavigation = (() => {
      * Initialize global object
      */
     init() {
-      if (!window._IM) window._IM = new _IM2();
+      if (!window._IM) window._IM = new IM();
     }
     /**
      * Get keyboard functions matching the given keys
@@ -58,24 +32,24 @@ var spatialNavigation = (() => {
     /**
      * Get a gamepad function matching the given button actions and type
      */
-    getGamepadAction({ actions, type }) {
+    getGamepadAction({ actions: actions2, type }) {
       return _IM.gamepadFunctions.find((gpFunc) => {
-        return gpFunc.actions.every((action) => actions.includes(action)) && gpFunc.type === type && gpFunc.actions.length === actions.length;
+        return gpFunc.actions.every((action) => actions2.includes(action)) && gpFunc.type === type && gpFunc.actions.length === actions2.length;
       });
     }
     /**
      * Get all gamepad functions matching the given button actions
      */
-    getGamepadActions(actions, exactMatch = true) {
+    getGamepadActions(actions2, exactMatch = true) {
       return _IM.gamepadFunctions.filter(
-        (gpFunc) => gpFunc.actions.every((action) => actions.includes(action)) && (exactMatch ? gpFunc.actions.length === actions.length : true)
+        (gpFunc) => gpFunc.actions.every((action) => actions2.includes(action)) && (exactMatch ? gpFunc.actions.length === actions2.length : true)
       );
     }
     /**
      * Get the index of a gamepad function matching the given button actions
      */
-    getGamepadActionIndex(actions) {
-      return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions.includes(action)));
+    getGamepadActionIndex(actions2) {
+      return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions2.includes(action)));
     }
     /**
      * Get an action by name
@@ -132,23 +106,21 @@ This ${callbackType} is already registered for this combination and type. To upd
       const index = _IM.gamepadFunctions.indexOf(functionEntry);
       if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
     }
-  };
-  var global_object_default = new IM();
-
-  // src/lib_components/actions.ts
-  var Actions = class {
+  }
+  const IM$1 = new IM();
+  class Actions {
     /**
      * Register an action
      */
     register(action, callback) {
-      if (global_object_default.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
+      if (IM$1.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
       _IM.actions.push({ name: action, callback });
     }
     /**
      * Remove a registered action
      */
     remove(action) {
-      const actionIndex = global_object_default.getActionIndex(action);
+      const actionIndex = IM$1.getActionIndex(action);
       if (actionIndex === -1) return console.error(`${action} is not a registered action!`);
       _IM.actions.splice(actionIndex, 1);
     }
@@ -156,15 +128,13 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Trigger an action
      */
     execute(action, value) {
-      const actionObject = global_object_default.getAction(action);
+      const actionObject = IM$1.getAction(action);
       if (!actionObject) return console.error(`${action} is not a registered action!`);
       actionObject.callback(value);
     }
-  };
-  var actions_default = new Actions();
-
-  // src/utils/keyboard-mappings.ts
-  var mappings = {
+  }
+  const actions = new Actions();
+  const mappings$1 = {
     ALT: 18,
     ARROW_DOWN: 40,
     ARROW_LEFT: 37,
@@ -265,17 +235,14 @@ This ${callbackType} is already registered for this combination and type. To upd
     EQUAL: 187,
     SYSTEM: 91
   };
-  var mappingsKeys = Object.keys(mappings);
-  var keyboard_mappings_default = mappings;
-
-  // src/lib_components/keyboard.ts
-  var Keyboard = class {
+  const mappingsKeys = Object.keys(mappings$1);
+  class Keyboard {
     constructor() {
       this.eventListenerAttached = false;
       this.keysPressed = /* @__PURE__ */ new Set();
       this.onKeyDown = this.onKeyDown.bind(this);
       this.onKeyUp = this.onKeyUp.bind(this);
-      if (!window.KEYS) window.KEYS = keyboard_mappings_default;
+      if (!window.KEYS) window.KEYS = mappings$1;
     }
     /**
      * Registers keyboard event listeners
@@ -286,7 +253,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     on(options) {
       const keys = this.normalizeKeys(options.keys);
-      const incorrectKeys = keys.filter((key) => !keyboard_mappings_default[key]);
+      const incorrectKeys = keys.filter((key) => !mappings$1[key]);
       if (incorrectKeys.length > 0) return console.error(`The following keys [${incorrectKeys.join(", ")}] you have entered are incorrect! `);
       if (!this.eventListenerAttached) {
         document.addEventListener("keydown", this.onKeyDown);
@@ -295,10 +262,10 @@ This ${callbackType} is already registered for this combination and type. To upd
       }
       const types = !options.type ? ["press"] : Array.isArray(options.type) ? options.type : [options.type];
       types.forEach((type) => {
-        const registeredKeys = global_object_default.getKeys(keys);
+        const registeredKeys = IM$1.getKeys(keys);
         const existingEntry = registeredKeys.find((key) => key.type === type);
         if (existingEntry) {
-          return global_object_default.addCallbackToEntry(existingEntry, options.callback, {
+          return IM$1.addCallbackToEntry(existingEntry, options.callback, {
             identifier: `Keys: [${keys.join(", ")}]`,
             type
           });
@@ -318,7 +285,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     off(keys, callback) {
       keys = this.normalizeKeys(keys);
-      const keyCombinations = global_object_default.getKeys(keys);
+      const keyCombinations = IM$1.getKeys(keys);
       if (keyCombinations.length === 0) return console.error("You are trying to remove a non-existent key combination!");
       if (callback) {
         const combinationsWithCallback = keyCombinations.filter((combination) => combination.callbacks.includes(callback));
@@ -329,12 +296,12 @@ This ${callbackType} is already registered for this combination and type. To upd
           const cbIndex = combination.callbacks.indexOf(callback);
           combination.callbacks.splice(cbIndex, 1);
           if (combination.callbacks.length === 0) {
-            global_object_default.removeKeyboardFunction(combination);
+            IM$1.removeKeyboardFunction(combination);
           }
         });
       } else {
         keyCombinations.forEach((combination) => {
-          global_object_default.removeKeyboardFunction(combination);
+          IM$1.removeKeyboardFunction(combination);
         });
       }
       if (_IM.keyboardFunctions.length === 0) {
@@ -350,7 +317,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       const keyPressed = this.keyCodeToString(event.keyCode);
       if (!keyPressed) return;
       this.keysPressed.add(keyPressed);
-      const registeredKeys = global_object_default.getKeys([...this.keysPressed]);
+      const registeredKeys = IM$1.getKeys([...this.keysPressed]);
       if (registeredKeys.length === 0) return;
       registeredKeys.forEach((key) => {
         if (key.type === "press" && event.repeat) return;
@@ -366,7 +333,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       const keyPressed = this.keyCodeToString(event.keyCode);
       if (!keyPressed) return;
       this.keysPressed.delete(keyPressed);
-      const registeredKeys = global_object_default.getKeys([keyPressed]);
+      const registeredKeys = IM$1.getKeys([keyPressed]);
       if (registeredKeys.length === 0) return;
       registeredKeys.forEach((key) => {
         if (key.type === "lift" && key.keys.indexOf(keyPressed) !== -1) this.executeCallbacks(event, key);
@@ -376,7 +343,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Convert keyCode to string representing key
      */
     keyCodeToString(code) {
-      return mappingsKeys.find((key) => keyboard_mappings_default[key] === code);
+      return mappingsKeys.find((key) => mappings$1[key] === code);
     }
     /**
      * Removes duplicates and converts KeyCodes to valid KeyName strings
@@ -402,15 +369,13 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     executeCallbacks(event, registeredKeys) {
       registeredKeys.callbacks.forEach((callback) => {
-        if (typeof callback === "string") return actions_default.execute(callback, event);
+        if (typeof callback === "string") return actions.execute(callback, event);
         callback(event);
       });
     }
-  };
-  var keyboard_default = new Keyboard();
-
-  // src/utils/gamepad-mappings.ts
-  var mappings2 = {
+  }
+  const keyboard = new Keyboard();
+  const mappings = {
     FACE_BUTTON_DOWN: 0,
     FACE_BUTTON_RIGHT: 1,
     FACE_BUTTON_LEFT: 2,
@@ -494,12 +459,9 @@ This ${callbackType} is already registered for this combination and type. To upd
       "right.joystick.right"
     ]
   };
-  var gamepad_mappings_default = mappings2;
-
-  // src/lib_components/gamepad.ts
-  var AXIS_THRESHOLD = 0.9;
-  var ACTION_TYPES = ["press", "hold"];
-  var Gamepad = class {
+  const AXIS_THRESHOLD = 0.9;
+  const ACTION_TYPES = ["press", "hold"];
+  class Gamepad {
     constructor() {
       this._gamepadEnabled = false;
       this._pollingInterval = 200;
@@ -522,31 +484,31 @@ This ${callbackType} is already registered for this combination and type. To upd
       }
     }
     on(options) {
-      const actions = options.actions.map(this.sanitizeAction);
-      const isAxisAlias = gamepad_mappings_default.axisAliases.some((alias) => actions.includes(alias));
+      const actions2 = options.actions.map(this.sanitizeAction);
+      const isAxisAlias = mappings.axisAliases.some((alias) => actions2.includes(alias));
       const type = options.type && ACTION_TYPES.includes(options.type) ? options.type : "hold";
       if (type === "press" && isAxisAlias) {
         return console.error(`You can't use an axis action with a 'press' type!`);
       }
-      if (actions.length > 1 && isAxisAlias) {
+      if (actions2.length > 1 && isAxisAlias) {
         return console.error(`You can't use an axis action in a combination with a button action`);
       }
-      const existingEntry = global_object_default.getGamepadAction({ actions, type });
+      const existingEntry = IM$1.getGamepadAction({ actions: actions2, type });
       if (existingEntry) {
-        return global_object_default.addCallbackToEntry(existingEntry, options.callback, {
-          identifier: `Actions: [${actions.join(", ")}]`,
+        return IM$1.addCallbackToEntry(existingEntry, options.callback, {
+          identifier: `Actions: [${actions2.join(", ")}]`,
           type
         });
       }
-      _IM.gamepadFunctions.push({ actions, type, callbacks: [options.callback] });
+      _IM.gamepadFunctions.push({ actions: actions2, type, callbacks: [options.callback] });
     }
     /**
      * Removes either an action or a callback from the provided action
      * @param {Array} actions - Array containing the action you want to remove
      * @param {string | Function} callback - Callback or action you want to remove 
      */
-    off(actions, callback) {
-      const matchingActions = global_object_default.getGamepadActions(actions.map(this.sanitizeAction));
+    off(actions2, callback) {
+      const matchingActions = IM$1.getGamepadActions(actions2.map(this.sanitizeAction));
       if (matchingActions.length === 0) {
         return console.error("You are trying to remove a non-existent action!");
       }
@@ -557,11 +519,11 @@ This ${callbackType} is already registered for this combination and type. To upd
           const cbIndex = action.callbacks.indexOf(callback);
           action.callbacks.splice(cbIndex, 1);
           if (action.callbacks.length === 0) {
-            global_object_default.removeGamepadFunction(action);
+            IM$1.removeGamepadFunction(action);
           }
         });
       } else {
-        matchingActions.forEach((action) => global_object_default.removeGamepadFunction(action));
+        matchingActions.forEach((action) => IM$1.removeGamepadFunction(action));
       }
     }
     /**
@@ -571,10 +533,10 @@ This ${callbackType} is already registered for this combination and type. To upd
       this.pollingIntervalRef = setInterval(() => {
         const gamepads = navigator.getGamepads();
         if (gamepads.length === 0) return;
-        gamepads.forEach((gamepad) => {
-          if (!gamepad) return;
-          this.handleButtons(gamepad.buttons);
-          this.handleJoysticks(gamepad.axes);
+        gamepads.forEach((gamepad2) => {
+          if (!gamepad2) return;
+          this.handleButtons(gamepad2.buttons);
+          this.handleJoysticks(gamepad2.axes);
         });
       }, this._pollingInterval);
     }
@@ -592,7 +554,7 @@ This ${callbackType} is already registered for this combination and type. To upd
         },
         { buttonIndexes: [], buttons: [] }
       );
-      const gamepadActions = global_object_default.getGamepadActions(pressedButtons.buttonIndexes, false);
+      const gamepadActions = IM$1.getGamepadActions(pressedButtons.buttonIndexes, false);
       if (this._pressedAction) {
         if (!gamepadActions.includes(this._pressedAction)) {
           this.executeCallbacks(this._pressedAction, this._pressedButtons);
@@ -652,33 +614,31 @@ This ${callbackType} is already registered for this combination and type. To upd
     sanitizeAction(action) {
       if (typeof action === "number") return action;
       const actionName = action.toLowerCase();
-      if (gamepad_mappings_default.axisAliases.includes(actionName)) return actionName;
-      const key = gamepad_mappings_default.aliases[actionName];
-      if (key) return gamepad_mappings_default[key];
+      if (mappings.axisAliases.includes(actionName)) return actionName;
+      const key = mappings.aliases[actionName];
+      if (key) return mappings[key];
       throw new Error(`You have entered a non-supported button alias: ${action}`);
     }
     /**
      * Gets all registered Joystick actions
      */
     getJoystickActions() {
-      return _IM.gamepadFunctions.filter((gpFunc) => gamepad_mappings_default.axisAliases.includes(gpFunc.actions[0]));
+      return _IM.gamepadFunctions.filter((gpFunc) => mappings.axisAliases.includes(gpFunc.actions[0]));
     }
     /**
      * Executes the callbacks from the registered action
      */
     executeCallbacks(action, value) {
       action.callbacks.forEach((callback) => {
-        if (typeof callback === "string") return actions_default.execute(callback, value);
+        if (typeof callback === "string") return actions.execute(callback, value);
         callback(value);
       });
     }
-  };
-  var gamepad_default = new Gamepad();
-
-  // src/lib_components/spatial-navigation.ts
-  var directions = ["down", "up", "left", "right"];
-  var defaultKeysState = { up: ["arrow_up"], down: ["arrow_down"], right: ["arrow_right"], left: ["arrow_left"] };
-  var SpatialNavigation = class {
+  }
+  const gamepad = new Gamepad();
+  const directions = ["down", "up", "left", "right"];
+  const defaultKeysState = { up: ["arrow_up"], down: ["arrow_down"], right: ["arrow_right"], left: ["arrow_left"] };
+  class SpatialNavigation {
     constructor() {
       this.enabled = false;
       this.areas = { default: { elements: [], distance: 0, overflow: { x: 0, y: 0 } } };
@@ -1015,17 +975,17 @@ This ${callbackType} is already registered for this combination and type. To upd
           if (this.paused) return;
           this.moveFocus(direction);
         };
-        actions_default.register(`move-focus-${direction}`, callback);
+        actions.register(`move-focus-${direction}`, callback);
         const keys = this.activeKeys[direction];
         for (const key of keys) {
-          keyboard_default.on({
+          keyboard.on({
             keys: [key],
             callback: `move-focus-${direction}`,
             type: ["press", "hold"]
           });
           this.registeredKeys.add(key);
         }
-        gamepad_default.on({
+        gamepad.on({
           actions: [`playstation.d-pad-${direction}`],
           callback: `move-focus-${direction}`
         });
@@ -1069,10 +1029,10 @@ This ${callbackType} is already registered for this combination and type. To upd
         directions.forEach((direction) => {
           const actionName = `move-focus-${direction}`;
           for (const key of this.activeKeys[direction]) {
-            keyboard_default.off([key], actionName);
+            keyboard.off([key], actionName);
           }
-          actions_default.remove(actionName);
-          gamepad_default.off([`playstation.d-pad-${direction}`], actionName);
+          actions.remove(actionName);
+          gamepad.off([`playstation.d-pad-${direction}`], actionName);
           if (this.clearCurrentActiveKeys) this.activeKeys[direction] = [];
         });
         this.registeredKeys.clear();
@@ -1156,12 +1116,8 @@ This ${callbackType} is already registered for this combination and type. To upd
       if (!this.enabled) return;
       this.paused = false;
     }
-  };
-  var spatial_navigation_default = new SpatialNavigation();
-
-  // src/spatial-navigation.ts
-  global_object_default.init();
-  var spatial_navigation_default2 = spatial_navigation_default;
-  return __toCommonJS(spatial_navigation_exports);
-})();
-if (typeof spatialNavigation !== 'undefined' && spatialNavigation.default) { spatialNavigation = spatialNavigation.default; }
+  }
+  const SpatialNavigation$1 = new SpatialNavigation();
+  IM$1.init();
+  return SpatialNavigation$1;
+}));

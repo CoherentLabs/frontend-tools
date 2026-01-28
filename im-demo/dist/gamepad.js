@@ -1,31 +1,8 @@
-"use strict";
-var gamepad = (() => {
-  var __defProp = Object.defineProperty;
-  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-  var __getOwnPropNames = Object.getOwnPropertyNames;
-  var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __export = (target, all) => {
-    for (var name in all)
-      __defProp(target, name, { get: all[name], enumerable: true });
-  };
-  var __copyProps = (to, from, except, desc) => {
-    if (from && typeof from === "object" || typeof from === "function") {
-      for (let key of __getOwnPropNames(from))
-        if (!__hasOwnProp.call(to, key) && key !== except)
-          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-    }
-    return to;
-  };
-  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-
-  // src/gamepad.ts
-  var gamepad_exports = {};
-  __export(gamepad_exports, {
-    default: () => gamepad_default2
-  });
-
-  // src/utils/gamepad-mappings.ts
-  var mappings = {
+(function(global, factory) {
+  typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.gamepad = factory());
+})(this, (function() {
+  "use strict";
+  const mappings = {
     FACE_BUTTON_DOWN: 0,
     FACE_BUTTON_RIGHT: 1,
     FACE_BUTTON_LEFT: 2,
@@ -109,12 +86,8 @@ var gamepad = (() => {
       "right.joystick.right"
     ]
   };
-  var gamepad_mappings_default = mappings;
-
-  // src/utils/global-object.ts
-  var IM = class _IM2 {
+  class IM {
     constructor() {
-      // eslint-disable-next-line require-jsdoc
       this.actions = [];
       this.keyboardFunctions = [];
       this.gamepadFunctions = [];
@@ -123,7 +96,7 @@ var gamepad = (() => {
      * Initialize global object
      */
     init() {
-      if (!window._IM) window._IM = new _IM2();
+      if (!window._IM) window._IM = new IM();
     }
     /**
      * Get keyboard functions matching the given keys
@@ -214,23 +187,21 @@ This ${callbackType} is already registered for this combination and type. To upd
       const index = _IM.gamepadFunctions.indexOf(functionEntry);
       if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
     }
-  };
-  var global_object_default = new IM();
-
-  // src/lib_components/actions.ts
-  var Actions = class {
+  }
+  const IM$1 = new IM();
+  class Actions {
     /**
      * Register an action
      */
     register(action, callback) {
-      if (global_object_default.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
+      if (IM$1.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
       _IM.actions.push({ name: action, callback });
     }
     /**
      * Remove a registered action
      */
     remove(action) {
-      const actionIndex = global_object_default.getActionIndex(action);
+      const actionIndex = IM$1.getActionIndex(action);
       if (actionIndex === -1) return console.error(`${action} is not a registered action!`);
       _IM.actions.splice(actionIndex, 1);
     }
@@ -238,17 +209,15 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Trigger an action
      */
     execute(action, value) {
-      const actionObject = global_object_default.getAction(action);
+      const actionObject = IM$1.getAction(action);
       if (!actionObject) return console.error(`${action} is not a registered action!`);
       actionObject.callback(value);
     }
-  };
-  var actions_default = new Actions();
-
-  // src/lib_components/gamepad.ts
-  var AXIS_THRESHOLD = 0.9;
-  var ACTION_TYPES = ["press", "hold"];
-  var Gamepad = class {
+  }
+  const Actions$1 = new Actions();
+  const AXIS_THRESHOLD = 0.9;
+  const ACTION_TYPES = ["press", "hold"];
+  class Gamepad {
     constructor() {
       this._gamepadEnabled = false;
       this._pollingInterval = 200;
@@ -272,7 +241,7 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
     on(options) {
       const actions = options.actions.map(this.sanitizeAction);
-      const isAxisAlias = gamepad_mappings_default.axisAliases.some((alias) => actions.includes(alias));
+      const isAxisAlias = mappings.axisAliases.some((alias) => actions.includes(alias));
       const type = options.type && ACTION_TYPES.includes(options.type) ? options.type : "hold";
       if (type === "press" && isAxisAlias) {
         return console.error(`You can't use an axis action with a 'press' type!`);
@@ -280,9 +249,9 @@ This ${callbackType} is already registered for this combination and type. To upd
       if (actions.length > 1 && isAxisAlias) {
         return console.error(`You can't use an axis action in a combination with a button action`);
       }
-      const existingEntry = global_object_default.getGamepadAction({ actions, type });
+      const existingEntry = IM$1.getGamepadAction({ actions, type });
       if (existingEntry) {
-        return global_object_default.addCallbackToEntry(existingEntry, options.callback, {
+        return IM$1.addCallbackToEntry(existingEntry, options.callback, {
           identifier: `Actions: [${actions.join(", ")}]`,
           type
         });
@@ -295,7 +264,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * @param {string | Function} callback - Callback or action you want to remove 
      */
     off(actions, callback) {
-      const matchingActions = global_object_default.getGamepadActions(actions.map(this.sanitizeAction));
+      const matchingActions = IM$1.getGamepadActions(actions.map(this.sanitizeAction));
       if (matchingActions.length === 0) {
         return console.error("You are trying to remove a non-existent action!");
       }
@@ -306,11 +275,11 @@ This ${callbackType} is already registered for this combination and type. To upd
           const cbIndex = action.callbacks.indexOf(callback);
           action.callbacks.splice(cbIndex, 1);
           if (action.callbacks.length === 0) {
-            global_object_default.removeGamepadFunction(action);
+            IM$1.removeGamepadFunction(action);
           }
         });
       } else {
-        matchingActions.forEach((action) => global_object_default.removeGamepadFunction(action));
+        matchingActions.forEach((action) => IM$1.removeGamepadFunction(action));
       }
     }
     /**
@@ -341,7 +310,7 @@ This ${callbackType} is already registered for this combination and type. To upd
         },
         { buttonIndexes: [], buttons: [] }
       );
-      const gamepadActions = global_object_default.getGamepadActions(pressedButtons.buttonIndexes, false);
+      const gamepadActions = IM$1.getGamepadActions(pressedButtons.buttonIndexes, false);
       if (this._pressedAction) {
         if (!gamepadActions.includes(this._pressedAction)) {
           this.executeCallbacks(this._pressedAction, this._pressedButtons);
@@ -401,32 +370,28 @@ This ${callbackType} is already registered for this combination and type. To upd
     sanitizeAction(action) {
       if (typeof action === "number") return action;
       const actionName = action.toLowerCase();
-      if (gamepad_mappings_default.axisAliases.includes(actionName)) return actionName;
-      const key = gamepad_mappings_default.aliases[actionName];
-      if (key) return gamepad_mappings_default[key];
+      if (mappings.axisAliases.includes(actionName)) return actionName;
+      const key = mappings.aliases[actionName];
+      if (key) return mappings[key];
       throw new Error(`You have entered a non-supported button alias: ${action}`);
     }
     /**
      * Gets all registered Joystick actions
      */
     getJoystickActions() {
-      return _IM.gamepadFunctions.filter((gpFunc) => gamepad_mappings_default.axisAliases.includes(gpFunc.actions[0]));
+      return _IM.gamepadFunctions.filter((gpFunc) => mappings.axisAliases.includes(gpFunc.actions[0]));
     }
     /**
      * Executes the callbacks from the registered action
      */
     executeCallbacks(action, value) {
       action.callbacks.forEach((callback) => {
-        if (typeof callback === "string") return actions_default.execute(callback, value);
+        if (typeof callback === "string") return Actions$1.execute(callback, value);
         callback(value);
       });
     }
-  };
-  var gamepad_default = new Gamepad();
-
-  // src/gamepad.ts
-  global_object_default.init();
-  var gamepad_default2 = gamepad_default;
-  return __toCommonJS(gamepad_exports);
-})();
-if (typeof gamepad !== 'undefined' && gamepad.default) { gamepad = gamepad.default; }
+  }
+  const Gamepad$1 = new Gamepad();
+  IM$1.init();
+  return Gamepad$1;
+}));

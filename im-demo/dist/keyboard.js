@@ -1,33 +1,9 @@
-"use strict";
-var keyboard = (() => {
-  var __defProp = Object.defineProperty;
-  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-  var __getOwnPropNames = Object.getOwnPropertyNames;
-  var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __export = (target, all) => {
-    for (var name in all)
-      __defProp(target, name, { get: all[name], enumerable: true });
-  };
-  var __copyProps = (to, from, except, desc) => {
-    if (from && typeof from === "object" || typeof from === "function") {
-      for (let key of __getOwnPropNames(from))
-        if (!__hasOwnProp.call(to, key) && key !== except)
-          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-    }
-    return to;
-  };
-  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-
-  // src/keyboard.ts
-  var keyboard_exports = {};
-  __export(keyboard_exports, {
-    default: () => keyboard_default2
-  });
-
-  // src/utils/global-object.ts
-  var IM = class _IM2 {
+(function(global, factory) {
+  typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.keyboard = factory());
+})(this, (function() {
+  "use strict";
+  class IM {
     constructor() {
-      // eslint-disable-next-line require-jsdoc
       this.actions = [];
       this.keyboardFunctions = [];
       this.gamepadFunctions = [];
@@ -36,7 +12,7 @@ var keyboard = (() => {
      * Initialize global object
      */
     init() {
-      if (!window._IM) window._IM = new _IM2();
+      if (!window._IM) window._IM = new IM();
     }
     /**
      * Get keyboard functions matching the given keys
@@ -127,11 +103,9 @@ This ${callbackType} is already registered for this combination and type. To upd
       const index = _IM.gamepadFunctions.indexOf(functionEntry);
       if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
     }
-  };
-  var global_object_default = new IM();
-
-  // src/utils/keyboard-mappings.ts
-  var mappings = {
+  }
+  const IM$1 = new IM();
+  const mappings = {
     ALT: 18,
     ARROW_DOWN: 40,
     ARROW_LEFT: 37,
@@ -232,23 +206,20 @@ This ${callbackType} is already registered for this combination and type. To upd
     EQUAL: 187,
     SYSTEM: 91
   };
-  var mappingsKeys = Object.keys(mappings);
-  var keyboard_mappings_default = mappings;
-
-  // src/lib_components/actions.ts
-  var Actions = class {
+  const mappingsKeys = Object.keys(mappings);
+  class Actions {
     /**
      * Register an action
      */
     register(action, callback) {
-      if (global_object_default.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
+      if (IM$1.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
       _IM.actions.push({ name: action, callback });
     }
     /**
      * Remove a registered action
      */
     remove(action) {
-      const actionIndex = global_object_default.getActionIndex(action);
+      const actionIndex = IM$1.getActionIndex(action);
       if (actionIndex === -1) return console.error(`${action} is not a registered action!`);
       _IM.actions.splice(actionIndex, 1);
     }
@@ -256,21 +227,19 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Trigger an action
      */
     execute(action, value) {
-      const actionObject = global_object_default.getAction(action);
+      const actionObject = IM$1.getAction(action);
       if (!actionObject) return console.error(`${action} is not a registered action!`);
       actionObject.callback(value);
     }
-  };
-  var actions_default = new Actions();
-
-  // src/lib_components/keyboard.ts
-  var Keyboard = class {
+  }
+  const Actions$1 = new Actions();
+  class Keyboard {
     constructor() {
       this.eventListenerAttached = false;
       this.keysPressed = /* @__PURE__ */ new Set();
       this.onKeyDown = this.onKeyDown.bind(this);
       this.onKeyUp = this.onKeyUp.bind(this);
-      if (!window.KEYS) window.KEYS = keyboard_mappings_default;
+      if (!window.KEYS) window.KEYS = mappings;
     }
     /**
      * Registers keyboard event listeners
@@ -281,7 +250,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     on(options) {
       const keys = this.normalizeKeys(options.keys);
-      const incorrectKeys = keys.filter((key) => !keyboard_mappings_default[key]);
+      const incorrectKeys = keys.filter((key) => !mappings[key]);
       if (incorrectKeys.length > 0) return console.error(`The following keys [${incorrectKeys.join(", ")}] you have entered are incorrect! `);
       if (!this.eventListenerAttached) {
         document.addEventListener("keydown", this.onKeyDown);
@@ -290,10 +259,10 @@ This ${callbackType} is already registered for this combination and type. To upd
       }
       const types = !options.type ? ["press"] : Array.isArray(options.type) ? options.type : [options.type];
       types.forEach((type) => {
-        const registeredKeys = global_object_default.getKeys(keys);
+        const registeredKeys = IM$1.getKeys(keys);
         const existingEntry = registeredKeys.find((key) => key.type === type);
         if (existingEntry) {
-          return global_object_default.addCallbackToEntry(existingEntry, options.callback, {
+          return IM$1.addCallbackToEntry(existingEntry, options.callback, {
             identifier: `Keys: [${keys.join(", ")}]`,
             type
           });
@@ -313,7 +282,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     off(keys, callback) {
       keys = this.normalizeKeys(keys);
-      const keyCombinations = global_object_default.getKeys(keys);
+      const keyCombinations = IM$1.getKeys(keys);
       if (keyCombinations.length === 0) return console.error("You are trying to remove a non-existent key combination!");
       if (callback) {
         const combinationsWithCallback = keyCombinations.filter((combination) => combination.callbacks.includes(callback));
@@ -324,12 +293,12 @@ This ${callbackType} is already registered for this combination and type. To upd
           const cbIndex = combination.callbacks.indexOf(callback);
           combination.callbacks.splice(cbIndex, 1);
           if (combination.callbacks.length === 0) {
-            global_object_default.removeKeyboardFunction(combination);
+            IM$1.removeKeyboardFunction(combination);
           }
         });
       } else {
         keyCombinations.forEach((combination) => {
-          global_object_default.removeKeyboardFunction(combination);
+          IM$1.removeKeyboardFunction(combination);
         });
       }
       if (_IM.keyboardFunctions.length === 0) {
@@ -345,7 +314,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       const keyPressed = this.keyCodeToString(event.keyCode);
       if (!keyPressed) return;
       this.keysPressed.add(keyPressed);
-      const registeredKeys = global_object_default.getKeys([...this.keysPressed]);
+      const registeredKeys = IM$1.getKeys([...this.keysPressed]);
       if (registeredKeys.length === 0) return;
       registeredKeys.forEach((key) => {
         if (key.type === "press" && event.repeat) return;
@@ -361,7 +330,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       const keyPressed = this.keyCodeToString(event.keyCode);
       if (!keyPressed) return;
       this.keysPressed.delete(keyPressed);
-      const registeredKeys = global_object_default.getKeys([keyPressed]);
+      const registeredKeys = IM$1.getKeys([keyPressed]);
       if (registeredKeys.length === 0) return;
       registeredKeys.forEach((key) => {
         if (key.type === "lift" && key.keys.indexOf(keyPressed) !== -1) this.executeCallbacks(event, key);
@@ -371,7 +340,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Convert keyCode to string representing key
      */
     keyCodeToString(code) {
-      return mappingsKeys.find((key) => keyboard_mappings_default[key] === code);
+      return mappingsKeys.find((key) => mappings[key] === code);
     }
     /**
      * Removes duplicates and converts KeyCodes to valid KeyName strings
@@ -397,16 +366,12 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     executeCallbacks(event, registeredKeys) {
       registeredKeys.callbacks.forEach((callback) => {
-        if (typeof callback === "string") return actions_default.execute(callback, event);
+        if (typeof callback === "string") return Actions$1.execute(callback, event);
         callback(event);
       });
     }
-  };
-  var keyboard_default = new Keyboard();
-
-  // src/keyboard.ts
-  global_object_default.init();
-  var keyboard_default2 = keyboard_default;
-  return __toCommonJS(keyboard_exports);
-})();
-if (typeof keyboard !== 'undefined' && keyboard.default) { keyboard = keyboard.default; }
+  }
+  const Keyboard$1 = new Keyboard();
+  IM$1.init();
+  return Keyboard$1;
+}));
