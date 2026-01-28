@@ -4,6 +4,7 @@
     "target": "ES6",
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "isolatedModules": true,
 
     // Declaration files (the main reason we need tsc)
     "declaration": true,
@@ -30,8 +31,6 @@
     "rootDir": "./src",
     "baseUrl": ".",
   },
-  "files": [
-    "src/interaction-manager.ts"
-  ],
-  "exclude": ["node_modules", "lib_components"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "esm"],  
 }

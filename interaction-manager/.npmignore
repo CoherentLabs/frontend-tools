@@ -4,3 +4,6 @@ package-lock.json
 scripts
 src
 tsconfig.json
+.env
+jsconfig.json
+vite.config.js

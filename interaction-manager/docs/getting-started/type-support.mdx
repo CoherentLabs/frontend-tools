@@ -1,0 +1,54 @@
+---
+title: Type Support & IntelliSense
+sidebar:
+  badge: 2.7.0
+---
+
+Version 2.7.0 marks a complete rewrite of the library in TypeScript, delivering full type definitions out of the box.  
+
+When using TypeScript, you will get full IntelliSense support for all features, methods, and options available in the library.
+
+## ES Modules (Bundlers)
+
+If you are importing the library as an ES module (e.g., in a Vite, Webpack), type support works automatically, **even in a vanilla JS project**. No additional configuration is required.
+
+Your IDE will automatically pick up the type definitions from the installed package and provide you with suggestions.
+
+```js
+import actions from 'coherent-gameface-interaction-manager';
+// IntelliSense will automatically show available methods
+actions.register(...);
+```
+
+## UMD Modules (Script Tags)
+
+If you are using the library via a `<script>` tag or the library is accessed via a global variable (e.g., window.Actions), you can enable type support using one of the following methods:
+
+### Option 1: Global Configuration (Recommended)
+
+To enable IntelliSense across your entire project, add a `jsconfig.json` file to your project root and reference the definition file in the include array.
+
+```json title="jsconfig.json"
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "checkJs": true
+  },
+  "include": [
+    "src/**/*",
+    // Adjust the path to where your library's .d.ts files are located
+    "node_modules/coherent-gameface-interaction-manager/dist/types/global.d.ts"
+  ]
+}
+```
+
+### Option 2: Per-File Reference
+
+If you only need type support in specific files, or if you don't want to create a config file, you can add a generic reference directive at the very top of your JavaScript file.
+
+```js title="your-file.js"
+/// <reference path="path/to/coherent-gameface-interaction-manager/dist/types/global.d.ts" />
+
+// The editor now knows what 'Actions' is
+actions.execute('action-to-register', 'Hello World!');
+```
