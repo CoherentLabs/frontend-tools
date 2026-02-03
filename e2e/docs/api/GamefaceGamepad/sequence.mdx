@@ -22,10 +22,10 @@ describe('Gamepad tests', function () {
         const gamepad = await gf.connectGamepad('gamepad');
 
         await gamepad.sequence([
-            { key: gamepad.KEYS.DPAD_UP, timeout: 100 },
-            { key: gamepad.KEYS.DPAD_DOWN, timeout: 150 },
-            gamepad.KEYS.A, // single quick press with default timeout of 210ms
-            { key: gamepad.KEYS.B, timeout: 200 },
+            { key: gf.GAMEPAD_BUTTONS.PAD_UP, timeout: 100 },
+            { key: gf.GAMEPAD_BUTTONS.PAD_DOWN, timeout: 150 },
+            gf.GAMEPAD_BUTTONS.FACE_BUTTON_DOWN, // single quick press with default timeout of 210ms
+            { key: gf.GAMEPAD_BUTTONS.FACE_BUTTON_TOP, timeout: 200 },
         ]);
     });
 });
