@@ -34,7 +34,7 @@ declare type AxisGamepadOptions = {
     callback: ((axes: [number, number]) => void) | string;
 };
 
-export declare type AxisInput = typeof mappings_2.axisAliases[number];
+export declare type AxisInput = typeof GamepadMappings.axisAliases[number];
 
 declare type ButtonGamepadOptions = {
     actions: ButtonInput[];
@@ -42,7 +42,7 @@ declare type ButtonGamepadOptions = {
     callback: ((buttons: GamepadButton[]) => void) | string;
 };
 
-export declare type ButtonInput = keyof typeof mappings_2.aliases | NumericValues<typeof mappings_2>;
+export declare type ButtonInput = keyof typeof GamepadMappings.aliases | NumericValues<typeof GamepadMappings>;
 
 declare type CustomKeysInput = Partial<Record<Direction, KeyName | KeyName[]>>;
 
@@ -298,6 +298,80 @@ export { gamepad_2 as gamepad }
 
 export declare type GamepadInput = ButtonInput | AxisInput;
 
+export declare const GamepadMappings: {
+    readonly FACE_BUTTON_DOWN: 0;
+    readonly FACE_BUTTON_RIGHT: 1;
+    readonly FACE_BUTTON_LEFT: 2;
+    readonly FACE_BUTTON_TOP: 3;
+    readonly LEFT_SHOULDER: 4;
+    readonly RIGHT_SHOULDER: 5;
+    readonly LEFT_SHOULDER_BOTTOM: 6;
+    readonly RIGHT_SHOULDER_BOTTOM: 7;
+    readonly SELECT: 8;
+    readonly START: 9;
+    readonly LEFT_ANALOGUE_STICK: 10;
+    readonly RIGHT_ANALOGUE_STICK: 11;
+    readonly PAD_UP: 12;
+    readonly PAD_DOWN: 13;
+    readonly PAD_LEFT: 14;
+    readonly PAD_RIGHT: 15;
+    readonly CENTER_BUTTON: 16;
+    readonly aliases: {
+        readonly 'face-button-down': "FACE_BUTTON_DOWN";
+        readonly 'face-button-left': "FACE_BUTTON_LEFT";
+        readonly 'face-button-right': "FACE_BUTTON_RIGHT";
+        readonly 'face-button-top': "FACE_BUTTON_TOP";
+        readonly 'left-shoulder': "LEFT_SHOULDER";
+        readonly 'right-shoulder': "RIGHT_SHOULDER";
+        readonly 'left-shoulder-bottom': "LEFT_SHOULDER_BOTTOM";
+        readonly 'right-shoulder-bottom': "RIGHT_SHOULDER_BOTTOM";
+        readonly select: "SELECT";
+        readonly start: "START";
+        readonly 'left-analogue-stick': "LEFT_ANALOGUE_STICK";
+        readonly 'right-analogue-stick': "RIGHT_ANALOGUE_STICK";
+        readonly 'pad-up': "PAD_UP";
+        readonly 'pad-down': "PAD_DOWN";
+        readonly 'pad-left': "PAD_LEFT";
+        readonly 'pad-right': "PAD_RIGHT";
+        readonly 'center-button': "CENTER_BUTTON";
+        readonly 'playstation.x': "FACE_BUTTON_DOWN";
+        readonly 'playstation.square': "FACE_BUTTON_LEFT";
+        readonly 'playstation.circle': "FACE_BUTTON_RIGHT";
+        readonly 'playstation.triangle': "FACE_BUTTON_TOP";
+        readonly 'playstation.l1': "LEFT_SHOULDER";
+        readonly 'playstation.r1': "RIGHT_SHOULDER";
+        readonly 'playstation.l2': "LEFT_SHOULDER_BOTTOM";
+        readonly 'playstation.r2': "RIGHT_SHOULDER_BOTTOM";
+        readonly 'playstation.share': "SELECT";
+        readonly 'playstation.options': "START";
+        readonly 'playstation.l3': "LEFT_ANALOGUE_STICK";
+        readonly 'playstation.r3': "RIGHT_ANALOGUE_STICK";
+        readonly 'playstation.d-pad-up': "PAD_UP";
+        readonly 'playstation.d-pad-down': "PAD_DOWN";
+        readonly 'playstation.d-pad-left': "PAD_LEFT";
+        readonly 'playstation.d-pad-right': "PAD_RIGHT";
+        readonly 'playstation.center': "CENTER_BUTTON";
+        readonly 'xbox.a': "FACE_BUTTON_DOWN";
+        readonly 'xbox.x': "FACE_BUTTON_LEFT";
+        readonly 'xbox.b': "FACE_BUTTON_RIGHT";
+        readonly 'xbox.y': "FACE_BUTTON_TOP";
+        readonly 'xbox.lb': "LEFT_SHOULDER";
+        readonly 'xbox.rb': "RIGHT_SHOULDER";
+        readonly 'xbox.lt': "LEFT_SHOULDER_BOTTOM";
+        readonly 'xbox.rt': "RIGHT_SHOULDER_BOTTOM";
+        readonly 'xbox.view': "SELECT";
+        readonly 'xbox.menu': "START";
+        readonly 'xbox.left-thumbstick': "LEFT_ANALOGUE_STICK";
+        readonly 'xbox.right-thumbstick': "RIGHT_ANALOGUE_STICK";
+        readonly 'xbox.d-pad-up': "PAD_UP";
+        readonly 'xbox.d-pad-down': "PAD_DOWN";
+        readonly 'xbox.d-pad-left': "PAD_LEFT";
+        readonly 'xbox.d-pad-right': "PAD_RIGHT";
+        readonly 'xbox.center': "CENTER_BUTTON";
+    };
+    readonly axisAliases: readonly ["right.joystick", "left.joystick", "left.joystick.down", "left.joystick.up", "left.joystick.left", "left.joystick.right", "right.joystick.down", "right.joystick.up", "right.joystick.left", "right.joystick.right"];
+};
+
 declare type GestureDirection = 'top' | 'bottom' | 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
 declare interface GestureEventData {
@@ -362,17 +436,7 @@ declare type KeyboardEventType = 'press' | 'hold' | 'lift';
 
 export declare type KeyboardKey = KeyName | KeyCode;
 
-declare type KeyboardOptions = {
-    keys: KeyboardKey[];
-    callback: string | Function;
-    type?: KeyboardEventType | KeyboardEventType[];
-};
-
-export declare type KeyCode = (typeof mappings)[KeyName];
-
-export declare type KeyName = `${keyof typeof mappings}`;
-
-declare const mappings: {
+export declare const KeyboardMappings: {
     readonly ALT: 18;
     readonly ARROW_DOWN: 40;
     readonly ARROW_LEFT: 37;
@@ -474,79 +538,15 @@ declare const mappings: {
     readonly SYSTEM: 91;
 };
 
-declare const mappings_2: {
-    readonly FACE_BUTTON_DOWN: 0;
-    readonly FACE_BUTTON_RIGHT: 1;
-    readonly FACE_BUTTON_LEFT: 2;
-    readonly FACE_BUTTON_TOP: 3;
-    readonly LEFT_SHOULDER: 4;
-    readonly RIGHT_SHOULDER: 5;
-    readonly LEFT_SHOULDER_BOTTOM: 6;
-    readonly RIGHT_SHOULDER_BOTTOM: 7;
-    readonly SELECT: 8;
-    readonly START: 9;
-    readonly LEFT_ANALOGUE_STICK: 10;
-    readonly RIGHT_ANALOGUE_STICK: 11;
-    readonly PAD_UP: 12;
-    readonly PAD_DOWN: 13;
-    readonly PAD_LEFT: 14;
-    readonly PAD_RIGHT: 15;
-    readonly CENTER_BUTTON: 16;
-    readonly aliases: {
-        readonly 'face-button-down': "FACE_BUTTON_DOWN";
-        readonly 'face-button-left': "FACE_BUTTON_LEFT";
-        readonly 'face-button-right': "FACE_BUTTON_RIGHT";
-        readonly 'face-button-top': "FACE_BUTTON_TOP";
-        readonly 'left-shoulder': "LEFT_SHOULDER";
-        readonly 'right-shoulder': "RIGHT_SHOULDER";
-        readonly 'left-shoulder-bottom': "LEFT_SHOULDER_BOTTOM";
-        readonly 'right-shoulder-bottom': "RIGHT_SHOULDER_BOTTOM";
-        readonly select: "SELECT";
-        readonly start: "START";
-        readonly 'left-analogue-stick': "LEFT_ANALOGUE_STICK";
-        readonly 'right-analogue-stick': "RIGHT_ANALOGUE_STICK";
-        readonly 'pad-up': "PAD_UP";
-        readonly 'pad-down': "PAD_DOWN";
-        readonly 'pad-left': "PAD_LEFT";
-        readonly 'pad-right': "PAD_RIGHT";
-        readonly 'center-button': "CENTER_BUTTON";
-        readonly 'playstation.x': "FACE_BUTTON_DOWN";
-        readonly 'playstation.square': "FACE_BUTTON_LEFT";
-        readonly 'playstation.circle': "FACE_BUTTON_RIGHT";
-        readonly 'playstation.triangle': "FACE_BUTTON_TOP";
-        readonly 'playstation.l1': "LEFT_SHOULDER";
-        readonly 'playstation.r1': "RIGHT_SHOULDER";
-        readonly 'playstation.l2': "LEFT_SHOULDER_BOTTOM";
-        readonly 'playstation.r2': "RIGHT_SHOULDER_BOTTOM";
-        readonly 'playstation.share': "SELECT";
-        readonly 'playstation.options': "START";
-        readonly 'playstation.l3': "LEFT_ANALOGUE_STICK";
-        readonly 'playstation.r3': "RIGHT_ANALOGUE_STICK";
-        readonly 'playstation.d-pad-up': "PAD_UP";
-        readonly 'playstation.d-pad-down': "PAD_DOWN";
-        readonly 'playstation.d-pad-left': "PAD_LEFT";
-        readonly 'playstation.d-pad-right': "PAD_RIGHT";
-        readonly 'playstation.center': "CENTER_BUTTON";
-        readonly 'xbox.a': "FACE_BUTTON_DOWN";
-        readonly 'xbox.x': "FACE_BUTTON_LEFT";
-        readonly 'xbox.b': "FACE_BUTTON_RIGHT";
-        readonly 'xbox.y': "FACE_BUTTON_TOP";
-        readonly 'xbox.lb': "LEFT_SHOULDER";
-        readonly 'xbox.rb': "RIGHT_SHOULDER";
-        readonly 'xbox.lt': "LEFT_SHOULDER_BOTTOM";
-        readonly 'xbox.rt': "RIGHT_SHOULDER_BOTTOM";
-        readonly 'xbox.view': "SELECT";
-        readonly 'xbox.menu': "START";
-        readonly 'xbox.left-thumbstick': "LEFT_ANALOGUE_STICK";
-        readonly 'xbox.right-thumbstick': "RIGHT_ANALOGUE_STICK";
-        readonly 'xbox.d-pad-up': "PAD_UP";
-        readonly 'xbox.d-pad-down': "PAD_DOWN";
-        readonly 'xbox.d-pad-left': "PAD_LEFT";
-        readonly 'xbox.d-pad-right': "PAD_RIGHT";
-        readonly 'xbox.center': "CENTER_BUTTON";
-    };
-    readonly axisAliases: readonly ["right.joystick", "left.joystick", "left.joystick.down", "left.joystick.up", "left.joystick.left", "left.joystick.right", "right.joystick.down", "right.joystick.up", "right.joystick.left", "right.joystick.right"];
+declare type KeyboardOptions = {
+    keys: KeyboardKey[];
+    callback: string | Function;
+    type?: KeyboardEventType | KeyboardEventType[];
 };
+
+export declare type KeyCode = (typeof KeyboardMappings)[KeyName];
+
+export declare type KeyName = `${keyof typeof KeyboardMappings}`;
 
 declare interface NavigableArea {
     area: string;

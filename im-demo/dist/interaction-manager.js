@@ -2350,6 +2350,8 @@ This ${callbackType} is already registered for this combination and type. To upd
     }
   }
   IM$1.init();
+  exports2.GamepadMappings = mappings;
+  exports2.KeyboardMappings = mappings$1;
   exports2.actions = actions;
   exports2.draggable = Draggable;
   exports2.dropzone = Dropzone;
