@@ -21,6 +21,8 @@ import IM from './utils/global-object';
 IM.init();
 
 export { keyboard, gamepad, actions, spatialNavigation, draggable, dropzone, rotate, resize, zoom, touchGestures };
+export { default as GamepadMappings } from './utils/gamepad-mappings';
+export { default as KeyboardMappings } from './utils/keyboard-mappings';
 export type {
     KeyName, 
     KeyCode, 
