@@ -16,7 +16,7 @@ Useful when you need to simulate physically unplugging a controller.
 ```js ins="await gamepad.disconnect();"
 describe('Gamepad tests', function () {
     it('Disconnects a gamepad', async () => {
-        const gamepad = await gf.connectGamepad();
+        const gamepad = await gf.connectGamepad('gamepad');
         
         // Perform some interactions...
         

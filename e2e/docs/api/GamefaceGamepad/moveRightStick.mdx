@@ -16,7 +16,7 @@ The stick coordinates must be values between `-1` and `1`.
 ```js ins="await gamepad.moveRightStick(-0.8, 0.3);"
 describe('Gamepad tests', function () {
     it('Moves the right analog stick', async () => {
-        const gamepad = await gf.createGamepad();
+        const gamepad = await gf.connectGamepad('gamepad');
 
         await gamepad.moveRightStick(-0.8, 0.3);
     });

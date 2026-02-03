@@ -19,7 +19,7 @@ Each `Step` can be:
 ```js
 describe('Gamepad tests', function () {
     it('Runs a sequence of button presses', async () => {
-        const gamepad = await gf.createGamepad();
+        const gamepad = await gf.connectGamepad('gamepad');
 
         await gamepad.sequence([
             { key: gamepad.KEYS.DPAD_UP, timeout: 100 },
