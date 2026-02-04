@@ -15,7 +15,7 @@ If a key is not currently pressed, an error will be thrown.
 ```js ins="await gamepad.release(gf.GAMEPAD_BUTTONS.PAD_LEFT);"
 describe('Gamepad tests', function () {
     it('Releases a gamepad key', async () => {
-        const gamepad = await gf.createGamepad();
+        const gamepad = await gf.connectGamepad('gamepad');
 
         await gamepad.hold(gf.GAMEPAD_BUTTONS.PAD_LEFT);
         await gamepad.release(gf.GAMEPAD_BUTTONS.PAD_LEFT);
