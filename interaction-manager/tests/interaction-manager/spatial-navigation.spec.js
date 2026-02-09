@@ -284,3 +284,100 @@ describe('Spatial navigation - Pause/Resume functionality', () => {
         await isElementFocused('.square-3');
     });
 });
+
+describe('Spatial navigation - Isolated State and Syncing', () => {
+    before(setup);
+
+    beforeEach(async () => {
+        await gf.executeScript(async () => {
+            await window.setupTestPage();
+            // Setup two distinct areas
+            interactionManager.spatialNavigation.init([
+                { area: 'area-1', elements: ['.square-1', '.square-2'] },
+                { area: 'area-2', elements: ['.square-4', '.square-5'] },
+            ]);
+        });
+    });
+
+    afterEach(async () => {
+        await gf.executeScript(() => {
+            cleanTestPage('.test-container');
+            interactionManager.spatialNavigation.deinit();
+        });
+    });
+
+    it('Should keep area states isolated', async () => {
+        const hasIsolation = await gf.executeScript(() => {
+            const sn = interactionManager.spatialNavigation;
+            // Focus something in Area 1
+            sn.focusFirst('area-1');
+            const area1Last = sn.getLastFocused('area-1');
+            const area2Last = sn.getLastFocused('area-2');
+
+            // Area 2 should NOT have a lastFocusedElement just because Area 1 does
+            return area1Last !== undefined && area2Last === undefined;
+        });
+
+        assert(hasIsolation, 'State leaked between area-1 and area-2');
+    });
+
+    it('Should sync lastFocusedElement when focusing with the mouse', async () => {
+        // Manually click square-5 (which is in area-2)
+        const square5 = await gf.get('.square-5');
+        await square5.click();
+
+        // Verify internal state synced via 'focusin' event
+        const syncedCorrectly = await gf.executeScript(() => {
+            const sn = interactionManager.spatialNavigation;
+            const lastFocusedInArea2 = sn.getLastFocused('area-2');
+            return lastFocusedInArea2 && lastFocusedInArea2.classList.contains('square-5');
+        });
+
+        assert(syncedCorrectly, 'Internal state did not sync with mouse click');
+
+        // Move left via keyboard - it should move from square-5 to square-4
+        await gf.keyPress(gf.KEYS.ARROW_LEFT);
+        await isElementFocused('.square-4');
+    });
+
+    it('Should fallback to focusFirst if lastFocusedElement was removed from DOM', async () => {
+        // Focus square-2
+        await gf.executeScript(() => {
+            interactionManager.spatialNavigation.focusFirst('area-1');
+        });
+        await gf.keyPress(gf.KEYS.ARROW_RIGHT);
+        await isElementFocused('.square-2');
+
+        // Remove square-2 from the DOM
+        await gf.executeScript(() => {
+            const sq2 = document.querySelector('.square-2');
+            sq2.remove();
+        });
+
+        // Switch area back to area-1. 
+        // It should detect sq2 is gone and fallback to square-1 (focusFirst)
+        await gf.executeScript(() => {
+            interactionManager.spatialNavigation.switchArea('area-1');
+        });
+
+        await isElementFocused('.square-1');
+    });
+
+    it('Should remember the last mouse-clicked position when switching back to an area', async () => {
+        // 1. Focus Area 1 via keyboard
+        await gf.executeScript(() => interactionManager.spatialNavigation.focusFirst('area-1'));
+        
+        // 2. Click Square 5 in Area 2 with mouse
+        const square5 = await gf.get('.square-5');
+        await square5.click();
+
+        // 3. Switch to Area 1 then back to Area 2
+        await gf.executeScript(() => {
+            const sn = interactionManager.spatialNavigation;
+            sn.switchArea('area-1'); // focus square-1
+            sn.switchArea('area-2'); // should focus square-5, not square-4
+        });
+
+        await isElementFocused('.square-5');
+    });
+});

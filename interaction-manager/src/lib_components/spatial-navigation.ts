@@ -19,6 +19,7 @@ type CustomKeysInput = Partial<Record<Direction, KeyName | KeyName[]>>;
 interface AreaState {
     elements: HTMLElement[];
     distance: number;
+    lastFocusedElement: HTMLElement | undefined;
     overflow: { x: number, y: number };
 }
 
@@ -41,7 +42,7 @@ type NavigationInput = (string | HTMLElement)[] | NavigableArea[];
  */
 class SpatialNavigation {
     enabled = false;
-    areas: Record<string, AreaState> = { default: { elements: [], distance: 0, overflow: { x: 0, y: 0 } } };
+    areas: Record<string, AreaState> = { default: this.createDefaultAreaState() };
     registeredKeys = new Set<KeyName>();
     private clearCurrentActiveKeys = false;
     private overlapPercentage = 0.5;
@@ -74,6 +75,7 @@ class SpatialNavigation {
         this.add(navigableElements);
         this.activeKeys = JSON.parse(JSON.stringify(defaultKeysState));
         this.registerKeyActions();
+        window.addEventListener('focusin', this.syncLastFocused);
 
         if (overlap && 0 <= overlap && overlap <= 1) {
             this.overlapPercentage = overlap;
@@ -87,10 +89,11 @@ class SpatialNavigation {
         if (!this.enabled) return;
         this.enabled = false;
 
-        this.areas = { default: { elements: [], distance: 0, overflow: { x: 0, y: 0 } } };
+        this.areas = { default: this.createDefaultAreaState() };
         this.removeKeyActions();
         this.overlapPercentage = 0.5;
         this.lastFocusedElement = null;
+        window.removeEventListener('focusin', this.syncLastFocused);
     }
     /**
      * Add new elements to area or new area
@@ -139,6 +142,48 @@ class SpatialNavigation {
     }
 
     /**
+     * Gets the last focused element from the specified area
+     * @param area
+     */
+    getLastFocused(area: string = "default") {
+        const el = this.areas[area]?.lastFocusedElement;
+
+        if (el && !document.contains(el)) {
+            this.areas[area].lastFocusedElement = undefined;
+            return undefined;
+        }
+
+        return el;
+    }
+
+    /**
+     * Returns the structure of the default area
+     */
+    private createDefaultAreaState(): AreaState {
+        return {
+            elements: [],
+            distance: 0,
+            lastFocusedElement: undefined,
+            overflow: { x: 0, y: 0 }
+        };
+    }
+
+    private syncLastFocused = (event: FocusEvent) => {
+        const target = event.target as HTMLElement;
+        if (!this.enabled || !target) return;
+
+        // Check if the focused element belongs to one of our areas
+        for (const areaName in this.areas) {
+            const area = this.areas[areaName];
+            if (area.elements.includes(target)) {
+                area.lastFocusedElement = target;
+                this.lastFocusedElement = target;
+                break; 
+            }
+        }
+    };
+
+    /**
      * Get elements from selector and save them to the default group
      * @param navArea
      */
@@ -175,7 +220,7 @@ class SpatialNavigation {
         if (domElements.length === 0) return console.error(`${navArea.elements.join(', ')} are either not a correct selectors or the elements are not present in the DOM.`);
 
         if (!this.areas[navArea.area]) {
-            this.areas[navArea.area] = { elements: [], distance: 0, overflow: { x: 0, y: 0 } };
+            this.areas[navArea.area] = this.createDefaultAreaState();
         }
 
         this.setNavigationAreaProperties(navArea.area, domElements);
@@ -346,6 +391,7 @@ class SpatialNavigation {
         if (nextFocusableElement) {
             nextFocusableElement.element.focus();
             this.lastFocusedElement = nextFocusableElement.element;
+            currentArea.lastFocusedElement = this.lastFocusedElement;
         }
     }
 
@@ -522,6 +568,7 @@ class SpatialNavigation {
             return console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
         }
         this.lastFocusedElement.focus();
+        this.areas[area].lastFocusedElement = this.lastFocusedElement;
     }
 
     /**
@@ -548,13 +595,22 @@ class SpatialNavigation {
             return console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
         }
         this.lastFocusedElement.focus();
+        this.areas[area].lastFocusedElement = this.lastFocusedElement;
     }
 
     /**
-     * Changes focus to another area
+     * Changes focus to another area by focusing on the last focused element in that area. If no element has previously been focused, it will focus the first available element.
      */
     switchArea(area: string) {
-        this.focusFirst(area);
+        if (!this.enabled) return;
+        
+        const lastFocusedInArea = this.getLastFocused(area);
+        if (!lastFocusedInArea || lastFocusedInArea.hasAttribute('disabled')) {
+            return this.focusFirst(area);
+        }
+
+        lastFocusedInArea.focus();
+        this.lastFocusedElement = lastFocusedInArea;
     }
 
     /**
