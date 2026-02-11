@@ -5,6 +5,9 @@ import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkMdx from 'remark-mdx';
 
+type Heading = { label: string; link: string, badge?: { text: string, variant: "note" | "danger" | "success" | "caution" | "tip" | "default" | undefined } };
+const headings: Heading[] = [];
+
 function parseHeadingWithBadge(node: any) {
     const text = node.children
         .filter((child: any) => child.type === 'text')
@@ -56,12 +59,12 @@ function slugify(text: string) {
         .replace(/[^\w\-]+/g, '')
 }
 
-function walk(node: any, docsDir, headings: Heading[]) {
+function walk(node: any) {
     if (node.type === 'heading' && node.depth === 2) {
         const { text, badge } = parseHeadingWithBadge(node);
         const heading: Heading = {
             label: text.replace(/:badge\[.*?\]/g, ''),
-            link: `${docsDir}/changelog/#${slugify(text)}`,
+            link: `/changelog/#${slugify(text)}`,
         };
 
         if (badge) {
@@ -76,16 +79,13 @@ function walk(node: any, docsDir, headings: Heading[]) {
 
     if (node.children) {
         for (const child of node.children) {
-            walk(child, docsDir, headings);
+            walk(child);
         }
     }
 }
 
-type Heading = { label: string; link: string, badge?: { text: string, variant: "note" | "danger" | "success" | "caution" | "tip" | "default" | undefined } };
-
-function generateChangelog(docsDir) {
-    const headings: Heading[] = [];
-    const filePath = path.resolve(`./src/content/docs/${docsDir}/changelog/index.mdx`);
+export default function generateChangelog(changelogPath: string) {
+    const filePath = path.resolve(changelogPath);
     const file = fs.readFileSync(filePath, 'utf-8');
 
     const { content } = matter(file);
@@ -95,14 +95,11 @@ function generateChangelog(docsDir) {
         .use(remarkMdx)
         .parse(content);
 
-    walk(tree, docsDir, headings);
-
+    walk(tree);
     return {
         label: 'Changelog',
         items: [
             ...headings
         ]
-    };
+    }
 }
-
-export default generateChangelog;
