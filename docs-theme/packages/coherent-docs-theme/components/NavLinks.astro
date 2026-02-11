@@ -1,0 +1,102 @@
+---
+import getThemeConfig from "../internal/themeConfig";
+
+interface Props {
+    type?: "header" | "sidebar";
+}
+
+const { type = "header" } = Astro.props;
+const { navLinks } = getThemeConfig();
+const currentPath = Astro.url.pathname;
+
+const isLinkActive = (href: string) => {
+    if (href === "/") return currentPath === "/";
+    return currentPath.startsWith(href);
+};
+
+const navClasses =
+    type === "header"
+        ? "extra-links sl-hidden md:sl-flex"
+        : "extra-links mobile sidebar-mode lg:hidden";
+---
+
+{
+    navLinks && navLinks.length > 0 && (
+        <>
+            {type === "header" && (
+                <div class="vertical-separator sl-hidden md:sl-flex" />
+            )}
+
+            <nav class={navClasses}>
+                {navLinks.map((link: { label: string; href: string }) => (
+                    <a
+                        href={link.href}
+                        class={isLinkActive(link.href) ? "active" : ""}
+                        target={
+                            link.href.startsWith("http") ? "_blank" : undefined
+                        }
+                        rel={
+                            link.href.startsWith("http")
+                                ? "noopener noreferrer"
+                                : undefined
+                        }
+                    >
+                        {link.label}
+                    </a>
+                ))}
+            </nav>
+        </>
+    )
+}
+
+<style>
+    .extra-links.mobile {
+        gap: 1.5rem;
+        width: 100%;
+        display: flex;
+        border-bottom: 1px solid var(--sl-color-gray-5);
+        padding-bottom: 1rem;
+        padding-left: 0.5em;
+    }
+    .extra-links.mobile a:hover {
+        background-color: unset;
+    }
+
+    .extra-links a {
+        color: var(--sl-color-gray-3);
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        transition: color 0.2s;
+        border: none !important;
+        padding-left: 0 !important;
+    }
+
+    .extra-links a:hover {
+        color: var(--sl-color-white);
+    }
+
+    .extra-links a.active {
+        color: var(--sl-color-accent);
+    }
+
+    .extra-links:not(.sidebar-mode) {
+        gap: 1.5rem;
+        align-items: center;
+    }
+
+    .vertical-separator {
+        width: 1px;
+        height: 1.5rem;
+        background-color: var(--sl-color-gray-5);
+    }
+
+    .sidebar-separator {
+        width: 100%;
+        height: 1px;
+        background-color: var(--sl-color-gray-5);
+        margin-bottom: 1.5rem;
+    }
+</style>

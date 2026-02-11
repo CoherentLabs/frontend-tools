@@ -1,0 +1,60 @@
+---
+import config from "virtual:starlight/user-config";
+import LanguageSelect from "@astrojs/starlight/components/LanguageSelect.astro";
+import Search from "@astrojs/starlight/components/Search.astro";
+import SiteTitle from "@astrojs/starlight/components/SiteTitle.astro";
+import SocialIcons from "@astrojs/starlight/components/SocialIcons.astro";
+import ThemeSelect from "./ThemeSelect.astro";
+import ProgressIndicator from "./ProgressIndicator.astro";
+import getThemeConfig from "../internal/themeConfig";
+import NavLinks from "../components/NavLinks.astro";
+
+const { showPageProgress } = getThemeConfig();
+const shouldRenderSearch =
+    config.pagefind ||
+    config.components.Search !== "@astrojs/starlight/components/Search.astro";
+---
+
+{showPageProgress && <ProgressIndicator />}
+<div class="header sl-flex">
+    <div class="left-group sl-flex">
+        <SiteTitle />
+        <NavLinks />
+    </div>
+
+    <div class="right-group sl-flex print:hidden">
+        <div class="search-container">
+            {shouldRenderSearch && <Search />}
+        </div>
+        <div class="actions-wrapper sl-hidden md:sl-flex">
+            <SocialIcons />
+            <div class="vertical-separator"></div>
+            <ThemeSelect />
+            <LanguageSelect />
+        </div>
+    </div>
+</div>
+
+<style>
+    .header {
+        gap: var(--sl-nav-gap);
+        justify-content: space-between;
+        align-items: center;
+        height: 100%;
+    }
+
+    .left-group,
+    .right-group {
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .search-container {
+        /* min-width: 200px; */
+    }
+
+    .actions-wrapper {
+        align-items: center;
+        gap: 1rem;
+    }
+</style>

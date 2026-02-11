@@ -1,0 +1,13 @@
+{
+  "name": "coherent-docs-theme-monorepo",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "Theme for all the coherent documentations",
+  "author": "CoherentLabs",
+  "type": "module",
+  "engines": {
+    "node": "^18.17.1 || ^20.3.0 || >=21.0.0"
+  },
+  "packageManager": "pnpm@9.6.0",
+  "private": true
+}

@@ -1,0 +1,26 @@
+---
+import TopicsDropdown from "starlight-sidebar-topics-dropdown/TopicsDropdown.astro";
+import type { Props } from "@astrojs/starlight/props";
+import DefaultSidebar from "@astrojs/starlight/components/Sidebar.astro";
+import NavLinks from "../components/NavLinks.astro";
+---
+
+<TopicsDropdown />
+
+<div class="mobile-only-nav lg:hidden">
+    <NavLinks type="sidebar" />
+</div>
+
+<DefaultSidebar {...Astro.props} />
+
+<style>
+    .mobile-only-nav {
+        display: flex;
+    }
+
+    @media (min-width: 50rem) {
+        .mobile-only-nav {
+            display: none !important;
+        }
+    }
+</style>
