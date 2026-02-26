@@ -641,12 +641,24 @@ This ${callbackType} is already registered for this combination and type. To upd
   class SpatialNavigation {
     constructor() {
       this.enabled = false;
-      this.areas = { default: { elements: [], distance: 0, overflow: { x: 0, y: 0 } } };
+      this.areas = { default: this.createDefaultAreaState() };
       this.registeredKeys = /* @__PURE__ */ new Set();
       this.clearCurrentActiveKeys = false;
       this.overlapPercentage = 0.5;
       this.lastFocusedElement = null;
       this.paused = false;
+      this.syncLastFocused = (event) => {
+        const target = event.target;
+        if (!this.enabled || !target) return;
+        for (const areaName in this.areas) {
+          const area = this.areas[areaName];
+          if (area.elements.includes(target)) {
+            area.lastFocusedElement = target;
+            this.lastFocusedElement = target;
+            break;
+          }
+        }
+      };
     }
     /**
      * Initializes the spatial navigation
@@ -672,6 +684,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       this.add(navigableElements);
       this.activeKeys = JSON.parse(JSON.stringify(defaultKeysState));
       this.registerKeyActions();
+      window.addEventListener("focusin", this.syncLastFocused);
       if (overlap && 0 <= overlap && overlap <= 1) {
         this.overlapPercentage = overlap;
       }
@@ -682,10 +695,11 @@ This ${callbackType} is already registered for this combination and type. To upd
     deinit() {
       if (!this.enabled) return;
       this.enabled = false;
-      this.areas = { default: { elements: [], distance: 0, overflow: { x: 0, y: 0 } } };
+      this.areas = { default: this.createDefaultAreaState() };
       this.removeKeyActions();
       this.overlapPercentage = 0.5;
       this.lastFocusedElement = null;
+      window.removeEventListener("focusin", this.syncLastFocused);
     }
     /**
      * Add new elements to area or new area
@@ -726,6 +740,29 @@ This ${callbackType} is already registered for this combination and type. To upd
       delete this.areas[area];
     }
     /**
+     * Gets the last focused element from the specified area
+     * @param area
+     */
+    getLastFocused(area = "default") {
+      const el = this.areas[area]?.lastFocusedElement;
+      if (el && !document.contains(el)) {
+        this.areas[area].lastFocusedElement = void 0;
+        return void 0;
+      }
+      return el;
+    }
+    /**
+     * Returns the structure of the default area
+     */
+    createDefaultAreaState() {
+      return {
+        elements: [],
+        distance: 0,
+        lastFocusedElement: void 0,
+        overflow: { x: 0, y: 0 }
+      };
+    }
+    /**
      * Get elements from selector and save them to the default group
      * @param navArea
      */
@@ -755,7 +792,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       }, []);
       if (domElements.length === 0) return console.error(`${navArea.elements.join(", ")} are either not a correct selectors or the elements are not present in the DOM.`);
       if (!this.areas[navArea.area]) {
-        this.areas[navArea.area] = { elements: [], distance: 0, overflow: { x: 0, y: 0 } };
+        this.areas[navArea.area] = this.createDefaultAreaState();
       }
       this.setNavigationAreaProperties(navArea.area, domElements);
     }
@@ -909,6 +946,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       if (nextFocusableElement) {
         nextFocusableElement.element.focus();
         this.lastFocusedElement = nextFocusableElement.element;
+        currentArea.lastFocusedElement = this.lastFocusedElement;
       }
     }
     /** Filters the focusable group by the relevant axis by chacking for same axis overlap */
@@ -1053,6 +1091,7 @@ This ${callbackType} is already registered for this combination and type. To upd
         return console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
       }
       this.lastFocusedElement.focus();
+      this.areas[area].lastFocusedElement = this.lastFocusedElement;
     }
     /**
      * Focuses on the last element in a focusable area
@@ -1075,12 +1114,19 @@ This ${callbackType} is already registered for this combination and type. To upd
         return console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
       }
       this.lastFocusedElement.focus();
+      this.areas[area].lastFocusedElement = this.lastFocusedElement;
     }
     /**
-     * Changes focus to another area
+     * Changes focus to another area by focusing on the last focused element in that area. If no element has previously been focused, it will focus the first available element.
      */
     switchArea(area) {
-      this.focusFirst(area);
+      if (!this.enabled) return;
+      const lastFocusedInArea = this.getLastFocused(area);
+      if (!lastFocusedInArea || lastFocusedInArea.hasAttribute("disabled")) {
+        return this.focusFirst(area);
+      }
+      lastFocusedInArea.focus();
+      this.lastFocusedElement = lastFocusedInArea;
     }
     /**
     * Checks if a given element is in a focusable area

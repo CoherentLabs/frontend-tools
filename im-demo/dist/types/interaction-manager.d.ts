@@ -22,6 +22,7 @@ export { actions_2 as actions }
 declare interface AreaState {
     elements: HTMLElement[];
     distance: number;
+    lastFocusedElement: HTMLElement | undefined;
     overflow: {
         x: number;
         y: number;
@@ -795,6 +796,16 @@ declare class SpatialNavigation {
      */
     remove(area?: string): void;
     /**
+     * Gets the last focused element from the specified area
+     * @param area
+     */
+    getLastFocused(area?: string): HTMLElement | undefined;
+    /**
+     * Returns the structure of the default area
+     */
+    private createDefaultAreaState;
+    private syncLastFocused;
+    /**
      * Get elements from selector and save them to the default group
      * @param navArea
      */
@@ -898,7 +909,7 @@ declare class SpatialNavigation {
      */
     focusLast(area?: string): void;
     /**
-     * Changes focus to another area
+     * Changes focus to another area by focusing on the last focused element in that area. If no element has previously been focused, it will focus the first available element.
      */
     switchArea(area: string): void;
     /**
