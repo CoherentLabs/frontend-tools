@@ -4,11 +4,19 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-# 2.8.0 :badge[Latest]{variant="note"}
+## 3.0.0 :badge[Latest]{variant="note"}
+
+<Badge text="Breaking Change" variant="danger" size="small" /> Changed `switchArea` method in [Spatial Navigation](/interaction-manager/features/spatial-navigation/#switchareaarea) to no longer focus the first element in the specified area 
+but instead attempt to focus the last focused element in that area. If no element was previously focused in that area, or if that element has been removed from the DOM, it falls back to `focusFirst()`. 
+This change allows for a more intuitive navigation experience when switching between areas.
+
+<Badge text="New" variant="note" size="small" /> Added a new `getLastFocused` method in [Spatial Navigation](/interaction-manager/features/spatial-navigation/#getlastfocusedarea) that returns the last focused element from a specific area.
+
+## 2.8.0
 
 <Badge text="New" variant="note" size="small" /> Added exports for both the `GamepadMappings` and `KeyboardMappings` objects to allow developers to easily access and utilize predefined action mappings in their projects.
 
-# 2.7.0
+## 2.7.0
 
 <Badge text="Feature" variant="success" size="small" /> Migrated project build system to Vite for improved performance and modern tooling.
 

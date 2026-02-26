@@ -52,7 +52,7 @@ The `navigableElement` can be:
 spatialNavigation.init(['.square']);
 ```
 
-##### 2. An HTMLElement reference: :badge[2.4.4]{variant="note"}
+##### 2. An HTMLElement reference
 
 ```ts
 const element = document.getElementById('myElement');
@@ -175,9 +175,18 @@ Focuses on the last element of an area.
 spatialNavigation.focusLast(area: string = 'default');
 ```
 
-### switchArea(area)
+### getLastFocused(area) :badge[3.0.0]{variant="success"}
 
-Switches to another area and focuses on the first element.
+Returns the last focused element from a specific area. If no element has been focused yet in that area, or if the provided area name does not exist, it returns `undefined`. 
+
+```ts
+spatialNavigation.getLastFocused(area: string = 'default'): HTMLElement | undefined;
+```
+
+### switchArea(area) :badge[Breaking Change]{variant="danger"}
+
+Switches focus to the specified area. 
+It will attempt to focus the last focused element in that area. If no element was previously focused in that area, or if that element has been removed from the DOM, or is unavailable (disabled), it falls back to `focusFirst()`.
 
 ```ts
 spatialNavigation.switchArea(area: string);
@@ -216,7 +225,7 @@ Resets the navigation keys to their default settings, restoring the key bindings
 spatialNavigation.resetKeys();
 ```
 
-### pause() :badge[2.5.5]{variant="note"}
+### pause()
 
 Pauses the spatial navigation functionality. When paused, navigation keys will not move focus between elements. This is useful when you need to temporarily disable navigation, such as during modal dialogs or text input.
 
@@ -224,7 +233,7 @@ Pauses the spatial navigation functionality. When paused, navigation keys will n
 spatialNavigation.pause();
 ```
 
-### resume() :badge[2.5.5]{variant="note"}
+### resume()
 
 Resumes the spatial navigation functionality after it has been paused. Navigation keys will work normally again.
 
