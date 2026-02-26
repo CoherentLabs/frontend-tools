@@ -145,7 +145,7 @@ class SpatialNavigation {
      * Gets the last focused element from the specified area
      * @param area
      */
-    getLastFocused(area: string = "default") {
+    getLastFocused(area: string = 'default') {
         const el = this.areas[area]?.lastFocusedElement;
 
         if (el && !document.contains(el)) {

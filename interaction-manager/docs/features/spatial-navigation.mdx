@@ -52,7 +52,7 @@ The `navigableElement` can be:
 spatialNavigation.init(['.square']);
 ```
 
-##### 2. An HTMLElement reference: :badge[2.4.4]{variant="note"}
+##### 2. An HTMLElement reference
 
 ```ts
 const element = document.getElementById('myElement');
@@ -175,9 +175,9 @@ Focuses on the last element of an area.
 spatialNavigation.focusLast(area: string = 'default');
 ```
 
-### getLastFocused(area) :badge[NEW]{variant="success"}
+### getLastFocused(area) :badge[3.0.0]{variant="success"}
 
-Returns the last focused element from a specific area. 
+Returns the last focused element from a specific area. If no element has been focused yet in that area, or if the provided area name does not exist, it returns `undefined`. 
 
 ```ts
 spatialNavigation.getLastFocused(area: string = 'default'): HTMLElement | undefined;
@@ -186,7 +186,7 @@ spatialNavigation.getLastFocused(area: string = 'default'): HTMLElement | undefi
 ### switchArea(area) :badge[Breaking Change]{variant="danger"}
 
 Switches focus to the specified area. 
-It will attempt to focus the last focused element in that area. If no element was previously focused in that area, or if that element has been removed from the DOM, it falls back to `focusFirst()`.
+It will attempt to focus the last focused element in that area. If no element was previously focused in that area, or if that element has been removed from the DOM, or is unavailable (disabled), it falls back to `focusFirst()`.
 
 ```ts
 spatialNavigation.switchArea(area: string);
