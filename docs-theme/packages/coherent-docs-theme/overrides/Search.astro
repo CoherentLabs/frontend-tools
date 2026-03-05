@@ -1,0 +1,238 @@
+---
+import DefaultSearch from '@astrojs/starlight/components/Search.astro';
+
+import getThemeConfig from "../internal/themeConfig";
+const { documentationSearchTag } = getThemeConfig();
+const isDev = import.meta.env.DEV;
+---
+
+<DefaultSearch {...Astro.props} />
+
+<style is:global>
+.pagefind-ui__result-excerpt mark {
+  font-weight: 900 !important;
+  background-color: rgba(255, 215, 0, 0.3) !important;
+  color: var(--sl-color-white) !important;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+.pagefind-ui__result-title::before,
+.pagefind-ui__result-link::before,
+.pagefind-ui__result-nested::before {
+  display: none !important;
+  content: none !important;
+}
+
+#starlight__search .pagefind-ui__result-inner>.pagefind-ui__result-title {
+  padding-inline-start: 1rem !important;
+}
+
+#starlight__search .pagefind-ui__result-inner>.pagefind-ui__result-nested {
+  padding-inline-start: 2rem !important;
+}
+
+.pagefind-ui__filter-checkbox,
+.pagefind-ui__filter-checkbox::before {
+  display: none !important;
+}
+
+.pagefind-ui__filter-value::before {
+  display: none !important;
+}
+
+.pagefind-ui__filter-label::before,
+.pagefind-ui__filter-label svg {
+  display: none !important;
+  content: none !important;
+}
+
+.pagefind-ui__filter-label {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  padding: 0.4rem 1rem !important;
+  margin: 0.2rem 0.3rem 0.2rem 0 !important;
+  font-size: inherit !important;
+  font-weight: 600 !important;
+  background-color: var(--sl-color-bg-nav) !important;
+  border: 1px solid var(--sl-color-gray-5) !important;
+  color: var(--sl-color-gray-3) !important;
+  transition: all 0.2s ease !important;
+}
+
+.pagefind-ui__filter-label:hover {
+  border-color: var(--sl-color-gray-2) !important;
+  color: var(--sl-color-white) !important;
+}
+
+.pagefind-ui__filter-checkbox:checked+.pagefind-ui__filter-label {
+  background-color: var(--sl-color-accent) !important;
+  border-color: var(--sl-color-accent) !important;
+  color: var(--gameface-bg-main) !important;
+}
+
+.custom-docs-badge {
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  margin-right: 10px;
+  vertical-align: middle;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@media (min-width: 50rem) {
+  site-search dialog {
+    max-width: 90%;
+  }
+}
+</style>
+
+{!isDev &&
+<script is:inline define:vars={{documentationSearchTag}}>
+    const badgesConfig = {
+        "frontend-tools.coherent-labs.com/e2e": {
+            text: "UI Tools | Gameface E2E",
+            color: "#007aaa",
+        },
+        "frontend-tools.coherent-labs.com/interaction-manager": {
+            text: "UI Tools | Interacton Manager",
+            color: "#007abb",
+        },
+        "frontend-tools.coherent-labs.com/gameface-vite-plugin": {
+            text: "UI Tools | Gameface Vite Plugin",
+            color: "#007acc",
+        },
+        "frontend-tools.coherent-labs.com/vite-solid-style-to-css-plugin": {
+            text: "UI Tools | Solid Style to CSS Plugin",
+            color: "#007add",
+        },
+        "frontend-tools.coherent-labs.com/data-binding-autocomplete": {
+            text: "UI Tools | Data Binding Autocomplete",
+            color: "#007aee",
+        },
+        "frontend-tools.coherent-labs.com": {
+            text: "UI Tools",
+            color: "#007aff",
+        },
+        "gameface-ui": {
+            text: "Gameface UI",
+            color: "#e24a4a",
+        },
+    }
+
+    function setupSearchInputListener(searchInput, pagefind) {
+        if (!searchInput || searchInput.dataset.countListener) return;
+        
+        searchInput.dataset.countListener = "true";
+        searchInput.addEventListener("input", async (e) => {
+            const term = e.target.value;
+            if (!term) {
+                window.__pagefindTrueCounts = {};
+                return;
+            }
+            const search = await pagefind.search(term);
+            window.__pagefindTrueCounts = search.filters?.resource || {};
+            searchInput.dataset.forceUpdate = Date.now();
+        });
+    }
+
+    function applyBadgesToResults(resultTitles) {
+        resultTitles.forEach((titleElement) => {
+            titleElement.dataset.badged = "true";
+            const link = titleElement.querySelector("a");
+            if (!link) return;
+
+            let badgeText = documentationSearchTag;
+            let badgeColor = "#883aea";
+
+            for (const key in badgesConfig) {
+                if (link.href.includes(key)) {
+                    badgeText = badgesConfig[key].text;
+                    badgeColor = badgesConfig[key].color;
+                    break;
+                }
+            }
+
+            const badge = document.createElement("span");
+            badge.className = "custom-docs-badge";
+            badge.textContent = badgeText;
+            badge.style.backgroundColor = badgeColor;
+            titleElement.prepend(badge);
+        });
+    }
+
+    function applyDefaultFilter(checkboxes) {
+        if (checkboxes.length === 0 || window.__pagefindDefaultApplied) return;
+        
+        window.__pagefindDefaultApplied = true;
+        const defaultCb = Array.from(checkboxes).find(cb => cb.value === documentationSearchTag);
+        
+        if (defaultCb && !defaultCb.checked) {
+            defaultCb.checked = true;
+            defaultCb.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+    }
+
+    function processFiltersAndCounts(checkboxes, searchInput, observer) {
+        checkboxes.forEach((cb) => {
+            if (!cb.dataset.radioFixed) {
+                cb.dataset.radioFixed = "true";
+                cb.addEventListener("change", (e) => {
+                    if (e.target.checked) {
+                        checkboxes.forEach((other) => {
+                            if (other !== e.target && other.checked) {
+                                other.checked = false; 
+                                other.dispatchEvent(new Event("change", { bubbles: true }));
+                            }
+                        });
+                    }
+                });
+            }
+
+            if (window.__pagefindTrueCounts && searchInput && searchInput.value) {
+                const docName = cb.value;
+                const trueCount = window.__pagefindTrueCounts[docName] || 0;
+                const label = document.querySelector(`[for="resource-${docName}"]`);
+                
+                if(!label) return;
+
+                const currentText = label.textContent;
+                const newText = currentText.replace(/\(\d+\)/, `(${trueCount})`);
+
+                if (currentText !== newText) {
+                    observer.disconnect();
+                    label.textContent = newText;
+                    observer.observe(document.body, { childList: true, subtree: true });
+                }
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        try {
+            const pagefind = await import("/pagefind/pagefind.js");
+            window.__pagefindTrueCounts = {};
+
+            const observer = new MutationObserver(() => {
+                const searchInput = document.querySelector(".pagefind-ui__search-input");
+                const resultTitles = document.querySelectorAll(".pagefind-ui__result-inner > p.pagefind-ui__result-title:not([data-badged])");
+                const checkboxes = document.querySelectorAll(".pagefind-ui__filter-checkbox");
+
+                setupSearchInputListener(searchInput, pagefind);
+                applyBadgesToResults(resultTitles);
+                applyDefaultFilter(checkboxes);
+                processFiltersAndCounts(checkboxes, searchInput, observer);
+            });
+
+            observer.observe(document.body, { childList: true, subtree: true });
+        } catch (e) {
+            console.warn("Failed to load raw Pagefind API for counts", e);
+        }
+    });
+</script>
+}

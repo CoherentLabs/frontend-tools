@@ -10,12 +10,7 @@ export default defineConfig({
       },
       plugins: [
         ...coherentTheme({
-          showPageProgress: true,
-          navLinks: [
-            { href: '#', label: 'Roadmap' },
-            { href: '#', label: 'API' },
-            { href: '#', label: 'Others' },
-          ]
+          documentationSearchTag: 'Test docs',
         })],
       sidebar: [
         generateVersion('1.0.0', 'test'),

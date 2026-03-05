@@ -20,7 +20,6 @@ A specialized [Starlight](https://starlight.astro.build/) theme designed for **C
 * **Bundled Tools:**
   * `tailwindcss`: Fully configured Astro integration.
   * `starlight-heading-badges`: Adds badges to headings.
-  * `starlight-links-validator`: Validates internal links during build.
   * `starlight-sidebar-topics`: Support for multi-instance documentation.
 
 ## 📦 Installation
@@ -58,14 +57,15 @@ export default defineConfig({
       plugins: [
         // ✅ CORRECT USAGE: Spread the array
         ...coherentTheme({
+          documentationSearchTag: 'docs', // Tag to scope the search index for documentation content
           showPageProgress: true,
-          navLinks: [
-            { label: 'Roadmap', href: '/roadmap' },
-            { label: 'API', href: '/api' },
-            { label: 'Showcase', href: 'https://coherent-labs.com' }
-          ],
+          // navLinks: [
+          //   { label: 'Roadmap', href: '/roadmap' },
+          //   { label: 'API', href: '/api' },
+          //   { label: 'Showcase', href: 'https://coherent-labs.com' }
+          // ], // Aditional links to display in the header if needed
           // disableDefaultLogo: false, // Set true if you want to use your own logo
-          // disableDefaultFavicon: false // Set true if you want to use your own favicon
+          // replacesTitle: false, // Set true if you want to show the documentation title next to the logo in the header. Useful when using a custom logo that doesn't include the title in it.
         }),
       ],
       
@@ -82,11 +82,13 @@ export default defineConfig({
 
 ## ⚙️ Configuration Options
 
-| Option                 | Type                     | Default | Description                                                                                                                                                                    |
-| ---------------------- | ------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **navLinks**           | `Array<{ label, href }>` | `[]`    | Links displayed in the header (desktop) and top-bar in the mobile menu (mobile).                                                                                               |
-| **showPageProgress**   | `boolean`                | `false` | Shows a reading progress bar at the top of the page.                                                                                                                           |
-| **disableDefaultLogo** | `boolean`                | `false` | If false, injects the Gameface UI logo automatically if such is not defined in the Starlight config of the documentation. Set to true if you want to remove the logo entirely. |
+| Option                     | Type                     | Default | Description                                                                                                                                                                                |
+| -------------------------- | ------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **documentationSearchTag** | `string`                 | `''`    | (Required) A tag to scope the search index for the documentation content. Also, used to show a button for the search resources filter for the current documentation.                       |
+| **navLinks**               | `Array<{ label, href }>` | `[]`    | Links displayed in the header (desktop) and top-bar in the mobile menu (mobile).                                                                                                           |
+| **showPageProgress**       | `boolean`                | `false` | Shows a reading progress bar at the top of the page.                                                                                                                                       |
+| **disableDefaultLogo**     | `boolean`                | `false` | If false, injects the Gameface UI logo automatically if such is not defined in the Starlight config of the documentation. Set to true if you want to remove the logo entirely.             |
+| **replacesTitle**          | `boolean`                | `true`  | If true, the logo will replace the title in the header. Set to false if you want to show the title next to the logo. Useful when using a custom logo that doesn't include the title in it. |
 
 To override the default logo, simply provide your own in the Starlight configuration:
 
@@ -95,9 +97,9 @@ starlight({
     logo: {
         dark: './path/to/dark-logo.svg',
         light: './path/to/light-logo.svg',
+        // If your logo already includes the title, set this to true to avoid duplication.
+        replacesTitle: false,
     },
-    // If your logo already includes the title, set this to true to avoid duplication
-    replacesTitle: false,
 })
 ```
 

@@ -8,7 +8,10 @@
   /* 1. GLOBAL VARIABLES & DARK THEME (DEFAULT) */
   /* ========================================= */
   :root {
+    --pagefind-ui-scale: 0.9;
+
     /* --- Shared Settings (Typography & Shapes) --- */
+    --sl-font: 'Karla', sans-serif;
     --sl-font-system: 'Karla', sans-serif;
     --sl-font-heading: 'Barlow Semi Condensed', sans-serif;
 

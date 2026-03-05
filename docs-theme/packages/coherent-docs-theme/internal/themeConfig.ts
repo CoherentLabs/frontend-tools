@@ -1,11 +1,13 @@
 export interface CoherentThemeOptions {
+    documentationSearchTag: string
     showPageProgress?: boolean;
     navLinks?: Array<{ label: string; href: string }>;
     disableDefaultLogo?: boolean;
+    replacesTitle?: boolean
 }
 
 export default function getThemeConfig(): CoherentThemeOptions {
-    let themeConfig = { showPageProgress: false, navLinks: [], disableDefaultLogo: false } as CoherentThemeOptions;
+    let themeConfig = { documentationSearchTag: '', showPageProgress: false, navLinks: [], disableDefaultLogo: false } as CoherentThemeOptions;
 
     if (process.env.COHERENT_THEME_CONFIG) {
         try {
