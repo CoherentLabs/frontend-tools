@@ -3,7 +3,6 @@ import { overrideComponents } from './internal/overrideComponents';
 import fs from 'fs';
 import path from 'path';
 import starlightHeadingBadges from 'starlight-heading-badges';
-import starlightLinksValidator from 'starlight-links-validator';
 import generateChangelogMultiple from './utils/changelogSideBarMultipleDocs';
 import generateChangelog from './utils/changelogSideBar';
 import type { CoherentThemeOptions } from './internal/themeConfig';
@@ -110,12 +109,6 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
 
   const plugins = [
     starlightHeadingBadges(),
-    starlightLinksValidator({
-      errorOnFallbackPages: false,
-      errorOnRelativeLinks: false,
-      errorOnInvalidHashes: false,
-      errorOnLocalLinks: false,
-    }),
     corePlugin,
   ];
 

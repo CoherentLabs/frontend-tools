@@ -25,7 +25,7 @@
 
     /* --- DARK MODE PALETTE (Default) --- */
     --gameface-bg-main: #0A0A0A;
-    --gameface-bg-content: #0F2123;
+    --gameface-bg-content: #141414;
     /* Deep Teal */
     --gameface-bg-panel: #141414;
     --gameface-border: #262626;
@@ -55,7 +55,6 @@
     --sl-color-hairline: var(--gameface-border);
     --overlay-backdrop: rgba(10, 10, 10, 0.95);
     --before-after-line: rgba(255, 255, 255, 0.43);
-
   }
 
   main .sl-container {
@@ -183,6 +182,29 @@
 
   .sl-link-button.primary {
     font-weight: bold;
+    transition: filter 0.2s ease, border-color 0.2s ease;
+    border: 1px solid transparent;
+  }
+
+  .sl-link-button.primary:hover {
+    filter: brightness(1.2);
+  }
+
+  .sl-link-button.secondary {
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .sl-link-button.secondary:hover {
+    border-color: var(--gameface-cyan);
+    color: var(--gameface-cyan)
+  }
+
+  .sl-link-button.minimal {
+    transition: color 0.2s ease;
+  }
+
+  .sl-link-button.minimal:hover {
+    color: var(--gameface-cyan)
   }
 
   /* ========================================= */
