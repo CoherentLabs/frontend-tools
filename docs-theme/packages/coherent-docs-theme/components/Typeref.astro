@@ -1,0 +1,35 @@
+---
+interface Props {
+    title: string;
+    naviteRef?: string;
+    unityRef?: string;
+}
+
+const { title, naviteRef = "", unityRef = "" } = Astro.props;
+
+const currentType = import.meta.env.DOCS_TYPE || "";
+
+let resolvedPath = "";
+
+if (currentType === "cxx" && naviteRef !== "") {
+    resolvedPath = naviteRef;
+} else if (currentType === "unity3d" && unityRef !== "") {
+    resolvedPath = unityRef;
+}
+
+if (resolvedPath.endsWith(".mdx")) {
+    resolvedPath = resolvedPath.replace(/\.mdx$/, "");
+}
+
+if (resolvedPath.endsWith(".md")) {
+    resolvedPath = resolvedPath.replace(/\.md$/, "");
+}
+---
+
+{
+    resolvedPath !== "" ? (
+        <a href={resolvedPath}>{title}</a>
+    ) : (
+        <Fragment>{title}</Fragment>
+    )
+}

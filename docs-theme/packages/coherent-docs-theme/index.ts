@@ -8,6 +8,8 @@ import generateChangelogMultiple from './utils/changelogSideBarMultipleDocs';
 import generateChangelog from './utils/changelogSideBar';
 import type { CoherentThemeOptions } from './internal/themeConfig';
 import { fileURLToPath } from 'url';
+import { directives } from './remark-directives';
+import { getSortedCoherentReleases } from './utils/coherentReleases';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,7 +38,7 @@ const defaultMergeIndex = [
   }
 ]
 
-export default function coherentTheme(options: CoherentThemeOptions = { documentationSearchTag: '' }): StarlightPlugin[] {
+export default function coherentThemePlugin(options: CoherentThemeOptions = { documentationSearchTag: '' }): StarlightPlugin[] {
   let navLinks = defaultHeaderLinks;
   for (const link of options.navLinks ?? []) {
     navLinks.push(link)
@@ -50,8 +52,21 @@ export default function coherentTheme(options: CoherentThemeOptions = { document
   const corePlugin: StarlightPlugin = {
     name: 'coherent-docs-theme',
     hooks: {
-      'config:setup'({ config, logger, updateConfig }) {
+      'config:setup'({ config, logger, updateConfig, addIntegration }) {
         logger.info('Initializing Coherent Theme...');
+
+        addIntegration({
+          name: 'coherent-docs-theme-integration',
+          hooks: {
+            'astro:config:setup': ({ updateConfig }) => {
+              updateConfig({
+                markdown: {
+                  remarkPlugins: [...directives],
+                },
+              });
+            }
+          }
+        });
 
         process.env.COHERENT_THEME_CONFIG = JSON.stringify({ showPageProgress, navLinks, documentationSearchTag: options.documentationSearchTag });
 
@@ -110,7 +125,7 @@ export default function coherentTheme(options: CoherentThemeOptions = { document
 export function generateVersion(version: string, link?: string) {
   const config: { label: string; link: string; attrs?: { target: string }; badge?: { text: string; variant: "note" | "danger" | "success" | "caution" | "tip" | "default" } } = {
     label: 'Version:',
-    link: '',
+    link: '/',
     badge: {
       text: `${version}`,
       variant: 'tip',
@@ -137,3 +152,4 @@ export async function generateVersionWithPackageJSON(packagePath: string, link?:
 
 export const generateMultipleDocsChangelog = generateChangelogMultiple;
 export const generateDocsChangelog = generateChangelog;
+export const getCoherentReleases = getSortedCoherentReleases;

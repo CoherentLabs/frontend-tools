@@ -1,6 +1,6 @@
 ---
-import type { Props } from '@astrojs/starlight/props';
-import DefaultFooter from '@astrojs/starlight/components/Footer.astro';
+import type { Props } from "@astrojs/starlight/props";
+import DefaultFooter from "@astrojs/starlight/components/Footer.astro";
 
 const currentYear = new Date().getFullYear();
 ---
@@ -9,10 +9,13 @@ const currentYear = new Date().getFullYear();
 
 <div class="custom-copyright">
     <p>
-        &copy; {currentYear} <strong>Coherent Labs</strong>. All rights reserved.
+        &copy; {currentYear}
+        <strong>Coherent Labs</strong>. All rights reserved.
     </p>
     <div class="links">
-        <a href="https://coherent-labs.com/privacy-policy" target="_blank">Privacy Policy</a>
+        <a href="https://coherent-labs.com/privacy-policy" target="_blank"
+            >Privacy Policy</a
+        >
     </div>
 </div>
 

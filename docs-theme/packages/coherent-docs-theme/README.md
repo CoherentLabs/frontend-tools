@@ -13,12 +13,11 @@ A specialized [Starlight](https://starlight.astro.build/) theme designed for **C
   * **Desktop:** Integrated header links alongside the logo.
   * **Mobile:** Touch-friendly, horizontally scrollable navigation bar.
   * **Sidebar:** Custom sidebar that prioritizes navigation links on mobile devices.
-* **Asset Injection:** Automatically injects the Coherent Gameface logo on the right side of the header unless explicitly disabled.
+* **Asset Injection:** Automatically injects the Coherent Gameface logo on the left side of the header unless explicitly disabled.
 * **Enhanced Components:**
   * **Footer:** Automatic copyright year updating and legal links.
   * **Progress Bar:** Optional reading progress indicator at the top of the page.
 * **Bundled Tools:**
-  * `tailwindcss`: Fully configured Astro integration.
   * `starlight-heading-badges`: Adds badges to headings.
   * `starlight-sidebar-topics`: Support for multi-instance documentation.
 

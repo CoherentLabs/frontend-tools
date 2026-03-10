@@ -11,7 +11,7 @@ export default function getThemeConfig(): CoherentThemeOptions {
 
     if (process.env.COHERENT_THEME_CONFIG) {
         try {
-            themeConfig = JSON.parse(process.env.COHERENT_THEME_CONFIG);
+            themeConfig = { ...themeConfig, ...JSON.parse(process.env.COHERENT_THEME_CONFIG) };
         } catch (e) {
             console.error("Failed to parse Coherent Theme config");
         }

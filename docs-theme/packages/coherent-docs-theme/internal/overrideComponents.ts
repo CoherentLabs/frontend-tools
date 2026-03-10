@@ -26,5 +26,4 @@ type ComponentOverride =
     | keyof NonNullable<StarlightUserConfig['components']>
     | {
         name: keyof NonNullable<StarlightUserConfig['components']>
-        fallback: string
     }

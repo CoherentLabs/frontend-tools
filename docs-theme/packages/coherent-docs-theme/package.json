@@ -6,7 +6,7 @@
   "author": "CoherentLabs",
   "type": "module",
   "scripts": {
-    "publish:package": "npm i&&npm publish"
+    "publish:package": "npm i && npm publish"
   },
   "exports": {
     ".": "./index.ts",
@@ -17,14 +17,16 @@
   },
   "devDependencies": {
     "@astrojs/starlight": "^0.37.6",
-    "astro": "^5.17.1",
-    "gray-matter": "^4.0.3"
+    "@types/mdast": "^4.0.4",
+    "@types/unist": "^3.0.3",
+    "astro": "^5.17.1"
   },
   "dependencies": {
     "starlight-heading-badges": "^0.6.1",
     "starlight-links-validator": "^0.19.2",
     "starlight-sidebar-topics": "^0.6.2",
-    "starlight-sidebar-topics-dropdown": "^0.5.2"
+    "starlight-sidebar-topics-dropdown": "^0.5.2",
+    "gray-matter": "^4.0.3"
   },
   "peerDependencies": {
     "@astrojs/starlight": ">=0.37"
@@ -35,7 +37,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/CoherentLabs/frontend-tools/coherent-docs-theme",
+  "homepage": "https://github.com/CoherentLabs/frontend-tools/tree/master/docs-theme/packages/coherent-docs-theme",
   "repository": {
     "type": "git",
     "url": "https://github.com/CoherentLabs/frontend-tools/coherent-docs-theme.git",

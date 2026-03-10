@@ -1,7 +1,7 @@
 ---
-import crypto from 'node:crypto'
+import crypto from "node:crypto";
 
-const id = `moon-mask-${crypto.randomBytes(4).toString('hex')}`
+const id = `moon-mask-${crypto.randomBytes(4).toString("hex")}`;
 
 // https://web.dev/building-a-theme-switch-component/
 // https://github.com/withastro/starlight/blob/9237581c766f68fbb3ce5f9401ca2046f106c7d5/packages/starlight/components/ThemeSelect.astro
@@ -9,10 +9,10 @@ const id = `moon-mask-${crypto.randomBytes(4).toString('hex')}`
 
 <starlight-coherent-docs-theme-select>
   <button
-    aria-label={Astro.locals.t('themeSelect.accessibleLabel')}
+    aria-label={Astro.locals.t("themeSelect.accessibleLabel")}
     aria-live="polite"
     class="sl-flex"
-    title={Astro.locals.t('themeSelect.accessibleLabel')}
+    title={Astro.locals.t("themeSelect.accessibleLabel")}
   >
     <svg aria-hidden="true" height="16" viewBox="0 0 24 24" width="16">
       <mask class="moon" id={id}>
@@ -75,20 +75,20 @@ const id = `moon-mask-${crypto.randomBytes(4).toString('hex')}`
     stroke: var(--sl-color-accent-high);
   }
 
-  :global([data-theme='dark']) svg .sun {
+  :global([data-theme="dark"]) svg .sun {
     transform: scale(1.75);
   }
 
-  :global([data-theme='dark']) svg .sun-beams {
+  :global([data-theme="dark"]) svg .sun-beams {
     opacity: 0;
   }
 
-  :global([data-theme='dark']) svg .moon circle {
+  :global([data-theme="dark"]) svg .moon circle {
     transform: translateX(-7px);
   }
 
   @supports (cx: 1) {
-    :global([data-theme='dark']) svg .moon circle {
+    :global([data-theme="dark"]) svg .moon circle {
       cx: 17;
       transform: translateX(0);
     }
@@ -96,38 +96,48 @@ const id = `moon-mask-${crypto.randomBytes(4).toString('hex')}`
 
   @media (prefers-reduced-motion: no-preference) {
     svg .sun {
-      transition: transform var(--sl-rapide-theme-select-animation-duration) var(--sl-rapide-theme-select-ease-elastic);
+      transition: transform var(--sl-rapide-theme-select-animation-duration)
+        var(--sl-rapide-theme-select-ease-elastic);
     }
 
     svg .sun-beams {
       transition:
         opacity var(--sl-rapide-theme-select-animation-duration) ease,
-        transform var(--sl-rapide-theme-select-animation-duration) var(--sl-rapide-theme-select-ease-elastic);
+        transform var(--sl-rapide-theme-select-animation-duration)
+          var(--sl-rapide-theme-select-ease-elastic);
     }
 
     svg .moon circle {
-      transition: transform calc(var(--sl-rapide-theme-select-animation-duration) / 2) ease-out;
+      transition: transform
+        calc(var(--sl-rapide-theme-select-animation-duration) / 2) ease-out;
     }
 
     @supports (cx: 1) {
       svg .moon circle {
-        transition: cx calc(var(--sl-rapide-theme-select-animation-duration) / 2) ease-out;
+        transition: cx
+          calc(var(--sl-rapide-theme-select-animation-duration) / 2) ease-out;
       }
     }
 
-    :global([data-theme='dark']) svg .sun {
+    :global([data-theme="dark"]) svg .sun {
       transform: scale(1.75);
-      transition-duration: calc(var(--sl-rapide-theme-select-animation-duration) / 2);
+      transition-duration: calc(
+        var(--sl-rapide-theme-select-animation-duration) / 2
+      );
       transition-timing-function: ease;
     }
 
-    :global([data-theme='dark']) svg .sun-beams {
+    :global([data-theme="dark"]) svg .sun-beams {
       transform: rotateZ(-25deg);
-      transition-duration: calc(var(--sl-rapide-theme-select-animation-duration) / 4);
+      transition-duration: calc(
+        var(--sl-rapide-theme-select-animation-duration) / 4
+      );
     }
 
-    :global([data-theme='dark']) svg .moon circle {
-      transition-delay: calc(var(--sl-rapide-theme-select-animation-duration) / 4);
+    :global([data-theme="dark"]) svg .moon circle {
+      transition-delay: calc(
+        var(--sl-rapide-theme-select-animation-duration) / 4
+      );
       transition-duration: var(--sl-rapide-theme-select-animation-duration);
     }
   }
@@ -135,63 +145,74 @@ const id = `moon-mask-${crypto.randomBytes(4).toString('hex')}`
 
 {/* Inlined to avoid FOUC. Uses global scope from `ThemeProvider.astro` */}
 <script is:inline>
-  StarlightThemeProvider.updatePickers()
+  StarlightThemeProvider.updatePickers();
 </script>
 
 <script>
-  type Theme = 'auto' | 'dark' | 'light'
+  type Theme = "auto" | "dark" | "light";
 
   /** Key in `localStorage` to store color theme preference at. */
-  const storageKey = 'starlight-theme'
+  const storageKey = "starlight-theme";
 
   /** Get a typesafe theme string from any JS value (unknown values are coerced to `'auto'`). */
   function parseTheme(theme: unknown): Theme {
-    return theme === 'auto' || theme === 'dark' || theme === 'light' ? theme : 'auto'
+    return theme === "auto" || theme === "dark" || theme === "light"
+      ? theme
+      : "auto";
   }
 
   /** Load the user’s preference from `localStorage`. */
   function loadTheme(): Theme {
-    return parseTheme(typeof localStorage !== 'undefined' && localStorage.getItem(storageKey))
+    return parseTheme(
+      typeof localStorage !== "undefined" && localStorage.getItem(storageKey),
+    );
   }
 
   /** Store the user’s preference in `localStorage`. */
   function storeTheme(theme: Theme): void {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(storageKey, theme === 'light' || theme === 'dark' ? theme : '')
+    if (typeof localStorage !== "undefined") {
+      localStorage.setItem(
+        storageKey,
+        theme === "light" || theme === "dark" ? theme : "",
+      );
     }
   }
 
   /** Get the preferred system color scheme. */
   function getPreferredColorScheme(): Theme {
-    return matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+    return matchMedia("(prefers-color-scheme: light)").matches
+      ? "light"
+      : "dark";
   }
 
   /** Update select menu UI, document theme, and local storage state. */
   function onThemeChange(theme: Theme): void {
-    StarlightThemeProvider.updatePickers(theme)
-    document.documentElement.dataset['theme'] = theme === 'auto' ? getPreferredColorScheme() : theme
-    storeTheme(theme)
+    StarlightThemeProvider.updatePickers(theme);
+    document.documentElement.dataset["theme"] =
+      theme === "auto" ? getPreferredColorScheme() : theme;
+    storeTheme(theme);
   }
 
   // React to changes in system color scheme.
-  matchMedia(`(prefers-color-scheme: light)`).addEventListener('change', () => {
-    if (loadTheme() === 'auto') onThemeChange('auto')
-  })
+  matchMedia(`(prefers-color-scheme: light)`).addEventListener("change", () => {
+    if (loadTheme() === "auto") onThemeChange("auto");
+  });
 
   customElements.define(
-    'starlight-coherent-docs-theme-select',
-    class StarlightRapideThemeSelect extends HTMLElement {
+    "starlight-coherent-docs-theme-select",
+    class CoherentThemeSelect extends HTMLElement {
       constructor() {
-        super()
-        onThemeChange(loadTheme())
-        const button = this.querySelector('button')
-        button?.addEventListener('click', () => {
-          const theme = parseTheme(document.documentElement.dataset['theme'])
-          const newTheme = theme === 'dark' ? 'light' : theme === 'light' ? 'dark' : 'auto'
-          onThemeChange(newTheme)
-          button?.setAttribute('aria-label', `${newTheme} theme`)
-        })
+        super();
+        onThemeChange(loadTheme());
+        const button = this.querySelector("button");
+        button?.addEventListener("click", () => {
+          const theme = parseTheme(document.documentElement.dataset["theme"]);
+          const newTheme =
+            theme === "dark" ? "light" : theme === "light" ? "dark" : "auto";
+          onThemeChange(newTheme);
+          button?.setAttribute("aria-label", `${newTheme} theme`);
+        });
       }
     },
-  )
+  );
 </script>

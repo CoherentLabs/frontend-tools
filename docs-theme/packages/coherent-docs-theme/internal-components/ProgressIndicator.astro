@@ -11,15 +11,17 @@
     });
 
     function updateProgressScroll() {
-        if (document) {
-            const progressScroll = document.getElementById("progress-scroll");
-            if (progressScroll) {
-                var scrollTop =
-                    window.scrollY || document.documentElement.scrollTop;
-                var scrollHeight =
-                    document.documentElement.scrollHeight - window.innerHeight;
-                var progress = (scrollTop / scrollHeight) * 100;
+        const progressScroll = document.getElementById("progress-scroll");
+        if (progressScroll) {
+            const scrollTop =
+                window.scrollY || document.documentElement.scrollTop;
+            const scrollHeight =
+                document.documentElement.scrollHeight - window.innerHeight;
+            if (scrollHeight > 0) {
+                const progress = (scrollTop / scrollHeight) * 100;
                 progressScroll.style.width = progress + "%";
+            } else {
+                progressScroll.style.width = "0%";
             }
         }
     }
@@ -29,7 +31,6 @@
     html:is(:not([data-has-hero]), [data-has-sidebar], [data-has-toc])
         .progress-scroll-container {
         position: fixed;
-        /* top: var(--sl-nav-height); */
         top: 0;
         left: 0;
         height: 0.25rem;

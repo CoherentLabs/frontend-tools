@@ -41,6 +41,12 @@ importers:
       '@astrojs/starlight':
         specifier: ^0.37.6
         version: 0.37.6(astro@5.17.1(rollup@4.57.1)(typescript@5.9.3))
+      '@types/mdast':
+        specifier: ^4.0.4
+        version: 4.0.4
+      '@types/unist':
+        specifier: ^3.0.3
+        version: 3.0.3
       astro:
         specifier: ^5.17.1
         version: 5.17.1(rollup@4.57.1)(typescript@5.9.3)

@@ -54,6 +54,8 @@
 
     --sl-color-hairline: var(--gameface-border);
     --overlay-backdrop: rgba(10, 10, 10, 0.95);
+    --before-after-line: rgba(255, 255, 255, 0.43);
+
   }
 
   main .sl-container {
@@ -127,6 +129,7 @@
 
     --sl-color-hairline: var(--gameface-border);
     --overlay-backdrop: rgba(255, 255, 255, 0.95);
+    --before-after-line: rgba(10, 10, 10, 0.43);
   }
 
   /* ========================================= */
@@ -292,14 +295,17 @@
 
   /* --- Cards & UI --- */
   .card,
-  .link-card {
+  .sl-link-card {
     background-color: var(--sl-color-bg-nav) !important;
     /* Context aware */
     border: 1px solid var(--sl-color-gray-5);
     transition: border-color 0.2s;
   }
 
-  .card:hover {
+  .card:hover,
+  .card:focus,
+  .sl-link-card:hover,
+  .sl-link-card:focus {
     border-color: var(--gameface-cyan);
   }
 
@@ -332,6 +338,12 @@
 
   [data-theme='light'] .starlight-aside__title {
     color: #009bb3 !important;
+  }
+
+  footer .meta {
+    border-bottom: 1px solid var(--sl-color-gray-5);
+    padding-top: 2rem;
+    margin-top: 3rem;
   }
 
   /* --- Pagination Buttons --- */
