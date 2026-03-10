@@ -14,7 +14,6 @@ class GFTextNode {
     constructor(node: TextNode) {
         this.node = node;
         this.textSegments = parseTextStyle(node);
-        console.log('Parsed Text Segments:', this.textSegments, 'from node:', node.name);
         this.images = [];
         this.className = generateClassName('text-node', this.node.id);
     }
