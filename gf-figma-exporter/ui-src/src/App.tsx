@@ -48,10 +48,14 @@ const App: Component = () => {
                 </div>
             ),
             {
-                duration: 0,
+                duration: Infinity,
                 unmountDelay: 0,
             }
         );
+    };
+
+    const handleError = (message: string) => {
+        toast.error(`Error: ${message}\n Contact Support at frontend@coherent-labs.com for more information`, { duration: Infinity, unmountDelay: 0 });
     };
 
     const handleSelectedFontsClick = () => {
@@ -145,6 +149,11 @@ const App: Component = () => {
             const { name, progress } = data as { name: string; progress: number };
             setExportProgress(progress);
             setExportMessage(`${name}: ${progress.toFixed(2)}%`);
+        });
+
+        MessageBus.on('ERROR', (data) => {
+            const { message } = data as { message: string };
+            handleError(message);
         });
     });
 

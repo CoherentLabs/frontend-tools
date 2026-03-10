@@ -1,6 +1,7 @@
 import JSZip from 'jszip';
 import { GFFont } from '../commonTypes';
 import MessageBus from '../MessageBus/MessageBus';
+import { base64toUint8Array, isBase64 } from '../utils/base64toUint8Array';
 
 type ExporterResult = {
     [pageName: string]: {
@@ -33,6 +34,12 @@ export default function downloadPages(data: { pages: ExporterResult; filename: s
                     for (const [style, styleData] of Object.entries(weightStyles)) {
                         for (const [subset, data] of Object.entries(styleData.subsets)) {
                             if (data) {
+                                if (isBase64(data)) {
+                                    const fontData = base64toUint8Array(data as string);
+                                    jszip.file(`${name}/fonts/${font}-${style}_${weight}_${subset}.ttf`, fontData);
+                                    continue;
+                                }
+                                
                                 jszip.file(`${name}/fonts/${font}-${style}_${weight}_${subset}.ttf`, data);
                             }
                         }
@@ -53,5 +60,7 @@ export default function downloadPages(data: { pages: ExporterResult; filename: s
         URL.revokeObjectURL(archiveUrl); // Clean up the URL object
 
         MessageBus.postMessage('close-plugin', {});
+    }).catch((error) => {
+        console.error('Error generating ZIP archive:', error);
     });
 }

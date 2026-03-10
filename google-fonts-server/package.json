@@ -1,0 +1,19 @@
+{
+  "name": "google-fonts-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build:fonts-metadata": "node generateGoogleFontsMetadata.mjs",
+    "dev": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "cross-fetch": "^4.1.0",
+    "express": "^5.2.1",
+    "google-font-metadata": "^6.0.8"
+  }
+}

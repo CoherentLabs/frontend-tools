@@ -19,7 +19,7 @@ export type FontMapEntryData = {
 }
 
 export type SubsetData = {
-  [subset: string]: Uint8Array | null;
+  [subset: string]: Uint8Array | null | string;
 }
 
 export interface GFFont extends FontMapData {}

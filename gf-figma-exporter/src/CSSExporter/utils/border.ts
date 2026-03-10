@@ -88,6 +88,7 @@ export async function generateBorders(node: NodesWithFillsAndStrokes): Promise<s
             if (!isBasicStroke(node)) {
                 // Complex stroke geometry is not supported in CSS borders, so we export as image
                 handleImageStroke();
+                return result;
             }
 
             const { r, g, b } = (strokes[0] as SolidPaint).color;
