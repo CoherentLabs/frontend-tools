@@ -38,6 +38,10 @@ const defaultMergeIndex = [
 ]
 
 export default function coherentThemePlugin(options: CoherentThemeOptions = { documentationSearchTag: '' }): StarlightPlugin[] {
+  if (!options?.documentationSearchTag) {
+    throw new Error('Coherent docs theme plugin requires "documentationSearchTag"!')
+  }
+
   let navLinks = defaultHeaderLinks;
   for (const link of options.navLinks ?? []) {
     navLinks.push(link)

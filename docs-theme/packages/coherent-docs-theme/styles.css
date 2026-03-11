@@ -333,7 +333,7 @@
 
   /* Code Blocks */
   .expressive-code .frame {
-    background-color: var(--gameface-dark-grey) !important;
+    background-color: var(--gameface-bg-panel) !important;
     /* Code is usually dark even in light mode for Gameface? */
     border: 1px solid var(--sl-color-gray-5);
   }
@@ -347,25 +347,13 @@
   /* Admonitions */
   .starlight-aside--tip,
   .starlight-aside--note {
-    background-color: var(--sl-color-bg-nav) !important;
     border: 1px solid var(--sl-color-hairline) !important;
-    border-left: 4px solid var(--gameface-cyan) !important;
+    border-left: 4px solid var(--sl-color-asides-text-accent) !important;
   }
 
   .starlight-aside__title {
     font-family: var(--sl-font-heading);
     text-transform: uppercase;
-    color: var(--gameface-cyan) !important;
-  }
-
-  [data-theme='light'] .starlight-aside__title {
-    color: #009bb3 !important;
-  }
-
-  footer .meta {
-    border-bottom: 1px solid var(--sl-color-gray-5);
-    padding-top: 2rem;
-    margin-top: 3rem;
   }
 
   /* --- Pagination Buttons --- */

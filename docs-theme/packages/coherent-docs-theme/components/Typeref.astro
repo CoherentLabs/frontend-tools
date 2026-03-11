@@ -1,18 +1,18 @@
 ---
 interface Props {
     title: string;
-    naviteRef?: string;
+    nativeRef?: string;
     unityRef?: string;
 }
 
-const { title, naviteRef = "", unityRef = "" } = Astro.props;
+const { title, nativeRef = "", unityRef = "" } = Astro.props;
 
 const currentType = import.meta.env.DOCS_TYPE || "";
 
 let resolvedPath = "";
 
-if (currentType === "cxx" && naviteRef !== "") {
-    resolvedPath = naviteRef;
+if (currentType === "cxx" && nativeRef !== "") {
+    resolvedPath = nativeRef;
 } else if (currentType === "unity3d" && unityRef !== "") {
     resolvedPath = unityRef;
 }

@@ -1,6 +1,7 @@
 import starlight from '@astrojs/starlight'
 import { defineConfig } from 'astro/config'
 import starlightSidebarTopics from 'starlight-sidebar-topics'
+import starlightLinksValidator from 'starlight-links-validator';
 import coherentTheme, { generateMultipleDocsChangelog, generateVersionWithPackageJSON } from 'coherent-docs-theme'
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -159,7 +160,10 @@ async function getConfig() {
         credits: false,
         customCss: ['./src/styles/custom.css'],
         plugins: [
-          ...coherentTheme(),
+          ...coherentTheme({
+            documentationSearchTag: "UI Tools"
+          }),
+          starlightLinksValidator(),
           starlightSidebarTopics(sideBarTopics, {
             topics: documentations.reduce((acc: Record<string, string[]>, doc) => {
               acc[doc] = [`/${doc}/changelog`];

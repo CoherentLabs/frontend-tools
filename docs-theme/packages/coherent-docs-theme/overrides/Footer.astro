@@ -3,9 +3,29 @@ import type { Props } from "@astrojs/starlight/props";
 import DefaultFooter from "@astrojs/starlight/components/Footer.astro";
 
 const currentYear = new Date().getFullYear();
+
+const { pagination, editUrl, lastUpdated } = (Astro.locals as any)
+    .starlightRoute;
+
+const hasPagination = !!(pagination?.prev || pagination?.next);
+const hasMeta = !!(editUrl || lastUpdated);
+const hasAnyFooterContent = hasPagination || hasMeta;
 ---
 
-<DefaultFooter {...Astro.props} />
+<footer
+    class:list={[
+        "sl-footer",
+        { "no-meta": !hasMeta },
+        { "no-pagination": !hasPagination },
+        { "has-any-content": hasAnyFooterContent },
+    ]}
+>
+    {hasPagination && <hr class="footer-divider" />}
+
+    <DefaultFooter {...Astro.props}>
+        <slot />
+    </DefaultFooter>
+</footer>
 
 <div class="custom-copyright">
     <p>
@@ -13,15 +33,43 @@ const currentYear = new Date().getFullYear();
         <strong>Coherent Labs</strong>. All rights reserved.
     </p>
     <div class="links">
-        <a href="https://coherent-labs.com/privacy-policy" target="_blank"
+        <a href="https://coherent-labs.com/privacy-policy" rel="noopener" target="_blank"
             >Privacy Policy</a
         >
     </div>
 </div>
 
 <style>
+    .sl-footer {
+        margin-top: 0 !important;
+    }
+
+    .sl-footer.has-any-content {
+        margin-top: 3rem !important;
+    }
+
+    .sl-footer.no-meta :global(.meta) {
+        display: none !important;
+    }
+
+    .sl-footer.no-pagination :global(.pagination-links) {
+        display: none !important;
+    }
+
+    .sl-footer :global(.meta) {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    .footer-divider {
+        border: 0;
+        border-top: 1px solid var(--sl-color-gray-5);
+        margin-bottom: 1.5rem;
+        opacity: 0.5;
+    }
+
     .custom-copyright {
-        margin-top: 3rem;
+        margin-top: 2rem;
         padding-top: 2rem;
         border-top: 1px solid var(--sl-color-hairline);
         display: flex;

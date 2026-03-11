@@ -95,34 +95,13 @@ const isDev = import.meta.env.DEV;
 {!isDev &&
 <script is:inline define:vars={{documentationSearchTag}}>
     const badgesConfig = {
-        "frontend-tools.coherent-labs.com/e2e": {
-            text: "UI Tools | Gameface E2E",
-            color: "#007aaa",
-        },
-        "frontend-tools.coherent-labs.com/interaction-manager": {
-            text: "UI Tools | Interacton Manager",
-            color: "#007abb",
-        },
-        "frontend-tools.coherent-labs.com/gameface-vite-plugin": {
-            text: "UI Tools | Gameface Vite Plugin",
-            color: "#007acc",
-        },
-        "frontend-tools.coherent-labs.com/vite-solid-style-to-css-plugin": {
-            text: "UI Tools | Solid Style to CSS Plugin",
-            color: "#007add",
-        },
-        "frontend-tools.coherent-labs.com/data-binding-autocomplete": {
-            text: "UI Tools | Data Binding Autocomplete",
-            color: "#007aee",
-        },
-        "frontend-tools.coherent-labs.com": {
-            text: "UI Tools",
-            color: "#007aff",
-        },
-        "gameface-ui": {
-            text: "Gameface UI",
-            color: "#e24a4a",
-        },
+        "frontend-tools.coherent-labs.com/e2e": { text: "UI Tools | Gameface E2E", color: "#007aaa" },
+        "frontend-tools.coherent-labs.com/interaction-manager": { text: "UI Tools | Interaction Manager", color: "#007abb" },
+        "frontend-tools.coherent-labs.com/gameface-vite-plugin": { text: "UI Tools | Gameface Vite Plugin", color: "#007acc" },
+        "frontend-tools.coherent-labs.com/vite-solid-style-to-css-plugin": { text: "UI Tools | Solid Style to CSS Plugin", color: "#007add" },
+        "frontend-tools.coherent-labs.com/data-binding-autocomplete": { text: "UI Tools | Data Binding Autocomplete", color: "#007aee" },
+        "frontend-tools.coherent-labs.com/frontend-tools.coherent-labs.com": { text: "UI Tools", color: "#007aff" },
+        "gameface-ui": { text: "Gameface UI", color: "#e24a4a" },
     }
 
     function setupSearchInputListener(searchInput, pagefind) {
@@ -141,7 +120,10 @@ const isDev = import.meta.env.DEV;
         });
     }
 
-    function applyBadgesToResults(resultTitles) {
+    function applyBadgesToResults(container) {
+        const resultTitles = container.querySelectorAll(".pagefind-ui__result-inner > p.pagefind-ui__result-title:not([data-badged])");
+        if (resultTitles.length === 0) return;
+
         resultTitles.forEach((titleElement) => {
             titleElement.dataset.badged = "true";
             const link = titleElement.querySelector("a");
@@ -178,7 +160,7 @@ const isDev = import.meta.env.DEV;
         }
     }
 
-    function processFiltersAndCounts(checkboxes, searchInput, observer) {
+    function processFiltersAndCounts(checkboxes, searchInput, observer, searchContainer) {
         checkboxes.forEach((cb) => {
             if (!cb.dataset.radioFixed) {
                 cb.dataset.radioFixed = "true";
@@ -197,7 +179,7 @@ const isDev = import.meta.env.DEV;
             if (window.__pagefindTrueCounts && searchInput && searchInput.value) {
                 const docName = cb.value;
                 const trueCount = window.__pagefindTrueCounts[docName] || 0;
-                const label = document.querySelector(`[for="resource-${docName}"]`);
+                const label = searchContainer.querySelector(`[for="resource-${docName}"]`);
                 
                 if(!label) return;
 
@@ -207,29 +189,43 @@ const isDev = import.meta.env.DEV;
                 if (currentText !== newText) {
                     observer.disconnect();
                     label.textContent = newText;
-                    observer.observe(document.body, { childList: true, subtree: true });
+                    observer.observe(searchContainer, { childList: true, subtree: true });
                 }
             }
         });
     }
 
     document.addEventListener("DOMContentLoaded", async () => {
+        const searchContainer = document.getElementById("starlight__search");
+        if (!searchContainer) return;
+
         try {
             const pagefind = await import("/pagefind/pagefind.js");
             window.__pagefindTrueCounts = {};
 
-            const observer = new MutationObserver(() => {
-                const searchInput = document.querySelector(".pagefind-ui__search-input");
-                const resultTitles = document.querySelectorAll(".pagefind-ui__result-inner > p.pagefind-ui__result-title:not([data-badged])");
-                const checkboxes = document.querySelectorAll(".pagefind-ui__filter-checkbox");
+            let frameRequested = false;
 
-                setupSearchInputListener(searchInput, pagefind);
-                applyBadgesToResults(resultTitles);
-                applyDefaultFilter(checkboxes);
-                processFiltersAndCounts(checkboxes, searchInput, observer);
+            const observer = new MutationObserver((mutations) => {
+                const hasInterestingChanges = mutations.some(m => m.addedNodes.length > 0);
+                if (!hasInterestingChanges && !window.__pagefindTrueCounts) return;
+
+                if (frameRequested) return;
+                frameRequested = true;
+
+                requestAnimationFrame(() => {
+                    const searchInput = searchContainer.querySelector(".pagefind-ui__search-input");
+                    const checkboxes = searchContainer.querySelectorAll(".pagefind-ui__filter-checkbox");
+
+                    setupSearchInputListener(searchInput, pagefind);
+                    applyBadgesToResults(searchContainer);
+                    applyDefaultFilter(checkboxes);
+                    processFiltersAndCounts(checkboxes, searchInput, observer, searchContainer);
+                    
+                    frameRequested = false;
+                });
             });
 
-            observer.observe(document.body, { childList: true, subtree: true });
+            observer.observe(searchContainer, { childList: true, subtree: true });
         } catch (e) {
             console.warn("Failed to load raw Pagefind API for counts", e);
         }
