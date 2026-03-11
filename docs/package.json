@@ -9,16 +9,18 @@
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
-    "@astrojs/starlight": "^0.37.6",
+    "@astrojs/starlight": "^0.34.3",
     "@hideoo/starlight-plugins-docs-components": "^0.4.0",
     "astro": "^5.3.0",
-    "coherent-docs-theme": "^1.0.0",
     "gray-matter": "^4.0.3",
     "remark-mdx": "^3.1.0",
     "remark-parse": "^11.0.0",
     "sharp": "^0.33.5",
+    "starlight-heading-badges": "^0.5.0",
+    "starlight-links-validator": "^0.15.0",
     "starlight-sidebar-topics": "^0.6.0",
     "starlight-sidebar-topics-dropdown": "^0.5.1",
+    "starlight-theme-rapide": "^0.4.0",
     "unified": "^11.0.5"
   },
   "engines": {

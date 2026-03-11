@@ -1,12 +1,43 @@
 import starlight from '@astrojs/starlight'
 import { defineConfig } from 'astro/config'
-import starlightSidebarTopics from 'starlight-sidebar-topics'
+import starlightThemeRapide from 'starlight-theme-rapide'
 import starlightLinksValidator from 'starlight-links-validator';
-import coherentTheme, { generateMultipleDocsChangelog, generateVersionWithPackageJSON } from 'coherent-docs-theme'
+import starlightHeadingBadges from 'starlight-heading-badges'
+import starlightSidebarTopics from 'starlight-sidebar-topics'
+import generateChangelog from './src/changelogSideBar';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+function generateVersion(version, link) {
+  const config: { label: string; link?: string; attrs?: { target: string }; badge?: { text: string; variant: string } } = {
+    label: 'Version:',
+    link: '',
+    badge: {
+      text: `${version}`,
+      variant: 'tip',
+    },
+  }
+
+  if (link) {
+    config.link = link;
+    config.attrs = { target: '_blank' };
+  }
+
+  return config;
+}
+
+async function generateVersionWithPackageJSON(packagePath, link?: string) {
+  if (!fs.existsSync(packagePath)) throw new Error(`Version not found in ${packagePath}`);
+  const packageContent = fs.readFileSync(packagePath, 'utf-8');
+  const packageJson = JSON.parse(packageContent);
+  const version = packageJson?.version;
+  if (!version) throw new Error(`Version not defined in ${packagePath}`);
+
+  return generateVersion(version, link);
+}
 
 async function getConfig() {
   const documentations = ['e2e', 'gameface-vite-plugin', 'vite-solid-style-to-css-plugin', 'interaction-manager', 'data-binding-autocomplete'];
@@ -30,7 +61,7 @@ async function getConfig() {
           label: 'Concepts',
           autogenerate: { directory: 'e2e/concepts' },
         },
-        generateMultipleDocsChangelog('e2e', path.join(__dirname, `./src/content/docs/e2e/changelog/index.mdx`)),
+        generateChangelog('e2e'),
         {
           label: 'API Reference',
           collapsed: true,
@@ -52,7 +83,7 @@ async function getConfig() {
 
         { label: 'Getting Started', autogenerate: { directory: 'interaction-manager/getting-started' } },
         { label: 'Features', autogenerate: { directory: 'interaction-manager/features' } },
-        generateMultipleDocsChangelog('interaction-manager', path.join(__dirname, `./src/content/docs/interaction-manager/changelog/index.mdx`)),
+        generateChangelog('interaction-manager'),
       ],
     },
     {
@@ -81,7 +112,7 @@ async function getConfig() {
           label: 'Concepts',
           autogenerate: { directory: 'gameface-vite-plugin/concepts' },
         },
-        generateMultipleDocsChangelog('gameface-vite-plugin', path.join(__dirname, `./src/content/docs/gameface-vite-plugin/changelog/index.mdx`)),
+        generateChangelog('gameface-vite-plugin'),
       ],
     },
     {
@@ -102,7 +133,7 @@ async function getConfig() {
           label: 'Concepts',
           autogenerate: { directory: 'vite-solid-style-to-css-plugin/concepts' },
         },
-        generateMultipleDocsChangelog('vite-solid-style-to-css-plugin', path.join(__dirname, `./src/content/docs/vite-solid-style-to-css-plugin/changelog/index.mdx`)),
+        generateChangelog('vite-solid-style-to-css-plugin'),
       ],
     },
     {
@@ -141,7 +172,7 @@ async function getConfig() {
         }
       }
     },
-    redirects: documentations.reduce((acc: Record<string, string>, doc) => {
+    redirects: documentations.reduce((acc, doc) => {
       acc[`/${doc}`] = `/${doc}/getting-started/`;
       return acc;
     }, {}),
@@ -153,23 +184,21 @@ async function getConfig() {
           light: './src/assets/gameface-ui-header-light.svg',
           replacesTitle: true
         },
-        title: 'Gameface Frontend Tools',
         components: {
-          Sidebar: 'coherent-docs-theme/components/SidebarWithDropdown.astro',
+          Sidebar: './src/components/Sidebar.astro',
         },
         credits: false,
         customCss: ['./src/styles/custom.css'],
         plugins: [
-          ...coherentTheme({
-            documentationSearchTag: "UI Tools"
-          }),
+          starlightThemeRapide(),
+          starlightHeadingBadges(),
           starlightLinksValidator(),
           starlightSidebarTopics(sideBarTopics, {
-            topics: documentations.reduce((acc: Record<string, string[]>, doc) => {
+            topics: documentations.reduce((acc, doc) => {
               acc[doc] = [`/${doc}/changelog`];
               return acc;
             }, {})
-          }),
+          })
         ],
         social: [
           {
@@ -183,6 +212,7 @@ async function getConfig() {
             href: 'https://coherent-labs.com/get-in-touch'
           },
         ],
+        title: 'Gameface Frontend Tools',
       }),
     ],
     site: 'https://frontend-tools.coherent-labs.com',
