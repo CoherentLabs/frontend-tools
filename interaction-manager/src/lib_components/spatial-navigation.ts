@@ -4,7 +4,6 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { toDeg } from '../utils/utility-functions';
-
 import actions from './actions';
 import keyboard from './keyboard';
 import gamepad from './gamepad';
@@ -18,9 +17,7 @@ type CustomKeysInput = Partial<Record<Direction, KeyName | KeyName[]>>;
 
 interface AreaState {
     elements: HTMLElement[];
-    distance: number;
     lastFocusedElement: HTMLElement | undefined;
-    overflow: { x: number, y: number };
 }
 
 interface NavigableArea {
@@ -162,9 +159,7 @@ class SpatialNavigation {
     private createDefaultAreaState(): AreaState {
         return {
             elements: [],
-            distance: 0,
             lastFocusedElement: undefined,
-            overflow: { x: 0, y: 0 }
         };
     }
 
@@ -232,40 +227,6 @@ class SpatialNavigation {
      */
     private setNavigationAreaProperties(area: string, domElements: HTMLElement[]) {
         this.areas[area].elements.push(...domElements);
-        this.areas[area].distance = this.getElementsDistance(this.areas[area].elements);
-        this.areas[area].overflow = this.setOverflowValues(domElements[0].parentElement!);
-    }
-
-    /**
-     * Calculates the distance between the provided elements and return the max distance
-     * @param elements
-     * @returns The max distance between the elements
-     */
-    private getElementsDistance(elements: HTMLElement[]) {
-        return elements.reduce((acc, el) => {
-            const { x, y } = el.getBoundingClientRect();
-            const distance = Math.hypot(x, y);
-            return acc < distance ? distance : acc;
-        }, 0);
-    }
-
-    /**
-     * Recursively checks for overflow in the parent elements and sets the area overflow values
-     * @param {HTMLElement} element - The element to check for overflow
-     * @returns {{x: number, y: number}|HTMLElement} - Next element to check for overflow or object with the overflow values
-     */
-    private setOverflowValues(element: HTMLElement): {x: number, y: number} {
-        if (!element) return { x: 0, y: 0 };
-
-        const { scrollWidth, scrollHeight } = element;
-        const overflowX = Math.max(0, scrollWidth - window.innerWidth);
-        const overflowY = Math.max(0, scrollHeight - window.innerHeight);
-
-        if (overflowX > 0 || overflowY > 0) {
-            return { x: overflowX, y: overflowY };
-        }
-
-        return this.setOverflowValues(element.parentElement!);
     }
 
     /**
@@ -280,19 +241,12 @@ class SpatialNavigation {
      * Returns the valid focusable elements in the navigable area
      * @param {HTMLElement} targetElement
      * @param {HTMLElement[]} elements
-     * @param {number} distance
      */
-    private getFocusableGroup(targetElement: HTMLElement, elements: HTMLElement[], distance: number): NavigationObject[] {
+    private getFocusableGroup(targetElement: HTMLElement, elements: HTMLElement[]): NavigationObject[] {
         return elements.reduce<NavigationObject[]>((accumulator, element) => {
             if (element !== targetElement && !element.hasAttribute('disabled')) {
                 const { x, y, height, width } = element.getBoundingClientRect();
-                accumulator.push({
-                    element,
-                    x: x + distance,
-                    y: y + distance,
-                    height,
-                    width,
-                });
+                accumulator.push({ element, x, y, height, width });
             }
             return accumulator;
         }, []);
@@ -316,36 +270,25 @@ class SpatialNavigation {
      * @param {Object} focusedElement
      * @param {number} focusedElement.x
      * @param {number} focusedElement.y
-     * @param {number} distance
-     * @param {{x: number, y: number}} overflow
      */
-    private getClosestToEdge(direction: Direction, elements: NavigationObject[], focusedElement: {x: number, y: number}, distance: number, overflow: {x: number, y: number}): NavigationObject {
-        let newDistance: number, oldDistance: number;
-        const bottomEdge = window.innerHeight + distance + overflow.y;
-        const rightEdge = window.innerWidth + distance + overflow.x;
-
+    private getClosestToEdge(direction: Direction, elements: NavigationObject[]): NavigationObject {
         return elements.reduce((acc, el) => {
             switch (direction) {
                 case 'down':
-                    newDistance = Math.hypot(el.x - focusedElement.x, el.y);
-                    oldDistance = Math.hypot(acc.x - focusedElement.x, acc.y);
-                    break;
+                    // Wrapping down to the top edge: find the element with the SMALLEST y
+                    return el.y < acc.y ? el : acc;
                 case 'up':
-                    newDistance = Math.hypot(el.x - focusedElement.x, bottomEdge - el.y);
-                    oldDistance = Math.hypot(acc.x - focusedElement.x, bottomEdge - acc.y);
-                    break;
+                    // Wrapping up to the bottom edge: find the element with the LARGEST y
+                    return el.y > acc.y ? el : acc;
                 case 'right':
-                    newDistance = Math.hypot(el.x, el.y - focusedElement.y);
-                    oldDistance = Math.hypot(acc.x, acc.y - focusedElement.y);
-                    break;
+                    // Wrapping right to the left edge: find the element with the SMALLEST x
+                    return el.x < acc.x ? el : acc;
                 case 'left':
-                    newDistance = Math.hypot(rightEdge - el.x, el.y - focusedElement.y);
-                    oldDistance = Math.hypot(rightEdge - acc.x, acc.y - focusedElement.y);
-                    break;
+                    // Wrapping left to the right edge: find the element with the LARGEST x
+                    return el.x > acc.x ? el : acc;
+                default:
+                    return acc;
             }
-            acc = newDistance < oldDistance ? el : acc;
-
-            return acc;
         });
     }
 
@@ -361,31 +304,24 @@ class SpatialNavigation {
         const currentArea = this.getCurrentArea(activeElement as HTMLElement);
         if (!currentArea) return console.error('The active element is not in a focusable area!');
 
-        const { elements, distance, overflow } = currentArea;
-        const focusableGroup = this.getFocusableGroup(activeElement as HTMLElement, elements, distance);
+        const { elements } = currentArea;
+        const focusableGroup = this.getFocusableGroup(activeElement as HTMLElement, elements);
 
         const { x, y, width, height } = activeElement!.getBoundingClientRect();
 
-        const adjustedDimensions = {
-            x: x + distance,
-            y: y + distance,
-            width,
-            height,
-        };
+        const dimensions = { x, y, width, height };
 
         if (focusableGroup.length === 0) return;
 
-        const currentAxisGroup = this.filterGroupByCurrentAxis(direction, focusableGroup, adjustedDimensions);
+        const currentAxisGroup = this.filterGroupByCurrentAxis(direction, focusableGroup, dimensions);
 
         if (!currentAxisGroup.length) return;
 
         let nextFocusableElement = this.findNextElement(
-            direction, currentAxisGroup, adjustedDimensions.x, adjustedDimensions.y);
+            direction, currentAxisGroup, dimensions.x, dimensions.y);
 
         if (!nextFocusableElement) {
-            nextFocusableElement = this.getClosestToEdge(
-                direction, currentAxisGroup, adjustedDimensions, distance, overflow
-            );
+            nextFocusableElement = this.getClosestToEdge(direction, currentAxisGroup);
         }
 
         if (nextFocusableElement) {
