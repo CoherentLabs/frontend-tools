@@ -1,0 +1,87 @@
+---
+title: Known Behavior
+---
+
+# Known Behavior
+
+## File processing scope
+
+- The transformer only runs on files matching: `.tsx`, `.jsx`, `.vue`, `.svelte`, `.html`.
+- It runs in Vite `enforce: 'pre'` mode.
+
+## Two-pass transform model
+
+- **Pass 1** sanitizes:
+    - Variant prefixes like `hover:...` into `__hover__...`.
+    - Arbitrary-value bracket utilities like `w-[50.5px]` into `w-50_5px`.
+- **Pass 2** scans opening tags and:
+    - Extracts inline style declarations.
+    - Converts safe declarations into generated utility classes.
+    - Merges generated classes with existing `class` / `className`.
+
+## Variant behavior
+
+- Supported pseudo-class variants mapped to single-colon selectors:
+    - `hover`, `focus`, `focus-within`, `focus-visible`, `active`, `first-child`, `last-child`, `only-child`.
+- Supported pseudo-elements mapped to double-colon selectors:
+    - `before`, `after`, `selection`.
+- Supported parameterized variant:
+    - `nth-child-*` → `:nth-child(*)`.
+- Any other variant is treated as a custom class-based state selector.
+- Warning is emitted when `selection:` is used with utilities outside text/background color intent.
+
+## Inline style extraction behavior
+
+- Recognized forms include:
+    - JSX: `style={{ ... }}`
+    - Vue: `:style="{ ... }"` and `:style={{ ... }}`
+    - HTML/Svelte/Vue static string: `style="..."`
+    - State form: `style:hover={{ ... }}`
+    - Svelte directives: `style:prop="value"` and `style:prop='value'` (static strings only)
+- Existing class attributes are removed and rebuilt as one merged class attribute.
+
+## Dynamic style preservation
+
+- Static style entries are extracted into generated classes.
+- Dynamic entries are kept in residual inline style when entry appears to use:
+    - ternary `? :`
+    - logical `&&`
+    - logical `||`
+
+## Encoding/decoding behavior for style values
+
+- Values are sanitized when class names are generated:
+    - quotes removed
+    - `#` → `hex-`
+    - `.` → `_`
+    - spaces → `--space--`
+    - `(` → `--lp--`
+    - `)` → `--rp--`
+    - `,` → `--cm--`
+- Preset decode reverses those transformations except quote removal (irreversible).
+
+## Preset utility behavior
+
+- Generated classes follow:
+    - `gf-prop--<css-property>--<encoded-value>`
+- Additional handled utilities include:
+    - width/height/min/max with numeric unit patterns (`px|em|rem|%|vh|vw`)
+    - `bg-hex-<hex>` and `text-hex-<hex>`
+- Shortcuts:
+    - `heading-<n>` → text size + bold + leading
+    - `paragraph-<n>` → text size + normal weight + conditional leading
+
+## Warning behavior
+
+- Warnings are printed unless `suppressWarnings` is enabled.
+- Warnings include timestamp and plugin label.
+- Warnings are triggered for:
+    - unsupported CSS properties
+    - unsupported values for specific properties
+    - shorthand CSS properties using CSS variables (e.g. `border: var(--x)`)
+
+## Important limitations
+
+- The scanner only handles **opening tags** and rewrites attributes there.
+- `style:prop={expr}` (dynamic Svelte style directive expression) is not extracted.
+- String parsing for style extraction is regex-based; edge cases with complex nested syntax can remain in residual style.
