@@ -9,7 +9,7 @@ async function setup() {
     })
     await gf.executeScript(() => {
         window.setupTestPage = async () => {
-            const square = i => `<div class="square square-${i}" style="width: 100px; height: 100px; background-color: burlywood; box-sizing: border-box; margin:1px;">${i}</div>`;
+            const square = i => `<div class="square square-${i}">${i}</div>`;
 
             const el = document.createElement('div');
             el.className = 'test-container';
@@ -379,5 +379,73 @@ describe('Spatial navigation - Isolated State and Syncing', () => {
         });
 
         await isElementFocused('.square-5');
+    });
+});
+
+describe('Spatial navigation - Overflowing Containers and Edge Wrapping', () => {
+    before(setup);
+
+    beforeEach(async () => {
+        await gf.executeScript(async () => {
+            // Create 20 items, each 50px tall. Total height = 1000px
+            const item = i => `<div class="square list-item item-${i}" style="flex-shrink: 0;">Item ${i}</div>`;
+
+            const el = document.createElement('div');
+            el.className = 'test-container overflow-container';
+            // Restrict container height to 200px to force scrolling
+            el.style.cssText = 'height: 200px; width: 300px; overflow-y: scroll; display: flex; flex-direction: column;';
+            el.innerHTML = Array.from({ length: 20 }, (_, i) => item(i + 1)).join('\n');
+
+            cleanTestPage('.test-container');
+            document.body.appendChild(el);
+
+            await new Promise((resolve) => {
+                waitForStyles(resolve);
+            });
+
+            interactionManager.spatialNavigation.init([
+                { area: 'long-list', elements: ['.list-item'] },
+            ]);
+        });
+    });
+
+    afterEach(async () => {
+        await gf.executeScript(() => {
+            cleanTestPage('.test-container');
+            interactionManager.spatialNavigation.deinit();
+        });
+    });
+
+    it('Should wrap to the last item when navigating UP from the first item', async () => {
+        // Start by explicitly focusing the first item
+        await gf.executeScript(() => {
+            interactionManager.spatialNavigation.focusFirst('long-list');
+        });
+        await isElementFocused('.item-1');
+
+        // Trigger wrap-around UP
+        await gf.keyPress(gf.KEYS.ARROW_UP);
+
+        // Assert it found the item with the highest Y coordinate
+        await isElementFocused('.item-20');
+    });
+
+    it('Should wrap to the first item when navigating DOWN from the last item', async () => {
+        // Start by explicitly focusing the last item
+        await gf.executeScript(() => {
+            interactionManager.spatialNavigation.focusLast('long-list');
+            
+            // Force the container to scroll to the very bottom to push the top items off-screen.
+            // This replicates the negative Y coordinate bug scenario.
+            const container = document.querySelector('.overflow-container');
+            container.scrollTop = container.scrollHeight;
+        });
+        await isElementFocused('.item-20');
+
+        // Trigger wrap-around DOWN
+        await gf.keyPress(gf.KEYS.ARROW_DOWN);
+
+        // Assert it found the item with the lowest Y coordinate
+        await isElementFocused('.item-1');
     });
 });

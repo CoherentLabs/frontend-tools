@@ -192,6 +192,12 @@ It will attempt to focus the last focused element in that area. If no element wa
 spatialNavigation.switchArea(area: string);
 ```
 
+:::caution[Breaking Change]
+**Previous behavior:** `switchArea` used to simply call `focusFirst()` every time it was invoked, always focusing the first item in the new area. 
+
+**New behavior:** It now remembers and restores the `lastFocusedElement` for that specific area. If your UI relied on always starting at the first item when switching back to an area, you should now explicitly call `focusFirst(area)` instead of `switchArea(area)`.
+:::
+
 ### clearFocus()
 
 Unfocuses the currently focused element in a navigable area.
@@ -275,7 +281,7 @@ Returns `true` if the spatial navigation is paused, otherwise `false`.
 
 ### areas
 
-Type: `Record<string, { elements: HTMLElement[], distance: number, overflow: { x: number, y: number } }>`
+Type: `Record<string, { elements: HTMLElement[], lastFocusedElement: HTMLElement | undefined }>`
 
 Returns an object with all the registered areas.
 
