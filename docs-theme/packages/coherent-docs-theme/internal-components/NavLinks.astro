@@ -8,11 +8,11 @@ interface Props {
 
 const { type = "header" } = Astro.props;
 const { navLinks, documentationSearchTag } = getThemeConfig();
-const currentUrl = Astro.url;
 
 const isLinkActive = (href: string, label: string) => {
     try {
-        const linkUrl = new URL(href, currentUrl.origin);
+        const linkUrl = new URL(href, Astro.url.origin);
+        const currentUrl = Astro.url;
         const isLocal =
             currentUrl.hostname === "localhost" ||
             currentUrl.hostname === "127.0.0.1";
@@ -21,21 +21,10 @@ const isLinkActive = (href: string, label: string) => {
         const currentPath = normalize(currentUrl.pathname);
         const linkPath = normalize(linkUrl.pathname);
 
-        if (isLocal) {
-            const isCurrentProject = label === documentationSearchTag;
-
-            if (!isCurrentProject) return false;
-
-            if (linkPath === "/") return true;
-            return (
-                currentPath === linkPath ||
-                currentPath.startsWith(linkPath + "/")
-            );
-        }
-
+        if (isLocal) return label === documentationSearchTag;
         if (linkUrl.origin !== currentUrl.origin) return false;
+        if (linkPath === "/") return true;
 
-        if (linkPath === "/") return currentPath === "/";
         return (
             currentPath === linkPath || currentPath.startsWith(linkPath + "/")
         );
@@ -130,6 +119,7 @@ const activeLabel = activeLinkObj ? activeLinkObj.label : "Documentations";
     }
 
     .nav-link {
+        position: relative;
         color: var(--sl-color-gray-3);
         text-decoration: none;
         font-size: 0.85rem;
@@ -137,16 +127,37 @@ const activeLabel = activeLinkObj ? activeLinkObj.label : "Documentations";
         text-transform: uppercase;
         display: block;
         padding: 0.5rem 0;
-        transition: color 0.2s;
+        transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: var(--sl-color-accent);
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .nav-link:hover,
     .nav-link.active {
-        color: var(--sl-color-white);
-    }
-    .nav-link.active {
         color: var(--sl-color-accent);
     }
+
+    .nav-link:hover::after,
+    .nav-link.active::after {
+        transform: scaleX(1);
+        transform-origin: center;
+    }
+
+    .nav-link.active {
+        color: var(--sl-color-white);
+    }
+
     .collapsed-menu {
         position: relative;
     }
@@ -203,16 +214,14 @@ const activeLabel = activeLinkObj ? activeLinkObj.label : "Documentations";
         color: var(--sl-color-gray-3);
         text-decoration: none;
         font-size: 0.9rem;
+        transition: all 0.2s ease;
     }
 
-    .dropdown-link:hover {
-        background-color: var(--sl-color-gray-6);
-        color: var(--sl-color-white);
-    }
-
+    .dropdown-link:hover,
     .dropdown-link.active {
+        background-color: rgba(var(--sl-color-accent-rgb), 0.1);
         color: var(--sl-color-accent);
-        font-weight: bold;
+        padding-left: 1.75rem;
     }
 </style>
 
