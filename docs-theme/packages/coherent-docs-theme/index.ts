@@ -9,6 +9,7 @@ import type { CoherentThemeOptions } from './internal/themeConfig';
 import { fileURLToPath } from 'url';
 import { directives } from './remark-directives';
 import { getSortedCoherentReleases } from './utils/coherentReleases';
+import { version } from './package.json';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -56,7 +57,7 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
     name: 'coherent-docs-theme',
     hooks: {
       'config:setup'({ config, logger, updateConfig, addIntegration }) {
-        logger.info('Initializing Coherent Theme...');
+        logger.info(`Initializing Coherent Theme v${version}...`);
 
         addIntegration({
           name: 'coherent-docs-theme-integration',
