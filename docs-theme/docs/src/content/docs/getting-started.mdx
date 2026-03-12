@@ -1,0 +1,206 @@
+---
+title: Getting Started
+---
+
+import Release from 'coherent-docs-theme/components/Release.astro';
+import Fix from 'coherent-docs-theme/components/Fix.astro';
+import Feature from 'coherent-docs-theme/components/Feature.astro';
+import API from 'coherent-docs-theme/components/Api.astro';
+import Enhancement from 'coherent-docs-theme/components/Enhancement.astro';
+import TypeRef from 'coherent-docs-theme/components/TypeRef.astro';
+import If from 'coherent-docs-theme/components/If.astro';
+import IfEnv from 'coherent-docs-theme/components/IfEnv.astro';
+import Figure from 'coherent-docs-theme/components/Figure.astro';
+
+<If type="unity3d"></If>
+<If product="gameface">
+
+### test
+
+alabala
+
+### test 2
+
+aefae
+
+  <If product="gameface">
+    <If product="gameface">
+
+    #### test 3
+    alalala
+
+    </If>
+  </If>
+
+</If>
+
+Go <TypeRef title="here" nativeRef="Somepage_Native" unityRef="Someotherpage_Unity" />.
+
+Go <TypeRef title="here" nativeRef="Somepage_Native" />.
+
+Go <TypeRef title="here" unityRef="Somepage_Unity" />.
+
+<Release version='1.42.0' date="October 12, 2024">
+    <API engine="Unity" description="Test APIAPIAPIAP IAPIAPIAPIA PIAPIAPIAPIAPI APIAPIAPIAP IAPIAPIAPIAPI APIAPIAPIA PIAPIAPIAPI" />
+    <API description="test 2" />
+    <Enhancement engine="Unreal Engine">
+          Test UE
+    </Enhancement>
+    <Enhancement description="Another enhancement" />
+    <Feature engine="Unreal Engine">
+          Test UE
+    </Feature>
+    <Feature description="Another enhancement" />
+    <Fix engine="Unreal Engine">
+          Test UE
+    </Fix>
+    <Fix description="Another enhancement" />
+</Release>
+
+<Release version="1.41.5" date="September 05, 2024">
+  <Fix>Fixed something</Fix>
+</Release>
+
+import Internal from 'coherent-docs-theme/components/Internal.astro';
+
+<Internal>
+  Dev content 1
+</Internal>
+
+
+<IfEnv env="development">
+  Dev content
+</IfEnv>
+
+<IfEnv env="production">
+  Prod content
+</IfEnv>
+import Gallery from 'coherent-docs-theme/components/GallerySlider.astro';
+import hero from './hero.webp';
+
+<Gallery images={[hero, hero, hero]} autoSlide={3000} />
+
+<Gallery 
+  images={[
+    {
+      src: hero,
+      link: "https://google.com",
+      description: "Open google",
+      alt: "Screen 1 Preview"
+    },
+    {
+      src: "/hero.webp",
+      description: "Test description (image from public folder)",
+    },
+    "/hero.webp"
+  ]} 
+  height="450px"
+/>
+
+<Figure 
+  src={hero} 
+  caption="something here" 
+  attr="Coherent Labs" 
+  title='test'
+  attrlink="https://coherent-labs.com" 
+/>
+
+<Figure 
+  src={hero} 
+  link="https://google.com" 
+  target="_blank" 
+  alt="Click me" 
+/>
+
+<Figure 
+  src="/hero.webp" 
+  width="200" 
+/>
+
+import BeforeAfter from 'coherent-docs-theme/components/BeforeAfter.astro';
+
+<BeforeAfter 
+  src1={hero}
+  src2={hero}
+  alt1="Стар UI"
+  alt2="Нов UI"
+/>
+
+import Details from 'coherent-docs-theme/components/Details.astro';
+
+<Details summary="Click here for more">
+  test
+  ```js
+  const hello = "world";
+  ```
+</Details>
+
+
+<Details summary="Test" open>
+Another text
+</Details>
+
+Theme for all the coherent documentations
+
+## Prerequisites
+
+You will need to have a Starlight website set up.
+If you don't have one yet, you can follow the ["Getting Started"](https://starlight.astro.build/getting-started) guide in the Starlight docs to create one.
+
+## Installation
+
+import { Steps, Tabs, TabItem } from '@astrojs/starlight/components'
+
+<Steps>
+
+1. `coherent-docs-theme` is a Starlight [plugin](https://starlight.astro.build/reference/plugins/). Install it by running the following command in your terminal:
+
+   <Tabs syncKey="pkg">
+
+   <TabItem label="npm">
+
+   ```sh
+   npm install coherent-docs-theme
+   ```
+
+   </TabItem>
+
+   <TabItem label="pnpm">
+
+   ```sh
+   pnpm add coherent-docs-theme
+   ```
+
+   </TabItem>
+
+   <TabItem label="Yarn">
+
+   ```sh
+   yarn add coherent-docs-theme
+   ```
+
+   </TabItem>
+
+   </Tabs>
+
+2. Configure the plugin in your Starlight [configuration](https://starlight.astro.build/reference/configuration/#plugins) in the `astro.config.mjs` file.
+
+   ```diff lang="js"
+   // astro.config.mjs
+   import starlight from '@astrojs/starlight'
+   import { defineConfig } from 'astro/config'
+   +import coherentTheme from 'coherent-docs-theme'
+
+   export default defineConfig({
+     integrations: [
+       starlight({
+   +      plugins: [coherentTheme()],
+         title: 'My Docs',
+       }),
+     ],
+   })
+   ```
+
+3. [Start the development server](https://starlight.astro.build/getting-started/#start-the-development-server) to preview the theme in action.
+
+</Steps>

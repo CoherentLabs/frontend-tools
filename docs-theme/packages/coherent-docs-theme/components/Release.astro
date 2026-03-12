@@ -1,0 +1,68 @@
+---
+interface Props {
+    date: string;
+    version: string
+}
+
+const { date } = Astro.props;
+---
+
+<div class="release-container">
+    <hr />
+    <div class="release-date">
+        <a
+            href="https://coherent-labs.com/get-in-touch/"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            <span>Released {date}</span>
+        </a>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="table table-striped">
+            <tbody>
+                <slot />
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .release-container {
+        margin-bottom: 2rem;
+    }
+
+    .release-date {
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    .table-wrapper :global(.table-striped td:first-child),
+    .table-wrapper :global(.table-striped th:first-child) {
+        padding-inline-start: 1rem !important;
+    }
+
+    .table-wrapper :global(.table-striped td:last-child),
+    .table-wrapper :global(.table-striped th:last-child) {
+        padding-inline-end: 1rem !important;
+    }
+
+    .table-wrapper :global(.table-striped td) {
+        padding-block: 0.75rem;
+        vertical-align: middle;
+    }
+
+    .table-striped {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table-striped :global(tbody tr:nth-of-type(odd)) {
+        background-color: var(--sl-color-gray-6);
+    }
+</style>
