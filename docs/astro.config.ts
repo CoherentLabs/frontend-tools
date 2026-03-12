@@ -155,7 +155,7 @@ async function getConfig() {
         },
         title: 'Gameface Frontend Tools',
         components: {
-          Sidebar: 'coherent-docs-theme/components/SidebarWithDropdown.astro',
+          Sidebar: 'coherent-docs-theme/components/SideBarWithDropdown.astro',
         },
         credits: false,
         customCss: ['./src/styles/custom.css'],
