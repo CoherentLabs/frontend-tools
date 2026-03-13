@@ -40,7 +40,7 @@ async function generateVersionWithPackageJSON(packagePath, link?: string) {
 }
 
 async function getConfig() {
-  const documentations = ['e2e', 'gameface-vite-plugin', 'vite-solid-style-to-css-plugin', 'interaction-manager', 'data-binding-autocomplete'];
+  const documentations = ['e2e', 'gameface-vite-plugin', 'vite-solid-style-to-css-plugin', 'vite-gameface-style-transformer', 'interaction-manager', 'data-binding-autocomplete'];
 
   const sideBarTopics = [
     {
@@ -134,6 +134,27 @@ async function getConfig() {
           autogenerate: { directory: 'vite-solid-style-to-css-plugin/concepts' },
         },
         generateChangelog('vite-solid-style-to-css-plugin'),
+      ],
+    },
+    {
+      link: '/vite-gameface-style-transformer/getting-started',
+      label: 'Vite Style Transformer',
+      id: 'vite-gameface-style-transformer',
+      icon: 'seti:css',
+      items: [
+        await generateVersionWithPackageJSON(
+          '../gameface-ui-vite-plugins/vite-gameface-style-transformer/package.json',
+          'https://npmjs.org/vite-plugin-gameface-styles'
+        ),
+        {
+          label: 'Getting Started',
+          autogenerate: { directory: 'vite-gameface-style-transformer/getting-started' },
+        },
+        {
+          label: 'Concepts',
+          autogenerate: { directory: 'vite-gameface-style-transformer/concepts' },
+        },
+        generateChangelog('vite-gameface-style-transformer'),
       ],
     },
     {
