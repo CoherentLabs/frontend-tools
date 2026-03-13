@@ -173,9 +173,9 @@ async function getConfig() {
         ],
         social: [
           {
-            icon: 'open-book',
-            label: 'Documentation',
-            href: 'https://coherent-labs.com/documentation',
+            icon: 'laptop',
+            label: 'Site',
+            href: 'https://coherent-labs.com/',
           },
           {
             icon: 'email',
