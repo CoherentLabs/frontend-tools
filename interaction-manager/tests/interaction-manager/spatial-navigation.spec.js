@@ -387,7 +387,7 @@ describe('Spatial navigation - Overflowing Containers and Edge Wrapping', () => 
 
     beforeEach(async () => {
         await gf.executeScript(async () => {
-            // Create 20 items, each 50px tall. Total height = 1000px
+            // Create 20 items, each 100px tall. Total height = 2000px
             const item = i => `<div class="square list-item item-${i}" style="flex-shrink: 0;">Item ${i}</div>`;
 
             const el = document.createElement('div');
