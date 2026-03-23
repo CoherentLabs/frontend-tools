@@ -21,12 +21,7 @@ export { actions_2 as actions }
 
 declare interface AreaState {
     elements: HTMLElement[];
-    distance: number;
     lastFocusedElement: HTMLElement | undefined;
-    overflow: {
-        x: number;
-        y: number;
-    };
 }
 
 declare type AxisGamepadOptions = {
@@ -823,18 +818,6 @@ declare class SpatialNavigation {
      */
     private setNavigationAreaProperties;
     /**
-     * Calculates the distance between the provided elements and return the max distance
-     * @param elements
-     * @returns The max distance between the elements
-     */
-    private getElementsDistance;
-    /**
-     * Recursively checks for overflow in the parent elements and sets the area overflow values
-     * @param {HTMLElement} element - The element to check for overflow
-     * @returns {{x: number, y: number}|HTMLElement} - Next element to check for overflow or object with the overflow values
-     */
-    private setOverflowValues;
-    /**
      * Sets the tabindex of the element that needs to be focused
      * @param element
      */
@@ -843,7 +826,6 @@ declare class SpatialNavigation {
      * Returns the valid focusable elements in the navigable area
      * @param {HTMLElement} targetElement
      * @param {HTMLElement[]} elements
-     * @param {number} distance
      */
     private getFocusableGroup;
     /**
@@ -859,8 +841,6 @@ declare class SpatialNavigation {
      * @param {Object} focusedElement
      * @param {number} focusedElement.x
      * @param {number} focusedElement.y
-     * @param {number} distance
-     * @param {{x: number, y: number}} overflow
      */
     private getClosestToEdge;
     /**

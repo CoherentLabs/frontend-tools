@@ -774,9 +774,7 @@ This ${callbackType} is already registered for this combination and type. To upd
     createDefaultAreaState() {
       return {
         elements: [],
-        distance: 0,
-        lastFocusedElement: void 0,
-        overflow: { x: 0, y: 0 }
+        lastFocusedElement: void 0
       };
     }
     /**
@@ -819,35 +817,6 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     setNavigationAreaProperties(area, domElements) {
       this.areas[area].elements.push(...domElements);
-      this.areas[area].distance = this.getElementsDistance(this.areas[area].elements);
-      this.areas[area].overflow = this.setOverflowValues(domElements[0].parentElement);
-    }
-    /**
-     * Calculates the distance between the provided elements and return the max distance
-     * @param elements
-     * @returns The max distance between the elements
-     */
-    getElementsDistance(elements) {
-      return elements.reduce((acc, el) => {
-        const { x, y } = el.getBoundingClientRect();
-        const distance = Math.hypot(x, y);
-        return acc < distance ? distance : acc;
-      }, 0);
-    }
-    /**
-     * Recursively checks for overflow in the parent elements and sets the area overflow values
-     * @param {HTMLElement} element - The element to check for overflow
-     * @returns {{x: number, y: number}|HTMLElement} - Next element to check for overflow or object with the overflow values
-     */
-    setOverflowValues(element) {
-      if (!element) return { x: 0, y: 0 };
-      const { scrollWidth, scrollHeight } = element;
-      const overflowX = Math.max(0, scrollWidth - window.innerWidth);
-      const overflowY = Math.max(0, scrollHeight - window.innerHeight);
-      if (overflowX > 0 || overflowY > 0) {
-        return { x: overflowX, y: overflowY };
-      }
-      return this.setOverflowValues(element.parentElement);
     }
     /**
      * Sets the tabindex of the element that needs to be focused
@@ -860,19 +829,12 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Returns the valid focusable elements in the navigable area
      * @param {HTMLElement} targetElement
      * @param {HTMLElement[]} elements
-     * @param {number} distance
      */
-    getFocusableGroup(targetElement, elements, distance) {
+    getFocusableGroup(targetElement, elements) {
       return elements.reduce((accumulator, element) => {
         if (element !== targetElement && !element.hasAttribute("disabled")) {
           const { x, y, height, width } = element.getBoundingClientRect();
-          accumulator.push({
-            element,
-            x: x + distance,
-            y: y + distance,
-            height,
-            width
-          });
+          accumulator.push({ element, x, y, height, width });
         }
         return accumulator;
       }, []);
@@ -894,34 +856,21 @@ This ${callbackType} is already registered for this combination and type. To upd
      * @param {Object} focusedElement
      * @param {number} focusedElement.x
      * @param {number} focusedElement.y
-     * @param {number} distance
-     * @param {{x: number, y: number}} overflow
      */
-    getClosestToEdge(direction, elements, focusedElement, distance, overflow) {
-      let newDistance, oldDistance;
-      const bottomEdge = window.innerHeight + distance + overflow.y;
-      const rightEdge = window.innerWidth + distance + overflow.x;
+    getClosestToEdge(direction, elements) {
       return elements.reduce((acc, el) => {
         switch (direction) {
           case "down":
-            newDistance = Math.hypot(el.x - focusedElement.x, el.y);
-            oldDistance = Math.hypot(acc.x - focusedElement.x, acc.y);
-            break;
+            return el.y < acc.y ? el : acc;
           case "up":
-            newDistance = Math.hypot(el.x - focusedElement.x, bottomEdge - el.y);
-            oldDistance = Math.hypot(acc.x - focusedElement.x, bottomEdge - acc.y);
-            break;
+            return el.y > acc.y ? el : acc;
           case "right":
-            newDistance = Math.hypot(el.x, el.y - focusedElement.y);
-            oldDistance = Math.hypot(acc.x, acc.y - focusedElement.y);
-            break;
+            return el.x < acc.x ? el : acc;
           case "left":
-            newDistance = Math.hypot(rightEdge - el.x, el.y - focusedElement.y);
-            oldDistance = Math.hypot(rightEdge - acc.x, acc.y - focusedElement.y);
-            break;
+            return el.x > acc.x ? el : acc;
+          default:
+            return acc;
         }
-        acc = newDistance < oldDistance ? el : acc;
-        return acc;
       });
     }
     /**
@@ -933,32 +882,21 @@ This ${callbackType} is already registered for this combination and type. To upd
       const activeElement = this.isActiveElementInGroup() && document.activeElement || this.lastFocusedElement;
       const currentArea = this.getCurrentArea(activeElement);
       if (!currentArea) return console.error("The active element is not in a focusable area!");
-      const { elements, distance, overflow } = currentArea;
-      const focusableGroup = this.getFocusableGroup(activeElement, elements, distance);
+      const { elements } = currentArea;
+      const focusableGroup = this.getFocusableGroup(activeElement, elements);
       const { x, y, width, height } = activeElement.getBoundingClientRect();
-      const adjustedDimensions = {
-        x: x + distance,
-        y: y + distance,
-        width,
-        height
-      };
+      const dimensions = { x, y, width, height };
       if (focusableGroup.length === 0) return;
-      const currentAxisGroup = this.filterGroupByCurrentAxis(direction, focusableGroup, adjustedDimensions);
+      const currentAxisGroup = this.filterGroupByCurrentAxis(direction, focusableGroup, dimensions);
       if (!currentAxisGroup.length) return;
       let nextFocusableElement = this.findNextElement(
         direction,
         currentAxisGroup,
-        adjustedDimensions.x,
-        adjustedDimensions.y
+        dimensions.x,
+        dimensions.y
       );
       if (!nextFocusableElement) {
-        nextFocusableElement = this.getClosestToEdge(
-          direction,
-          currentAxisGroup,
-          adjustedDimensions,
-          distance,
-          overflow
-        );
+        nextFocusableElement = this.getClosestToEdge(direction, currentAxisGroup);
       }
       if (nextFocusableElement) {
         nextFocusableElement.element.focus();
