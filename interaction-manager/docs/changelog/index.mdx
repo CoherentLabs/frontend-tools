@@ -4,7 +4,13 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 3.0.0 :badge[Latest]{variant="note"}
+## 3.0.1 :badge[Latest]{variant="note"}
+
+<Badge text="Fix" variant="caution" size="small" /> Fixed a bug in [Spatial Navigation](/interaction-manager/features/spatial-navigation/) where wrap-around navigation failed in tall, scrollable lists. Previously, 
+pressing UP from the first item (or DOWN from the last) in an overflowing container would incorrectly focus on an arbitrary middle or visible item. 
+It now reliably targets the true opposite edge of the list regardless of scroll position.
+
+## 3.0.0
 
 <Badge text="Breaking Change" variant="danger" size="small" /> Changed `switchArea` method in [Spatial Navigation](/interaction-manager/features/spatial-navigation/#switchareaarea) to no longer focus the first element in the specified area 
 but instead attempt to focus the last focused element in that area. If no element was previously focused in that area, or if that element has been removed from the DOM, it falls back to `focusFirst()`. 
