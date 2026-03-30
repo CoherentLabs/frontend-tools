@@ -2,8 +2,10 @@
 import DefaultSearch from '@astrojs/starlight/components/Search.astro';
 
 import getThemeConfig from "../internal/themeConfig";
-const { documentationSearchTag } = getThemeConfig();
+const { documentationSearchTag, tagManagerId } = getThemeConfig();
 const isDev = import.meta.env.DEV;
+const baseUrl = import.meta.env.BASE_URL === '/' ? '' : import.meta.env.BASE_URL;
+
 ---
 
 <DefaultSearch {...Astro.props} />
@@ -93,7 +95,7 @@ const isDev = import.meta.env.DEV;
 </style>
 
 {!isDev &&
-<script is:inline define:vars={{documentationSearchTag}}>
+<script is:inline define:vars={{documentationSearchTag, baseUrl, tagManagerId}}>
     const badgesConfig = {
         "frontend-tools.coherent-labs.com/e2e": { text: "UI Tools | Gameface E2E", color: "#007aaa" },
         "frontend-tools.coherent-labs.com/interaction-manager": { text: "UI Tools | Interaction Manager", color: "#007abb" },
@@ -102,6 +104,8 @@ const isDev = import.meta.env.DEV;
         "frontend-tools.coherent-labs.com/data-binding-autocomplete": { text: "UI Tools | Data Binding Autocomplete", color: "#007aee" },
         "frontend-tools.coherent-labs.com": { text: "UI Tools", color: "#007aff" },
         "gameface-ui.coherent-labs.com": { text: "Gameface UI", color: "#e24a4a" },
+        "docs.coherent-labs.com/unreal-gameface": { text: "Gameface Unreal", color: "#C35A1C" },
+        "docs.coherent-labs.com/unreal-prysm": { text: "Prysm Unreal", color: "#00897B" },
     }
 
     function setupSearchInputListener(searchInput, pagefind) {
@@ -199,8 +203,29 @@ const isDev = import.meta.env.DEV;
         const searchContainer = document.getElementById("starlight__search");
         if (!searchContainer) return;
 
+        if (tagManagerId) {
+            searchContainer.addEventListener("click", (event) => {
+              const searchResult = event.target?.closest(".pagefind-ui__result");
+              if (!searchResult) return;
+
+              const searchInput = searchContainer.querySelector(".pagefind-ui__search-input");
+              const searchTerm = searchInput ? searchInput.value : "";
+
+              const titleElement = searchResult.querySelector(".pagefind-ui__result-title a") || searchResult.querySelector(".pagefind-ui__result-link");
+              const clickedTitle = titleElement ? titleElement.textContent.trim() : "";
+              const clickedUrl = titleElement ? titleElement.href : "";
+              window.dataLayer = window.dataLayer || [];
+              window.dataLayer.push({
+                  event: "liveSearch",
+                  searchTerm: searchTerm,
+                  clickedResult: clickedTitle,
+                  clickedUrl: clickedUrl
+                });
+            });
+        }
+        
         try {
-            const pagefind = await import("/pagefind/pagefind.js");
+            const pagefind = await import(`${baseUrl}/pagefind/pagefind.js`);
             window.__pagefindTrueCounts = {};
 
             let frameRequested = false;

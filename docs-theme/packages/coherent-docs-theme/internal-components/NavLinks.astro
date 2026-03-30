@@ -9,8 +9,19 @@ interface Props {
 const { type = "header" } = Astro.props;
 const { navLinks, documentationSearchTag } = getThemeConfig();
 
-const isLinkActive = (href: string, label: string) => {
+const isLinkActive = (href: string, label: string, subDocumentations?: string[]) => {
     try {
+        if (documentationSearchTag) {
+            if (documentationSearchTag === label) return true;
+
+            if (subDocumentations && subDocumentations.length > 0) {
+                const possibleTags = subDocumentations.map(sub => `${label} ${sub}`);
+                if (possibleTags.includes(documentationSearchTag)) {
+                    return true;
+                }
+            }
+        }
+
         const linkUrl = new URL(href, Astro.url.origin);
         const currentUrl = Astro.url;
         const isLocal =
@@ -39,7 +50,7 @@ const navClasses =
         : "extra-links mobile sidebar-mode lg:hidden";
 
 const activeLinkObj = navLinks?.find((link) =>
-    isLinkActive(link.href, link.label),
+    isLinkActive(link.href, link.label, link.subDocumentations),
 );
 const activeLabel = activeLinkObj ? activeLinkObj.label : "Documentations";
 ---
@@ -61,7 +72,7 @@ const activeLabel = activeLinkObj ? activeLinkObj.label : "Documentations";
                         <li class="nav-item">
                             <a
                                 href={link.href}
-                                class={`nav-link ${isLinkActive(link.href, link.label) ? "active" : ""}`}
+                                class={`nav-link ${isLinkActive(link.href, link.label, link.subDocumentations) ? "active" : ""}`}
                             >
                                 {link.label}
                             </a>
@@ -80,7 +91,7 @@ const activeLabel = activeLinkObj ? activeLinkObj.label : "Documentations";
                             <li>
                                 <a
                                     href={link.href}
-                                    class={`dropdown-link ${isLinkActive(link.href, link.label) ? "active" : ""}`}
+                                    class={`dropdown-link ${isLinkActive(link.href, link.label, link.subDocumentations) ? "active" : ""}`}
                                 >
                                     {link.label}
                                 </a>
