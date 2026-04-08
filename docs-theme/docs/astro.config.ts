@@ -2,7 +2,6 @@ import starlight from '@astrojs/starlight'
 import { defineConfig } from 'astro/config'
 import coherentThemePlugin from 'coherent-docs-theme'
 import { generateVersion, getCoherentReleases } from 'coherent-docs-theme'
-import starlightLinksValidatorPlugin from 'starlight-links-validator'
 
 export default defineConfig({
   integrations: [
@@ -11,7 +10,6 @@ export default defineConfig({
         ...coherentThemePlugin({
           documentationSearchTag: 'Test docs',
         }),
-        starlightLinksValidatorPlugin()
       ],
       sidebar: [
         generateVersion('1.0.0'),
@@ -19,6 +17,7 @@ export default defineConfig({
           label: 'Start Here',
           items: ['getting-started', 'customization', { label: 'Test', autogenerate: { directory: 'examples/test' } },],
         },
+        { label: 'Test', link:'getting-started' },
         { label: 'Examples', autogenerate: { directory: 'examples' } },
         { label: 'Changelog', autogenerate: { directory: 'changelog' } },
         ...getCoherentReleases(),

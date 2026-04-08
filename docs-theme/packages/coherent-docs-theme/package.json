@@ -1,6 +1,6 @@
 {
   "name": "coherent-docs-theme",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "license": "MIT",
   "description": "Theme for all the coherent documentations",
   "author": "CoherentLabs",
@@ -11,21 +11,24 @@
   "exports": {
     ".": "./index.ts",
     "./styles": "./styles.css",
+    "./components": "./components/index.ts",
     "./components/*.astro": "./components/*.astro",
     "./overrides/*.astro": "./overrides/*.astro",
     "./assets/*": "./assets/*"
   },
   "devDependencies": {
     "@astrojs/starlight": "0.37.6",
-    "astro": "5.17.1",
     "@types/mdast": "^4.0.4",
-    "@types/unist": "^3.0.3"
+    "@types/unist": "^3.0.3",
+    "astro": "5.17.1"
   },
   "dependencies": {
+    "gray-matter": "^4.0.3",
+    "reading-time": "^1.5.0",
     "starlight-heading-badges": "0.6.1",
     "starlight-sidebar-topics": "0.6.2",
     "starlight-sidebar-topics-dropdown": "0.5.2",
-    "gray-matter": "^4.0.3"
+    "vanilla-cookieconsent": "^3.1.0"
   },
   "peerDependencies": {
     "@astrojs/starlight": ">=0.37.6",

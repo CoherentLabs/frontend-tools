@@ -31,9 +31,13 @@ let {
 } = Astro.props;
 
 let slides: CustomSlide[] = [];
+const baseUrl =
+    import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL;
 
 if (dir) {
-    const publicPath = path.join(process.cwd(), "public", dir);
+    const cleanDir = dir.replace(/\/+$/, "");
+    const publicPath = path.join(process.cwd(), "public", cleanDir);
+
     try {
         if (fs.existsSync(publicPath)) {
             const files = fs.readdirSync(publicPath);
@@ -41,11 +45,16 @@ if (dir) {
                 /\.(png|jpe?g|gif|svg|webp)$/i.test(file),
             );
             slides.push(
-                ...imageFiles.map((file) => ({ src: `/${dir}/${file}` }))
+                ...imageFiles.map((file) => ({
+                    src: `${baseUrl}/${cleanDir}/${file}`,
+                })),
             );
         }
     } catch (e) {
-        console.error(`[Gallery] Error while reading the dir: ${publicPath}`, e);
+        console.error(
+            `[Gallery] Error while reading the dir: ${publicPath}`,
+            e,
+        );
     }
 }
 
@@ -78,13 +87,26 @@ if (slides.length === 0) {
                     const altText = slide.alt || "Gallery slide";
 
                     const imgContent = isLocal ? (
-                        <Image src={slide.src as ImageMetadata} alt={altText} class="slide-img" />
+                        <Image
+                            src={slide.src as ImageMetadata}
+                            alt={altText}
+                            class="slide-img"
+                        />
                     ) : (
-                        <img src={slide.src as string} alt={altText} class="slide-img" />
+                        <img
+                            src={slide.src as string}
+                            alt={altText}
+                            class="slide-img"
+                        />
                     );
 
                     const slideBody = slide.link ? (
-                        <a href={slide.link} target="_blank" rel="noopener noreferrer" class="slide-link">
+                        <a
+                            href={slide.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="slide-link"
+                        >
                             {imgContent}
                         </a>
                     ) : (
@@ -94,7 +116,7 @@ if (slides.length === 0) {
                     return (
                         <li class="slide">
                             {slideBody}
-                            
+
                             {slide.description && (
                                 <div class="slide-caption">
                                     <p>{slide.description}</p>
@@ -171,7 +193,7 @@ if (slides.length === 0) {
         padding: 1rem 1.5rem;
         text-align: center;
         box-sizing: border-box;
-        pointer-events: none; 
+        pointer-events: none;
     }
 
     .slide-caption p {
@@ -202,8 +224,12 @@ if (slides.length === 0) {
         background: rgba(0, 0, 0, 0.9);
     }
 
-    .nav.left { left: 1rem; }
-    .nav.right { right: 1rem; }
+    .nav.left {
+        left: 1rem;
+    }
+    .nav.right {
+        right: 1rem;
+    }
 </style>
 
 <script>
@@ -225,15 +251,21 @@ if (slides.length === 0) {
 
             if (this.totalSlides === 0) return;
 
-            this.querySelector(".left")?.addEventListener("click", () => this.move("back"));
-            this.querySelector(".right")?.addEventListener("click", () => this.move("forward"));
+            this.querySelector(".left")?.addEventListener("click", () =>
+                this.move("back"),
+            );
+            this.querySelector(".right")?.addEventListener("click", () =>
+                this.move("forward"),
+            );
 
             this.resetAutoSlide();
         }
 
         move(direction: "back" | "forward") {
             if (direction === "back") {
-                this.currentSlide = (this.currentSlide - 1 + this.totalSlides) % this.totalSlides;
+                this.currentSlide =
+                    (this.currentSlide - 1 + this.totalSlides) %
+                    this.totalSlides;
             } else {
                 this.currentSlide = (this.currentSlide + 1) % this.totalSlides;
             }
@@ -249,7 +281,10 @@ if (slides.length === 0) {
         resetAutoSlide() {
             if (this.autoSlide > 0) {
                 if (this.interval) clearInterval(this.interval);
-                this.interval = setInterval(() => this.move("forward"), this.autoSlide) as any;
+                this.interval = setInterval(
+                    () => this.move("forward"),
+                    this.autoSlide,
+                ) as any;
             }
         }
     }
