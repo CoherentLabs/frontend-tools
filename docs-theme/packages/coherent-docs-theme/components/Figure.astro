@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
+import { imageRegistry } from "../utils/imageRegistry";
 
 interface Props {
     src: string | ImageMetadata;
@@ -32,8 +33,28 @@ const {
     attrlink,
 } = Astro.props;
 
-const isLocal = typeof src === "object";
 const altText = alt || caption || "";
+
+let isLocal = typeof src === "object";
+let resolvedImage: ImageMetadata | string = src as any;
+
+if (typeof src === "string") {
+    if (src.startsWith("/") && !src.startsWith("//")) {
+        isLocal = false;
+    } else if (!src.startsWith("http") && !src.startsWith("data:")) {
+        const fileName = src.replace(/^\.\//, '').split('/').pop() || src;
+        
+        const importFn = imageRegistry.get(fileName);
+        
+        if (importFn) {
+            resolvedImage = (await importFn()).default;
+            isLocal = true;
+        } else {
+            console.warn(`[Figure] Image not found in registry: ${src}`);
+            isLocal = false;
+        }
+    }
+}
 ---
 
 <figure class={className}>
@@ -42,7 +63,7 @@ const altText = alt || caption || "";
             <a href={link} target={target} rel={rel}>
                 {isLocal ? (
                     <Image
-                        src={src as ImageMetadata}
+                        src={resolvedImage as ImageMetadata}
                         alt={altText}
                         title={title}
                         width={width as any}
@@ -50,7 +71,7 @@ const altText = alt || caption || "";
                     />
                 ) : (
                     <img
-                        src={src as string}
+                        src={resolvedImage as string}
                         alt={altText}
                         title={title}
                         width={width}
@@ -60,7 +81,7 @@ const altText = alt || caption || "";
             </a>
         ) : isLocal ? (
             <Image
-                src={src as ImageMetadata}
+                src={resolvedImage as ImageMetadata}
                 alt={altText}
                 title={title}
                 width={width as any}
@@ -68,7 +89,7 @@ const altText = alt || caption || "";
             />
         ) : (
             <img
-                src={src as string}
+                src={resolvedImage as string}
                 alt={altText}
                 title={title}
                 width={width}

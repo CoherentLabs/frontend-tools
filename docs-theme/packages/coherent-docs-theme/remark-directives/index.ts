@@ -8,10 +8,10 @@ import { remarkFixDoxybookLinks } from './apiRefFixLinks';
 
 export const directives = [
     remarkDirective,
+    remarkIncludeSnippets,
     remarkIfDirective,
     remarkInternalDirective,
     remarkReleaseDirective,
-    remarkIncludeSnippets,
     remarkProductNameDirective,
     remarkFixDoxybookLinks
 ];

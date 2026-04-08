@@ -21,3 +21,4 @@ export { default as Release } from './Release.astro';
 export { default as SideBarWithDropdown } from './SideBarWithDropdown.astro';
 export { default as Summary } from './Summary.astro';
 export { default as Typeref } from './Typeref.astro';
+export { default as Table } from './Table.astro';

@@ -5,10 +5,15 @@ import { visit } from 'unist-util-visit';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { mdxFromMarkdown } from 'mdast-util-mdx';
 import { mdxjs } from 'micromark-extension-mdxjs';
+import { directive } from 'micromark-extension-directive';
+import { directiveFromMarkdown } from 'mdast-util-directive';
+import { gfm } from 'micromark-extension-gfm';
+import { gfmFromMarkdown } from 'mdast-util-gfm';
+
 import type { Root, Content, Heading } from 'mdast';
 import type { MdxJsxFlowElement } from 'mdast-util-mdx-jsx';
 
-type SnippetTag = "changelog" | "rendering" | "content_development" | "migration" | "core" | "unreal_engine";
+type SnippetTag = "changelog" | "rendering" | "content_development" | "migration" | "core" | "unreal_engine" | 'unity';
 
 interface TagConfig {
     title: string;
@@ -22,9 +27,29 @@ const TAG_CONFIG: Record<SnippetTag, TagConfig> = {
     core: { title: "Core", level: 2 },
     rendering: { title: "Rendering", level: 2 },
     unreal_engine: { title: "Unreal Engine", level: 2 },
+    unity: { title: "Unity", level: 2 },
 };
 
 const isDev = process.env.NODE_ENV === 'development' || process.env.MODE === 'development';
+
+function getAllSnippetFiles(dirPath: string, arrayOfFiles: string[] = []) {
+    if (!fs.existsSync(dirPath)) return arrayOfFiles;
+
+    const files = fs.readdirSync(dirPath);
+
+    files.forEach((file) => {
+        const fullPath = path.join(dirPath, file);
+        if (fs.statSync(fullPath).isDirectory()) {
+            getAllSnippetFiles(fullPath, arrayOfFiles);
+        } else {
+            if ((file.endsWith('.md') || file.endsWith('.mdx'))) {
+                arrayOfFiles.push(fullPath);
+            }
+        }
+    });
+
+    return arrayOfFiles;
+}
 
 export function remarkIncludeSnippets() {
     return (tree: Root) => {
@@ -49,7 +74,14 @@ export function remarkIncludeSnippets() {
             if (!currentConfig || !release) return;
 
             const folderName = release === 'next_release' ? 'next_release' : `Release_${release}`;
-            const releaseDir = path.resolve(`./src/content/docs/releases/${folderName}/`);
+            let releaseDir = path.resolve(`./src/content/docs/Releases/${folderName}/`);
+
+            if (release !== 'next_release' && !fs.existsSync(releaseDir)) {
+                const versionDir = path.resolve(`./src/content/docs/Releases/Version_${release}/`);
+                if (fs.existsSync(versionDir)) {
+                    releaseDir = versionDir;
+                }
+            }
 
             if (release === 'next_release' && !isDev) {
                 parent.children.splice(index, 1);
@@ -59,14 +91,10 @@ export function remarkIncludeSnippets() {
             const injectedNodes: Content[] = [];
 
             if (fs.existsSync(releaseDir)) {
-                const files = fs.readdirSync(releaseDir);
+                const snippetFiles = getAllSnippetFiles(releaseDir);
                 const matchingSnippets: Array<{ data: any; content: string }> = [];
 
-                for (const fileName of files) {
-                    if (!fileName.startsWith('_')) continue;
-                    if (!fileName.endsWith('.md') && !fileName.endsWith('.mdx')) continue;
-
-                    const filePath = path.join(releaseDir, fileName);
+                for (const filePath of snippetFiles) {
                     const fileContent = fs.readFileSync(filePath, 'utf-8');
                     const { data, content } = matter(fileContent);
 
@@ -99,8 +127,41 @@ export function remarkIncludeSnippets() {
                         }
 
                         const snippetAst = fromMarkdown(snippet.content, {
-                            extensions: [mdxjs()],
-                            mdastExtensions: [mdxFromMarkdown()]
+                            extensions: [mdxjs(), directive(), gfm()],
+                            mdastExtensions: [mdxFromMarkdown(), directiveFromMarkdown(), gfmFromMarkdown()]
+                        });
+
+                        visit(snippetAst, 'containerDirective', (directiveNode: any) => {
+                            const asideType = directiveNode.name || 'note';
+                            const asideTitle = asideType.charAt(0).toUpperCase() + asideType.slice(1);
+
+                            directiveNode.type = 'mdxJsxFlowElement';
+                            directiveNode.name = 'aside';
+                            directiveNode.attributes = [
+                                { type: 'mdxJsxAttribute', name: 'class', value: `starlight-aside starlight-aside--${asideType}` },
+                                { type: 'mdxJsxAttribute', name: 'aria-label', value: asideTitle }
+                            ];
+
+                            const titleNode = {
+                                type: 'mdxJsxFlowElement',
+                                name: 'p',
+                                attributes: [
+                                    { type: 'mdxJsxAttribute', name: 'class', value: 'starlight-aside__title' },
+                                    { type: 'mdxJsxAttribute', name: 'aria-hidden', value: 'true' }
+                                ],
+                                children: [{ type: 'text', value: asideTitle }]
+                            };
+
+                            const contentNode = {
+                                type: 'mdxJsxFlowElement',
+                                name: 'section',
+                                attributes: [
+                                    { type: 'mdxJsxAttribute', name: 'class', value: 'starlight-aside__content' }
+                                ],
+                                children: directiveNode.children
+                            };
+
+                            directiveNode.children = [titleNode, contentNode];
                         });
 
                         injectedNodes.push(...(snippetAst.children as Content[]));
