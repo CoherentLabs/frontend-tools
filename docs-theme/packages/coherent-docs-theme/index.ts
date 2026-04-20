@@ -125,7 +125,7 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
           customCss: [...(config.customCss ?? []), 'coherent-docs-theme/styles'],
           components: overrideComponents(
             config,
-            ['Header', 'ThemeSelect', 'Footer', 'Search', 'PageTitle', 'MarkdownContent'],
+            ['Header', 'ThemeSelect', 'Footer', 'Search', 'PageTitle', 'MarkdownContent', 'Head'],
             logger,
           ),
           head: config.head || [],

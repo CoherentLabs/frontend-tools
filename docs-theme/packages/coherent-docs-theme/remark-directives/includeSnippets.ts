@@ -51,8 +51,38 @@ function getAllSnippetFiles(dirPath: string, arrayOfFiles: string[] = []) {
     return arrayOfFiles;
 }
 
+function getImportedNames(node) {
+    const names = [] as string[];
+    if (!node.value) return names;
+
+    const val = node.value;
+
+    const defaultMatch = val.match(/import\s+(?!\{)([A-Za-z0-9_]+)\s+from/);
+    if (defaultMatch) names.push(defaultMatch[1]);
+
+    const namedMatch = val.match(/\{([^}]+)\}/);
+    if (namedMatch) {
+        const parts = namedMatch[1].split(',');
+        for (const part of parts) {
+            const trimmed = part.trim();
+            if (trimmed) {
+                const partsAs = trimmed.split(/\s+as\s+/);
+                names.push(partsAs[partsAs.length - 1].trim());
+            }
+        }
+    }
+    return names;
+}
+
 export function remarkIncludeSnippets() {
     return (tree: Root) => {
+        const declaredIdentifiers = new Set();
+        const missingImports = new Set();
+
+        visit(tree, 'mdxjsEsm', (node) => {
+            const names = getImportedNames(node);
+            names.forEach(name => declaredIdentifiers.add(name));
+        });
 
         visit(tree, 'mdxJsxFlowElement', (node: MdxJsxFlowElement, index, parent) => {
             if (node.name !== 'IncludeSnippets' || index === undefined || !parent) return;
@@ -164,7 +194,23 @@ export function remarkIncludeSnippets() {
                             directiveNode.children = [titleNode, contentNode];
                         });
 
-                        injectedNodes.push(...(snippetAst.children as Content[]));
+                        const cleanedChildren = snippetAst.children.filter((child: any) => {
+                            if (child.type === 'mdxjsEsm') {
+                                const names = getImportedNames(child);
+
+                                names.forEach(name => {
+                                    if (!declaredIdentifiers.has(name)) {
+                                        missingImports.add(name);
+                                        declaredIdentifiers.add(name);
+                                    }
+                                });
+
+                                return false;
+                            }
+                            return true;
+                        });
+
+                        injectedNodes.push(...(cleanedChildren as Content[]));
                     }
                 }
             }
@@ -177,5 +223,38 @@ export function remarkIncludeSnippets() {
                 return index;
             }
         });
+
+        if (missingImports.size > 0) {
+            const specifiers = Array.from(missingImports).map(name => ({
+                type: 'ImportSpecifier',
+                imported: { type: 'Identifier', name: name },
+                local: { type: 'Identifier', name: name }
+            }));
+
+            const newImportNode = {
+                type: 'mdxjsEsm',
+                value: `import { ${Array.from(missingImports).join(', ')} } from 'coherent-docs-theme/components';`,
+                data: {
+                    estree: {
+                        type: 'Program',
+                        body: [
+                            {
+                                type: 'ImportDeclaration',
+                                specifiers: specifiers,
+                                source: { type: 'Literal', value: 'coherent-docs-theme/components', raw: "'coherent-docs-theme/components'" }
+                            }
+                        ],
+                        sourceType: 'module'
+                    }
+                }
+            };
+
+            let insertIndex = 0;
+            if (tree.children.length > 0 && tree.children[0]?.type === 'yaml') {
+                insertIndex = 1;
+            }
+
+            tree.children.splice(insertIndex, 0, newImportNode);
+        }
     };
 }

@@ -33,7 +33,7 @@ export function getSortedCoherentReleases(directory: string = 'src/content/docs/
 
             return {
                 label: data.sidebar?.label || data.title || folderName,
-                link: `/releases/${folderName.replaceAll('.', '').toLowerCase()}`,
+                link: `/releases/${folderName.replaceAll('.', '').toLowerCase()}/`,
                 badge: data.sidebar?.badge,
             };
         })

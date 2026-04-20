@@ -11,6 +11,20 @@ export interface Props {
 }
 
 const { cards } = Astro.props;
+const currentProduct = import.meta.env.DOCS_PRODUCT || "Gameface";
+const productName =
+    currentProduct.charAt(0).toUpperCase() + currentProduct.slice(1);
+
+cards.forEach((card) => {
+  card.title = card.title.replace(
+        /<ProductName\s*\/?>|<ProductName>\s*<\/ProductName>/gi,
+        productName,
+  )
+  card.description = card.description.replace(
+        /<ProductName\s*\/?>|<ProductName>\s*<\/ProductName>/gi,
+        productName,
+  )
+});
 ---
 
 <CardGrid class="custom-card-grid">

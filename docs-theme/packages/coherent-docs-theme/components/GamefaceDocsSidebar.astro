@@ -1,6 +1,28 @@
 ---
 import DefaultSidebar from "@astrojs/starlight/components/Sidebar.astro";
 import TopicSwitcher from "../internal-components/TopicSwitcher.astro";
+
+const currentProduct = import.meta.env.DOCS_PRODUCT || "Gameface";
+const productName = currentProduct.charAt(0).toUpperCase() + currentProduct.slice(1);
+const productNameRegex = /<ProductName\s*\/?>|<ProductName>\s*<\/ProductName>/gi;
+
+function formatSidebar(items: any[]) {
+    if (!items) return;
+    for (const item of items) {
+        if (item.label) {
+            item.label = item.label.replace(productNameRegex, productName);
+        }
+        if (item.type === 'group' && item.entries) {
+            formatSidebar(item.entries);
+        }
+    }
+}
+
+if (Astro.locals.starlightRoute?.sidebar) {
+    const sidebarClone = JSON.parse(JSON.stringify(Astro.locals.starlightRoute.sidebar));
+    formatSidebar(sidebarClone);
+    Astro.locals.starlightRoute.sidebar = sidebarClone;
+}
 ---
 
 <TopicSwitcher />
