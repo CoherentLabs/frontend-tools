@@ -23,58 +23,6 @@ const defaultHeaderLinks = [
   { href: 'https://coherent-labs.com/Documentation/ExporterLTS/', label: 'Adobe CC Tools' },
 ];
 
-const defaultMergeIndex = [
-  {
-    bundlePath: "https://gameface-ui.coherent-labs.com/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "Gameface UI" }
-  },
-  {
-    bundlePath: "https://frontend-tools.coherent-labs.com/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "UI Tools" }
-  },
-  {
-    bundlePath: "https://docs.coherent-labs.com/cpp-gameface/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "Gameface Custom Engine" }
-  },
-  {
-    bundlePath: "https://docs.coherent-labs.com/cpp-prysm/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "Prysm Custom Engine" }
-  },
-  {
-    bundlePath: "https://docs.coherent-labs.com/unreal-gameface/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "Gameface Unreal" }
-  },
-  {
-    bundlePath: "https://docs.coherent-labs.com/unreal-prysm/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "Prysm Unreal" }
-  },
-  {
-    bundlePath: "https://docs.coherent-labs.com/unity-gameface/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "Gameface Unity" }
-  },
-  {
-    bundlePath: "https://docs.coherent-labs.com/unity-prysm/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "Prysm Unity" }
-  }
-];
-
-async function isPagefindIndexAvailable(bundlePath: string): Promise<boolean> {
-  try {
-    const metaUrl = `${bundlePath.replace(/\/$/, '')}/pagefind-entry.json`;
-    const response = await fetch(metaUrl, { method: 'HEAD' });
-    return response.ok;
-  } catch (e) {
-    return false;
-  }
-}
 
 export default function coherentThemePlugin(options: CoherentThemeOptions = { documentationSearchTag: '' }): StarlightPlugin[] {
   if (!options?.documentationSearchTag) {
@@ -148,26 +96,8 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
         });
 
         if (command === 'build') {
-          const otherIndexes = defaultMergeIndex.filter(merge =>
-            merge.mergeFilter.resource !== options.documentationSearchTag
-          );
-
-          logger.info('Validating external Pagefind indexes for production build...');
-          const validMergeIndexes = [];
-
-          for (const mergeConfig of otherIndexes) {
-            const isAvailable = await isPagefindIndexAvailable(mergeConfig.bundlePath);
-            if (isAvailable) {
-              validMergeIndexes.push(mergeConfig);
-              logger.info(`✅ Found index: ${mergeConfig.mergeFilter.resource}`);
-            } else {
-              logger.warn(`⚠️ Skipping index (not found): ${mergeConfig.mergeFilter.resource} at ${mergeConfig.bundlePath}`);
-            }
-          }
-
           configUpdates.pagefind = {
             indexWeight: 2,
-            mergeIndex: validMergeIndexes
           };
         } else {
           logger.info('Dev mode detected. Skipping external Pagefind index validation.');

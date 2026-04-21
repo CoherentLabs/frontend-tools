@@ -7,7 +7,7 @@ const isDev = process.env.NODE_ENV === 'development' || process.env.MODE === 'de
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const componentsDir = path.join(__dirname, '..', 'components');
-console.log(__dirname)
+
 function getThemeComponents(componentsDir: string): string[] {
     if (!fs.existsSync(componentsDir)) return [];
     return fs.readdirSync(componentsDir)
