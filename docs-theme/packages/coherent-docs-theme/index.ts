@@ -53,6 +53,35 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
                 markdown: {
                   remarkPlugins: [...directives, [remarkFixAbsoluteLinks, { basePath: astroConfig.base }]],
                 },
+                vite: {
+                  plugins: [
+                    {
+                      name: 'starlight-release-snippet-hmr',
+                      enforce: 'pre',
+                      handleHotUpdate({ file }) {
+                        const normalizedPath = file.replace(/\\/g, '/');
+                        const releaseRootMatch = normalizedPath.match(/^(.*\/Releases\/(?:Release_[^\/]+|Version_[^\/]+|next_release))/i);
+
+                        if (releaseRootMatch) {
+                          const releaseDir = releaseRootMatch[1] as string;
+                          const mainIndexMdx = `${releaseDir}/index.mdx`;
+
+                          if (normalizedPath !== mainIndexMdx) {
+                            const target = fs.existsSync(mainIndexMdx) ? mainIndexMdx : null;
+
+                            if (target) {
+                              const now = new Date();
+                              fs.utimesSync(target, now, now);
+
+                              const folderName = releaseDir.split('/').pop();
+                              console.log(`\x1b[36m[Snippet HMR]\x1b[0m Force update \x1b[33m${folderName}/index\x1b[0m`);
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
               });
             }
           }
