@@ -31,6 +31,8 @@ const TAG_CONFIG: Record<SnippetTag, TagConfig> = {
 };
 
 const isDev = process.env.NODE_ENV === 'development' || process.env.MODE === 'development';
+const isDraftBuild = process.env.BUILD_DRAFTS === 'true';
+const allowDrafts = isDev || isDraftBuild;
 
 function getAllSnippetFiles(dirPath: string, arrayOfFiles: string[] = []) {
     if (!fs.existsSync(dirPath)) return arrayOfFiles;
@@ -51,37 +53,60 @@ function getAllSnippetFiles(dirPath: string, arrayOfFiles: string[] = []) {
     return arrayOfFiles;
 }
 
-function getImportedNames(node) {
-    const names = [] as string[];
-    if (!node.value) return names;
+function extractImports(node: any) {
+    const imports: { name: string; source: string }[] = [];
 
-    const val = node.value;
+    if (node.data && node.data.estree) {
+        for (const statement of node.data.estree.body) {
+            if (statement.type === 'ImportDeclaration') {
+                const source = statement.source.value as string;
+                for (const specifier of statement.specifiers) {
+                    if (specifier.local && specifier.local.name) {
+                        imports.push({ name: specifier.local.name, source });
+                    }
+                }
+            }
+        }
+        return imports;
+    }
 
-    const defaultMatch = val.match(/import\s+(?!\{)([A-Za-z0-9_]+)\s+from/);
-    if (defaultMatch) names.push(defaultMatch[1]);
+    const val = node.value || '';
+    const importRegex = /import\s+(?:([^,\{]+),?)?\s*(?:\{([^}]+)\})?\s+from\s+['"]([^'"]+)['"]/g;
+    let match;
+    while ((match = importRegex.exec(val)) !== null) {
+        const defaultImport = match[1];
+        const namedImports = match[2];
+        const source = match[3] || 'coherent-docs-theme/components';
 
-    const namedMatch = val.match(/\{([^}]+)\}/);
-    if (namedMatch) {
-        const parts = namedMatch[1].split(',');
-        for (const part of parts) {
-            const trimmed = part.trim();
-            if (trimmed) {
-                const partsAs = trimmed.split(/\s+as\s+/);
-                names.push(partsAs[partsAs.length - 1].trim());
+        if (defaultImport && defaultImport.trim()) {
+            imports.push({ name: defaultImport.trim(), source });
+        }
+
+        if (namedImports) {
+            const parts = namedImports.split(',');
+            for (const part of parts) {
+                const trimmed = part.trim();
+                if (trimmed) {
+                    const partsAs = trimmed.split(/\s+as\s+/);
+                    const name = partsAs[partsAs.length - 1];
+                    if (name) imports.push({ name: name.trim(), source });
+                }
             }
         }
     }
-    return names;
+
+    return imports;
 }
 
 export function remarkIncludeSnippets() {
     return (tree: Root) => {
-        const declaredIdentifiers = new Set();
-        const missingImports = new Set();
+        const declaredIdentifiers = new Set<string>();
+
+        const missingImportsBySource = new Map<string, Set<string>>();
 
         visit(tree, 'mdxjsEsm', (node) => {
-            const names = getImportedNames(node);
-            names.forEach(name => declaredIdentifiers.add(name));
+            const imports = extractImports(node);
+            imports.forEach(imp => declaredIdentifiers.add(imp.name));
         });
 
         visit(tree, 'mdxJsxFlowElement', (node: MdxJsxFlowElement, index, parent) => {
@@ -128,7 +153,7 @@ export function remarkIncludeSnippets() {
                     const fileContent = fs.readFileSync(filePath, 'utf-8');
                     const { data, content } = matter(fileContent);
 
-                    if (data?.tag === tag && data?.draft !== true) {
+                    if (data?.tag === tag && (data?.draft !== true || allowDrafts)) {
                         matchingSnippets.push({ data, content });
                     }
                 }
@@ -196,11 +221,14 @@ export function remarkIncludeSnippets() {
 
                         const cleanedChildren = snippetAst.children.filter((child: any) => {
                             if (child.type === 'mdxjsEsm') {
-                                const names = getImportedNames(child);
+                                const snippetImports = extractImports(child);
 
-                                names.forEach(name => {
+                                snippetImports.forEach(({ name, source }) => {
                                     if (!declaredIdentifiers.has(name)) {
-                                        missingImports.add(name);
+                                        if (!missingImportsBySource.has(source)) {
+                                            missingImportsBySource.set(source, new Set());
+                                        }
+                                        missingImportsBySource.get(source)!.add(name);
                                         declaredIdentifiers.add(name);
                                     }
                                 });
@@ -224,37 +252,43 @@ export function remarkIncludeSnippets() {
             }
         });
 
-        if (missingImports.size > 0) {
-            const specifiers = Array.from(missingImports).map(name => ({
-                type: 'ImportSpecifier',
-                imported: { type: 'Identifier', name: name },
-                local: { type: 'Identifier', name: name }
-            }));
+        if (missingImportsBySource.size > 0) {
+            const newImportNodes: any[] = [];
 
-            const newImportNode = {
-                type: 'mdxjsEsm',
-                value: `import { ${Array.from(missingImports).join(', ')} } from 'coherent-docs-theme/components';`,
-                data: {
-                    estree: {
-                        type: 'Program',
-                        body: [
-                            {
-                                type: 'ImportDeclaration',
-                                specifiers: specifiers,
-                                source: { type: 'Literal', value: 'coherent-docs-theme/components', raw: "'coherent-docs-theme/components'" }
-                            }
-                        ],
-                        sourceType: 'module'
+            for (const [source, namesSet] of missingImportsBySource.entries()) {
+                const names = Array.from(namesSet);
+
+                const specifiers = names.map(name => ({
+                    type: 'ImportSpecifier',
+                    imported: { type: 'Identifier', name: name },
+                    local: { type: 'Identifier', name: name }
+                }));
+
+                newImportNodes.push({
+                    type: 'mdxjsEsm',
+                    value: `import { ${names.join(', ')} } from '${source}';`,
+                    data: {
+                        estree: {
+                            type: 'Program',
+                            body: [
+                                {
+                                    type: 'ImportDeclaration',
+                                    specifiers: specifiers,
+                                    source: { type: 'Literal', value: source, raw: `'${source}'` }
+                                }
+                            ],
+                            sourceType: 'module'
+                        }
                     }
-                }
-            };
+                });
+            }
 
             let insertIndex = 0;
             if (tree.children.length > 0 && tree.children[0]?.type === 'yaml') {
                 insertIndex = 1;
             }
 
-            tree.children.splice(insertIndex, 0, newImportNode);
+            tree.children.splice(insertIndex, 0, ...newImportNodes);
         }
     };
 }
