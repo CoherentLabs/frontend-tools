@@ -94,7 +94,7 @@ export class GamefaceCommandsBase {
     }
 
     /**
-    * Will send mutiple DevTools commands to the player
+    * Will send multiple DevTools commands to the player
     */
     async sendCommands(commands: (string | { method: string; params: any })[]): Promise<any[]> {
         const responses = [];
