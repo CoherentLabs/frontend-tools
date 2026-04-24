@@ -3,30 +3,31 @@ title: Draggable
 ---
 
 import IMExample from '@components/IMExample.astro';
+import { Badge } from '@astrojs/starlight/components';
 
 Allows you to drag around elements on the screen.
 
 ## Usage
 
-```js
+```ts
 new draggable(draggableOptions);
 ```
 
 ## Basic implementation
 
-```js
+```ts
 const square = new draggable({ element: '.square' });
 ```
 
 <IMExample path="/im-demo/demo/Draggable/drag-around-screen.html"/>
 
-## dragableOptions
+## draggableOptions
 
 ### element
 
 Type:
 
-```js
+```ts
 type element = string
 ```
 
@@ -36,7 +37,7 @@ The element selector.
 
 Type:
 
-```js
+```ts
 type restrictTo = string;
 ```
 
@@ -44,7 +45,7 @@ Restricts the dragged element to another element. That way the dragged element w
 
 **Example**
 
-```js
+```ts
 const square = new draggable({ element: '.square', restrictTo: '.container' });
 ```
 
@@ -54,7 +55,7 @@ const square = new draggable({ element: '.square', restrictTo: '.container' });
 
 Type:
 
-```js
+```ts
 type dragClass = string
 ```
 
@@ -64,7 +65,7 @@ Class to be added to the dragged element.
 
 Type:
 
-```js
+```ts
 type lockAxis = 'x' | 'y'
 ```
 
@@ -72,7 +73,7 @@ Locks the dragged element to either the x or y axis.
 
 **Example**
 
-```js
+```ts
 const square1 = new draggable({ element: '.square1', lockAxis: 'x' });
 const square2 = new draggable({ element: '.square2', lockAxis: 'y' });
 ```
@@ -83,8 +84,8 @@ const square2 = new draggable({ element: '.square2', lockAxis: 'y' });
 
 Type:
 
-```js
-type onDragStart = () => {}
+```ts
+type onDragStart = (element: HTMLElement) => void;
 ```
 
 Executes when you start dragging the element.
@@ -93,8 +94,8 @@ Executes when you start dragging the element.
 
 Type:
 
-```js
-type onDragMove = () => {}
+```ts
+type onDragMove = (position: { x: number; y: number }) => void;
 ```
 
 Executes when you move the dragged element.
@@ -103,20 +104,48 @@ Executes when you move the dragged element.
 
 Type:
 
-```js
-type onDragEnd = () => {}
+```ts
+type onDragEnd = (element: HTMLElement) => void;
 ```
 
 Executes when you stop dragging the element.
+
+## Properties
+
+### actionName <Badge text="readonly" size="medium" variant="note" />
+
+Type:
+
+```ts
+type actionName = string
+```
+
+The name of the action that can be used to programmatically drag the element.
+
+### touchEnabled
+
+Type:
+
+```ts
+type touchEnabled = boolean
+```
+
+Enables or disables touch events. Default is `false`.
+
+## Methods
+
+### deinit()
+
+Removes the event listeners and disables the draggable functionality.
 
 ## Actions
 
 You are able to drag elements using actions. Since every draggable action is unique you can do the following:
 
-```js
+```ts
 const element = new draggable({ element: '.square'});
 
-actions.execute(element.actionName, {x: 100, y: 100, index: 0}); 
+actions.execute(element.actionName, {x: 100, y: 100, index: 0});
 ```
 
 You will need to pass the x and y coordinates where you want the element to go and the index of the element.

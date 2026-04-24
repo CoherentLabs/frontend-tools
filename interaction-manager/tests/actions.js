@@ -8,16 +8,6 @@
 const DEFAULT_FRAMES_TO_WAIT = 3;
 
 /**
- * Replacement of HtmlElement.click.
- * Dispatches a custom event of type click on a given target element
- * @param {HTMLElement} element - the element that will be clicked
- * @param {object} customEventInit - a dictionary that hold additional event data
-*/
-function click(element, customEventInit = {}) {
-    element.dispatchEvent(new CustomEvent('click', customEventInit));
-}
-
-/**
  * Delay the execution of a callback function by n amount of frames.
  * Used to retrieve the computed styles of elements.
  * @param {Function} callback - the function that will be executed.
@@ -68,23 +58,6 @@ function cleanTestPage(selector) {
 }
 
 /**
- * Create a fake event object.
- * @param {HTMLElement} target
- * @param {boolean} bubbles
- * @param {boolean} ctrlKey
- * @param {boolean} shiftKey
- * @returns {object}
- */
-function mockEventObject(target, bubbles = false, ctrlKey = false, shiftKey = false) {
-    return {
-        target,
-        ctrlKey,
-        shiftKey,
-        bubbles,
-        stopPropagation: () => { },
-    };
-}
-/**
  * Creates a square to work with the interaction manager
  * @returns {Promise}
  */
@@ -106,23 +79,6 @@ function createIMElement() {
 }
 
 /**
- * Drags a draggable object
- * @param {DraggableObject} square
- * @param {Object} options
- * @param {number} options.x
- * @param {number} options.y
- * @param {HTMLElement} options.currentTarget
- * @param {HTMLElement} options.target
- * @param {number} options.startDragY
- * @param {number} options.startDragX
- */
-function dragIMElement(square, { x, y, target, currentTarget, startDragX, startDragY }) {
-    square.onMouseDown({ target, currentTarget, clientX: startDragX, clientY: startDragY });
-    square.onMouseMove({ clientX: x, clientY: y });
-    square.onMouseUp();
-}
-
-/**
  *
  * @param {HTMLElement} element
  * @param {string} eventType - type of touch event - touchstart, touchmove, touchend
@@ -137,7 +93,7 @@ function simulateTouch(element, eventType, { identifier, x = 0, y = 0, target })
     target ||= element;
     const event = document.createEvent('Event');
     event.initEvent(eventType, true, true);
-
+    //@ts-ignore
     event.touches = [{
         identifier,
         clientX: x,
@@ -148,136 +104,3 @@ function simulateTouch(element, eventType, { identifier, x = 0, y = 0, target })
 
     element.dispatchEvent(event);
 }
-
-/**
- * Waits for a timeout to complete before executing a callback function.
- * @param {function} callback
- * @param {number} milliseconds
- * @returns {Promise}
- */
-function timeout(callback, milliseconds) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            callback();
-            resolve();
-        }, milliseconds);
-    });
-}
-
-/**
- * Will initialize the binding model or updates it if there is already registered
- * @param {string} modelName
- * @param {object} model
- */
-function initModel(modelName, model) {
-    // There are components tests with data-binding that are using the same model name so we need to clear the previous model if we are in this scenario
-    // If the model already exists clear its keys and add the new keys from the model object
-    // We need to clear it in this way so we preserve the reference and updateWholeModel updates it correctly.
-    // Otherwise updateWholeModel will fail if we change the reference of the global object for example like this -> window[modelName] = model;
-    const currentModel = window[modelName];
-    if (currentModel !== undefined) {
-        for (const key in currentModel) {
-            delete currentModel[key];
-        }
-
-        for (const key in model) {
-            currentModel[key] = model[key];
-        }
-    } else {
-        engine.createJSModel(modelName, model);
-    }
-
-    engine.updateWholeModel(currentModel);
-}
-
-/**
- * Creates a Gameface JS data bind model, creates the template with the
- * provided function and synchronizes the models to reflect the change.
- * @param {*} modelName The name of the data binding model that will be created
- * @param {*} template Template that includes an element with data-bind property
- * @param {*} setupFunction The function used in the test for creating the component
- * @param {*} model [{ array: [{}, {}] }] The model used to populate the component
- */
-async function setupDataBindingTest(modelName, template, setupFunction, model = { array: [{}, {}] }) {
-    initModel(modelName, model);
-
-    await setupFunction(template);
-
-    engine.synchronizeModels();
-}
-
-const RETRY_INTERVAL = 500;
-
-/**
- * Retries a test action.
- *
- * @param {function} action
- * @param {function} resolve
- * @param {function} reject
- * @param {number} remainingCount
- * @private
- */
-function _retryInner(action, resolve, reject, remainingCount) {
-    action().then(resolve).catch((error) => {
-        if (remainingCount) {
-            remainingCount--;
-
-            setTimeout(() => {
-                _retryInner(action, resolve, reject, remainingCount);
-            }, RETRY_INTERVAL);
-        } else {
-            reject(error);
-        }
-    });
-}
-
-/**
- * Retries a function if it fails for a number of times.
- *
- * @param {function} action
- * @param {number} retryCount - Default = 10.
- * @returns {Promise<any>}
- */
-function retryIfFails(action, retryCount = 10) {
-    return new Promise((resolve, reject) => {
-        _retryInner(action, resolve, reject, retryCount);
-    });
-}
-
-/**
- * This is currently only used for the Scrollable Container tests.
- * Chrome can start with great height and there will be no scroll.
- * I didn't want to include another dependency like https://www.npmjs.com/package/karma-viewport
- * @param {element} container
- * @param {number} xySize Desired width and height in pixels.
- */
-function resizeElementTo(container, xySize = 500) {
-    container.style.height = `${xySize}px`;
-    container.style.width = `${xySize}px`;
-}
-
-/**
- * Simulates keyboard press
- * @param {string} key - The key to simulate pressing.
- * @param {Boolean} repeat [repeat=false] - Indicates if the key press is a repeat event. Defaults to false.
- */
-const simulateKeyDown = (key, repeat = false) => {
-    document.dispatchEvent(new KeyboardEvent('keydown', { keyCode: KEYS[key], repeat }));
-};
-
-/**
- * Simulates a keyboard release event.
- * @param {string} key - The key to simulate releasing.
- */
-const simulateKeyUp = (key) => {
-    document.dispatchEvent(new KeyboardEvent('keyup', { keyCode: KEYS[key] }));
-};
-
-/**
- * Simulates a keyboard press event.
- * @param {string} key - The key to simulate pressing.
- */
-const simulateKeyPress = (key) => {
-    simulateKeyDown(key);
-    simulateKeyUp(key);
-};

@@ -1,0 +1,70 @@
+---
+title: Changelog
+---
+
+import { Badge } from '@astrojs/starlight/components'
+
+## 3.0.1 :badge[Latest]{variant="note"}
+
+<Badge text="Fix" variant="caution" size="small" /> Fixed a bug in [Spatial Navigation](/interaction-manager/features/spatial-navigation/) where wrap-around navigation failed in tall, scrollable lists. Previously, 
+pressing UP from the first item (or DOWN from the last) in an overflowing container would incorrectly focus on an arbitrary middle or visible item. 
+It now reliably targets the true opposite edge of the list regardless of scroll position.
+
+## 3.0.0
+
+<Badge text="Breaking Change" variant="danger" size="small" /> Changed `switchArea` method in [Spatial Navigation](/interaction-manager/features/spatial-navigation/#switchareaarea) to no longer focus the first element in the specified area 
+but instead attempt to focus the last focused element in that area. If no element was previously focused in that area, or if that element has been removed from the DOM, it falls back to `focusFirst()`. 
+This change allows for a more intuitive navigation experience when switching between areas.
+
+<Badge text="New" variant="note" size="small" /> Added a new `getLastFocused` method in [Spatial Navigation](/interaction-manager/features/spatial-navigation/#getlastfocusedarea) that returns the last focused element from a specific area.
+
+## 2.8.0
+
+<Badge text="New" variant="note" size="small" /> Added exports for both the `GamepadMappings` and `KeyboardMappings` objects to allow developers to easily access and utilize predefined action mappings in their projects.
+
+## 2.7.0
+
+<Badge text="Feature" variant="success" size="small" /> Migrated project build system to Vite for improved performance and modern tooling.
+
+<Badge text="New" variant="note" size="small" /> Added [Type Support & IntelliSense](/interaction-manager/getting-started/type-support/) documentation page to help developers leverage TypeScript definitions in various project setups.
+
+## 2.6.1
+
+<Badge text="Fix" variant="caution" size="small" /> Fixed an issue in [Gamepad](/interaction-manager/features/gamepad/) where the setter for `pollingInterval` didn't update the interval function.
+
+## 2.6.0
+
+<Badge text="Feature" variant="success" size="small" /> Migrated the entire codebase to TypeScript. The library now includes native type definitions for better developer experience.
+
+<Badge text="Fix" variant="caution" size="small" /> Resolved timing mismatches in [Gamepad](/interaction-manager/features/spatial-navigation/) by removing the `gamepadconnected` listener. Polling now begins explicitly when the `enabled` property is set to `true`.
+
+## 2.5.6
+
+<Badge text="Fix" variant="caution" size="small" /> Gamepad actions are now triggered correctly even when combined. Callbacks for individual actions (e.g., `'pad-up'`) will fire even if multiple actions are executed simultaneously (e.g., `'pad-up'` + `'pad-down'`).
+
+## 2.5.5
+
+<Badge text="Feature" variant="success" size="small" /> Added [pause()](/interaction-manager/features/spatial-navigation/#pause) and [resume()](/interaction-manager/features/spatial-navigation/#resume) methods to [Spatial Navigation](/interaction-manager/features/spatial-navigation/) for temporarily disabling and re-enabling navigation actions.
+
+## 2.4.5
+
+<Badge text="Fix" variant="caution" size="small" /> Fixed [Spatial Navigation](/interaction-manager/features/spatial-navigation/) to only remove the navigation actions from keys instead of removing the keys entirely from the action system, preventing other registered actions or callbacks on the same keys from being broken.
+
+## 2.4.4
+
+<Badge text="Feature" variant="success" size="small" /> Added support for multiple callbacks per key combination and type in [Keyboard](/interaction-manager/features/keyboard/#registering-multiple-callbacks).
+
+<Badge text="Feature" variant="success" size="small" /> Added optional `callback` parameter to [Keyboard.off()](/interaction-manager/features/keyboard/#removing-a-specific-callback) method to remove specific callbacks.
+
+<Badge text="Feature" variant="success" size="small" /> Added automatic cleanup of empty keyboard entries when all callbacks are removed.
+
+<Badge text="Feature" variant="success" size="small" /> Added support for multiple callbacks per action combination and type in [Gamepad](/interaction-manager/features/gamepad/#registering-multiple-callbacks).
+
+<Badge text="Feature" variant="success" size="small" /> Added optional `callback` parameter to [Gamepad.off()](/interaction-manager/features/gamepad/#removing-a-specific-callback) method to remove specific callbacks.
+
+<Badge text="Feature" variant="success" size="small" /> Added automatic cleanup of empty gamepad entries when all callbacks are removed.
+
+<Badge text="Feature" variant="success" size="small" /> Added support for HTMLElement references in [Spatial Navigation](/interaction-manager/features/spatial-navigation/#api). You can now pass direct HTMLElement references in `init()` and `add()` methods.
+
+<Badge text="Fix" variant="caution" size="small" /> Fixed navigation area removal in [Spatial Navigation](/interaction-manager/features/spatial-navigation/) to properly delete the area instead of setting it to an empty object.
+

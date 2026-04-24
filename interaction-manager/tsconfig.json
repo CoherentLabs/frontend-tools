@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    // Output settings
+    "target": "ES6",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+
+    // Declaration files (the main reason we need tsc)
+    "declaration": true,
+    "declarationDir": "./dist/types",
+    "emitDeclarationOnly": true,
+
+    // Type checking
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    // Interop
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // Environment
+    "lib": ["ES6", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+
+    // Source handling
+    "rootDir": "./src",
+    "baseUrl": ".",
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "esm"],  
+}

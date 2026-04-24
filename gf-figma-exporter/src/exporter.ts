@@ -35,9 +35,7 @@ async function getPages(): Promise<ExporterResult> {
         (page as FrameNode).clipsContent = false;
         FontExporter.clear();
         await FontExporter.init(page as FrameNode);
-
         progress.update(`Initialized fonts for page: ${page.name}`);
-
         const { html, css, images } = await generateCode(page as FrameNode);
         
         results[sanitizeNames(page.name)] = {

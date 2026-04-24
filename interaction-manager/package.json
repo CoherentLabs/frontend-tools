@@ -1,13 +1,26 @@
 {
   "name": "coherent-gameface-interaction-manager",
-  "version": "2.3.4",
+  "version": "3.0.1",
   "description": "Library for the most common UI interactions",
   "main": "dist/interaction-manager.js",
   "module": "esm/interaction-manager.js",
+  "types": "dist/types/interaction-manager.d.ts",
   "scripts": {
-    "publish:package": "npm i&&npm run build",
-    "build": "node scripts/build-im.js",
-    "test": "node tests/index.js"
+    "publish:package": "npm i&&npm run build&&npm publish",
+    "build": "npm run build:esm && npm run build:umd",
+    "build:esm": "vite build",
+    "build:umd": "node scripts/build-umd.mjs",
+    "typecheck": "tsc --noEmit",
+    "run-test": "node ./tests/interaction-manager/index.js --port=54321",
+    "dev:host": "http-server -p 54321",
+    "test": "start-server-and-test dev:host http://localhost:54321/ run-test"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/types/interaction-manager.d.ts",
+      "import": "./esm/interaction-manager.js",
+      "require": "./dist/interaction-manager.js"
+    }
   },
   "repository": {
     "type": "git",
@@ -29,9 +42,9 @@
     }
   },
   "devDependencies": {
-    "esbuild": "^0.25.6",
-    "fs-extra": "^11.3.0",
+    "@types/mocha": "^10.0.10",
     "chai": "^4.3.10",
+    "fs-extra": "^11.3.0",
     "karma": "^6.4.4",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.2.0",
@@ -40,6 +53,11 @@
     "karma-sinon": "^1.0.5",
     "karma-spec-reporter": "0.0.36",
     "karma-webpack": "^5.0.1",
-    "kill-port": "^2.0.1"
+    "kill-port": "^2.0.1",
+    "start-server-and-test": "^2.0.12",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vite-plugin-dts": "^4.5.4",
+    "vite-plugin-static-copy": "^3.1.5"
   }
 }

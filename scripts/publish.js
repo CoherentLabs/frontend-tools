@@ -75,7 +75,7 @@ async function publish(tool) {
 }
 
 async function getToolsDirs(root, exclude = []) {
-    const excludeDirs = ['.github', 'scripts', 'docs', 'node_modules', '.git', ...exclude];
+    const excludeDirs = ['.github', 'scripts', 'docs', 'docs-theme', 'node_modules', '.git', ...exclude];
     const dirs = [];
 
     async function walk(dir) {
@@ -96,10 +96,16 @@ async function getToolsDirs(root, exclude = []) {
     return dirs;
 }
 
+const coherentDocsThemePath = path.join(__dirname, '../docs-theme/packages/coherent-docs-theme');
+
 /** */
 async function main() {
     try {
-        const tools = [...await getToolsDirs(TOOLS_PATH, ['gameface-ui-vite-plugins', 'language-server']), ...await getToolsDirs(VITE_PLUGINS_PATH)];
+        const tools = [
+            ...await getToolsDirs(TOOLS_PATH, ['gameface-ui-vite-plugins', 'language-server', 'gf-figma-exporter']),
+            ...await getToolsDirs(VITE_PLUGINS_PATH),
+            coherentDocsThemePath
+        ];
         for (const tool of tools) {
             if (shouldUpdate(tool)) await publish(tool);
         }

@@ -1,7 +1,7 @@
 ---
 title: gameface-e2e-config.js
 sidebar:
-    order: 1
+    order: 0
 ---
 
 The `gameface-e2e-config.js` file is a configuration file for the `gameface-e2e` testing framework. It allows you to specify various properties that control the behavior of the framework when running your tests.
@@ -27,3 +27,20 @@ module.exports = {
     bail: true
 }
 ```
+
+## Config autocompletion
+
+If you are using TypeScript or a code editor that supports JSDoc, you can get autocompletion for the configuration properties by adding the following JSDoc comment at the top of your `gameface-e2e-config.js` file:
+
+```js title="gameface-e2e-config.js" ins="/** @type {import('gameface-e2e').GamefaceE2EConfig} */"
+/** @type {import('gameface-e2e').GamefaceE2EConfig} */
+
+module.exports = {
+    gamefacePath: "C:/Gameface/Player/Player.exe",
+    tests: "examples/**/*.spec.js",
+    specTimeout: 20000,
+    bail: true
+}
+```
+
+Like this, your editor will provide suggestions and type checking for the configuration properties.

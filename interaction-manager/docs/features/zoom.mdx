@@ -3,18 +3,19 @@ title: Pan and Zoom
 ---
 
 import IMExample from '@components/IMExample.astro';
+import { Badge } from '@astrojs/starlight/components';
 
 Allows you to zoom in on an element.
 
 ## Usage
 
-```js
+```ts
 new zoom(zoomOptions)
 ```
 
 ## Basic implementation
 
-```js
+```ts
 const grid = new zoom({ element: '.grid' });
 ```
 
@@ -22,11 +23,21 @@ const grid = new zoom({ element: '.grid' });
 
 ## zoomOptions
 
+```ts
+interface ZoomOptions {
+    element: string,
+    minZoom?: number,
+    maxZoom?: number,
+    zoomFactor?: number,
+    onZoom?: Function
+}
+```
+
 ### element
 
 Type:
 
-```js
+```ts
 type element = string
 ```
 
@@ -36,7 +47,7 @@ The element selector.
 
 Type:
 
-```js
+```ts
 type minZoom = number
 ```
 
@@ -48,7 +59,7 @@ How much you can zoom out of the element.
 
 Type:
 
-```js
+```ts
 type maxZoom = number
 ```
 
@@ -60,7 +71,7 @@ How much you can zoom in on the element.
 
 Type:
 
-```js
+```ts
 type zoomFactor = number
 ```
 
@@ -72,20 +83,56 @@ By how much to zoom in or out of the element.
 
 Type:
 
-```js
-type onZoom = () => {}
+```ts
+type onZoom = () => void;
 ```
 
 Executes when the element zooms in or out.
+
+## Properties
+
+### actionName <Badge text="readonly" size="medium" variant="note" />
+
+Type:
+
+```ts
+type actionName = string
+```
+
+The name of the action that can be used to programmatically zoom the element.
+
+### touchEnabled
+
+Type:
+
+```ts
+type touchEnabled = boolean
+```
+
+Enables or disables touch events. Default is `false`.
+
+## Methods
+
+### deinit()
+
+Removes the event listeners and disables the zoom functionality.
 
 ## Actions
 
 You are able to zoom elements using actions. Since every zoom action is unique you can do the following:
 
-```js
+```ts
 const element = new zoom({ element: '.grid' });
 
 actions.execute(element.actionName, {x: 100, y: 100, zoomDirection: -1});
 ```
 
-Where you need to provide the x and y coordinates of the element, where you want to zoom to and the zoomDirection which can be -1 for zoom out and 1 for zoom in.
+Where you need to provide the x and y coordinates of the element, where you want to zoom to and the `zoomDirection` which can be -1 for zoom out and 1 for zoom in.
+
+```ts
+interface ZoomAction {
+    x: number;
+    y: number;
+    zoomDirection: number;
+}
+```

@@ -1,43 +1,12 @@
 import starlight from '@astrojs/starlight'
 import { defineConfig } from 'astro/config'
-import starlightThemeRapide from 'starlight-theme-rapide'
-import starlightLinksValidator from 'starlight-links-validator';
-import starlightHeadingBadges from 'starlight-heading-badges'
 import starlightSidebarTopics from 'starlight-sidebar-topics'
-import generateChangelog from './src/changelogSideBar';
-import fs from 'fs';
+import starlightLinksValidator from 'starlight-links-validator';
+import coherentTheme, { generateMultipleDocsChangelog, generateVersionWithPackageJSON } from 'coherent-docs-theme'
 import path from 'path';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-function generateVersion(version, link) {
-  const config: { label: string; link?: string; attrs?: { target: string }; badge?: { text: string; variant: string } } = {
-    label: 'Version:',
-    link: '',
-    badge: {
-      text: `${version}`,
-      variant: 'tip',
-    },
-  }
-
-  if (link) {
-    config.link = link;
-    config.attrs = { target: '_blank' };
-  }
-
-  return config;
-}
-
-async function generateVersionWithPackageJSON(packagePath, link?: string) {
-  if (!fs.existsSync(packagePath)) throw new Error(`Version not found in ${packagePath}`);
-  const packageContent = fs.readFileSync(packagePath, 'utf-8');
-  const packageJson = JSON.parse(packageContent);
-  const version = packageJson?.version;
-  if (!version) throw new Error(`Version not defined in ${packagePath}`);
-
-  return generateVersion(version, link);
-}
 
 async function getConfig() {
   const documentations = ['e2e', 'gameface-vite-plugin', 'vite-solid-style-to-css-plugin', 'interaction-manager', 'data-binding-autocomplete'];
@@ -61,11 +30,11 @@ async function getConfig() {
           label: 'Concepts',
           autogenerate: { directory: 'e2e/concepts' },
         },
-        generateChangelog('e2e'),
+        generateMultipleDocsChangelog('e2e', path.join(__dirname, `./src/content/docs/e2e/changelog/index.mdx`)),
         {
           label: 'API Reference',
           collapsed: true,
-          autogenerate: { directory: 'e2e/api', collapsed: false },
+          autogenerate: { directory: 'e2e/api', collapsed: true },
 
         },
       ],
@@ -82,7 +51,8 @@ async function getConfig() {
         ),
 
         { label: 'Getting Started', autogenerate: { directory: 'interaction-manager/getting-started' } },
-        { label: 'Features', autogenerate: { directory: 'interaction-manager/features' } }
+        { label: 'Features', autogenerate: { directory: 'interaction-manager/features' } },
+        generateMultipleDocsChangelog('interaction-manager', path.join(__dirname, `./src/content/docs/interaction-manager/changelog/index.mdx`)),
       ],
     },
     {
@@ -96,6 +66,14 @@ async function getConfig() {
           'https://npmjs.org/vite-gameface'
         ),
         {
+          label: 'Vite Solid Plugin Notice',
+          link: '/gameface-vite-plugin/vite-plugin-solid/',
+          badge: {
+            text: `Important`,
+            variant: 'caution',
+          },
+        },
+        {
           label: 'Getting Started',
           autogenerate: { directory: 'gameface-vite-plugin/getting-started' },
         },
@@ -103,7 +81,7 @@ async function getConfig() {
           label: 'Concepts',
           autogenerate: { directory: 'gameface-vite-plugin/concepts' },
         },
-        generateChangelog('gameface-vite-plugin'),
+        generateMultipleDocsChangelog('gameface-vite-plugin', path.join(__dirname, `./src/content/docs/gameface-vite-plugin/changelog/index.mdx`)),
       ],
     },
     {
@@ -124,7 +102,7 @@ async function getConfig() {
           label: 'Concepts',
           autogenerate: { directory: 'vite-solid-style-to-css-plugin/concepts' },
         },
-        generateChangelog('vite-solid-style-to-css-plugin'),
+        generateMultipleDocsChangelog('vite-solid-style-to-css-plugin', path.join(__dirname, `./src/content/docs/vite-solid-style-to-css-plugin/changelog/index.mdx`)),
       ],
     },
     {
@@ -163,7 +141,7 @@ async function getConfig() {
         }
       }
     },
-    redirects: documentations.reduce((acc, doc) => {
+    redirects: documentations.reduce((acc: Record<string, string>, doc) => {
       acc[`/${doc}`] = `/${doc}/getting-started/`;
       return acc;
     }, {}),
@@ -175,27 +153,29 @@ async function getConfig() {
           light: './src/assets/gameface-ui-header-light.svg',
           replacesTitle: true
         },
+        title: 'Gameface Frontend Tools',
         components: {
-          Sidebar: './src/components/Sidebar.astro',
+          Sidebar: 'coherent-docs-theme/components/SideBarWithDropdown.astro',
         },
         credits: false,
         customCss: ['./src/styles/custom.css'],
         plugins: [
-          starlightThemeRapide(),
+          ...coherentTheme({
+            documentationSearchTag: "UI Tools"
+          }),
           starlightLinksValidator(),
-          starlightHeadingBadges(),
           starlightSidebarTopics(sideBarTopics, {
-            topics: documentations.reduce((acc, doc) => {
+            topics: documentations.reduce((acc: Record<string, string[]>, doc) => {
               acc[doc] = [`/${doc}/changelog`];
               return acc;
             }, {})
-          })
+          }),
         ],
         social: [
           {
-            icon: 'open-book',
-            label: 'Documentation',
-            href: 'https://coherent-labs.com/documentation',
+            icon: 'laptop',
+            label: 'Site',
+            href: 'https://coherent-labs.com/',
           },
           {
             icon: 'email',
@@ -203,7 +183,6 @@ async function getConfig() {
             href: 'https://coherent-labs.com/get-in-touch'
           },
         ],
-        title: 'Gameface Frontend Tools',
       }),
     ],
     site: 'https://frontend-tools.coherent-labs.com',

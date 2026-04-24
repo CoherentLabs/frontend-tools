@@ -3,18 +3,19 @@ title: Dropzone
 ---
 
 import IMExample from '@components/IMExample.astro';
+import { Badge } from '@astrojs/starlight/components';
 
 Allows you to drag around elements on the screen.
 
 ## Usage
 
-```js
+```ts
 new dropzone(dropzoneOptions);
 ```
 
 ## Basic implementation
 
-```js
+```ts
 const square = new dropzone({ element: '.square', dropzones: ['.dropzone'] });
 ```
 
@@ -26,7 +27,7 @@ const square = new dropzone({ element: '.square', dropzones: ['.dropzone'] });
 
 Type:
 
-```js
+```ts
 type element = string
 ```
 
@@ -36,7 +37,7 @@ The element selector.
 
 Type:
 
-```js
+```ts
 type dropzones = string[]
 ```
 
@@ -46,7 +47,7 @@ Array of dropzones that the element can be dropped into.
 
 Type:
 
-```js
+```ts
 type dragClass = string
 ```
 
@@ -56,7 +57,7 @@ Class to be added to the dragged element.
 
 Type:
 
-```js
+```ts
 type dropzoneActiveClass = string
 ```
 
@@ -66,7 +67,7 @@ Class to be added to the dropzone, whenever an element is dragged over it.
 
 Type:
 
-```js
+```ts
 type dropType = 'switch' | 'add' | 'shift' | 'none'
 ```
 
@@ -83,7 +84,7 @@ The type of action to take, when you drop an element over a dropzone that alread
 
 **Example**
 
-```js
+```ts
 const square = new dropzone({ element: '.square1', dropzones: ['.dropzone1'], dropType: 'add' });
 const square1 = new dropzone({ element: '.square2', dropzones: ['.dropzone2'], dropType: 'none' });
 const square2 = new dropzone({ element: '.square3', dropzones: ['.dropzone3'], dropType: 'switch' });
@@ -96,8 +97,8 @@ const square3 = new dropzone({ element: '.square4', dropzones: ['.dropzone4'], d
 
 Type:
 
-```js
-type onDragStart = () => {}
+```ts
+type onDragStart = (element: HTMLElement) => void;
 ```
 
 Executes when you start dragging the element.
@@ -106,8 +107,8 @@ Executes when you start dragging the element.
 
 Type:
 
-```js
-type onDragMove = () => {}
+```ts
+type onDragMove = (position: { x: number; y: number }) => void;
 ```
 
 Executes when you move the dragged element.
@@ -115,9 +116,8 @@ Executes when you move the dragged element.
 ### onDragEnd
 
 Type:
-
-```js
-type onDragEnd = () => {}
+```ts
+type onDragEnd = (element: HTMLElement) => void;
 ```
 
 Executes when you stop dragging the element.
@@ -126,8 +126,8 @@ Executes when you stop dragging the element.
 
 Type:
 
-```js
-type onDropZoneLeave = () => {}
+```ts
+type onDropZoneLeave = (element: HTMLElement) => void;
 ```
 
 Executes when you drag an element out of a a dropzone
@@ -136,8 +136,8 @@ Executes when you drag an element out of a a dropzone
 
 Type:
 
-```js
-type onDropZoneEnter = () => {}
+```ts
+type onDropZoneEnter = (element: HTMLElement) => void;
 ```
 
 Executes when you drag an element over a dropzone
@@ -146,34 +146,78 @@ Executes when you drag an element over a dropzone
 
 Type:
 
-```js
-type onDrop = (dropEventData) => {}
+```ts
+type onDrop = (dropEventData: DropEvent) => void;
 ```
 
 Executes when an element is dropped in a dropzone.
 
-#### dropEventData
+#### DropEvent
 
-```js
-type dropEventData = {
-    preventDefault: () => {} //preventDefault stops the element from being dropped. Useful when you want to have a backend handle the element move
-    target: HTMLElement,
-    dropzone: HTMLElement,
+```ts
+interface DropEvent {
+    preventDefault: () => void; //Stops the element from being dropped. Useful when you want to have a backend handle the element move
+    target: HTMLElement;
+    dropzone: HTMLElement;
 }
 ```
 
-:::note
-Using asynchronous operations inside the event callback will stop preventDefault from working. To workaround that, use `dropType: 'ignore'` to simulate the same effect.
-:::
+## Properties
+
+### actionName <Badge text="readonly" size="medium" variant="note" />
+
+Type:
+
+```ts
+type actionName = string
+```
+
+The name of the action that can be used to programmatically drag the element.
+
+### automaticAction <Badge text="readonly" size="medium" variant="note" />
+
+Type:
+
+```ts
+type automaticAction = string
+```
+
+The name of the action that can be used to automatically move an element to a dropzone.
+
+### touchEnabled
+
+Type:
+
+```ts
+type touchEnabled = boolean
+```
+
+Enables or disables touch events. Default is `false`.
+
+## Methods
+
+### deinit()
+
+Removes the event listeners and disables the dropzone functionality.
 
 ## Actions
 
 You are able to drag elements using actions. Since every dropzone action is unique you can do the following:
 
-```js
+```ts
 const element = new dropzone({ element: '.square', dropzones: ['.dropzone'] });
 
 actions.execute(element.actionName, {x: 100, y: 100, index: 0});
 ```
 
 You will need to pass the x and y coordinates where you want the element to go and the index of the element.
+
+You can also automatically move an element to a dropzone by using the `automaticAction`:
+
+```ts
+const element = new dropzone({ element: '.square', dropzones: ['.dropzone'] });
+
+actions.execute(element.automaticAction, {elementIndex: 0, dropzoneIndex: 0});
+```
+
+You will need to pass the index of the element you want to move and the index of the dropzone you want to move the element to.

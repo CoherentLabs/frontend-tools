@@ -3,18 +3,19 @@ title: Resize
 ---
 
 import IMExample from '@components/IMExample.astro';
+import { Badge } from '@astrojs/starlight/components';
 
 Allows you to resize an element.
 
 ## Usage
 
-```js
+```ts
 new resize(resizeOptions);
 ```
 
 ## Basic implementation
 
-```js
+```ts
 const square = new resize({ element: '.square' });
 ```
 
@@ -22,11 +23,24 @@ const square = new resize({ element: '.square' });
 
 ## resizeOptions
 
+```ts
+interface ResizeOptions {
+    element: string;
+    edgeWidth?: number;
+    onWidthChange?: (width: number) => void;
+    onHeightChange?: (height: number) => void;
+    widthMin?: number;
+    widthMax?: number;
+    heightMin?: number;
+    heightMax?: number;
+}
+```
+
 ### element
 
 Type:
 
-```js
+```ts
 type element = string
 ```
 
@@ -36,7 +50,7 @@ The element selector.
 
 Type:
 
-```js
+```ts
 type edgeWidth = number
 ```
 
@@ -48,7 +62,7 @@ The width of the edge that you can grab.
 
 Type:
 
-```js
+```ts
 type widthMin = number
 ```
 
@@ -60,7 +74,7 @@ The minimum width that element can be resized to.
 
 Type:
 
-```js
+```ts
 type widthMax = number
 ```
 
@@ -72,7 +86,7 @@ The maximum width that element can be resized to.
 
 Type:
 
-```js
+```ts
 type heightMin = number
 ```
 
@@ -84,7 +98,7 @@ The minimum height that element can be resized to.
 
 Type:
 
-```js
+```ts
 type heightMax = number
 ```
 
@@ -96,8 +110,8 @@ The maximum height that element can be resized to.
 
 Type:
 
-```js
-type onWidthChange = (width) => {}
+```ts
+type onWidthChange = (width: number) => void;
 ```
 
 Executes when the element width changes
@@ -106,20 +120,58 @@ Executes when the element width changes
 
 Type:
 
-```js
-type onHeightChange = (height) => {}
+```ts
+type onHeightChange = (height: number) => void;
 ```
 
 Executes when the element height changes.
+
+## Properties
+
+### heightAction <Badge text="readonly" size="medium" variant="note" />
+
+Type:
+
+```ts
+type heightAction = string
+```
+
+The name of the action that can be used to programmatically change the height of the element.
+
+### widthAction <Badge text="readonly" size="medium" variant="note" />
+
+Type:
+
+```ts
+type widthAction = string
+```
+
+The name of the action that can be used to programmatically change the width of the element.
+
+### touchEnabled
+
+Type:
+
+```ts
+type touchEnabled = boolean
+```
+
+Enables or disables touch events. Default is `false`.
+
+## Methods
+
+### deinit()
+
+Removes the event listeners and disables the resize functionality.
 
 ## Actions
 
 You are able to resize elements using actions. Since every resize action is unique you can do the following:
 
-```js
+```ts
 const element = new resize({ element: '.square' });
 
-actions.execute(element.heightAction, height);
+actions.execute(element.heightAction, 200);
 
-actions.execute(element.widthAction, width);
+actions.execute(element.widthAction, 200);
 ```

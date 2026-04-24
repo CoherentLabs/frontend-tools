@@ -1,0 +1,78 @@
+---
+title: 'gamepad.hold'
+---
+
+## `gamepad.hold(keys: number | number[]): Promise<void>`
+
+Holds one or more gamepad keys. This method is useful when your UI triggers effects while a gamepad button is being held down.
+
+- If `keys` is an array, each key will be held simultaneously.
+- If `keys` is a single number, that key will be held.
+
+- Returns a promise that resolves once all specified keys are held down.
+
+:::caution[Releasing a key]
+Always call [gamepad.release](/e2e/api/gamefacegamepad/release) after holding a key. Not releasing a key may leave it pressed indefinitely, which can cause undesired UI behavior or test failures.
+:::
+
+### Parameters
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `keys` | `number \| number[]` | — | A single key identifier or an array of key identifiers to hold. |
+
+### Returns
+
+A `Promise<void>` that resolves when the specified keys are being held down.
+
+## Usage
+
+```js
+const GAMEPAD_ID = 'my-gamepad';
+
+describe('Gamepad Tests', function () {
+    before(async () => {
+        await gf.connectGamepad(GAMEPAD_ID);
+    });
+
+    after(async () => {
+        await gf.disconnectGamepad(GAMEPAD_ID);
+    })
+
+    it('Hold a single key', async () => {
+        const gamepad = gf.getGamepad(GAMEPAD_ID);
+        const assertElement = await gf.get('#message');
+
+        assert.equal(await assertElement.text(), '');
+
+        await gamepad.hold(gf.GAMEPAD_BUTTONS.PAD_DOWN);
+
+        const hasText = await await assertElement.waitForText('Gamepad pad left has been hold');
+        assert(hasText);
+
+        await gamepad.release(keys);
+        assert.equal(await assertElement.text(), '');
+    });
+
+    it('Hold multiple keys', async () => {
+        const keys = [gf.GAMEPAD_BUTTONS.PAD_DOWN, gf.GAMEPAD_BUTTONS.PAD_LEFT, gf.GAMEPAD_BUTTONS.PAD_UP];
+        const gamepad = gf.getGamepad(GAMEPAD_ID)
+        const assertElement = await gf.get('#message');
+
+        assert.equal(await assertElement.text(), '');
+
+        await gamepad.hold(keys);
+        const hasText = await await assertElement.waitForText('Gamepad pad down, left and up have been hold');
+        assert(hasText);
+
+        await gamepad.release(keys);
+        assert.equal(await assertElement.text(), '');
+    });
+});
+```
+
+## Guide
+
+Use `gamepad.hold` when testing UI behavior that occurs while keys are pressed. You can combine it with `gf.sleep` to simulate holding keys for a specific duration.
+
+This method provides precise control over how gamepad keys are pressed during your tests.

@@ -4,7 +4,50 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 1.1.1 :badge[Latest]{variant="note"}
+## 2.3.0 :badge[Latest]{variant="note"}
+
+<Badge text="Feature" variant="success" size="small" /> Introduced new drag methods for enhanced drag-and-drop testing capabilities.
+
+The newly added methods include:
+
+* [element.dragBy](/e2e/api/domelement/interactions/dragby/) - Drags an element by a relative offset from its center.
+* [element.dragTo](/e2e/api/domelement/interactions/dragto/) - Drags an element to a target element or selector with optional offset positioning.
+
+## 2.2.0
+
+<Badge text="New" variant="tip" size="small" /> **TypeScript Migration**: Converted project to TypeScript for improved safety and developer experience. API types are now globally available, allowing for automatic IDE support in .`spec.js` files without explicit imports.
+
+## 2.1.1
+
+<Badge text="Fix" variant="danger" size="small" /> Calling `keyUp`, `keyDown`, or `keyPress` on `DOMElement` or `gf` objects with `count` greater than 1 now dispatches keyboard events with the `repeat` property set to `true`.
+
+<Badge text="Fix" variant="danger" size="small" /> `DOMElement` methods - `waitForSize` and `waitForPositionOnScreen` - now correctly handle cases where only one dimension (`width` or `height` for size, `x` or `y` for position) is specified.
+
+## 2.1.0
+
+<Badge text="Feature" variant="success" size="small" /> Introduced new methods for simulating and testing gamepad interactions.
+
+The newly added methods include:
+
+* [gf.connectGamepad](/e2e/api/gf/gamepad/connectgamepad/)
+* [gf.disconnectGamepad](/e2e/api/gf/gamepad/disconnectgamepad/)
+* [gf.getGamepad](/e2e/api/gf/gamepad/getgamepad/)
+* [gamepad.press](/e2e/api/gamefacegamepad/press/)
+* [gamepad.hold](/e2e/api/gamefacegamepad/hold/)
+* [gamepad.release](/e2e/api/gamefacegamepad/release/)
+* [gamepad.disconnect](/e2e/api/gamefacegamepad/disconnect/)
+* [gamepad.sequence](/e2e/api/gamefacegamepad/sequence/)
+* [gamepad.moveLeftStick](/e2e/api/gamefacegamepad/moveleftstick/)
+* [gamepad.moveRightStick](/e2e/api/gamefacegamepad/moverightstick/)
+* [gamepad.resetSticks](/e2e/api/gamefacegamepad/resetsticks/)
+
+## 2.0.0
+
+<Badge text="Change" variant="danger" size="small" /> Renamed `gf.moveMouse` method to `gf.mouseMove` for consistency with other mouse-related methods (breaking).
+
+<Badge text="Feature" variant="success" size="small" /> Added `getParent` methods to both the `gf` object and the `DOMElement` object for retrieving the parent element of a specified element or the current DOM element, respectively.
+
+## 1.1.1
 
 <Badge text="Fix" variant="danger" size="small" /> Fixed tests exit code when tests fail. Previously, the exit code was always 0, which could lead to confusion when running tests in CI/CD pipelines.
 
@@ -24,11 +67,11 @@ The newly added methods include:
 * [element.waitForVisibility](/e2e/api/domelement/assertmethods/waitforvisibility/)
 * [element.waitForVisibilityInScrollableArea](/e2e/api/domelement/assertmethods/waitforvisibilityinscrollablearea/)
 
-<Badge text="Feature" variant="success" size="small" /> Added the [gf.scrollTo](/e2e/api/gf/scrollto/) method to scroll the page to a specific position.
+<Badge text="Feature" variant="success" size="small" /> Added the [gf.scrollTo](/e2e/api/gf/page/scrollto/) method to scroll the page to a specific position.
 
-<Badge text="Feature" variant="success" size="small" /> Added the [gf.scrollToTop](/e2e/api/gf/scrolltotop/) method to scroll the page to the top.
+<Badge text="Feature" variant="success" size="small" /> Added the [gf.scrollToTop](/e2e/api/gf/page/scrolltotop/) method to scroll the page to the top.
 
-<Badge text="Feature" variant="success" size="small" /> Added the [gf.scrollToBottom](/e2e/api/gf/scrolltobottom/) method to scroll the page to the bottom.
+<Badge text="Feature" variant="success" size="small" /> Added the [gf.scrollToBottom](/e2e/api/gf/page/scrolltobottom/) method to scroll the page to the bottom.
 
 ## 1.0.2
 

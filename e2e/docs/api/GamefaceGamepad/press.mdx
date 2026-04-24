@@ -1,0 +1,64 @@
+---
+title: 'gamepad.press'
+---
+
+## `gamepad.press(keys: number | number[], timeout?: number): Promise<void>`
+
+Presses one or more gamepad keys and waits for their release.
+
+- If `keys` is an array, each key is pressed simultaneously, and the method waits for **all** of them to be released.
+- If `keys` is a single number, that key is pressed and the method waits for its release.
+- Returns a promise that resolves once all press and release operations are completed.
+
+### Parameters
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| `keys` | `number \| number[]` | — | A single key identifier or an array of key identifiers to press. |
+| `timeout` | `number` | `210` | Duration in milliseconds to hold each key before releasing. |
+
+### Returns
+
+A `Promise<void>` that resolves when all key press(es) and release(s) are completed.
+
+## Usage
+
+```js
+const GAMEPAD_ID = 'my-gamepad';
+
+describe('Gamepad Tests', function () {
+    before(async () => {
+        await gf.connectGamepad(GAMEPAD_ID);
+    });
+
+    after(async () => {
+        await gf.disconnectGamepad(GAMEPAD_ID);
+    })
+
+    it('Presses a single key', async () => {
+        const gamepad = gf.getGamepad(GAMEPAD_ID)
+        const assertElement = await gf.get('#message');
+
+        assert.equal(await assertElement.text(), '')
+        await gamepad.press(gf.GAMEPAD_BUTTONS.PAD_LEFT);
+        assert.equal(await assertElement.text(), 'Gamepad pad left has been pressed');
+    });
+
+    it('Presses multiple keys', async () => {
+        const gamepad = gf.getGamepad(GAMEPAD_ID)
+        const assertElement = await gf.get('#message');
+
+        assert.equal(await assertElement.text(), '')
+        await gamepad.press([gf.GAMEPAD_BUTTONS.PAD_DOWN, gf.GAMEPAD_BUTTONS.PAD_LEFT, gf.GAMEPAD_BUTTONS.PAD_UP]);
+        assert.equal(await assertElement.text(), 'Gamepad combination of pad down, left and up has been pressed');
+    });
+});
+```
+
+## Guide
+
+Use the press method when you want to trigger UI interactions that occur after one or more gamepad buttons are pressed and released at once.
+
+If you need to test your UI while holding a keys and before releasing them refer to the [hold](/e2e/api/gamefacegamepad/hold) action instead.
+
+Internally, `gamepad.press` combines `gamepad.hold` and `gamepad.release`, automatically managing the timing between pressing and releasing the keys.

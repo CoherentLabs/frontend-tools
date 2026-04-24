@@ -1,15 +1,53 @@
-import { GamefaceCommandsMethods } from './gamefaceCommands';
-import Utils from '../core/utils';
+import { GamefaceCommands } from '../dist/commands/commands';
+import { Utils } from '../dist/utils';
 
-type UtilMethods = {
-    [K in keyof typeof Utils as typeof Utils[K] extends Function ? K : never]: typeof Utils[K];
-};
+type IUtils = Utils;
 
-type FilteredGamefaceCommands = Omit<GamefaceCommandsMethods, '_ws' | '_cohtmlJSPath' | 'handleMessage' | 'rootNodeId' | 'ws' | 'cohtmlJSPath' | 'player'>;
-type FilteredUtilMethods = Omit<UtilMethods, '_retryInner' | 'getPressedKey'>;
+type GamefaceExclusions =
+    | '_ws'
+    | '_cohtmlJSPath'
+    | 'handleMessage'
+    | 'rootNodeId'
+    | 'ws'
+    | 'cohtmlJSPath'
+    | 'player'
+    | 'commandTimeout'
+    | 'pendingCommands';
+
+type UtilsExclusions =
+    | '_retryInner'
+    | 'getPressedKey';
+
+type FilteredGamefaceCommands = Omit<GamefaceCommands, GamefaceExclusions>;
+type FilteredUtilMethods = Omit<IUtils, UtilsExclusions>;
 
 declare global {
-    var gf: FilteredGamefaceCommands & FilteredUtilMethods & { KEYS: typeof Utils.KEYS };
+    var gf: FilteredGamefaceCommands & FilteredUtilMethods;
+}
+
+export interface GamefaceE2EConfig {
+    /** 
+     * Specifies the path to your Player.exe. 
+     */
+    gamefacePath?: string;
+
+    /** 
+     * Specifies the path to your test .spec.js or .spec.ts files. 
+     * Supports glob patterns (e.g. "tests/*.spec.js").
+     */
+    tests?: string;
+
+    /** 
+     * Sets the timeout for tests in spec files in milliseconds. 
+     * The default is 10 seconds (10000). 
+     */
+    specTimeout?: number;
+
+    /** 
+     * Enables bailing on the first failure. 
+     * If true, the test run stops immediately after a test fails.
+     */
+    bail?: boolean;
 }
 
 export { };

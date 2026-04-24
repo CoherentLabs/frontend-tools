@@ -1,0 +1,20 @@
+---
+title: 'element.getParent'
+---
+
+## `element.getParent(): Promise<DOMElement>`
+
+Retrieves the parent element of the current DOM element.
+
+* Returns a promise that resolves to a `DOMElement` instances representing the parent of the element.
+
+## Usage
+
+```js ins="await element.getParent();"
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        const parent = await element.getParent();
+    });
+});
+```
