@@ -456,7 +456,7 @@ const gamefaceRules = {
         'text-decoration-line': ['blink'], // [cite: 102]
         'text-decoration-style': ['double', 'dotted', 'dashed', 'wavy'], // [cite: 107]
         'text-underline-position': ['left', 'right'], // [cite: 112]
-        'transform': ['turn', 'rad', 'grad'], // [cite: 117]
+        'transform': ['turn', 'rad', 'grad', 'skew('], // [cite: 117]
         'user-select': ['all'], // [cite: 117]
         'vertical-align': ['sub', 'super', 'top', 'bottom', 'percentages', 'lengths'], // [cite: 117]
         'visibility': ['collapse'], // [cite: 117]

@@ -23,6 +23,19 @@ function decodeValue(encoded: string): string {
         .replace(/hex-/g, '#');
 }
 
+const contentKeywords = new Set([
+    'none', 'normal', 'inherit', 'initial', 'unset', 'revert',
+    'open-quote', 'close-quote', 'no-open-quote', 'no-close-quote',
+]);
+
+const breakpoints: Record<string, string> = {
+    xsm: '480px',
+    sm: '640px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
+};
+
 const headingPattern = /^heading-(\d+)$/;
 const paragraphPattern = /^paragraph-(\d+)$/;
 
@@ -37,7 +50,13 @@ export function presetGameface() {
             // because CSS properties never contain consecutive hyphens.
             [
                 /^gf-prop--([a-z]+(?:-[a-z0-9]+)*)--(.+)$/,
-                ([, prop, value]) => ({ [prop]: decodeValue(value) }),
+                ([, prop, value]) => {
+                    let cssValue = decodeValue(value);
+                    if (prop === 'content' && !contentKeywords.has(cssValue) && !cssValue.includes('(')) {
+                        cssValue = `"${cssValue}"`;
+                    }
+                    return { [prop]: cssValue };
+                },
             ],
 
             // ── Sanitised bracket utilities ──────────────────────────
@@ -90,11 +109,17 @@ export function presetGameface() {
                     };
                 }
 
-                // 4. Custom states (class-based compound selector)
-                // For __error__gf-prop--color--red, generates:
+                // 4. Responsive breakpoints (mobile-first min-width)
+                if (variant in breakpoints) {
+                    return {
+                        matcher: utility,
+                        parent: `@media (min-width: ${breakpoints[variant]})`,
+                    };
+                }
+
+                // 5. Custom states (class-based compound selector)
+                // e.g. __error__gf-prop--color--red →
                 //   .__error__.__error__gf-prop--color--red { color: red; }
-                // The element always has the generated class; toggle .__error__
-                // on/off to activate the styles.
                 return {
                     matcher: utility,
                     selector: (s: string) => `.__${variant}__${s}`,
