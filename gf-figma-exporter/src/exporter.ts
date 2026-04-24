@@ -1,9 +1,9 @@
 import generateCode from './factory';
 import FontExporter from './FontExporter/FontExporter';
+import { FontMapData } from './FontExporter/utils/typings';
 
-import { ExportableNodes, GFFont, GFImage } from './types/commonTypes';
+import { ComponentExportResult, ExportableNodes, GFFont, GFImage } from './types/commonTypes';
 import countAllDescendants from './utils/countDescendants';
-import { GFFont, GFImage } from './types/commonTypes';
 
 import createCSSFontRules from './utils/createCSSFontRules';
 import generateCSSBoilerplate from './utils/cssBoilerplate';
@@ -20,6 +20,39 @@ type ExporterResult = {
         fonts?: GFFont;
     };
 };
+
+function mergeFontMaps(target: FontMapData, source: FontMapData): FontMapData {
+    const result: FontMapData = Object.assign({}, target);
+    for (const [family, weights] of Object.entries(source)) {
+        if (!result[family]) {
+            result[family] = {};
+        }
+        for (const [weight, styles] of Object.entries(weights)) {
+            if (!result[family][weight]) {
+                result[family][weight] = {};
+            }
+            for (const [style, data] of Object.entries(styles)) {
+                if (!result[family][weight][style]) {
+                    result[family][weight][style] = data;
+                } else {
+                    result[family][weight][style] = Object.assign(
+                        {},
+                        result[family][weight][style],
+                        { subsets: Object.assign({}, result[family][weight][style].subsets, data.subsets) },
+                    );
+                }
+            }
+        }
+    }
+    return result;
+}
+
+function deduplicateName(name: string, existing: Record<string, unknown>): string {
+    if (!existing[name]) return name;
+    let counter = 2;
+    while (existing[`${name}-${counter}`]) counter++;
+    return `${name}-${counter}`;
+}
 
 async function getPages(): Promise<ExporterResult> {
     
@@ -49,6 +82,64 @@ async function getPages(): Promise<ExporterResult> {
     }
 
     return results;
+}
+
+export async function getComponents(): Promise<ComponentExportResult> {
+    const components: ComponentExportResult['components'] = {};
+    let mergedFonts: FontMapData = {};
+
+    const topLevelNodes = figma.currentPage.children.filter(
+        (node) => node.visible && (node.type === 'COMPONENT' || node.type === 'COMPONENT_SET'),
+    );
+
+    const nodesToCount: (BaseNode & ChildrenMixin)[] = [];
+    for (const node of topLevelNodes) {
+        if (node.type === 'COMPONENT_SET') {
+            nodesToCount.push(...(node as ComponentSetNode).children as unknown as (BaseNode & ChildrenMixin)[]);
+        } else {
+            nodesToCount.push(node as unknown as BaseNode & ChildrenMixin);
+        }
+    }
+    const descendants = countAllDescendants(nodesToCount);
+    progress.setDescendants(descendants + (nodesToCount.length * 2));
+
+    for (const node of topLevelNodes) {
+        if (node.type === 'COMPONENT_SET') {
+            const setName = sanitizeNames(node.name);
+            for (const variant of (node as ComponentSetNode).children) {
+                if (!variant.visible) continue;
+                progress.update(`Processing component: ${variant.name}`);
+                currentPageSize.set({ width: 1920, height: 1080 });
+                FontExporter.clear();
+                await FontExporter.init(variant as unknown as FrameNode);
+                progress.update(`Initialized fonts for component: ${variant.name}`);
+                const { html, css, images } = await generateCode(variant as unknown as ExportableNodes, true);
+                const variantName = sanitizeNames(setName + '-' + variant.name);
+                const safeName = deduplicateName(variantName, components);
+                components[safeName] = { html, css, images };
+                mergedFonts = mergeFontMaps(mergedFonts, FontExporter.fontMap);
+            }
+        } else {
+            const component = node as ComponentNode;
+            progress.update(`Processing component: ${component.name}`);
+            currentPageSize.set({ width: 1920, height: 1080 });
+            FontExporter.clear();
+            await FontExporter.init(component as unknown as FrameNode);
+            progress.update(`Initialized fonts for component: ${component.name}`);
+            const { html, css, images } = await generateCode(component as unknown as ExportableNodes, true);
+            const safeName = deduplicateName(sanitizeNames(component.name), components);
+            components[safeName] = { html, css, images };
+            mergedFonts = mergeFontMaps(mergedFonts, FontExporter.fontMap);
+        }
+    }
+
+    const fontsCss = createCSSFontRules(mergedFonts);
+
+    return {
+        components,
+        fontsCss,
+        fonts: mergedFonts as GFFont,
+    };
 }
 
 export async function getNodes(children: readonly ExportableNodes[]): Promise<{ html: string; css: string; images: GFImage[]}> {

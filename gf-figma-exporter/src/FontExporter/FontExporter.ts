@@ -78,7 +78,7 @@ class FontExporter {
             figma.ui.resize(500, 700);
             MessageBus.on('MISSING_FONTS_RESPONSE', (data) => {
                 this.missingFonts = (data as { fonts: FontMapData }).fonts;
-                figma.ui.resize(500, 250);
+                figma.ui.resize(500, 275);
                 resolve();
             });
         });

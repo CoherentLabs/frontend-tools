@@ -1,10 +1,11 @@
 import FontExporter from '../FontExporter/FontExporter';
+import { FontMapData } from '../FontExporter/utils/typings';
 import { isItalicStyle } from '../FontExporter/utils/parseStyleUtils';
 
-export default function createCSSFontRules() {
+export default function createCSSFontRules(fontMapOverride?: FontMapData) {
     let result = '';
 
-    const fonts = FontExporter.fontMap;
+    const fonts = fontMapOverride || FontExporter.fontMap;
     for (const font of Object.keys(fonts)) {
         for (const weight of Object.keys(fonts[font])) {
             for (const style of Object.keys(fonts[font][weight])) {

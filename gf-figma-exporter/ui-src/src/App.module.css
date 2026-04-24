@@ -258,3 +258,38 @@ select {
     background-color: #606060;
     color: black;
 }
+
+.ModeToggle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    margin: 12px auto 0;
+    border: 2px solid #ffffff;
+    border-radius: 7px;
+    overflow: hidden;
+    width: 252px;
+}
+
+.ModeToggleOption {
+    flex: 1;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+    color: #888888;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+.ModeToggleOption + .ModeToggleOption {
+    border-left: 2px solid #ffffff;
+}
+
+.ModeToggleOptionActive {
+    background-color: #ffffff;
+    color: #0a0a0a;
+    font-weight: 600;
+}

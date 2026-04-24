@@ -23,6 +23,7 @@ const NODE_TYPES = {
     SVG: GFSVGNode,
     TEXT: GFTextNode,
     INSTANCE: GFFrame,
+    COMPONENT: GFFrame,
     MASK: GFMask,
 };
 const TYPES = {
@@ -37,10 +38,11 @@ const TYPES = {
     BOOLEAN_OPERATION: 'BOOLEAN_OPERATION',
     TEXT: 'TEXT',
     INSTANCE: 'INSTANCE',
+    COMPONENT: 'COMPONENT',
     MASK: 'MASK',
 };
 
-async function generateCode(node: ExportableNodes): Promise<FactoryResult> {
+async function generateCode(node: ExportableNodes, isComponentRoot: boolean = false): Promise<FactoryResult> {
     const result = { html: '', css: '', images: [] as GFImage[] };
 
     if (!node.visible) return result;
@@ -57,11 +59,12 @@ async function generateCode(node: ExportableNodes): Promise<FactoryResult> {
     if (NodeClassRef) {
         //@ts-expect-error We are sure that the node is of correct type here, so this cast is safe. If we don't want to use ts-expect-error, we have to create separate classes for each node type which is redundant.
         const instance = new NodeClassRef(node);
-        if (node.type === 'FRAME' || node.type === 'GROUP' || node.type === 'INSTANCE' || node.type === 'MASK') {
+        const nodeType = node.type as string;
+        if (nodeType === 'FRAME' || nodeType === 'GROUP' || nodeType === 'INSTANCE' || nodeType === 'COMPONENT' || nodeType === 'MASK') {
             await (instance as GFFrame).init();
         }
         result.html += await instance.createHTML();
-        result.css += await instance.createCSS();
+        result.css += await instance.createCSS(isComponentRoot);
         result.images = result.images.concat(instance.images);
     }
     return result;

@@ -50,7 +50,7 @@ class CSSExporter {
         this.flexContainerStyles = new StyleManager();
     }
 
-    async generateElementStyle() {
+    async generateElementStyle(isComponentRoot: boolean = false) {
         const { width, height } = generateSize(this.node as AvailableNode);
         const { top, left } = await generatePosition(this.node as PrimitiveNodes);
         const opacity = generateOpacity((this.node as PrimitiveNodes).opacity);
@@ -70,9 +70,11 @@ class CSSExporter {
         this.style.add('font-size', '1vh');
         this.style.add('width',`${width}vh`);
         this.style.add('height', `${height}vh`);
-        this.style.add('position', 'absolute');
-        this.style.add('top', top);
-        this.style.add('left', left);
+        this.style.add('position', isComponentRoot ? 'relative' : 'absolute');
+        if (!isComponentRoot) {
+            this.style.add('top', top);
+            this.style.add('left', left);
+        }
         this.style.add('opacity', opacity);
         this.style.add('z-index', zIndex.toString());
         this.style.add('border-top-left-radius', !isNodeSVG(this.node) ? topLeftRadius : '0');
@@ -86,7 +88,7 @@ class CSSExporter {
             this.style.add('backdrop-filter', backDropFilter);
         }
 
-        if (transform && !this.node.isMask) {
+        if (transform && !this.node.isMask && !isComponentRoot) {
             this.style.add('transform', transform);
             this.style.add('transform-origin', 'top left');
         }
@@ -98,7 +100,7 @@ class CSSExporter {
     }
 
     async setFlexContainerStyle() {
-        if (this.node.type !== 'FRAME' && this.node.type !== 'INSTANCE') return;
+        if (this.node.type !== 'FRAME' && this.node.type !== 'INSTANCE' && this.node.type !== 'COMPONENT') return;
 
         const { direction, alignContent, alignItems, justifyContent, wrap } = generateFlexContainerStyles(
             this.node as FrameNode
@@ -162,7 +164,7 @@ class CSSExporter {
     }
 
     private setPaddings() {
-        if (this.node.type !== 'FRAME') return;
+        if (this.node.type !== 'FRAME' && this.node.type !== 'COMPONENT') return;
 
         const { paddingTop, paddingRight, paddingBottom, paddingLeft } = generatePaddings(this.node as FrameNode);
 
