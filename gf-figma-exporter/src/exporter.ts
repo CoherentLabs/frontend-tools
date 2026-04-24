@@ -1,7 +1,10 @@
 import generateCode from './factory';
 import FontExporter from './FontExporter/FontExporter';
+
 import { ExportableNodes, GFFont, GFImage } from './types/commonTypes';
 import countAllDescendants from './utils/countDescendants';
+import { GFFont, GFImage } from './types/commonTypes';
+
 import createCSSFontRules from './utils/createCSSFontRules';
 import generateCSSBoilerplate from './utils/cssBoilerplate';
 import { currentPageSize } from './utils/currentPage';
