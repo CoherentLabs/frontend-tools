@@ -25,6 +25,7 @@
   "dependencies": {
     "gray-matter": "^4.0.3",
     "reading-time": "^1.5.0",
+    "remark-custom-header-id": "^1.0.0",
     "starlight-heading-badges": "0.6.1",
     "starlight-sidebar-topics": "0.6.2",
     "starlight-sidebar-topics-dropdown": "0.5.2",

@@ -11,6 +11,7 @@ import { directives } from './remark-directives';
 import { getSortedCoherentReleases } from './utils/coherentReleases';
 import { version } from './package.json';
 import { remarkFixAbsoluteLinks } from './remark-directives/fixAbsoluteLinks';
+import remarkCustomHeaderId from 'remark-custom-header-id';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -51,7 +52,7 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
             'astro:config:setup': ({ updateConfig }) => {
               updateConfig({
                 markdown: {
-                  remarkPlugins: [...directives, [remarkFixAbsoluteLinks, { basePath: astroConfig.base }]],
+                  remarkPlugins: [...directives, remarkCustomHeaderId, [remarkFixAbsoluteLinks, { basePath: astroConfig.base }]],
                 },
                 vite: {
                   plugins: [
