@@ -1,5 +1,6 @@
 import getPages, { getComponents } from './exporter';
 import MessageBus from './MessageBus/MessageBus';
+import MessageBus from './MessageBus/MessageBus';
 import sanitizeNames from './utils/sanitizeNames';
 import { ExportMode } from './types/commonTypes';
 
