@@ -449,4 +449,12 @@
   site-search button:hover {
     opacity: 0.66;
   }
+
+  [data-theme="light"] tbody tr:nth-of-type(odd) {
+    background-color: var(--sl-color-gray-6);
+  }
+
+  tbody tr:nth-of-type(odd) {
+    background-color: var(--sl-color-gray-5);
+  }
 }

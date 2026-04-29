@@ -74,14 +74,6 @@ const { date } = Astro.props;
         margin-bottom: 0.4rem;
     }
 
-    [data-theme="light"] .table-striped :global(tbody tr:nth-of-type(odd)) {
-        background-color: var(--sl-color-gray-6);
-    }
-
-    .table-striped :global(tbody tr:nth-of-type(odd)) {
-        background-color: var(--sl-color-gray-5);
-    }
-
     @media (max-width: 1000px) {
         .table-wrapper :global(.table-striped),
         .table-wrapper :global(.table-striped tbody),
