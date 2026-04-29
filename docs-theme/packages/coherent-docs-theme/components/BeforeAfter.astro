@@ -11,8 +11,23 @@ interface Props {
 
 const { src1, src2, alt1 = "Before image", alt2 = "After image" } = Astro.props;
 
-const isLocal1 = typeof src1 === "object";
-const isLocal2 = typeof src2 === "object";
+const baseUrl = import.meta.env.BASE_URL === '/' ? '' : import.meta.env.BASE_URL;
+
+function resolvePublicSrc(src: string | ImageMetadata) {
+    if (typeof src === "object") return src;
+
+    if (src.startsWith("http") || src.startsWith("data:")) return src;
+
+    const cleanSrc = src.startsWith("/") ? src : `/${src}`;
+    
+    return `${baseUrl}${cleanSrc}`;
+}
+
+const finalSrc1 = resolvePublicSrc(src1);
+const finalSrc2 = resolvePublicSrc(src2);
+
+const isLocal1 = typeof finalSrc1 === "object";
+const isLocal2 = typeof finalSrc2 === "object";
 ---
 
 <figure class="center">
@@ -20,18 +35,18 @@ const isLocal2 = typeof src2 === "object";
         <div class="slider-overlay">
             {
                 isLocal1 ? (
-                    <Image src={src1 as ImageMetadata} alt={alt1} />
+                    <Image src={finalSrc1 as ImageMetadata} alt={alt1} />
                 ) : (
-                    <img src={src1 as string} alt={alt1} />
+                    <img src={finalSrc1 as string} alt={alt1} />
                 )
             }
         </div>
 
         {
             isLocal2 ? (
-                <Image src={src2 as ImageMetadata} alt={alt2} />
+                <Image src={finalSrc2 as ImageMetadata} alt={alt2} />
             ) : (
-                <img src={src2 as string} alt={alt2} />
+                <img src={finalSrc2 as string} alt={alt2} />
             )
         }
     </div>

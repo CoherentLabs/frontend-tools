@@ -17,7 +17,7 @@ export default defineConfig({
           label: 'Start Here',
           items: ['getting-started', 'customization', { label: 'Test', autogenerate: { directory: 'examples/test' } },],
         },
-        { label: 'Test', link:'getting-started' },
+        { label: 'Test', link: 'getting-started' },
         { label: 'Examples', autogenerate: { directory: 'examples' } },
         { label: 'Changelog', autogenerate: { directory: 'changelog' } },
         ...getCoherentReleases(),

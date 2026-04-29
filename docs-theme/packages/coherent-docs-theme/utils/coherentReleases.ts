@@ -6,6 +6,8 @@ export function getSortedCoherentReleases(directory: string = 'src/content/docs/
     if (!fs.existsSync(directory)) return [];
 
     const isDev = process.env.NODE_ENV === 'development' || process.env.MODE === 'development';
+    const isDraftBuild = process.env.BUILD_DRAFTS === 'true';
+    const allowDrafts = isDev || isDraftBuild;
 
     const entries = fs.readdirSync(directory, { withFileTypes: true });
     const folders = entries.filter(entry => entry.isDirectory());
@@ -14,7 +16,7 @@ export function getSortedCoherentReleases(directory: string = 'src/content/docs/
         .map(folder => {
             const folderName = folder.name;
 
-            if (folderName.toLowerCase() === 'next_release' && !isDev) {
+            if (folderName.toLowerCase() === 'next_release' && !allowDrafts) {
                 return null;
             }
 
@@ -27,13 +29,13 @@ export function getSortedCoherentReleases(directory: string = 'src/content/docs/
             const fileContent = fs.readFileSync(finalPath, 'utf-8');
             const { data } = matter(fileContent);
 
-            if (data.draft === true && !isDev) {
+            if (data.draft === true && !allowDrafts) {
                 return null;
             }
 
             return {
                 label: data.sidebar?.label || data.title || folderName,
-                link: `/releases/${folderName.replaceAll('.', '').toLowerCase()}`,
+                link: `/releases/${folderName.replaceAll('.', '').toLowerCase()}/`,
                 badge: data.sidebar?.badge,
             };
         })

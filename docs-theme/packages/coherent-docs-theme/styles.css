@@ -51,7 +51,7 @@
     --sl-color-gray-4: #5f7575;
     --sl-color-gray-5: var(--gameface-border);
     --sl-color-gray-6: var(--gameface-bg-panel);
-
+    --sl-color-bg-inline-code: #3d3d3d;
     --sl-color-hairline: var(--gameface-border);
     --overlay-backdrop: rgba(10, 10, 10, 0.95);
     --before-after-line: rgba(255, 255, 255, 0.43);
@@ -125,7 +125,7 @@
     --sl-color-gray-4: #999999;
     --sl-color-gray-5: var(--gameface-border);
     --sl-color-gray-6: #F9F9F9;
-
+    --sl-color-bg-inline-code: #f0f0f0;
     --sl-color-hairline: var(--gameface-border);
     --overlay-backdrop: rgba(255, 255, 255, 0.95);
     --before-after-line: rgba(10, 10, 10, 0.43);
@@ -448,5 +448,13 @@
 
   site-search button:hover {
     opacity: 0.66;
+  }
+
+  [data-theme="light"] tbody tr:nth-of-type(odd) {
+    background-color: var(--sl-color-gray-6);
+  }
+
+  tbody tr:nth-of-type(odd) {
+    background-color: var(--sl-color-gray-5);
   }
 }

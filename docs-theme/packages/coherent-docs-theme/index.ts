@@ -11,70 +11,18 @@ import { directives } from './remark-directives';
 import { getSortedCoherentReleases } from './utils/coherentReleases';
 import { version } from './package.json';
 import { remarkFixAbsoluteLinks } from './remark-directives/fixAbsoluteLinks';
+import remarkCustomHeaderId from 'remark-custom-header-id';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const defaultHeaderLinks = [
-  { href: 'https://docs.coherent-labs.com/cpp-gameface', label: 'Gameface', subDocumentations: ['Unreal', 'Unity'] },
-  { href: 'https://docs.coherent-labs.com/cpp-prysm', label: 'Prysm', subDocumentations: ['Unreal', 'Unity'] },
+  { href: 'https://docs.coherent-labs.com/cpp-gameface', label: 'Gameface', subDocumentations: ['Custom Engine', 'Unreal', 'Unity'] },
+  { href: 'https://docs.coherent-labs.com/cpp-prysm', label: 'Prysm', subDocumentations: ['Custom Engine', 'Unreal', 'Unity'] },
   { href: 'https://starter.coherent-labs.com/', label: 'UI Starter Guide' },
   { href: 'https://frontend-tools.coherent-labs.com', label: 'UI Tools' },
   { href: 'https://gameface-ui.coherent-labs.com', label: 'Gameface UI' },
-  { href: 'https://coherent-labs.com/Documentation/ExporterLTS/', label: 'Adobe CC Tools' },
 ];
 
-const defaultMergeIndex = [
-  {
-    bundlePath: "https://gameface-ui.coherent-labs.com/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "Gameface UI" }
-  },
-  {
-    bundlePath: "https://frontend-tools.coherent-labs.com/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "UI Tools" }
-  },
-  {
-    bundlePath: "https://docs.coherent-labs.com/cpp-gameface/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "Gameface Custom Engine" }
-  },
-  {
-    bundlePath: "https://docs.coherent-labs.com/cpp-prysm/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "Prysm Custom Engine" }
-  },
-  {
-    bundlePath: "https://docs.coherent-labs.com/unreal-gameface/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "Gameface Unreal" }
-  },
-  {
-    bundlePath: "https://docs.coherent-labs.com/unreal-prysm/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "Prysm Unreal" }
-  },
-  {
-    bundlePath: "https://docs.coherent-labs.com/unity-gameface/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "Gameface Unity" }
-  },
-  {
-    bundlePath: "https://docs.coherent-labs.com/unity-prysm/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "Prysm Unity" }
-  }
-];
-
-async function isPagefindIndexAvailable(bundlePath: string): Promise<boolean> {
-  try {
-    const metaUrl = `${bundlePath.replace(/\/$/, '')}/pagefind-entry.json`;
-    const response = await fetch(metaUrl, { method: 'HEAD' });
-    return response.ok;
-  } catch (e) {
-    return false;
-  }
-}
 
 export default function coherentThemePlugin(options: CoherentThemeOptions = { documentationSearchTag: '' }): StarlightPlugin[] {
   if (!options?.documentationSearchTag) {
@@ -103,7 +51,36 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
             'astro:config:setup': ({ updateConfig }) => {
               updateConfig({
                 markdown: {
-                  remarkPlugins: [...directives, [remarkFixAbsoluteLinks, { basePath: astroConfig.base }]],
+                  remarkPlugins: [...directives, remarkCustomHeaderId, [remarkFixAbsoluteLinks, { basePath: astroConfig.base }]],
+                },
+                vite: {
+                  plugins: [
+                    {
+                      name: 'starlight-release-snippet-hmr',
+                      enforce: 'pre',
+                      handleHotUpdate({ file }) {
+                        const normalizedPath = file.replace(/\\/g, '/');
+                        const releaseRootMatch = normalizedPath.match(/^(.*\/Releases\/(?:Release_[^\/]+|Version_[^\/]+|next_release))/i);
+
+                        if (releaseRootMatch) {
+                          const releaseDir = releaseRootMatch[1] as string;
+                          const mainIndexMdx = `${releaseDir}/index.mdx`;
+
+                          if (normalizedPath !== mainIndexMdx) {
+                            const target = fs.existsSync(mainIndexMdx) ? mainIndexMdx : null;
+
+                            if (target) {
+                              const now = new Date();
+                              fs.utimesSync(target, now, now);
+
+                              const folderName = releaseDir.split('/').pop();
+                              console.log(`\x1b[36m[Snippet HMR]\x1b[0m Force update \x1b[33m${folderName}/index\x1b[0m`);
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
                 },
               });
             }
@@ -125,7 +102,7 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
           customCss: [...(config.customCss ?? []), 'coherent-docs-theme/styles'],
           components: overrideComponents(
             config,
-            ['Header', 'ThemeSelect', 'Footer', 'Search', 'PageTitle', 'MarkdownContent'],
+            ['Header', 'ThemeSelect', 'Footer', 'Search', 'PageTitle', 'MarkdownContent', 'Head'],
             logger,
           ),
           head: config.head || [],
@@ -148,26 +125,8 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
         });
 
         if (command === 'build') {
-          const otherIndexes = defaultMergeIndex.filter(merge =>
-            merge.mergeFilter.resource !== options.documentationSearchTag
-          );
-
-          logger.info('Validating external Pagefind indexes for production build...');
-          const validMergeIndexes = [];
-
-          for (const mergeConfig of otherIndexes) {
-            const isAvailable = await isPagefindIndexAvailable(mergeConfig.bundlePath);
-            if (isAvailable) {
-              validMergeIndexes.push(mergeConfig);
-              logger.info(`✅ Found index: ${mergeConfig.mergeFilter.resource}`);
-            } else {
-              logger.warn(`⚠️ Skipping index (not found): ${mergeConfig.mergeFilter.resource} at ${mergeConfig.bundlePath}`);
-            }
-          }
-
           configUpdates.pagefind = {
             indexWeight: 2,
-            mergeIndex: validMergeIndexes
           };
         } else {
           logger.info('Dev mode detected. Skipping external Pagefind index validation.');

@@ -5,10 +5,28 @@ import getThemeConfig from "../internal/themeConfig";
 import readingTime from "reading-time";
 import BreadcrumbArrow from "../internal-components/BreadcrumbArrow.astro";
 
+const currentProduct = import.meta.env.DOCS_PRODUCT || "Gameface";
+const productName =
+    currentProduct.charAt(0).toUpperCase() + currentProduct.slice(1);
+const productNameRegex =
+    /<ProductName\s*\/?>|<ProductName>\s*<\/ProductName>/gi;
+
+function formatText(text: string) {
+    if (!text) return "";
+    return text.replace(productNameRegex, productName);
+}
+
 const { breadcrumbs: showBreadcrumbs } = getThemeConfig();
 //@ts-ignore
 const routeData = Astro.locals.starlightRoute ?? Astro.props;
 const { sidebar, entry } = routeData;
+
+if (entry?.data?.title) {
+    entry.data.title = entry.data.title.replace(
+        /<ProductName\s*\/?>|<ProductName>\s*<\/ProductName>/gi,
+        productName,
+    );
+}
 
 //@ts-ignore
 function findActiveTrail(entries, currentTrail = []) {
@@ -32,7 +50,23 @@ function findActiveTrail(entries, currentTrail = []) {
     return null;
 }
 
-const activeTrail = findActiveTrail(sidebar) || [];
+function formatSidebarDeep(items: any[]) {
+    if (!items) return items;
+    const cloned = JSON.parse(JSON.stringify(items));
+
+    function traverse(nodes: any[]) {
+        for (const node of nodes) {
+            if (node.label) node.label = formatText(node.label);
+            if (node.entries) traverse(node.entries);
+        }
+    }
+
+    traverse(cloned);
+    return cloned;
+}
+
+const cleanSidebar = formatSidebarDeep(sidebar);
+const activeTrail = findActiveTrail(cleanSidebar) || [];
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const stats = readingTime(entry?.body || "");
