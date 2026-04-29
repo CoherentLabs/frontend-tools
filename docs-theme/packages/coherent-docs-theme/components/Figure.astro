@@ -40,6 +40,11 @@ let resolvedImage: ImageMetadata | string = src as any;
 
 if (typeof src === "string") {
     if (src.startsWith("/") && !src.startsWith("//")) {
+        const normalizedSrc =
+            src.startsWith("/") && !src.startsWith("//")
+                ? `${import.meta.env.BASE_URL}${src.slice(1)}`
+                : src;
+        resolvedImage = normalizedSrc;
         isLocal = false;
     } else if (!src.startsWith("http") && !src.startsWith("data:")) {
         const fileName = src.replace(/^\.\//, "").split("/").pop() || src;
@@ -55,58 +60,37 @@ if (typeof src === "string") {
         }
     }
 }
+
+const Wrapper = link ? "a" : Fragment;
+
+const wrapperProps = link
+    ? { href: link, target, rel, class: "figure-link" }
+    : {};
 ---
 
 <figure class={className}>
-    {
-        link ? (
-            <a href={link} target={target} rel={rel} class="figure-link">
-                <div class="figure-img-wrapper">
-                    <div class="figure-spinner" />
-                    {isLocal ? (
-                        <Image
-                            src={resolvedImage as ImageMetadata}
-                            alt={altText}
-                            title={title}
-                            width={width as any}
-                            height={height as any}
-                            class="figure-image"
-                        />
-                    ) : (
-                        <img
-                            src={resolvedImage as string}
-                            alt={altText}
-                            title={title}
-                            width={width}
-                            height={height}
-                            class="figure-image"
-                        />
-                    )}
-                </div>
-            </a>
-        ) : (
-            <div class="figure-img-wrapper">
-                <div class="figure-spinner">
-                    <svg viewBox="0 0 50 50">
-                        <circle
-                            class="spinner-track"
-                            cx="25"
-                            cy="25"
-                            r="20"
-                            fill="none"
-                            stroke-width="4"
-                        />
-                        <circle
-                            class="spinner-head"
-                            cx="25"
-                            cy="25"
-                            r="20"
-                            fill="none"
-                            stroke-width="4"
-                        />
-                    </svg>
-                </div>
-                {isLocal ? (
+    <Wrapper {...wrapperProps}>
+        <div class="figure-img-wrapper">
+            <div class="figure-spinner">
+                <svg viewBox="0 0 50 50">
+                    <circle
+                        class="spinner-track"
+                        cx="25"
+                        cy="25"
+                        r="20"
+                        fill="none"
+                        stroke-width="4"></circle>
+                    <circle
+                        class="spinner-head"
+                        cx="25"
+                        cy="25"
+                        r="20"
+                        fill="none"
+                        stroke-width="4"></circle>
+                </svg>
+            </div>
+            {
+                isLocal ? (
                     <Image
                         src={resolvedImage as ImageMetadata}
                         alt={altText}
@@ -124,10 +108,10 @@ if (typeof src === "string") {
                         height={height}
                         class="figure-image"
                     />
-                )}
-            </div>
-        )
-    }
+                )
+            }
+        </div>
+    </Wrapper>
 
     {
         (caption || attr) && (

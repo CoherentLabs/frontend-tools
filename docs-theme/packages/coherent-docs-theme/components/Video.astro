@@ -20,7 +20,7 @@ const webmUrl = resolveUrl(webmSrc);
 const mp4Url = resolveUrl(mp4Src);
 ---
 
-<video autoplay muted loop width="100%" poster={posterUrl}>
+<video autoplay muted loop style="width: 100%;" poster={posterUrl}>
   {webmUrl && <source src={webmUrl} type="video/webm" />}
   {mp4Url && <source src={mp4Url} type="video/mp4" />}
   Sorry, your browser doesn't support embedded videos.
