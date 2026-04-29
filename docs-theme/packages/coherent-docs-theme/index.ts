@@ -21,7 +21,6 @@ const defaultHeaderLinks = [
   { href: 'https://starter.coherent-labs.com/', label: 'UI Starter Guide' },
   { href: 'https://frontend-tools.coherent-labs.com', label: 'UI Tools' },
   { href: 'https://gameface-ui.coherent-labs.com', label: 'Gameface UI' },
-  { href: 'https://coherent-labs.com/Documentation/ExporterLTS/', label: 'Adobe CC Tools' },
 ];
 
 
