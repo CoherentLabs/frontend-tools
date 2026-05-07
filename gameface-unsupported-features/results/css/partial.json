@@ -1,0 +1,3132 @@
+[
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "align-content",
+    "evidence": {
+      "supportedValues": [
+        "flex-start",
+        "flex-end",
+        "center",
+        "stretch"
+      ],
+      "unsupportedValues": [
+        "space-between",
+        "space-around",
+        "space-evenly",
+        "start",
+        "end",
+        "normal"
+      ],
+      "logRejectedValues": [
+        "space-evenly",
+        "space-around",
+        "space-between",
+        "end",
+        "start",
+        "normal"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "align-items",
+    "evidence": {
+      "supportedValues": [
+        "flex-start",
+        "flex-end",
+        "center",
+        "stretch"
+      ],
+      "unsupportedValues": [
+        "anchor-center",
+        "baseline",
+        "start",
+        "end",
+        "normal"
+      ],
+      "logRejectedValues": [
+        "start",
+        "anchor-center",
+        "normal",
+        "end",
+        "baseline"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "align-self",
+    "evidence": {
+      "supportedValues": [
+        "auto",
+        "flex-start",
+        "flex-end",
+        "center",
+        "stretch"
+      ],
+      "unsupportedValues": [
+        "anchor-center",
+        "baseline",
+        "start",
+        "end"
+      ],
+      "logRejectedValues": [
+        "baseline",
+        "start",
+        "anchor-center",
+        "end"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "all",
+    "evidence": {
+      "logWarning": "shorthand has known limitations"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "animation",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "animation-delay",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ],
+      "supportedUnits": [
+        "ms",
+        "s"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "animation-duration",
+    "evidence": {
+      "logRejectedValues": [
+        "auto"
+      ],
+      "supportedUnits": [
+        "ms",
+        "s"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "animation-iteration-count",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "<number>"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "animation-name",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "animation-timing-function",
+    "evidence": {
+      "supportedValues": [
+        "ease",
+        "linear",
+        "ease-in",
+        "ease-out",
+        "ease-in-out",
+        "step-start",
+        "step-end"
+      ],
+      "unsupportedValues": [
+        "jump"
+      ],
+      "logRejectedValues": [
+        "jump"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "aspect-ratio",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "backdrop-filter",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "background",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "background-color",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "background-image",
+    "evidence": {
+      "supportedValues": [
+        "none"
+      ],
+      "unsupportedValues": [
+        "element",
+        "gradients",
+        "image-rect",
+        "image-set"
+      ],
+      "logRejectedValues": [
+        "gradients",
+        "image-set",
+        "image-rect",
+        "element"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "background-position",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "background-position-x",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "background-position-y",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "background-repeat",
+    "evidence": {
+      "supportedValues": [
+        "no-repeat",
+        "repeat",
+        "repeat-x",
+        "repeat-y",
+        "round"
+      ],
+      "unsupportedValues": [
+        "space"
+      ],
+      "logRejectedValues": [
+        "space"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "background-size",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-bottom",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-bottom-color",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-bottom-left-radius",
+    "evidence": {
+      "logRejectedValues": [
+        "percentages"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-bottom-right-radius",
+    "evidence": {
+      "logRejectedValues": [
+        "percentages"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-bottom-style",
+    "evidence": {
+      "supportedValues": [
+        "none",
+        "solid",
+        "dashed",
+        "dotted"
+      ],
+      "unsupportedValues": [
+        "double",
+        "groove",
+        "ridge",
+        "inset",
+        "outset"
+      ],
+      "logRejectedValues": [
+        "double",
+        "ridge",
+        "outset",
+        "inset",
+        "groove"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-bottom-width",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-color",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-image",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-image-outset",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "<number>"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-image-repeat",
+    "evidence": {
+      "supportedValues": [
+        "repeat",
+        "round",
+        "stretch"
+      ],
+      "unsupportedValues": [
+        "space"
+      ],
+      "logRejectedValues": [
+        "space"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-image-slice",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-image-source",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-image-width",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%",
+        "<number>"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-left",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-left-color",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-left-style",
+    "evidence": {
+      "supportedValues": [
+        "none",
+        "solid",
+        "dashed",
+        "dotted"
+      ],
+      "unsupportedValues": [
+        "double",
+        "groove",
+        "ridge",
+        "inset",
+        "outset"
+      ],
+      "logRejectedValues": [
+        "double",
+        "groove",
+        "outset",
+        "inset",
+        "ridge"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-left-width",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-radius",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-right",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-right-color",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-right-style",
+    "evidence": {
+      "supportedValues": [
+        "none",
+        "solid",
+        "dashed",
+        "dotted"
+      ],
+      "unsupportedValues": [
+        "double",
+        "groove",
+        "ridge",
+        "inset",
+        "outset"
+      ],
+      "logRejectedValues": [
+        "double",
+        "ridge",
+        "inset",
+        "outset",
+        "groove"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-right-width",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-style",
+    "evidence": {
+      "logRejectedValues": [
+        "dashed",
+        "dotted"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-top",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-top-color",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-top-left-radius",
+    "evidence": {
+      "logRejectedValues": [
+        "percentages"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-top-right-radius",
+    "evidence": {
+      "logRejectedValues": [
+        "percentages"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-top-style",
+    "evidence": {
+      "supportedValues": [
+        "none",
+        "solid",
+        "dashed",
+        "dotted"
+      ],
+      "unsupportedValues": [
+        "double",
+        "groove",
+        "ridge",
+        "inset",
+        "outset"
+      ],
+      "logRejectedValues": [
+        "outset",
+        "double",
+        "groove",
+        "ridge",
+        "inset"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-top-width",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "border-width",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "bottom",
+    "evidence": {
+      "supportedValues": [
+        "auto"
+      ],
+      "unsupportedValues": [
+        "anchor",
+        "anchor-size"
+      ],
+      "logRejectedValues": [
+        "anchor-size",
+        "anchor"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "box-shadow",
+    "evidence": {
+      "logRejectedValues": [
+        "inset"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "caret-color",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "clip-path",
+    "evidence": {
+      "supportedValues": [],
+      "unsupportedValues": [
+        "fill-box",
+        "path",
+        "stroke-box",
+        "view-box"
+      ],
+      "logRejectedValues": [
+        "fill-box",
+        "path",
+        "stroke-box",
+        "view-box"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "clip-rule",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "color",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "column-gap",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "contain",
+    "evidence": {
+      "supportedValues": [
+        "content",
+        "layout",
+        "none",
+        "paint",
+        "size",
+        "strict",
+        "style"
+      ],
+      "unsupportedValues": [
+        "inline-size"
+      ],
+      "logRejectedValues": [
+        "inline-size"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "content",
+    "evidence": {
+      "supportedValues": [
+        "none",
+        "normal"
+      ],
+      "unsupportedValues": [
+        "gradient",
+        "image-set",
+        "url"
+      ],
+      "logRejectedValues": [
+        "url",
+        "gradient",
+        "image-set"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "cursor",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "cx",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "cy",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "d",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "display",
+    "evidence": {
+      "supportedValues": [
+        "block",
+        "flex",
+        "inline",
+        "none"
+      ],
+      "unsupportedValues": [
+        "contents",
+        "flow-root",
+        "grid",
+        "inline-block",
+        "inline-flex",
+        "inline-grid",
+        "inline-table",
+        "list-item",
+        "math",
+        "ruby",
+        "ruby-base",
+        "ruby-base-container",
+        "ruby-text",
+        "ruby-text-container",
+        "table",
+        "table-caption",
+        "table-cell",
+        "table-column",
+        "table-column-group",
+        "table-footer-group",
+        "table-header-group",
+        "table-row",
+        "table-row-group"
+      ],
+      "logRejectedValues": [
+        "flow-root",
+        "inline-flex",
+        "table-cell",
+        "table-column-group",
+        "table-row-group",
+        "inline-table",
+        "contents",
+        "inline-grid",
+        "table-footer-group",
+        "table-caption",
+        "ruby-base-container",
+        "ruby-text-container",
+        "grid",
+        "list-item",
+        "table",
+        "ruby",
+        "table-row",
+        "math",
+        "table-header-group",
+        "inline-block",
+        "ruby-base",
+        "ruby-text",
+        "table-column"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "fill",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "fill-opacity",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ],
+      "supportedUnits": [
+        "<number>"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "fill-rule",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "filter",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "flex",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "flex-basis",
+    "evidence": {
+      "supportedValues": [
+        "auto"
+      ],
+      "unsupportedValues": [
+        "content",
+        "fit-content",
+        "max-content",
+        "min-content"
+      ],
+      "logRejectedValues": [
+        "min-content",
+        "content",
+        "max-content",
+        "fit-content"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "flex-grow",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ],
+      "supportedUnits": [
+        "<number>"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "flex-shrink",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ],
+      "supportedUnits": [
+        "<number>"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "font",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "font-family",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "font-size",
+    "evidence": {
+      "supportedValues": [
+        "xxx-large"
+      ],
+      "unsupportedValues": [
+        "math"
+      ],
+      "logRejectedValues": [
+        "math"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "font-style",
+    "evidence": {
+      "supportedValues": [
+        "italic",
+        "normal",
+        "oblique"
+      ],
+      "unsupportedValues": [
+        "oblique-angle"
+      ],
+      "logRejectedValues": [
+        "oblique-angle"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "font-variant-east-asian",
+    "evidence": {
+      "supportedValues": [
+        "normal",
+        "proportional-width"
+      ],
+      "unsupportedValues": [
+        "full-width",
+        "jis04",
+        "jis78",
+        "jis83",
+        "jis90",
+        "ruby",
+        "simplified",
+        "traditional"
+      ],
+      "logRejectedValues": [
+        "jis04",
+        "jis83",
+        "ruby",
+        "simplified",
+        "jis90",
+        "traditional",
+        "full-width",
+        "jis78"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "font-weight",
+    "evidence": {
+      "supportedValues": [
+        "bold",
+        "bolder",
+        "lighter",
+        "normal"
+      ],
+      "unsupportedValues": [
+        "number"
+      ],
+      "logRejectedValues": [
+        "number"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "gap",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "height",
+    "evidence": {
+      "supportedValues": [
+        "auto"
+      ],
+      "unsupportedValues": [
+        "anchor-size",
+        "fit-content",
+        "max-content",
+        "min-content",
+        "stretch"
+      ],
+      "logRejectedValues": [
+        "min-content",
+        "fit-content",
+        "anchor-size",
+        "stretch",
+        "max-content"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "image-rendering",
+    "evidence": {
+      "supportedValues": [
+        "auto",
+        "crisp-edges",
+        "pixelated",
+        "optimizeQuality",
+        "optimizeSpeed"
+      ],
+      "unsupportedValues": [
+        "smooth"
+      ],
+      "logRejectedValues": [
+        "optimizequality",
+        "smooth",
+        "optimizespeed"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "isolation",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "justify-content",
+    "evidence": {
+      "supportedValues": [
+        "flex-start",
+        "flex-end",
+        "center",
+        "space-between",
+        "space-around"
+      ],
+      "unsupportedValues": [
+        "space-evenly",
+        "start",
+        "end",
+        "stretch",
+        "normal"
+      ],
+      "logRejectedValues": [
+        "start",
+        "stretch",
+        "space-evenly",
+        "normal",
+        "end"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "left",
+    "evidence": {
+      "supportedValues": [
+        "auto"
+      ],
+      "unsupportedValues": [
+        "anchor",
+        "anchor-size"
+      ],
+      "logRejectedValues": [
+        "anchor-size",
+        "anchor"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "letter-spacing",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "line-height",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "<number>",
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "margin",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "margin-bottom",
+    "evidence": {
+      "supportedValues": [
+        "auto"
+      ],
+      "unsupportedValues": [
+        "anchor-size"
+      ],
+      "logRejectedValues": [
+        "anchor-size"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "margin-left",
+    "evidence": {
+      "supportedValues": [
+        "auto"
+      ],
+      "unsupportedValues": [
+        "anchor-size"
+      ],
+      "logRejectedValues": [
+        "anchor-size"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "margin-right",
+    "evidence": {
+      "supportedValues": [
+        "auto"
+      ],
+      "unsupportedValues": [
+        "anchor-size"
+      ],
+      "logRejectedValues": [
+        "anchor-size"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "margin-top",
+    "evidence": {
+      "supportedValues": [
+        "auto"
+      ],
+      "unsupportedValues": [
+        "anchor-size"
+      ],
+      "logRejectedValues": [
+        "anchor-size"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "mask",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "mask-border-repeat",
+    "evidence": {
+      "logRejectedValues": [
+        "space"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "mask-clip",
+    "evidence": {
+      "supportedValues": [],
+      "unsupportedValues": [
+        "border",
+        "content",
+        "padding",
+        "text"
+      ],
+      "logRejectedValues": [
+        "text",
+        "border",
+        "content",
+        "padding"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "mask-image",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "mask-mode",
+    "evidence": {
+      "supportedValues": [
+        "alpha"
+      ],
+      "unsupportedValues": [
+        "luminance",
+        "match-source"
+      ],
+      "logRejectedValues": [
+        "luminance",
+        "match-source"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "mask-position",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "mask-repeat",
+    "evidence": {
+      "logRejectedValues": [
+        "space",
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "mask-size",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "mask-type",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "max-height",
+    "evidence": {
+      "supportedValues": [],
+      "unsupportedValues": [
+        "anchor-size",
+        "fit-content",
+        "max-content",
+        "min-content",
+        "none",
+        "stretch"
+      ],
+      "logRejectedValues": [
+        "max-content",
+        "min-content",
+        "fit-content",
+        "none",
+        "stretch",
+        "anchor-size"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "max-width",
+    "evidence": {
+      "supportedValues": [],
+      "unsupportedValues": [
+        "anchor-size",
+        "fit-content",
+        "max-content",
+        "min-content",
+        "none",
+        "stretch"
+      ],
+      "logRejectedValues": [
+        "fit-content",
+        "min-content",
+        "max-content",
+        "none",
+        "stretch",
+        "anchor-size"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "min-height",
+    "evidence": {
+      "supportedValues": [
+        "auto"
+      ],
+      "unsupportedValues": [
+        "anchor-size",
+        "fit-content",
+        "max-content",
+        "min-content",
+        "stretch"
+      ],
+      "logRejectedValues": [
+        "fit-content",
+        "max-content",
+        "anchor-size",
+        "min-content",
+        "stretch"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "min-width",
+    "evidence": {
+      "supportedValues": [
+        "auto"
+      ],
+      "unsupportedValues": [
+        "anchor-size",
+        "fit-content",
+        "max-content",
+        "min-content",
+        "stretch"
+      ],
+      "logRejectedValues": [
+        "anchor-size",
+        "fit-content",
+        "stretch",
+        "max-content",
+        "min-content"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "mix-blend-mode",
+    "evidence": {
+      "supportedValues": [
+        "normal",
+        "multiply",
+        "screen",
+        "overlay",
+        "darken",
+        "lighten",
+        "color-dodge",
+        "color-burn",
+        "hard-light",
+        "soft-light",
+        "difference",
+        "exclusion",
+        "hue",
+        "saturation",
+        "color",
+        "luminosity"
+      ],
+      "unsupportedValues": [
+        "plus-darker",
+        "plus-lighter"
+      ],
+      "logRejectedValues": [
+        "plus-darker",
+        "plus-lighter"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "offset",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "opacity",
+    "evidence": {
+      "logRejectedValues": [
+        "percentages"
+      ],
+      "supportedUnits": [
+        "<number>"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "overflow",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "overflow-wrap",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "overflow-x",
+    "evidence": {
+      "supportedValues": [
+        "auto",
+        "hidden",
+        "scroll",
+        "visible"
+      ],
+      "unsupportedValues": [
+        "clip"
+      ],
+      "logRejectedValues": [
+        "clip"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "overflow-y",
+    "evidence": {
+      "supportedValues": [
+        "auto",
+        "hidden",
+        "scroll",
+        "visible"
+      ],
+      "unsupportedValues": [
+        "clip"
+      ],
+      "logRejectedValues": [
+        "clip"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "padding",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "padding-bottom",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "padding-left",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "padding-right",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "padding-top",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "perspective",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "perspective-origin",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "pointer-events",
+    "evidence": {
+      "supportedValues": [
+        "none",
+        "auto",
+        "visiblePainted",
+        "visibleFill",
+        "visibleStroke"
+      ],
+      "unsupportedValues": [
+        "all",
+        "visible",
+        "painted",
+        "fill",
+        "stroke"
+      ],
+      "logRejectedValues": [
+        "visiblepainted",
+        "visible",
+        "painted",
+        "visiblestroke",
+        "stroke",
+        "visiblefill",
+        "all",
+        "fill"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "position",
+    "evidence": {
+      "supportedValues": [
+        "absolute",
+        "fixed",
+        "relative",
+        "static"
+      ],
+      "unsupportedValues": [
+        "sticky"
+      ],
+      "logRejectedValues": [
+        "sticky"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "r",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "right",
+    "evidence": {
+      "supportedValues": [
+        "auto"
+      ],
+      "unsupportedValues": [
+        "anchor",
+        "anchor-size"
+      ],
+      "logRejectedValues": [
+        "anchor-size",
+        "anchor"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "row-gap",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "rx",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "ry",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "shape-rendering",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "stop-color",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "stop-opacity",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ],
+      "supportedUnits": [
+        "<number>"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "stroke",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "stroke-dasharray",
+    "evidence": {
+      "logRejectedValues": [
+        "none"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "stroke-dashoffset",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "stroke-linecap",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "stroke-linejoin",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "stroke-miterlimit",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "stroke-opacity",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ],
+      "supportedUnits": [
+        "<number>"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "stroke-width",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%",
+        "<number>"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-align",
+    "evidence": {
+      "supportedValues": [
+        "center",
+        "justify",
+        "left",
+        "right"
+      ],
+      "unsupportedValues": [
+        "end",
+        "match-parent",
+        "start"
+      ],
+      "logRejectedValues": [
+        "match-parent",
+        "end",
+        "start"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-anchor",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-decoration",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-decoration-color",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-decoration-line",
+    "evidence": {
+      "supportedValues": [
+        "line-through",
+        "none",
+        "overline",
+        "underline"
+      ],
+      "unsupportedValues": [
+        "blink",
+        "grammar-error",
+        "spelling-error"
+      ],
+      "logRejectedValues": [
+        "spelling-error",
+        "blink",
+        "grammar-error"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-decoration-style",
+    "evidence": {
+      "supportedValues": [
+        "solid"
+      ],
+      "unsupportedValues": [
+        "wavy",
+        "double",
+        "dotted",
+        "dashed"
+      ],
+      "logRejectedValues": [
+        "double",
+        "wavy",
+        "dashed",
+        "dotted"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-decoration-thickness",
+    "evidence": {
+      "supportedValues": [
+        "auto"
+      ],
+      "unsupportedValues": [
+        "from-font",
+        "percentage"
+      ],
+      "logRejectedValues": [
+        "from-font",
+        "percentage"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-overflow",
+    "evidence": {
+      "supportedValues": [
+        "clip",
+        "ellipsis"
+      ],
+      "unsupportedValues": [
+        "string"
+      ],
+      "logRejectedValues": [
+        "string"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-rendering",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-shadow",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-transform",
+    "evidence": {
+      "supportedValues": [
+        "capitalize",
+        "lowercase",
+        "none",
+        "uppercase"
+      ],
+      "unsupportedValues": [
+        "full-size-kana",
+        "full-width",
+        "math-auto"
+      ],
+      "logRejectedValues": [
+        "full-width",
+        "math-auto",
+        "full-size-kana"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-underline-offset",
+    "evidence": {
+      "supportedValues": [
+        "auto"
+      ],
+      "unsupportedValues": [
+        "percentage"
+      ],
+      "logRejectedValues": [
+        "percentage"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-underline-position",
+    "evidence": {
+      "supportedValues": [
+        "under",
+        "auto"
+      ],
+      "unsupportedValues": [
+        "from-font",
+        "left",
+        "right"
+      ],
+      "logRejectedValues": [
+        "right",
+        "from-font",
+        "left"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "top",
+    "evidence": {
+      "supportedValues": [
+        "auto"
+      ],
+      "unsupportedValues": [
+        "anchor",
+        "anchor-size"
+      ],
+      "logRejectedValues": [
+        "anchor-size",
+        "anchor"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "transform",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "transform-origin",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "transition",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "transition-behavior",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "transition-delay",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ],
+      "supportedUnits": [
+        "ms",
+        "s"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "transition-duration",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ],
+      "supportedUnits": [
+        "ms",
+        "s"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "transition-property",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "transition-timing-function",
+    "evidence": {
+      "supportedValues": [
+        "ease",
+        "linear",
+        "ease-in",
+        "ease-out",
+        "ease-in-out",
+        "step-start",
+        "step-end"
+      ],
+      "unsupportedValues": [
+        "jump"
+      ],
+      "logRejectedValues": [
+        "jump"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "user-select",
+    "evidence": {
+      "supportedValues": [
+        "auto",
+        "none",
+        "text"
+      ],
+      "unsupportedValues": [
+        "all",
+        "contain"
+      ],
+      "logRejectedValues": [
+        "contain",
+        "all"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "vertical-align",
+    "evidence": {
+      "supportedValues": [
+        "baseline",
+        "middle",
+        "text-bottom",
+        "text-top"
+      ],
+      "unsupportedValues": [
+        "bottom",
+        "sub",
+        "super",
+        "top"
+      ],
+      "logRejectedValues": [
+        "super",
+        "bottom",
+        "sub",
+        "top"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "visibility",
+    "evidence": {
+      "supportedValues": [
+        "hidden",
+        "visible"
+      ],
+      "unsupportedValues": [
+        "collapse"
+      ],
+      "logRejectedValues": [
+        "collapse"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "white-space",
+    "evidence": {
+      "supportedValues": [
+        "normal",
+        "nowrap",
+        "pre",
+        "pre-wrap"
+      ],
+      "unsupportedValues": [
+        "break-spaces",
+        "pre-line"
+      ],
+      "logRejectedValues": [
+        "break-spaces",
+        "pre-line"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "width",
+    "evidence": {
+      "supportedValues": [
+        "auto"
+      ],
+      "unsupportedValues": [
+        "anchor-size",
+        "fit-content",
+        "max-content",
+        "min-content",
+        "stretch"
+      ],
+      "logRejectedValues": [
+        "anchor-size",
+        "stretch",
+        "fit-content",
+        "max-content",
+        "min-content"
+      ],
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "x",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "y",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "z-index",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed",
+      "supportedUnits": [
+        "<number>"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-stroke-width",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-stroke-color",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-stroke",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-enable-backdrop-filter",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-simple-opacity",
+    "evidence": {
+      "logRejectedValues": [
+        "1"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-font-fit-mode",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-font-fit-max-size",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-font-fit-min-size",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-font-fit",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-sdf",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-custom-effect-name",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param1",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param2",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param3",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param4",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param5",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param6",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param7",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param8",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param9",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param10",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param11",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param12",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-custom-effect-string-param1",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-custom-effect-string-param2",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-composition-id",
+    "evidence": {
+      "probe": "value-accepted-but-not-computed"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-partitioned",
+    "evidence": {
+      "logRejectedValues": [
+        "1"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-rendering-option",
+    "evidence": {
+      "logRejectedValues": [
+        "0"
+      ]
+    }
+  }
+]

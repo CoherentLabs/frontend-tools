@@ -1,0 +1,1256 @@
+[
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":active",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::after",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "[attr]",
+    "evidence": {
+      "group": "basic-attribute",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::before",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "div > p",
+    "evidence": {
+      "group": "combinator-child",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ".foo",
+    "evidence": {
+      "group": "basic-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "div || td",
+    "evidence": {
+      "group": "combinator-column",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":default",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":defined",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "div p",
+    "evidence": {
+      "group": "combinator-descendant",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::details-content",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":dir(ltr)",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":disabled",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":empty",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":enabled",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::file-selector-button",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":first",
+    "evidence": {
+      "group": "page-pseudo",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":first-child",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::first-letter",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::first-line",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":first-of-type",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":focus",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":focus-visible",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":focus-within",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":fullscreen",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":future",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::grammar-error",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":has(.child)",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":has-slotted",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::highlight(custom)",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":host",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":host-context",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":host(.foo)",
+    "evidence": {
+      "group": "pseudo-shadow",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":hover",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "#foo",
+    "evidence": {
+      "group": "basic-id",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":in-range",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":indeterminate",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":invalid",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":is(.foo, .bar)",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":lang(en)",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":last-child",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":last-of-type",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":left",
+    "evidence": {
+      "group": "page-pseudo",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":link",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::marker",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":modal",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":muted",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "& .nested",
+    "evidence": {
+      "group": "css-nesting",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "div + p",
+    "evidence": {
+      "group": "combinator-adjacent-sibling",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":not(.foo)",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":only-child",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":only-of-type",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":open",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":optional",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":out-of-range",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::part(foo)",
+    "evidence": {
+      "group": "pseudo-element-shadow",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":past",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":paused",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::picker(select)",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::picker-icon",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":picture-in-picture",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::placeholder",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":placeholder-shown",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":playing",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":popover-open",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":read-only",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":read-write",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":required",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":right",
+    "evidence": {
+      "group": "page-pseudo",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":root",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":scope",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::scroll-button(down)",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::scroll-marker",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::scroll-marker-group",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":seeking",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::slotted(*)",
+    "evidence": {
+      "group": "pseudo-element-shadow",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::spelling-error",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":stalled",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":state(custom-state)",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "div ~ p",
+    "evidence": {
+      "group": "combinator-general-sibling",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":target",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":target-current",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::target-text",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "div",
+    "evidence": {
+      "group": "basic-type",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "*",
+    "evidence": {
+      "group": "basic-universal",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":user-invalid",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":user-valid",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":valid",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::view-transition",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::view-transition-group(*)",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::view-transition-image-pair(*)",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::view-transition-new(*)",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "::view-transition-old(*)",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":visited",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":volume-locked",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":where(.foo, .bar)",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":xr-overlay",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "@supports (display: flex)",
+    "evidence": {
+      "group": "at-rule",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "@media (max-width: 600px)",
+    "evidence": {
+      "group": "at-rule",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "@layer base",
+    "evidence": {
+      "group": "at-rule",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "@container (min-width: 300px)",
+    "evidence": {
+      "group": "at-rule",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "@scope (.foo)",
+    "evidence": {
+      "group": "at-rule",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "@starting-style",
+    "evidence": {
+      "group": "at-rule",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":not(.foo, .bar)",
+    "evidence": {
+      "group": "pseudo-logical-forgiving",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":is(:hover, :focus)",
+    "evidence": {
+      "group": "pseudo-logical-compound",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":has(> .child)",
+    "evidence": {
+      "group": "pseudo-relational-direct",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "[attr^=\"val\"]",
+    "evidence": {
+      "group": "attribute-prefix",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "[attr$=\"val\"]",
+    "evidence": {
+      "group": "attribute-suffix",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "[attr*=\"val\"]",
+    "evidence": {
+      "group": "attribute-contains",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "[attr~=\"val\"]",
+    "evidence": {
+      "group": "attribute-word",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "[attr|=\"val\"]",
+    "evidence": {
+      "group": "attribute-hyphen",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "[attr=\"val\"]",
+    "evidence": {
+      "group": "attribute-exact",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "[attr i]",
+    "evidence": {
+      "group": "attribute-case-insensitive",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": ":host-context(.foo)",
+    "evidence": {
+      "group": "pseudo-shadow",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  }
+]

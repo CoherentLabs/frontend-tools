@@ -1,0 +1,10 @@
+{
+  "supported": 114,
+  "partial": 9,
+  "unsupported": 10,
+  "byStatus": {
+    "supported": 114,
+    "partial": 9,
+    "parser-only": 10
+  }
+}

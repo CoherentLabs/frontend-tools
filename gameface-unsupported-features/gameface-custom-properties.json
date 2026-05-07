@@ -1,0 +1,128 @@
+{
+  "_comment": "Gameface-specific CSS properties (coh-* prefix). Each entry defines a testValue used by the CSS probe and a description for documentation. Edit testValue to use a value your game UI actually applies.",
+  "coh-enable-backdrop-filter": {
+    "testValue": "1",
+    "description": "Enables the backdrop filter compositing pass for an element.",
+    "acceptedValues": ["0", "1"]
+  },
+  "coh-simple-opacity": {
+    "testValue": "1",
+    "description": "Uses a simplified opacity rendering path that skips compositing.",
+    "acceptedValues": ["0", "1"]
+  },
+  "coh-font-fit-mode": {
+    "testValue": "shrink",
+    "description": "Controls how text fits within its container when it overflows.",
+    "acceptedValues": ["none", "shrink"]
+  },
+  "coh-font-fit-max-size": {
+    "testValue": "24px",
+    "description": "Maximum font size used by the coh-font-fit shrink algorithm.",
+    "acceptedValues": ["<length>"]
+  },
+  "coh-font-fit-min-size": {
+    "testValue": "8px",
+    "description": "Minimum font size used by the coh-font-fit shrink algorithm.",
+    "acceptedValues": ["<length>"]
+  },
+  "coh-font-fit": {
+    "testValue": "shrink",
+    "description": "Shorthand for coh-font-fit-mode.",
+    "acceptedValues": ["none", "shrink"]
+  },
+  "coh-sdf": {
+    "testValue": "1",
+    "description": "Enables signed-distance-field rendering for text.",
+    "acceptedValues": ["0", "1"]
+  },
+  "coh-custom-effect-name": {
+    "testValue": "none",
+    "description": "Name of a registered custom GPU shader effect to apply to an element.",
+    "acceptedValues": ["none", "<custom-ident>"]
+  },
+  "coh-custom-effect-float-param-1": {
+    "testValue": "0",
+    "description": "Float parameter 1 passed to the custom GPU shader effect.",
+    "acceptedValues": ["<number>"]
+  },
+  "coh-custom-effect-float-param-2": {
+    "testValue": "0",
+    "description": "Float parameter 2 passed to the custom GPU shader effect.",
+    "acceptedValues": ["<number>"]
+  },
+  "coh-custom-effect-float-param-3": {
+    "testValue": "0",
+    "description": "Float parameter 3 passed to the custom GPU shader effect.",
+    "acceptedValues": ["<number>"]
+  },
+  "coh-custom-effect-float-param-4": {
+    "testValue": "0",
+    "description": "Float parameter 4 passed to the custom GPU shader effect.",
+    "acceptedValues": ["<number>"]
+  },
+  "coh-custom-effect-float-param-5": {
+    "testValue": "0",
+    "description": "Float parameter 5 passed to the custom GPU shader effect.",
+    "acceptedValues": ["<number>"]
+  },
+  "coh-custom-effect-float-param-6": {
+    "testValue": "0",
+    "description": "Float parameter 6 passed to the custom GPU shader effect.",
+    "acceptedValues": ["<number>"]
+  },
+  "coh-custom-effect-float-param-7": {
+    "testValue": "0",
+    "description": "Float parameter 7 passed to the custom GPU shader effect.",
+    "acceptedValues": ["<number>"]
+  },
+  "coh-custom-effect-float-param-8": {
+    "testValue": "0",
+    "description": "Float parameter 8 passed to the custom GPU shader effect.",
+    "acceptedValues": ["<number>"]
+  },
+  "coh-custom-effect-float-param-9": {
+    "testValue": "0",
+    "description": "Float parameter 9 passed to the custom GPU shader effect.",
+    "acceptedValues": ["<number>"]
+  },
+  "coh-custom-effect-float-param-10": {
+    "testValue": "0",
+    "description": "Float parameter 10 passed to the custom GPU shader effect.",
+    "acceptedValues": ["<number>"]
+  },
+  "coh-custom-effect-float-param-11": {
+    "testValue": "0",
+    "description": "Float parameter 11 passed to the custom GPU shader effect.",
+    "acceptedValues": ["<number>"]
+  },
+  "coh-custom-effect-float-param-12": {
+    "testValue": "0",
+    "description": "Float parameter 12 passed to the custom GPU shader effect.",
+    "acceptedValues": ["<number>"]
+  },
+  "coh-custom-effect-string-param-1": {
+    "testValue": "",
+    "description": "String parameter 1 passed to the custom GPU shader effect.",
+    "acceptedValues": ["<string>"]
+  },
+  "coh-custom-effect-string-param-2": {
+    "testValue": "",
+    "description": "String parameter 2 passed to the custom GPU shader effect.",
+    "acceptedValues": ["<string>"]
+  },
+  "coh-composition-id": {
+    "testValue": "0",
+    "description": "Identifies a composition layer for advanced rendering grouping.",
+    "acceptedValues": ["<integer>"]
+  },
+  "coh-partitioned": {
+    "testValue": "1",
+    "description": "Marks an element as partitioned for independent compositing.",
+    "acceptedValues": ["0", "1"]
+  },
+  "coh-rendering-option": {
+    "testValue": "0",
+    "description": "Renderer-specific option flags for an element.",
+    "acceptedValues": ["<integer>"]
+  }
+}

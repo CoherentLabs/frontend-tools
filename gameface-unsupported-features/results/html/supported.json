@@ -1,0 +1,335 @@
+[
+  {
+    "status": "supported",
+    "surface": "html",
+    "name": "body",
+    "evidence": {
+      "constructorName": "HTMLBodyElement"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "html",
+    "name": "button",
+    "evidence": {
+      "constructorName": "HTMLButtonElement",
+      "checks": {
+        "typeAssignable": true,
+        "disabledAssignable": true,
+        "valueAssignable": true,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "html",
+    "name": "div",
+    "evidence": {
+      "constructorName": "HTMLDivElement",
+      "checks": {
+        "constructorPresent": true,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "html",
+    "name": "head",
+    "evidence": {
+      "constructorName": "HTMLHeadElement"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "html",
+    "name": "html",
+    "evidence": {
+      "constructorName": "HTMLHtmlElement"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "html",
+    "name": "p",
+    "evidence": {
+      "constructorName": "HTMLParagraphElement",
+      "checks": {
+        "constructorPresent": true,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "html",
+    "name": "pre",
+    "evidence": {
+      "constructorName": "HTMLPreElement",
+      "checks": {
+        "constructorPresent": true,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "html",
+    "name": "script",
+    "evidence": {
+      "constructorName": "HTMLScriptElement",
+      "checks": {
+        "srcProperty": true,
+        "typeProperty": true,
+        "asyncProperty": true,
+        "deferProperty": true,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "html",
+    "name": "slot",
+    "evidence": {
+      "constructorName": "HTMLSlotElement",
+      "checks": {
+        "constructorPresent": true,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "html",
+    "name": "source",
+    "evidence": {
+      "constructorName": "HTMLSourceElement",
+      "checks": {
+        "constructorPresent": true,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "html",
+    "name": "span",
+    "evidence": {
+      "constructorName": "HTMLSpanElement",
+      "checks": {
+        "constructorPresent": true,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "html",
+    "name": "style",
+    "evidence": {
+      "constructorName": "HTMLStyleElement",
+      "checks": {
+        "constructorPresent": true,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "html",
+    "name": "template",
+    "evidence": {
+      "constructorName": "HTMLTemplateElement",
+      "checks": {
+        "contentProperty": true,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "html",
+    "name": "textarea",
+    "evidence": {
+      "constructorName": "HTMLTextAreaElement",
+      "checks": {
+        "valueAssignable": true,
+        "rowsAssignable": true,
+        "colsAssignable": true,
+        "selectMethod": true,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "html",
+    "name": "title",
+    "evidence": {
+      "constructorName": "HTMLTitleElement",
+      "checks": {
+        "constructorPresent": true,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "html",
+    "name": "video",
+    "evidence": {
+      "constructorName": "HTMLVideoElement",
+      "checks": {
+        "srcProperty": true,
+        "currentTimeProperty": true,
+        "durationProperty": true,
+        "playMethod": true,
+        "pauseMethod": true,
+        "pausedProperty": true,
+        "volumeProperty": true,
+        "readyStateProperty": true,
+        "networkStateProperty": true,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "input-type",
+    "name": "input[type=\"button\"]",
+    "evidence": {
+      "roundTripType": "button",
+      "apiChecks": {
+        "valueAssignable": true
+      }
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "input-type",
+    "name": "input[type=\"password\"]",
+    "evidence": {
+      "roundTripType": "password",
+      "apiChecks": {
+        "valueAssignable": true
+      }
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "input-type",
+    "name": "input[type=\"text\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {
+        "valueAssignable": true
+      }
+    }
+  }
+]

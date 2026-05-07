@@ -1,0 +1,44 @@
+[
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "animation-direction",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "animation-fill-mode",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "animation-play-state",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "backface-visibility",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "box-sizing",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "flex-direction",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "flex-wrap",
+    "evidence": {}
+  }
+]

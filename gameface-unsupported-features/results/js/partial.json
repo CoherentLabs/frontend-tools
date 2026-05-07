@@ -1,0 +1,2997 @@
+[
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "Animation",
+    "evidence": {
+      "stubs": [
+        "cancel",
+        "commitStyles",
+        "finish",
+        "pause",
+        "persist",
+        "play",
+        "playFromTo",
+        "reverse"
+      ],
+      "missing": [
+        "effect",
+        "finished",
+        "id",
+        "oncancel",
+        "onremove",
+        "pending",
+        "playState",
+        "ready",
+        "replaceState",
+        "startTime",
+        "timeline",
+        "updatePlaybackRate",
+        "addEventListener",
+        "removeEventListener",
+        "Animation",
+        "overallProgress"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "AnimationEvent",
+    "evidence": {
+      "missing": [
+        "AnimationEvent"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "Attr",
+    "evidence": {
+      "missing": [
+        "ownerElement",
+        "specified"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "Blob",
+    "evidence": {
+      "stubs": [
+        "slice"
+      ],
+      "missing": [
+        "arrayBuffer",
+        "bytes",
+        "stream",
+        "text",
+        "Blob"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "BlobPropertyBag",
+    "evidence": {
+      "missing": [
+        "endings"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CSS",
+    "evidence": {
+      "missing": [
+        "deg",
+        "em",
+        "in",
+        "ms",
+        "number",
+        "percent",
+        "pt",
+        "px",
+        "rem",
+        "s",
+        "vh",
+        "vmax",
+        "vmin",
+        "vw"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CSSAnimation",
+    "evidence": {
+      "missing": [
+        "addEventListener",
+        "removeEventListener"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CSSKeywordValue",
+    "evidence": {
+      "missing": [
+        "CSSKeywordValue"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CSSMatrixComponent",
+    "evidence": {
+      "missing": [
+        "CSSMatrixComponent"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CSSNumericValue",
+    "evidence": {
+      "missing": [
+        "add",
+        "div",
+        "equals",
+        "max",
+        "min",
+        "mul",
+        "sub",
+        "to",
+        "toSum",
+        "type"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CSSRotate",
+    "evidence": {
+      "missing": [
+        "CSSRotate"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CSSRuleList",
+    "evidence": {
+      "missing": [
+        "item"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CSSScale",
+    "evidence": {
+      "missing": [
+        "CSSScale"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CSSSkewX",
+    "evidence": {
+      "missing": [
+        "CSSSkewX"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CSSSkewY",
+    "evidence": {
+      "missing": [
+        "CSSSkewY"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "CSSStyleDeclaration",
+    "evidence": {
+      "stubs": [
+        "getPropertyValue",
+        "removeProperty",
+        "setProperty"
+      ],
+      "missing": [
+        "accentColor",
+        "alignmentBaseline",
+        "animationComposition",
+        "appearance",
+        "backgroundAttachment",
+        "backgroundBlendMode",
+        "backgroundClip",
+        "backgroundOrigin",
+        "baselineShift",
+        "baselineSource",
+        "blockSize",
+        "borderBlock",
+        "borderBlockColor",
+        "borderBlockEnd",
+        "borderBlockEndColor",
+        "borderBlockEndStyle",
+        "borderBlockEndWidth",
+        "borderBlockStart",
+        "borderBlockStartColor",
+        "borderBlockStartStyle",
+        "borderBlockStartWidth",
+        "borderBlockStyle",
+        "borderBlockWidth",
+        "borderCollapse",
+        "borderEndEndRadius",
+        "borderEndStartRadius",
+        "borderInline",
+        "borderInlineColor",
+        "borderInlineEnd",
+        "borderInlineEndColor",
+        "borderInlineEndStyle",
+        "borderInlineEndWidth",
+        "borderInlineStart",
+        "borderInlineStartColor",
+        "borderInlineStartStyle",
+        "borderInlineStartWidth",
+        "borderInlineStyle",
+        "borderInlineWidth",
+        "borderSpacing",
+        "borderStartEndRadius",
+        "borderStartStartRadius",
+        "boxDecorationBreak",
+        "breakAfter",
+        "breakBefore",
+        "breakInside",
+        "captionSide",
+        "clear",
+        "clip",
+        "colorInterpolation",
+        "colorInterpolationFilters",
+        "colorScheme",
+        "columnCount",
+        "columnFill",
+        "columnRule",
+        "columnRuleColor",
+        "columnRuleStyle",
+        "columnRuleWidth",
+        "columnSpan",
+        "columnWidth",
+        "columns",
+        "containIntrinsicBlockSize",
+        "containIntrinsicHeight",
+        "containIntrinsicInlineSize",
+        "containIntrinsicSize",
+        "containIntrinsicWidth",
+        "container",
+        "containerName",
+        "containerType",
+        "contentVisibility",
+        "counterIncrement",
+        "counterReset",
+        "counterSet",
+        "cssFloat",
+        "cx",
+        "cy",
+        "d",
+        "direction",
+        "dominantBaseline",
+        "emptyCells",
+        "flexFlow",
+        "float",
+        "floodColor",
+        "floodOpacity",
+        "fontFeatureSettings",
+        "fontKerning",
+        "fontOpticalSizing",
+        "fontPalette",
+        "fontSizeAdjust",
+        "fontStretch",
+        "fontSynthesis",
+        "fontSynthesisSmallCaps",
+        "fontSynthesisStyle",
+        "fontSynthesisWeight",
+        "fontVariant",
+        "fontVariantAlternates",
+        "fontVariantCaps",
+        "fontVariantLigatures",
+        "fontVariantNumeric",
+        "fontVariantPosition",
+        "fontVariationSettings",
+        "forcedColorAdjust",
+        "grid",
+        "gridArea",
+        "gridAutoColumns",
+        "gridAutoFlow",
+        "gridAutoRows",
+        "gridColumn",
+        "gridColumnEnd",
+        "gridColumnGap",
+        "gridColumnStart",
+        "gridGap",
+        "gridRow",
+        "gridRowEnd",
+        "gridRowGap",
+        "gridRowStart",
+        "gridTemplate",
+        "gridTemplateAreas",
+        "gridTemplateColumns",
+        "gridTemplateRows",
+        "hyphenateCharacter",
+        "hyphenateLimitChars",
+        "hyphens",
+        "imageOrientation",
+        "inlineSize",
+        "inset",
+        "insetBlock",
+        "insetBlockEnd",
+        "insetBlockStart",
+        "insetInline",
+        "insetInlineEnd",
+        "insetInlineStart",
+        "justifyItems",
+        "justifySelf",
+        "length",
+        "lightingColor",
+        "lineBreak",
+        "listStyle",
+        "listStyleImage",
+        "listStylePosition",
+        "listStyleType",
+        "marginBlock",
+        "marginBlockEnd",
+        "marginBlockStart",
+        "marginInline",
+        "marginInlineEnd",
+        "marginInlineStart",
+        "marker",
+        "markerEnd",
+        "markerMid",
+        "markerStart",
+        "maskComposite",
+        "maskOrigin",
+        "mathDepth",
+        "mathStyle",
+        "maxBlockSize",
+        "maxInlineSize",
+        "minBlockSize",
+        "minInlineSize",
+        "objectFit",
+        "objectPosition",
+        "offset",
+        "offsetAnchor",
+        "offsetDistance",
+        "offsetPath",
+        "offsetPosition",
+        "offsetRotate",
+        "order",
+        "orphans",
+        "outline",
+        "outlineColor",
+        "outlineOffset",
+        "outlineStyle",
+        "outlineWidth",
+        "overflowAnchor",
+        "overflowBlock",
+        "overflowClipMargin",
+        "overflowInline",
+        "overscrollBehavior",
+        "overscrollBehaviorBlock",
+        "overscrollBehaviorInline",
+        "overscrollBehaviorX",
+        "overscrollBehaviorY",
+        "paddingBlock",
+        "paddingBlockEnd",
+        "paddingBlockStart",
+        "paddingInline",
+        "paddingInlineEnd",
+        "paddingInlineStart",
+        "page",
+        "pageBreakAfter",
+        "pageBreakBefore",
+        "pageBreakInside",
+        "paintOrder",
+        "parentRule",
+        "placeContent",
+        "placeItems",
+        "placeSelf",
+        "printColorAdjust",
+        "quotes",
+        "r",
+        "resize",
+        "rotate",
+        "rubyAlign",
+        "rubyPosition",
+        "rx",
+        "ry",
+        "scale",
+        "scrollBehavior",
+        "scrollMargin",
+        "scrollMarginBlock",
+        "scrollMarginBlockEnd",
+        "scrollMarginBlockStart",
+        "scrollMarginBottom",
+        "scrollMarginInline",
+        "scrollMarginInlineEnd",
+        "scrollMarginInlineStart",
+        "scrollMarginLeft",
+        "scrollMarginRight",
+        "scrollMarginTop",
+        "scrollPadding",
+        "scrollPaddingBlock",
+        "scrollPaddingBlockEnd",
+        "scrollPaddingBlockStart",
+        "scrollPaddingBottom",
+        "scrollPaddingInline",
+        "scrollPaddingInlineEnd",
+        "scrollPaddingInlineStart",
+        "scrollPaddingLeft",
+        "scrollPaddingRight",
+        "scrollPaddingTop",
+        "scrollSnapAlign",
+        "scrollSnapStop",
+        "scrollSnapType",
+        "scrollbarColor",
+        "scrollbarGutter",
+        "scrollbarWidth",
+        "shapeImageThreshold",
+        "shapeMargin",
+        "shapeOutside",
+        "tabSize",
+        "tableLayout",
+        "textAlignLast",
+        "textAnchor",
+        "textBox",
+        "textBoxEdge",
+        "textBoxTrim",
+        "textCombineUpright",
+        "textDecorationSkipInk",
+        "textEmphasis",
+        "textEmphasisColor",
+        "textEmphasisPosition",
+        "textEmphasisStyle",
+        "textIndent",
+        "textOrientation",
+        "textWrap",
+        "textWrapMode",
+        "textWrapStyle",
+        "touchAction",
+        "transformBox",
+        "transformStyle",
+        "translate",
+        "unicodeBidi",
+        "vectorEffect",
+        "viewTransitionClass",
+        "viewTransitionName",
+        "webkitAlignContent",
+        "webkitAlignItems",
+        "webkitAlignSelf",
+        "webkitAnimation",
+        "webkitAnimationDelay",
+        "webkitAnimationDirection",
+        "webkitAnimationDuration",
+        "webkitAnimationFillMode",
+        "webkitAnimationIterationCount",
+        "webkitAnimationName",
+        "webkitAnimationPlayState",
+        "webkitAnimationTimingFunction",
+        "webkitAppearance",
+        "webkitBackfaceVisibility",
+        "webkitBackgroundClip",
+        "webkitBackgroundOrigin",
+        "webkitBackgroundSize",
+        "webkitBorderBottomLeftRadius",
+        "webkitBorderBottomRightRadius",
+        "webkitBorderRadius",
+        "webkitBorderTopLeftRadius",
+        "webkitBorderTopRightRadius",
+        "webkitBoxAlign",
+        "webkitBoxFlex",
+        "webkitBoxOrdinalGroup",
+        "webkitBoxOrient",
+        "webkitBoxPack",
+        "webkitBoxShadow",
+        "webkitBoxSizing",
+        "webkitFilter",
+        "webkitFlex",
+        "webkitFlexBasis",
+        "webkitFlexDirection",
+        "webkitFlexFlow",
+        "webkitFlexGrow",
+        "webkitFlexShrink",
+        "webkitFlexWrap",
+        "webkitJustifyContent",
+        "webkitLineClamp",
+        "webkitMask",
+        "webkitMaskBoxImage",
+        "webkitMaskBoxImageOutset",
+        "webkitMaskBoxImageRepeat",
+        "webkitMaskBoxImageSlice",
+        "webkitMaskBoxImageSource",
+        "webkitMaskBoxImageWidth",
+        "webkitMaskClip",
+        "webkitMaskComposite",
+        "webkitMaskImage",
+        "webkitMaskOrigin",
+        "webkitMaskPosition",
+        "webkitMaskRepeat",
+        "webkitMaskSize",
+        "webkitOrder",
+        "webkitPerspective",
+        "webkitPerspectiveOrigin",
+        "webkitTextFillColor",
+        "webkitTextSizeAdjust",
+        "webkitTextStroke",
+        "webkitTextStrokeColor",
+        "webkitTextStrokeWidth",
+        "webkitTransform",
+        "webkitTransformOrigin",
+        "webkitTransformStyle",
+        "webkitTransition",
+        "webkitTransitionDelay",
+        "webkitTransitionDuration",
+        "webkitTransitionProperty",
+        "webkitTransitionTimingFunction",
+        "webkitUserSelect",
+        "whiteSpaceCollapse",
+        "widows",
+        "willChange",
+        "wordBreak",
+        "wordSpacing",
+        "wordWrap",
+        "writingMode",
+        "x",
+        "y",
+        "zoom",
+        "getPropertyPriority",
+        "item",
+        "getPropertyCSSValue"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "CSSStyleSheet",
+    "evidence": {
+      "stubs": [
+        "deleteRule",
+        "insertRule"
+      ],
+      "missing": [
+        "ownerRule",
+        "rules",
+        "addRule",
+        "removeRule",
+        "replace",
+        "replaceSync",
+        "CSSStyleSheet"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "CSSStyleValue",
+    "evidence": {
+      "stubs": [
+        "toString"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "CSSTransformComponent",
+    "evidence": {
+      "stubs": [
+        "toMatrix",
+        "toString"
+      ],
+      "present": [
+        "is2D"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "CSSTransformValue",
+    "evidence": {
+      "stubs": [
+        "GetTransformAtIndex",
+        "SetTransformAtIndex",
+        "toMatrix",
+        "forEach",
+        "entries",
+        "keys",
+        "values"
+      ],
+      "present": [
+        "length",
+        "is2D"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CSSTranslate",
+    "evidence": {
+      "missing": [
+        "CSSTranslate"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CSSUnitValue",
+    "evidence": {
+      "missing": [
+        "CSSUnitValue"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "CanvasGradient",
+    "evidence": {
+      "stubs": [
+        "addColorStop"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CanvasPattern",
+    "evidence": {
+      "missing": [
+        "setTransform"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "CanvasRenderingContext2D",
+    "evidence": {
+      "stubs": [
+        "arc",
+        "arcTo",
+        "beginPath",
+        "bezierCurveTo",
+        "clearRect",
+        "clip",
+        "closePath",
+        "createConicGradient",
+        "createLinearGradient",
+        "createRadialGradient",
+        "drawFocusIfNeeded",
+        "fill",
+        "fillRect",
+        "fillText",
+        "lineTo",
+        "measureText",
+        "moveTo",
+        "quadraticCurveTo",
+        "rect",
+        "restore",
+        "rotate",
+        "save",
+        "scale",
+        "setTransform",
+        "stroke",
+        "strokeRect",
+        "strokeText",
+        "transform",
+        "translate",
+        "createPattern",
+        "drawImage"
+      ],
+      "missing": [
+        "createImageData",
+        "direction",
+        "ellipse",
+        "filter",
+        "fontKerning",
+        "fontStretch",
+        "fontVariantCaps",
+        "getContextAttributes",
+        "getImageData",
+        "getLineDash",
+        "getTransform",
+        "imageSmoothingEnabled",
+        "imageSmoothingQuality",
+        "isContextLost",
+        "isPointInPath",
+        "isPointInStroke",
+        "lang",
+        "letterSpacing",
+        "lineDashOffset",
+        "putImageData",
+        "reset",
+        "resetTransform",
+        "roundRect",
+        "setLineDash",
+        "textRendering",
+        "wordSpacing"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CaretPosition",
+    "evidence": {
+      "missing": [
+        "getClientRect"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "CharacterData",
+    "evidence": {
+      "stubs": [
+        "after",
+        "appendData",
+        "before",
+        "deleteData",
+        "insertData",
+        "remove",
+        "replaceData",
+        "substringData"
+      ],
+      "present": [
+        "data",
+        "length",
+        "previousElementSibling",
+        "nextElementSibling",
+        "ownerDocument"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "CoherentDebug",
+    "evidence": {
+      "stubs": [
+        "triggerPageCapture"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "Comment",
+    "evidence": {
+      "missing": [
+        "Comment"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "Console",
+    "evidence": {
+      "stubs": [
+        "assert",
+        "debug",
+        "error",
+        "info",
+        "log",
+        "time",
+        "timeEnd",
+        "warn"
+      ],
+      "missing": [
+        "clear",
+        "count",
+        "countReset",
+        "dir",
+        "dirxml",
+        "group",
+        "groupCollapsed",
+        "groupEnd",
+        "table",
+        "timeLog",
+        "timeStamp",
+        "trace"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "CustomElementRegistry",
+    "evidence": {
+      "stubs": [
+        "define"
+      ],
+      "missing": [
+        "get",
+        "getName",
+        "upgrade",
+        "whenDefined"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "CustomEvent",
+    "evidence": {
+      "stubs": [
+        "initCustomEvent"
+      ],
+      "missing": [
+        "CustomEvent"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "DOMMatrix",
+    "evidence": {
+      "missing": [
+        "invertSelf",
+        "multiplySelf",
+        "preMultiplySelf",
+        "rotateAxisAngleSelf",
+        "rotateFromVectorSelf",
+        "rotateSelf",
+        "scale3dSelf",
+        "scaleSelf",
+        "setMatrixValue",
+        "skewXSelf",
+        "skewYSelf",
+        "translateSelf",
+        "DOMMatrix"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "DOMRect",
+    "evidence": {
+      "missing": [
+        "DOMRect"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "DOMRectList",
+    "evidence": {
+      "stubs": [
+        "item"
+      ],
+      "present": [
+        "length"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "DOMRectReadOnly",
+    "evidence": {
+      "missing": [
+        "toJSON",
+        "DOMRectReadOnly"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "DOMStringMap",
+    "evidence": {
+      "missing": [
+        "itemDeleter",
+        "itemGetter",
+        "itemSetter"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "DOMTokenList",
+    "evidence": {
+      "stubs": [
+        "add",
+        "contains",
+        "item",
+        "remove",
+        "replace",
+        "supports",
+        "toggle",
+        "toString",
+        "forEach",
+        "entries",
+        "keys",
+        "values"
+      ],
+      "present": [
+        "length",
+        "value"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "DOMTokenListPart",
+    "evidence": {
+      "stubs": [
+        "add",
+        "contains",
+        "item",
+        "remove",
+        "replace",
+        "supports"
+      ],
+      "present": [
+        "length",
+        "value"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "Document",
+    "evidence": {
+      "stubs": [
+        "caretPositionFromPoint",
+        "createAttribute",
+        "createAttributeNS",
+        "createComment",
+        "createDocumentFragment",
+        "createElement",
+        "createElementNS",
+        "createEvent",
+        "createNodeIterator",
+        "createTextNode",
+        "elementFromPoint",
+        "elementsFromPoint",
+        "getElementById",
+        "getElementsByClassName",
+        "getElementsByName",
+        "getElementsByTagName",
+        "getSelection",
+        "hasFocus",
+        "importNode",
+        "querySelector",
+        "querySelectorAll",
+        "write",
+        "addEventListener",
+        "removeEventListener",
+        "append"
+      ],
+      "missing": [
+        "alinkColor",
+        "all",
+        "anchors",
+        "applets",
+        "bgColor",
+        "cookie",
+        "designMode",
+        "dir",
+        "domain",
+        "embeds",
+        "fgColor",
+        "forms",
+        "fragmentDirective",
+        "fullscreen",
+        "fullscreenEnabled",
+        "hidden",
+        "images",
+        "implementation",
+        "lastModified",
+        "linkColor",
+        "links",
+        "onfullscreenchange",
+        "onfullscreenerror",
+        "onpointerlockchange",
+        "onpointerlockerror",
+        "onreadystatechange",
+        "onvisibilitychange",
+        "pictureInPictureEnabled",
+        "plugins",
+        "referrer",
+        "rootElement",
+        "scripts",
+        "scrollingElement",
+        "timeline",
+        "title",
+        "visibilityState",
+        "vlinkColor",
+        "adoptNode",
+        "captureEvents",
+        "caretRangeFromPoint",
+        "clear",
+        "close",
+        "createCDATASection",
+        "createProcessingInstruction",
+        "createRange",
+        "createTreeWalker",
+        "execCommand",
+        "exitFullscreen",
+        "exitPictureInPicture",
+        "exitPointerLock",
+        "getElementsByTagNameNS",
+        "hasStorageAccess",
+        "open",
+        "queryCommandEnabled",
+        "queryCommandIndeterm",
+        "queryCommandState",
+        "queryCommandSupported",
+        "queryCommandValue",
+        "releaseEvents",
+        "requestStorageAccess",
+        "startViewTransition",
+        "writeln",
+        "Document",
+        "adoptedStyleSheets",
+        "browsingTopics",
+        "childElementCount",
+        "children",
+        "createExpression",
+        "createNSResolver",
+        "createTouch",
+        "createTouchList",
+        "enableStyleSheetsForSet",
+        "evaluate",
+        "featurePolicy",
+        "firstElementChild",
+        "fonts",
+        "fullscreenElement",
+        "getAnimations",
+        "getBoxQuads",
+        "hasPrivateToken",
+        "hasRedemptionRecord",
+        "hasUnpartitionedCookieAccess",
+        "lastElementChild",
+        "lastStyleSheetSet",
+        "location",
+        "moveBefore",
+        "mozSetImageElement",
+        "pictureInPictureElement",
+        "pointerLockElement",
+        "preferredStyleSheetSet",
+        "prepend",
+        "prerendering",
+        "releaseCapture",
+        "replaceChildren",
+        "requestStorageAccessFor",
+        "selectedStyleSheetSet",
+        "styleSheetSets",
+        "wasDiscarded",
+        "xmlEncoding",
+        "xmlStandalone",
+        "xmlVersion"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "DocumentFragment",
+    "evidence": {
+      "stubs": [
+        "getElementById",
+        "querySelector",
+        "querySelectorAll",
+        "append"
+      ],
+      "missing": [
+        "DocumentFragment",
+        "moveBefore",
+        "prepend",
+        "replaceChildren"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "DocumentType",
+    "evidence": {
+      "stubs": [
+        "after",
+        "before",
+        "remove"
+      ],
+      "missing": [
+        "replaceWith"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "Element",
+    "evidence": {
+      "stubs": [
+        "after",
+        "attachShadow",
+        "before",
+        "blur",
+        "closest",
+        "focus",
+        "getAnimations",
+        "getAttribute",
+        "getAttributeNS",
+        "getAttributeNames",
+        "getAttributeNode",
+        "getAttributeNodeNS",
+        "getBoundingClientRect",
+        "getClientRects",
+        "getElementsByClassName",
+        "getElementsByTagName",
+        "getElementsByTagNameNS",
+        "hasAttribute",
+        "hasAttributeNS",
+        "hasAttributes",
+        "insertAdjacentElement",
+        "insertAdjacentHTML",
+        "insertAdjacentText",
+        "matches",
+        "querySelector",
+        "querySelectorAll",
+        "remove",
+        "removeAttribute",
+        "removeAttributeNS",
+        "removeAttributeNode",
+        "setAttribute",
+        "setAttributeNS",
+        "setAttributeNode",
+        "setAttributeNodeNS",
+        "addEventListener",
+        "removeEventListener",
+        "append"
+      ],
+      "missing": [
+        "currentCSSZoom",
+        "onfullscreenchange",
+        "onfullscreenerror",
+        "checkVisibility",
+        "computedStyleMap",
+        "getHTML",
+        "hasPointerCapture",
+        "releasePointerCapture",
+        "requestFullscreen",
+        "requestPointerLock",
+        "scroll",
+        "scrollBy",
+        "scrollIntoView",
+        "scrollTo",
+        "setHTMLUnsafe",
+        "setPointerCapture",
+        "toggleAttribute",
+        "webkitMatchesSelector",
+        "animate",
+        "ariaActiveDescendantElement",
+        "ariaAtomic",
+        "ariaAutoComplete",
+        "ariaBrailleLabel",
+        "ariaBrailleRoleDescription",
+        "ariaBusy",
+        "ariaChecked",
+        "ariaColCount",
+        "ariaColIndex",
+        "ariaColIndexText",
+        "ariaColSpan",
+        "ariaControlsElements",
+        "ariaCurrent",
+        "ariaDescribedByElements",
+        "ariaDescription",
+        "ariaDetailsElements",
+        "ariaDisabled",
+        "ariaErrorMessageElements",
+        "ariaExpanded",
+        "ariaFlowToElements",
+        "ariaHasPopup",
+        "ariaHidden",
+        "ariaInvalid",
+        "ariaKeyShortcuts",
+        "ariaLabel",
+        "ariaLabelledByElements",
+        "ariaLevel",
+        "ariaLive",
+        "ariaModal",
+        "ariaMultiLine",
+        "ariaMultiSelectable",
+        "ariaOrientation",
+        "ariaOwnsElements",
+        "ariaPlaceholder",
+        "ariaPosInSet",
+        "ariaPressed",
+        "ariaReadOnly",
+        "ariaRelevant",
+        "ariaRequired",
+        "ariaRoleDescription",
+        "ariaRowCount",
+        "ariaRowIndex",
+        "ariaRowIndexText",
+        "ariaRowSpan",
+        "ariaSelected",
+        "ariaSetSize",
+        "ariaSort",
+        "ariaValueMax",
+        "ariaValueMin",
+        "ariaValueNow",
+        "ariaValueText",
+        "elementTiming",
+        "getBoxQuads",
+        "moveBefore",
+        "prepend",
+        "replaceChildren",
+        "replaceWith",
+        "role",
+        "scrollIntoViewIfNeeded",
+        "scrollLeftMax",
+        "scrollTopMax",
+        "setCapture"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "ErrorEvent",
+    "evidence": {
+      "missing": [
+        "ErrorEvent"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "Event",
+    "evidence": {
+      "stubs": [
+        "initEvent",
+        "preventDefault",
+        "stopImmediatePropagation",
+        "stopPropagation"
+      ],
+      "missing": [
+        "cancelBubble",
+        "isTrusted",
+        "returnValue",
+        "srcElement",
+        "timeStamp",
+        "composedPath",
+        "Event",
+        "explicitOriginalTarget",
+        "originalTarget"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "EventListener",
+    "evidence": {
+      "stubs": [
+        "handleEvent"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "EventTarget",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "dispatchEvent",
+        "removeEventListener"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "FocusEvent",
+    "evidence": {
+      "missing": [
+        "FocusEvent"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "Gamepad",
+    "evidence": {
+      "missing": [
+        "vibrationActuator",
+        "hapticActuators"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "GamepadEvent",
+    "evidence": {
+      "missing": [
+        "GamepadEvent"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "GetAnimationsOptions",
+    "evidence": {
+      "missing": [
+        "subtree"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "HTMLBodyElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "aLink",
+        "background",
+        "bgColor",
+        "link",
+        "text",
+        "vLink"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "HTMLButtonElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "disabled",
+        "form",
+        "formAction",
+        "formEnctype",
+        "formMethod",
+        "formNoValidate",
+        "formTarget",
+        "labels",
+        "name",
+        "type",
+        "validationMessage",
+        "validity",
+        "value",
+        "willValidate",
+        "checkValidity",
+        "reportValidity",
+        "setCustomValidity",
+        "command",
+        "commandForElement",
+        "popoverTargetAction",
+        "popoverTargetElement"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "HTMLCanvasElement",
+    "evidence": {
+      "stubs": [
+        "getContext",
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "getContext2D",
+        "captureStream",
+        "toBlob",
+        "toDataURL",
+        "transferControlToOffscreen",
+        "mozOpaque",
+        "mozPrintCallback"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "HTMLCollection",
+    "evidence": {
+      "stubs": [
+        "item"
+      ],
+      "missing": [
+        "namedItem"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "HTMLDivElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "HTMLDocument",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "HTMLElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener",
+        "blur",
+        "focus"
+      ],
+      "missing": [
+        "accessKey",
+        "accessKeyLabel",
+        "autocapitalize",
+        "autocorrect",
+        "dir",
+        "draggable",
+        "hidden",
+        "inert",
+        "innerText",
+        "lang",
+        "outerText",
+        "popover",
+        "spellcheck",
+        "title",
+        "translate",
+        "writingSuggestions",
+        "attachInternals",
+        "click",
+        "hidePopover",
+        "showPopover",
+        "togglePopover",
+        "anchorElement",
+        "autofocus",
+        "contentEditable",
+        "editContext",
+        "enterKeyHint",
+        "inputMode",
+        "isContentEditable",
+        "nonce",
+        "tabIndex",
+        "virtualKeyboardPolicy"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "HTMLHeadElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "HTMLHtmlElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "HTMLIFrameElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "align",
+        "allow",
+        "allowFullscreen",
+        "contentDocument",
+        "contentWindow",
+        "frameBorder",
+        "height",
+        "loading",
+        "longDesc",
+        "marginHeight",
+        "marginWidth",
+        "name",
+        "referrerPolicy",
+        "scrolling",
+        "src",
+        "srcdoc",
+        "width",
+        "getSVGDocument",
+        "adAuctionHeaders",
+        "allowPaymentRequest",
+        "browsingTopics",
+        "credentialless",
+        "csp",
+        "featurePolicy",
+        "privateToken",
+        "sandbox",
+        "sharedStorageWritable"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "HTMLImageElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "align",
+        "alt",
+        "border",
+        "complete",
+        "crossOrigin",
+        "currentSrc",
+        "decoding",
+        "fetchPriority",
+        "hspace",
+        "isMap",
+        "loading",
+        "longDesc",
+        "lowsrc",
+        "name",
+        "naturalHeight",
+        "naturalWidth",
+        "referrerPolicy",
+        "sizes",
+        "srcset",
+        "useMap",
+        "vspace",
+        "x",
+        "y",
+        "decode",
+        "Image",
+        "attributionSrc",
+        "sharedStorageWritable"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "HTMLInputElement",
+    "evidence": {
+      "stubs": [
+        "select",
+        "setRangeText",
+        "setSelectionRange",
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "accept",
+        "align",
+        "alt",
+        "autocomplete",
+        "capture",
+        "checked",
+        "defaultChecked",
+        "defaultValue",
+        "dirName",
+        "disabled",
+        "files",
+        "form",
+        "formAction",
+        "formEnctype",
+        "formMethod",
+        "formNoValidate",
+        "formTarget",
+        "height",
+        "indeterminate",
+        "labels",
+        "list",
+        "max",
+        "min",
+        "multiple",
+        "name",
+        "pattern",
+        "placeholder",
+        "readOnly",
+        "required",
+        "src",
+        "step",
+        "useMap",
+        "validationMessage",
+        "validity",
+        "valueAsDate",
+        "valueAsNumber",
+        "webkitEntries",
+        "webkitdirectory",
+        "width",
+        "willValidate",
+        "checkValidity",
+        "reportValidity",
+        "setCustomValidity",
+        "showPicker",
+        "stepDown",
+        "stepUp",
+        "alpha",
+        "colorSpace",
+        "incremental",
+        "popoverTargetAction",
+        "popoverTargetElement"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "HTMLLinkElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "as",
+        "charset",
+        "crossOrigin",
+        "disabled",
+        "fetchPriority",
+        "hreflang",
+        "imageSizes",
+        "imageSrcset",
+        "integrity",
+        "media",
+        "referrerPolicy",
+        "rev",
+        "target",
+        "blocking",
+        "relList",
+        "sheet",
+        "sizes"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "HTMLMediaElement",
+    "evidence": {
+      "stubs": [
+        "canPlayType",
+        "cohGetKeyframeTimestamps",
+        "cohPrebufferKeyframe",
+        "load",
+        "pause",
+        "play",
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "srcObject",
+        "controls",
+        "defaultMuted",
+        "disableRemotePlayback",
+        "mediaKeys",
+        "onencrypted",
+        "onwaitingforkey",
+        "preservesPitch",
+        "remote",
+        "sinkId",
+        "textTracks",
+        "addTextTrack",
+        "fastSeek",
+        "setMediaKeys",
+        "setSinkId",
+        "audioTracks",
+        "captureStream",
+        "controller",
+        "controlsList",
+        "getStartDate",
+        "mediaGroup",
+        "mozAudioCaptured",
+        "mozCaptureStreamUntilEnded",
+        "mozFragmentEnd",
+        "mozGetMetadata",
+        "seekToNextFrame",
+        "videoTracks"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "HTMLParagraphElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "HTMLPreElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "HTMLScriptElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "charset",
+        "crossOrigin",
+        "event",
+        "fetchPriority",
+        "htmlFor",
+        "integrity",
+        "noModule",
+        "referrerPolicy",
+        "attributionSrc",
+        "blocking"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "HTMLSlotElement",
+    "evidence": {
+      "stubs": [
+        "assign",
+        "assignedElements",
+        "assignedNodes",
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "present": [
+        "name"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "HTMLSourceElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "height",
+        "sizes",
+        "srcset",
+        "width"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "HTMLSpanElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "HTMLStyleElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "disabled",
+        "media",
+        "type",
+        "blocking",
+        "sheet"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "HTMLTemplateElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "shadowRootClonable",
+        "shadowRootDelegatesFocus",
+        "shadowRootMode",
+        "shadowRootSerializable"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "HTMLTextAreaElement",
+    "evidence": {
+      "stubs": [
+        "select",
+        "setRangeText",
+        "setSelectionRange",
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "autocomplete",
+        "defaultValue",
+        "dirName",
+        "disabled",
+        "form",
+        "labels",
+        "name",
+        "placeholder",
+        "readOnly",
+        "required",
+        "type",
+        "validationMessage",
+        "validity",
+        "willValidate",
+        "checkValidity",
+        "reportValidity",
+        "setCustomValidity"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "HTMLTitleElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "HTMLUnknownElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "HTMLVideoElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "disablePictureInPicture",
+        "onenterpictureinpicture",
+        "onleavepictureinpicture",
+        "playsInline",
+        "cancelVideoFrameCallback",
+        "getVideoPlaybackQuality",
+        "requestPictureInPicture",
+        "requestVideoFrameCallback",
+        "mozDecodedFrames",
+        "mozFrameDelay",
+        "mozHasAudio",
+        "mozPaintedFrames",
+        "mozParsedFrames",
+        "mozPresentedFrames"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "History",
+    "evidence": {
+      "stubs": [
+        "back",
+        "forward",
+        "go",
+        "pushState",
+        "replaceState"
+      ],
+      "present": [
+        "index",
+        "length",
+        "state"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "KeyboardEvent",
+    "evidence": {
+      "stubs": [
+        "getModifierState",
+        "initKeyboardEvent"
+      ],
+      "missing": [
+        "isComposing",
+        "KeyboardEvent",
+        "keyIdentifier"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "Location",
+    "evidence": {
+      "stubs": [
+        "assign",
+        "reload",
+        "replace",
+        "toString"
+      ],
+      "missing": []
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "MessageEvent",
+    "evidence": {
+      "missing": [
+        "ports",
+        "source",
+        "initMessageEvent",
+        "MessageEvent",
+        "userActivation"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "MouseEvent",
+    "evidence": {
+      "stubs": [
+        "getModifierState",
+        "initMouseEvent"
+      ],
+      "missing": [
+        "layerX",
+        "layerY",
+        "offsetX",
+        "offsetY",
+        "pageX",
+        "pageY",
+        "MouseEvent"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "MutationObserver",
+    "evidence": {
+      "stubs": [
+        "disconnect",
+        "observe",
+        "takeRecords"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "NamedNodeMap",
+    "evidence": {
+      "stubs": [
+        "getNamedItem",
+        "item"
+      ],
+      "missing": [
+        "getNamedItemNS",
+        "removeNamedItem",
+        "removeNamedItemNS",
+        "setNamedItem",
+        "setNamedItemNS"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "Navigator",
+    "evidence": {
+      "stubs": [
+        "getGamepads"
+      ],
+      "missing": [
+        "clipboard",
+        "credentials",
+        "doNotTrack",
+        "geolocation",
+        "login",
+        "maxTouchPoints",
+        "mediaCapabilities",
+        "mediaDevices",
+        "mediaSession",
+        "permissions",
+        "serviceWorker",
+        "userActivation",
+        "wakeLock",
+        "canShare",
+        "requestMIDIAccess",
+        "requestMediaKeySystemAccess",
+        "sendBeacon",
+        "share",
+        "vibrate",
+        "activeVRDisplays",
+        "adAuctionComponents",
+        "appCodeName",
+        "appName",
+        "appVersion",
+        "audioSession",
+        "authentication",
+        "bluetooth",
+        "buildID",
+        "canLoadAdAuctionFencedFrame",
+        "clearAppBadge",
+        "clearOriginJoinedAdInterestGroups",
+        "connection",
+        "contacts",
+        "cookieEnabled",
+        "createAuctionNonce",
+        "deprecatedReplaceInURN",
+        "deprecatedRunAdAuctionEnforcesKAnonymity",
+        "deviceMemory",
+        "devicePosture",
+        "getAutoplayPolicy",
+        "getBattery",
+        "getInstalledRelatedApps",
+        "getInterestGroupAdAuctionData",
+        "getUserMedia",
+        "getVRDisplays",
+        "globalPrivacyControl",
+        "gpu",
+        "hardwareConcurrency",
+        "hid",
+        "ink",
+        "javaEnabled",
+        "joinAdInterestGroup",
+        "keyboard",
+        "language",
+        "languages",
+        "leaveAdInterestGroup",
+        "locks",
+        "managed",
+        "mimeTypes",
+        "ml",
+        "onLine",
+        "oscpu",
+        "pdfViewerEnabled",
+        "platform",
+        "plugins",
+        "presentation",
+        "product",
+        "productSub",
+        "protectedAudience",
+        "registerProtocolHandler",
+        "runAdAuction",
+        "scheduling",
+        "serial",
+        "setAppBadge",
+        "storage",
+        "storageBuckets",
+        "taintEnabled",
+        "unregisterProtocolHandler",
+        "updateAdInterestGroups",
+        "usb",
+        "userAgentData",
+        "vendor",
+        "vendorSub",
+        "virtualKeyboard",
+        "webdriver",
+        "windowControlsOverlay",
+        "xr"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "Node",
+    "evidence": {
+      "stubs": [
+        "append",
+        "appendChild",
+        "cloneNode",
+        "compareDocumentPosition",
+        "contains",
+        "getRootNode",
+        "hasChildNodes",
+        "insertBefore",
+        "isDefaultNamespace",
+        "isEqualNode",
+        "isSameNode",
+        "lookupNamespaceURI",
+        "lookupPrefix",
+        "normalize",
+        "removeChild",
+        "replaceChild"
+      ],
+      "missing": []
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "NodeFilter",
+    "evidence": {
+      "stubs": [
+        "acceptNode"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "NodeIterator",
+    "evidence": {
+      "stubs": [
+        "nextNode",
+        "previousNode"
+      ],
+      "missing": [
+        "detach"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "NodeList",
+    "evidence": {
+      "stubs": [
+        "item",
+        "forEach",
+        "entries",
+        "keys",
+        "values"
+      ],
+      "present": [
+        "length"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "Performance",
+    "evidence": {
+      "stubs": [
+        "now",
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "eventCounts",
+        "navigation",
+        "onresourcetimingbufferfull",
+        "timeOrigin",
+        "timing",
+        "clearMarks",
+        "clearMeasures",
+        "clearResourceTimings",
+        "getEntries",
+        "getEntriesByName",
+        "getEntriesByType",
+        "mark",
+        "measure",
+        "setResourceTimingBufferSize",
+        "toJSON",
+        "measureUserAgentSpecificMemory",
+        "memory"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "PopStateEvent",
+    "evidence": {
+      "missing": [
+        "hasUAVisualTransition",
+        "PopStateEvent"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "ProgressEvent",
+    "evidence": {
+      "missing": [
+        "ProgressEvent"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "PromiseRejectionEvent",
+    "evidence": {
+      "missing": [
+        "PromiseRejectionEvent"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "ResizeObserver",
+    "evidence": {
+      "stubs": [
+        "disconnect",
+        "observe",
+        "unobserve"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "ResizeObserverOptions",
+    "evidence": {
+      "missing": [
+        "box"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "SVGAnimatedLength",
+    "evidence": {
+      "missing": [
+        "animVal"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "SVGAnimatedRect",
+    "evidence": {
+      "missing": [
+        "animVal"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "SVGAnimatedTransformList",
+    "evidence": {
+      "missing": [
+        "animVal"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "SVGElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener",
+        "blur",
+        "focus"
+      ],
+      "missing": [
+        "ownerSVGElement",
+        "viewportElement",
+        "attributeStyleMap",
+        "autofocus",
+        "dataset",
+        "nonce",
+        "tabIndex"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "SVGGraphicsElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "getBBox",
+        "getCTM",
+        "getScreenCTM",
+        "requiredExtensions",
+        "systemLanguage"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "SVGLength",
+    "evidence": {
+      "missing": [
+        "valueAsString",
+        "valueInSpecifiedUnits",
+        "convertToSpecifiedUnits",
+        "newValueSpecifiedUnits",
+        "SVG_LENGTHTYPE_UNKNOWN",
+        "SVG_LENGTHTYPE_NUMBER",
+        "SVG_LENGTHTYPE_PERCENTAGE",
+        "SVG_LENGTHTYPE_EMS",
+        "SVG_LENGTHTYPE_EXS",
+        "SVG_LENGTHTYPE_PX",
+        "SVG_LENGTHTYPE_CM",
+        "SVG_LENGTHTYPE_MM",
+        "SVG_LENGTHTYPE_IN",
+        "SVG_LENGTHTYPE_PT",
+        "SVG_LENGTHTYPE_PC"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "SVGSVGElement",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "currentScale",
+        "currentTranslate",
+        "x",
+        "y",
+        "animationsPaused",
+        "checkEnclosure",
+        "checkIntersection",
+        "createSVGAngle",
+        "createSVGLength",
+        "createSVGMatrix",
+        "createSVGNumber",
+        "createSVGPoint",
+        "createSVGRect",
+        "createSVGTransform",
+        "createSVGTransformFromMatrix",
+        "deselectAll",
+        "forceRedraw",
+        "getCurrentTime",
+        "getElementById",
+        "getEnclosureList",
+        "getIntersectionList",
+        "pauseAnimations",
+        "setCurrentTime",
+        "suspendRedraw",
+        "unpauseAnimations",
+        "unsuspendRedraw",
+        "unsuspendRedrawAll",
+        "currentView",
+        "preserveAspectRatio",
+        "useCurrentView"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "SVGTextElement",
+    "evidence": {
+      "stubs": [
+        "getComputedTextLength",
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "SVGTransform",
+    "evidence": {
+      "missing": [
+        "setMatrix",
+        "setRotate",
+        "setScale",
+        "setSkewX",
+        "setSkewY",
+        "setTranslate",
+        "SVG_TRANSFORM_UNKNOWN",
+        "SVG_TRANSFORM_MATRIX",
+        "SVG_TRANSFORM_TRANSLATE",
+        "SVG_TRANSFORM_SCALE",
+        "SVG_TRANSFORM_ROTATE",
+        "SVG_TRANSFORM_SKEWX",
+        "SVG_TRANSFORM_SKEWY"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "SVGTransformList",
+    "evidence": {
+      "stubs": [
+        "consolidate"
+      ],
+      "missing": [
+        "appendItem",
+        "clear",
+        "createSVGTransformFromMatrix",
+        "getItem",
+        "initialize",
+        "insertItemBefore",
+        "removeItem",
+        "replaceItem"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "Screen",
+    "evidence": {
+      "missing": [
+        "orientation",
+        "availLeft",
+        "availTop",
+        "isExtended",
+        "left",
+        "lockOrientation",
+        "mozBrightness",
+        "mozEnabled",
+        "top",
+        "unlockOrientation"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "Selection",
+    "evidence": {
+      "stubs": [
+        "empty",
+        "removeAllRanges",
+        "setBaseAndExtent",
+        "toString"
+      ],
+      "missing": [
+        "direction",
+        "isCollapsed",
+        "rangeCount",
+        "type",
+        "addRange",
+        "collapse",
+        "collapseToEnd",
+        "collapseToStart",
+        "containsNode",
+        "deleteFromDocument",
+        "extend",
+        "getComposedRanges",
+        "getRangeAt",
+        "modify",
+        "removeRange",
+        "selectAllChildren",
+        "setPosition"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "ShadowRoot",
+    "evidence": {
+      "stubs": [
+        "elementFromPoint",
+        "elementsFromPoint",
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "serializable",
+        "getHTML",
+        "setHTMLUnsafe",
+        "adoptedStyleSheets",
+        "fullscreenElement",
+        "getAnimations",
+        "getSelection",
+        "pictureInPictureElement",
+        "pointerLockElement"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "Storage",
+    "evidence": {
+      "stubs": [
+        "clear",
+        "getItem",
+        "key",
+        "removeItem",
+        "setItem"
+      ],
+      "present": [
+        "length"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "StylePropertyMap",
+    "evidence": {
+      "stubs": [
+        "clear",
+        "delete",
+        "set"
+      ],
+      "present": []
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "StylePropertyMapReadOnly",
+    "evidence": {
+      "stubs": [
+        "get",
+        "has"
+      ],
+      "missing": [
+        "getAll",
+        "forEach",
+        "entries",
+        "keys",
+        "values"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "StyleSheet",
+    "evidence": {
+      "missing": [
+        "disabled",
+        "href",
+        "parentStyleSheet",
+        "title",
+        "type",
+        "media"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "StyleSheetList",
+    "evidence": {
+      "stubs": [
+        "item"
+      ],
+      "present": [
+        "length"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "Text",
+    "evidence": {
+      "stubs": [
+        "splitText"
+      ],
+      "missing": [
+        "Text",
+        "getBoxQuads"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "TextMetrics",
+    "evidence": {
+      "missing": [
+        "alphabeticBaseline",
+        "emHeightAscent",
+        "emHeightDescent",
+        "fontBoundingBoxAscent",
+        "fontBoundingBoxDescent",
+        "hangingBaseline",
+        "ideographicBaseline"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "TimeRanges",
+    "evidence": {
+      "stubs": [
+        "end",
+        "start"
+      ],
+      "present": [
+        "length"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "Touch",
+    "evidence": {
+      "missing": [
+        "force",
+        "radiusX",
+        "radiusY",
+        "rotationAngle",
+        "Touch",
+        "altitudeAngle",
+        "azimuthAngle",
+        "touchType"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "TouchEvent",
+    "evidence": {
+      "missing": [
+        "changedTouches",
+        "targetTouches",
+        "TouchEvent"
+      ]
+    }
+  },
+  {
+    "status": "stub-heavy",
+    "surface": "js",
+    "name": "TouchList",
+    "evidence": {
+      "stubs": [
+        "item"
+      ],
+      "present": [
+        "length"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "TransitionEvent",
+    "evidence": {
+      "missing": [
+        "TransitionEvent"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "UIEvent",
+    "evidence": {
+      "stubs": [
+        "initUIEvent"
+      ],
+      "missing": [
+        "view",
+        "which",
+        "UIEvent",
+        "sourceCapabilities"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "URL",
+    "evidence": {
+      "stubs": [
+        "toJSON",
+        "toString"
+      ],
+      "missing": [
+        "revokeObjectURL",
+        "password",
+        "searchParams",
+        "username",
+        "URL"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "WebSocket",
+    "evidence": {
+      "stubs": [
+        "close",
+        "send",
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "WebSocket"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "Window",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "cancelAnimationFrame",
+        "clearInterval",
+        "clearTimeout",
+        "dispatchEvent",
+        "getComputedStyle",
+        "getSelection",
+        "queueMicrotask",
+        "removeEventListener",
+        "requestAnimationFrame",
+        "scrollBy",
+        "scrollTo",
+        "setInterval",
+        "setTimeout"
+      ],
+      "missing": [
+        "console",
+        "chrome",
+        "clientInformation",
+        "closed",
+        "cookieStore",
+        "event",
+        "external",
+        "frameElement",
+        "frames",
+        "length",
+        "locationbar",
+        "menubar",
+        "name",
+        "ondevicemotion",
+        "ondeviceorientation",
+        "ondeviceorientationabsolute",
+        "onorientationchange",
+        "opener",
+        "orientation",
+        "originAgentCluster",
+        "personalbar",
+        "scrollbars",
+        "speechSynthesis",
+        "status",
+        "statusbar",
+        "toolbar",
+        "top",
+        "visualViewport",
+        "window",
+        "alert",
+        "blur",
+        "cancelIdleCallback",
+        "captureEvents",
+        "close",
+        "confirm",
+        "focus",
+        "matchMedia",
+        "moveBy",
+        "moveTo",
+        "open",
+        "postMessage",
+        "print",
+        "prompt",
+        "releaseEvents",
+        "requestIdleCallback",
+        "resizeBy",
+        "resizeTo",
+        "scroll",
+        "stop",
+        "clearImmediate",
+        "credentialless",
+        "documentPictureInPicture",
+        "dump",
+        "fence",
+        "fetchLater",
+        "find",
+        "fullScreen",
+        "getDefaultComputedStyle",
+        "getDigitalGoodsService",
+        "getScreenDetails",
+        "launchQueue",
+        "mozInnerScreenX",
+        "mozInnerScreenY",
+        "navigation",
+        "queryLocalFonts",
+        "requestFileSystem",
+        "resolveLocalFileSystemURL",
+        "scrollByLines",
+        "scrollByPages",
+        "scrollMaxX",
+        "scrollMaxY",
+        "sessionStorage",
+        "setImmediate",
+        "setResizable",
+        "sharedStorage",
+        "showDirectoryPicker",
+        "showModalDialog",
+        "showOpenFilePicker",
+        "showSaveFilePicker",
+        "sizeToContent",
+        "styleMedia",
+        "updateCommands",
+        "webkitConvertPointFromNodeToPage",
+        "webkitConvertPointFromPageToNode"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "XMLHttpRequest",
+    "evidence": {
+      "stubs": [
+        "abort",
+        "getAllResponseHeaders",
+        "getResponseHeader",
+        "open",
+        "overrideMimeType",
+        "send",
+        "setRequestHeader",
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "responseArrayBuffer",
+        "responseBlob",
+        "responseXML",
+        "upload",
+        "XMLHttpRequest",
+        "setAttributionReporting",
+        "setPrivateToken"
+      ]
+    }
+  },
+  {
+    "status": "stub",
+    "surface": "js",
+    "name": "XMLHttpRequestEventTarget",
+    "evidence": {
+      "stubs": [
+        "addEventListener",
+        "removeEventListener"
+      ],
+      "missing": [
+        "onabort",
+        "onerror",
+        "onload",
+        "onloadend",
+        "onloadstart",
+        "onprogress",
+        "ontimeout"
+      ]
+    }
+  }
+]

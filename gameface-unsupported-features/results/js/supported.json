@@ -1,0 +1,110 @@
+[
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "CSSMatrixComponentOptions",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "ElementDefinitionOptions",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "GamepadButton",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "GamepadPose",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "MediaError",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "MutationObserverInit",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "MutationRecord",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "ResizeObserverEntry",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "ResizeObserverSize",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "SVGRect",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "VirtualList",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "clearInterval",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "clearTimeout",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "console",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "performance",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "queueMicrotask",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "setInterval",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "setTimeout",
+    "evidence": {}
+  }
+]

@@ -1,0 +1,2048 @@
+[
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "accent-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "alignment-baseline",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "alt",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "anchor-name",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "anchor-scope",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "animation-composition",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "animation-range",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "animation-range-end",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "animation-range-start",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "animation-timeline",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "appearance",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "background-attachment",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "background-blend-mode",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "background-clip",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "background-origin",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "baseline-shift",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "baseline-source",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "block-size",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-end",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-end-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-end-style",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-end-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-start",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-start-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-start-style",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-start-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-style",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-collapse",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-end-end-radius",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-end-start-radius",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-end",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-end-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-end-style",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-end-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-start",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-start-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-start-style",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-start-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-style",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-spacing",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-start-end-radius",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-start-start-radius",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-align",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-decoration-break",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-direction",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-flex",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-flex-group",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-lines",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-ordinal-group",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-orient",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-pack",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "break-after",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "break-before",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "break-inside",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "caption-side",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "clear",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "clip",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "color-adjust",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "color-interpolation",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "color-interpolation-filters",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "color-scheme",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-count",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-fill",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-rule",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-rule-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-rule-style",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-rule-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-span",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "columns",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "contain-intrinsic-block-size",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "contain-intrinsic-height",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "contain-intrinsic-inline-size",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "contain-intrinsic-size",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "contain-intrinsic-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "container",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "container-name",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "container-type",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "content-visibility",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "counter-increment",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "counter-reset",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "counter-set",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "custom-property",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "direction",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "dominant-baseline",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "dynamic-range-limit",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "empty-cells",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "field-sizing",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "flex-flow",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "float",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "flood-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "flood-opacity",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-feature-settings",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-kerning",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-language-override",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-optical-sizing",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-palette",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-size-adjust",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-smooth",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-stretch",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-synthesis",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-synthesis-position",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-synthesis-small-caps",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-synthesis-style",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-synthesis-weight",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-variant",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-variant-alternates",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-variant-caps",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-variant-emoji",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-variant-ligatures",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-variant-numeric",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-variant-position",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-variation-settings",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "forced-color-adjust",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "glyph-orientation-vertical",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-area",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-auto-columns",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-auto-flow",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-auto-rows",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-column",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-column-end",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-column-start",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-row",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-row-end",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-row-start",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-template",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-template-areas",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-template-columns",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-template-rows",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "hanging-punctuation",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "hyphenate-character",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "hyphenate-limit-chars",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "hyphens",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "image-orientation",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "ime-mode",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "initial-letter",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "inline-size",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "inset",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "inset-block",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "inset-block-end",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "inset-block-start",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "inset-inline",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "inset-inline-end",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "inset-inline-start",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "interactivity",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "interpolate-size",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "justify-items",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "justify-self",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "lighting-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "line-break",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "line-clamp",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "line-height-step",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "list-style",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "list-style-image",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "list-style-position",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "list-style-type",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "margin-block",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "margin-block-end",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "margin-block-start",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "margin-inline",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "margin-inline-end",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "margin-inline-start",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "margin-trim",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "marker",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "marker-end",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "marker-mid",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "marker-start",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-border",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-border-outset",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-border-slice",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-border-source",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-border-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-composite",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-origin",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "math-depth",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "math-shift",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "math-style",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "max-block-size",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "max-inline-size",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "min-block-size",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "min-inline-size",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "object-fit",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "object-position",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "object-view-box",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "offset-anchor",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "offset-distance",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "offset-path",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "offset-position",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "offset-rotate",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "order",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "orphans",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "outline",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "outline-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "outline-offset",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "outline-style",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "outline-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overflow-anchor",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overflow-block",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overflow-clip-margin",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overflow-inline",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overlay",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overscroll-behavior",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overscroll-behavior-block",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overscroll-behavior-inline",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overscroll-behavior-x",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overscroll-behavior-y",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "padding-block",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "padding-block-end",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "padding-block-start",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "padding-inline",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "padding-inline-end",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "padding-inline-start",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "page",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "page-break-after",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "page-break-before",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "page-break-inside",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "paint-order",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "place-content",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "place-items",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "place-self",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "position-anchor",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "position-area",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "position-try",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "position-try-fallbacks",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "position-try-order",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "position-visibility",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "print-color-adjust",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "quotes",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "reading-flow",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "resize",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "rotate",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "ruby-align",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "ruby-overhang",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "ruby-position",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scale",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-behavior",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-initial-target",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-block",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-block-end",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-block-start",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-bottom",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-inline",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-inline-end",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-inline-start",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-left",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-right",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-top",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-marker-group",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-block",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-block-end",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-block-start",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-bottom",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-inline",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-inline-end",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-inline-start",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-left",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-right",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-top",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-snap-align",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-snap-stop",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-snap-type",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-timeline",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-timeline-axis",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-timeline-name",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scrollbar-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scrollbar-gutter",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scrollbar-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "shape-image-threshold",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "shape-margin",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "shape-outside",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "speak",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "speak-as",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "stroke-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "tab-size",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "table-layout",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-align-last",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-autospace",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-box",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-box-edge",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-box-trim",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-combine-upright",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-decoration-skip",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-decoration-skip-ink",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-emphasis",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-emphasis-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-emphasis-position",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-emphasis-style",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-indent",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-justify",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-orientation",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-size-adjust",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-spacing-trim",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-wrap",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-wrap-mode",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-wrap-style",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "timeline-scope",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "touch-action",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "transform-box",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "transform-style",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "translate",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "unicode-bidi",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "user-modify",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "vector-effect",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "view-timeline",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "view-timeline-axis",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "view-timeline-inset",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "view-timeline-name",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "view-transition-class",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "view-transition-name",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "white-space-collapse",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "widows",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "will-change",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "word-break",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "word-spacing",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "writing-mode",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "zoom",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-1",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-2",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-3",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-4",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-5",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-6",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-7",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-8",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-9",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-10",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-11",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-12",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-string-param-1",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-string-param-2",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-gap",
+    "evidence": {}
+  }
+]

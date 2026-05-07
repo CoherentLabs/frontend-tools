@@ -1,0 +1,112 @@
+[
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":active-view-transition",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :active-view-transition"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":active-view-transition-type(fade)",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :active-view-transition-type"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":any-link",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :any-link"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":autofill",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :autofill"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::backdrop",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::backdrop"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":buffering",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :buffering"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":checked",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :checked"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::checkmark",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::checkmark"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":closed",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :closed"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::cue",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::cue"
+    }
+  }
+]
