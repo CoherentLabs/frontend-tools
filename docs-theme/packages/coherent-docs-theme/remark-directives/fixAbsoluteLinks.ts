@@ -13,7 +13,7 @@ function processUrl(base: string, url: string) {
     const [pathPart, hashPart] = newUrl.split('#');
     //@ts-ignore
     const hasExtension = /\.[a-zA-Z0-9]+$/.test(pathPart);
-    
+
     //@ts-ignore
     if (!hasExtension && !pathPart.endsWith('/')) {
         newUrl = `${pathPart}/` + (hashPart !== undefined ? `#${hashPart}` : '');
@@ -41,6 +41,8 @@ export function remarkFixAbsoluteLinks(options: { basePath: string }) {
 
         visit(tree, ['mdxJsxFlowElement', 'mdxJsxTextElement'], (node: any) => {
             if (node.name === 'NativeLink') return;
+            if (node.name === 'UnityLink') return;
+            if (node.name === 'UnrealLink') return;
 
             if (node.attributes) {
                 for (const attr of node.attributes) {
