@@ -34,6 +34,16 @@ let slides: CustomSlide[] = [];
 const baseUrl =
     import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL;
 
+const resolveUrl = (srcPath: string) => {
+    if (srcPath.startsWith("/") && !srcPath.startsWith("//")) {
+        const cleanBase = baseUrl.replace(/\/+$/, "");
+        if (cleanBase && !srcPath.startsWith(cleanBase)) {
+            return `${cleanBase}${srcPath}`;
+        }
+    }
+    return srcPath;
+};
+
 if (dir) {
     const cleanDir = dir.replace(/\/+$/, "");
     const publicPath = path.join(process.cwd(), "public", cleanDir);
@@ -46,7 +56,7 @@ if (dir) {
             );
             slides.push(
                 ...imageFiles.map((file) => ({
-                    src: `${baseUrl}/${cleanDir}/${file}`,
+                    src: resolveUrl(`/${cleanDir}/${file}`),
                 })),
             );
         }
@@ -60,7 +70,7 @@ if (dir) {
 
 images.forEach((item: any) => {
     if (typeof item === "string") {
-        slides.push({ src: item });
+        slides.push({ src: resolveUrl(item) });
     } else if (
         item.format !== undefined &&
         item.width !== undefined &&
@@ -69,7 +79,13 @@ images.forEach((item: any) => {
     ) {
         slides.push({ src: item as ImageMetadata });
     } else {
-        slides.push(item as CustomSlide);
+        const customSlide = { ...item } as CustomSlide;
+        
+        if (typeof customSlide.src === "string") {
+            customSlide.src = resolveUrl(customSlide.src);
+        }
+        
+        slides.push(customSlide);
     }
 });
 
