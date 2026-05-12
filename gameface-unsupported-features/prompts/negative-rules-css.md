@@ -2,9 +2,9 @@
 
 Generated from `results/css/{partial,unsupported}.json` and `results/selectors/{partial,unsupported}.json`. Each rule maps to the cited scraper file via `source_path` in `negative-rules-index.json`. Examples and "why" fields are derived directly from the scraper evidence.
 
-Total rules in this file: **232** (critical: 27, high: 61, medium: 140, low: 4).
+Total rules in this file: **232** (critical: 25, high: 61, medium: 142, low: 4).
 
-## CRITICAL (27)
+## CRITICAL (25)
 
 ---
 ### [CSS-323] — ::backdrop
@@ -228,48 +228,6 @@ Total rules in this file: **232** (critical: 27, high: 61, medium: 140, low: 4).
 ```
 
 **Rule for AI agents:** Never use the `[ of <selector-list> ]` extension on `:nth-child`/`:nth-of-type` (e.g. `:nth-child(2 of .class)`); only the `An+B` form is honored.
-
-**Why:** scraper note: "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).".
-
----
-### [CSS-340] — :nth-last-of-type(2)
-**Status:** parser-only
-**Surface:** css-selector
-**Severity:** critical
-
-**❌ Never generate:**
-```css
-:nth-last-of-type(2) { color: red; }
-```
-
-**✅ Generate instead:**
-```css
-:nth-child(2) { color: red; }
-// Use only the An+B form; if you need scoped matching, add an explicit class to the matched elements from JS.
-```
-
-**Rule for AI agents:** Never use the `[ of <selector-list> ]` extension on `:nth-child`/`:nth-of-type` (e.g. `:nth-last-of-type(2)`); only the `An+B` form is honored.
-
-**Why:** scraper note: "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).".
-
----
-### [CSS-341] — :nth-of-type(2)
-**Status:** parser-only
-**Surface:** css-selector
-**Severity:** critical
-
-**❌ Never generate:**
-```css
-:nth-of-type(2) { color: red; }
-```
-
-**✅ Generate instead:**
-```css
-:nth-child(2) { color: red; }
-// Use only the An+B form; if you need scoped matching, add an explicit class to the matched elements from JS.
-```
-
-**Rule for AI agents:** Never use the `[ of <selector-list> ]` extension on `:nth-child`/`:nth-of-type` (e.g. `:nth-of-type(2)`); only the `An+B` form is honored.
 
 **Why:** scraper note: "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).".
 
@@ -1871,7 +1829,7 @@ table { border-collapse: collapse; }
 
 ---
 
-## MEDIUM (140)
+## MEDIUM (142)
 
 ---
 ### [CSS-335] — :nth-child(2)
@@ -1970,6 +1928,46 @@ table { border-collapse: collapse; }
 ```
 
 **Rule for AI agents:** Never use the `[ of <selector-list> ]` extension with `:nth-last-child`; only the An+B / odd / even forms are honored.
+
+**Why:** scraper note: "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).".
+
+---
+### [CSS-340] — :nth-last-of-type(2)
+**Status:** partial-values
+**Surface:** css-selector
+**Severity:** medium
+
+**❌ Never generate:**
+```css
+:nth-last-of-type(2 of .class) { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+:nth-last-of-type(2) { color: red; }
+```
+
+**Rule for AI agents:** Never use the `[ of <selector-list> ]` extension with `:nth-last-of-type`; only the An+B / odd / even forms are honored.
+
+**Why:** scraper note: "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).".
+
+---
+### [CSS-341] — :nth-of-type(2)
+**Status:** partial-values
+**Surface:** css-selector
+**Severity:** medium
+
+**❌ Never generate:**
+```css
+:nth-of-type(2 of .class) { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+:nth-of-type(2) { color: red; }
+```
+
+**Rule for AI agents:** Never use the `[ of <selector-list> ]` extension with `:nth-of-type`; only the An+B / odd / even forms are honored.
 
 **Why:** scraper note: "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).".
 

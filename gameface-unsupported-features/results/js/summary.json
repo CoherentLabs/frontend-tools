@@ -1,12 +1,10 @@
 {
-  "supported": 18,
-  "partial": 126,
+  "supported": 38,
+  "partial": 106,
   "unsupported": 1527,
   "byStatus": {
-    "supported": 18,
-    "stub": 51,
-    "partial": 43,
-    "stub-heavy": 32,
+    "supported": 38,
+    "partial": 106,
     "missing-from-window": 1527
   }
 }

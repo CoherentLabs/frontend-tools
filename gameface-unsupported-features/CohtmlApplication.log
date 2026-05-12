@@ -18,8 +18,8 @@ Warning: Unable to load font resource coui://fonts/Lora-BoldItalic.ttf. Ensure t
 Warning: ResourceRequestJob | Failed loading resource: coui://fonts/Lora-BoldItalic.ttf
 Warning: Unable to load font resource coui://fonts/Lora-Italic.ttf. Ensure the file exists and that a valid stream reader is set when responding with Finish
 Warning: Unable to load font resource coui://fonts/Lora-Italic.ttf. Ensure the file exists.
-Warning: ResourceRequestJob | Failed loading resource: coui://fonts/Lora-Italic.ttf
 Info: Initialized Render Thread!
+Warning: ResourceRequestJob | Failed loading resource: coui://fonts/Lora-Italic.ttf
 Warning: Unable to load font resource coui://fonts/Lora-Regular.ttf. Ensure the file exists and that a valid stream reader is set when responding with Finish
 Warning: Unable to load font resource coui://fonts/Lora-Regular.ttf. Ensure the file exists.
 Warning: ResourceRequestJob | Failed loading resource: coui://fonts/Lora-Regular.ttf

@@ -38,11 +38,24 @@ export type JsProbeResults = Record<string, InterfaceProbeResult>;
  * For interfaces that have no `declare var` (not accessible as window.Name),
  * an instance factory is used to obtain a live object and probe its prototype.
  *
- * Stub-detection heuristics (any one positive → flagged as stub):
- *   1. Function body is completely empty: /^\s*function[^{]*\{\s*\}/.
- *   2. Body is under 80 characters (after stripping whitespace) — typically
- *      `function(){return undefined}` or similar no-op.
- *   3. Body contains only a `return` with no meaningful expression.
+ * Stub-detection heuristics (require positive evidence of stubness; any
+ * single match → flagged as stub):
+ *   0. Native bindings (`function … { [native code] }`) are short-circuited
+ *      to "not a stub" before any body-shape inspection runs — they are
+ *      real C++ implementations regardless of how short their stringified
+ *      form looks.
+ *   1. Empty body: `function name() {}` or `() => {}`.
+ *   2. No-op return: body is exactly `return;` or `return undefined;`.
+ *   3. Body throws or warns with one of the conventional markers
+ *      ("not implemented", "not supported", "unsupported", "TODO", "stub",
+ *      "FIXME") — engines sometimes ship placeholders that announce
+ *      themselves so callers can detect the gap.
+ *
+ * Anything else (including short delegating wrappers like
+ * `function play() { this._native.play(); }`) is treated as a real
+ * implementation.  False negatives on hand-written silent no-ops are
+ * accepted; the behavioural-probe / manual-override layers above this
+ * probe are the right place to catch those.
  *
  * NOTE: This function is serialized as a string and executed in the browser.
  * Keep it free of TypeScript-only syntax that won't survive toString().
@@ -240,30 +253,51 @@ export function jsProbe(
 
     function isLikelyStub(fn: Function): boolean {
         const src = fn.toString();
-        // Remove comments and normalise whitespace to reduce noise.
+
+        // (1) Native bindings are real implementations.  Their stringified
+        //     form is `function name() { [native code] }`, which is short
+        //     enough to fool any "small body == stub" heuristic, so the
+        //     native-code marker MUST be checked before any body-shape
+        //     analysis runs.
+        if (/\[native code\]/.test(src)) return false;
+
+        // Strip comments and normalise whitespace so the body-shape regexes
+        // below operate on a consistent, single-line representation.
         const stripped = src
             .replace(/\/\*[\s\S]*?\*\//g, '')
             .replace(/\/\/[^\n]*/g, '')
             .replace(/\s+/g, ' ')
             .trim();
 
-        // Empty body: function () {}  or  () => {}
-        if (/^(function\s*\w*\s*\([^)]*\)|[^=]*=>)\s*\{\s*\}$/.test(stripped)) {
-            return true;
-        }
-        // Body consisting only of a plain `return;` or `return undefined;`
-        if (/\{\s*return(\s+undefined)?\s*;?\s*\}$/.test(stripped)) {
-            return true;
-        }
-        // Body is suspiciously short (under 80 chars after stripping)
         const bodyMatch = stripped.match(/\{([\s\S]*)\}$/);
-        if (bodyMatch && bodyMatch[1].trim().length < 30) {
+        if (!bodyMatch) return false;
+        const body = bodyMatch[1].trim();
+
+        // (2) Empty body: `function name() {}`, `() => {}`.
+        if (body === '') return true;
+
+        // (3) No-op return: `return;` or `return undefined;`, optionally
+        //     trailing semicolon.  Anchored so we don't match a function
+        //     that *does* work and happens to end in `return;`.
+        if (/^return(\s+undefined)?\s*;?$/.test(body)) return true;
+
+        // (4) Self-declared "not implemented" — the engine sometimes ships
+        //     placeholders that throw or warn instead of doing nothing,
+        //     specifically so calling code can detect the gap.  These
+        //     phrases are the conventional markers.
+        const NOT_IMPL = /['"`](?:not\s*implemented|not\s*supported|unsupported|TODO|stub|FIXME)/i;
+        if (/^throw\s+(?:new\s+)?\w*Error\s*\(/i.test(body) && NOT_IMPL.test(body)) {
             return true;
         }
-        // Native function — these are real implementations
-        if (/\[native code\]/.test(stripped)) {
-            return false;
+        if (/^console\.(?:warn|error|log)\s*\(/i.test(body) && NOT_IMPL.test(body)) {
+            return true;
         }
+
+        // Anything else — including short delegating wrappers like
+        // `function play() { this._native.play(); }` — is treated as a real
+        // implementation.  False negatives on a hand-written silent no-op
+        // are accepted here; the behavioural / manual-override layers above
+        // this probe are the right place to catch those.
         return false;
     }
 }

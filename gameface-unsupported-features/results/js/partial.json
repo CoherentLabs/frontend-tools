@@ -1,19 +1,9 @@
 [
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "Animation",
     "evidence": {
-      "stubs": [
-        "cancel",
-        "commitStyles",
-        "finish",
-        "pause",
-        "persist",
-        "play",
-        "playFromTo",
-        "reverse"
-      ],
       "missing": [
         "effect",
         "finished",
@@ -56,13 +46,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "Blob",
     "evidence": {
-      "stubs": [
-        "slice"
-      ],
       "missing": [
         "arrayBuffer",
         "bytes",
@@ -206,15 +193,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "CSSStyleDeclaration",
     "evidence": {
-      "stubs": [
-        "getPropertyValue",
-        "removeProperty",
-        "setProperty"
-      ],
       "missing": [
         "accentColor",
         "alignmentBaseline",
@@ -568,14 +550,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "CSSStyleSheet",
     "evidence": {
-      "stubs": [
-        "deleteRule",
-        "insertRule"
-      ],
       "missing": [
         "ownerRule",
         "rules",
@@ -588,47 +566,22 @@
     }
   },
   {
-    "status": "stub-heavy",
+    "status": "partial",
     "surface": "js",
     "name": "CSSStyleValue",
     "evidence": {
-      "stubs": [
-        "toString"
-      ],
-      "present": []
-    }
-  },
-  {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "CSSTransformComponent",
-    "evidence": {
-      "stubs": [
-        "toMatrix",
-        "toString"
-      ],
-      "present": [
-        "is2D"
+      "missing": [
+        "parse"
       ]
     }
   },
   {
-    "status": "stub-heavy",
+    "status": "partial",
     "surface": "js",
     "name": "CSSTransformValue",
     "evidence": {
-      "stubs": [
-        "GetTransformAtIndex",
-        "SetTransformAtIndex",
-        "toMatrix",
-        "forEach",
-        "entries",
-        "keys",
-        "values"
-      ],
-      "present": [
-        "length",
-        "is2D"
+      "missing": [
+        "CSSTransformValue"
       ]
     }
   },
@@ -653,17 +606,6 @@
     }
   },
   {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "CanvasGradient",
-    "evidence": {
-      "stubs": [
-        "addColorStop"
-      ],
-      "present": []
-    }
-  },
-  {
     "status": "partial",
     "surface": "js",
     "name": "CanvasPattern",
@@ -674,43 +616,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "CanvasRenderingContext2D",
     "evidence": {
-      "stubs": [
-        "arc",
-        "arcTo",
-        "beginPath",
-        "bezierCurveTo",
-        "clearRect",
-        "clip",
-        "closePath",
-        "createConicGradient",
-        "createLinearGradient",
-        "createRadialGradient",
-        "drawFocusIfNeeded",
-        "fill",
-        "fillRect",
-        "fillText",
-        "lineTo",
-        "measureText",
-        "moveTo",
-        "quadraticCurveTo",
-        "rect",
-        "restore",
-        "rotate",
-        "save",
-        "scale",
-        "setTransform",
-        "stroke",
-        "strokeRect",
-        "strokeText",
-        "transform",
-        "translate",
-        "createPattern",
-        "drawImage"
-      ],
       "missing": [
         "createImageData",
         "direction",
@@ -752,38 +661,13 @@
     }
   },
   {
-    "status": "stub-heavy",
+    "status": "partial",
     "surface": "js",
     "name": "CharacterData",
     "evidence": {
-      "stubs": [
-        "after",
-        "appendData",
-        "before",
-        "deleteData",
-        "insertData",
-        "remove",
-        "replaceData",
-        "substringData"
-      ],
-      "present": [
-        "data",
-        "length",
-        "previousElementSibling",
-        "nextElementSibling",
-        "ownerDocument"
+      "missing": [
+        "replaceWith"
       ]
-    }
-  },
-  {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "CoherentDebug",
-    "evidence": {
-      "stubs": [
-        "triggerPageCapture"
-      ],
-      "present": []
     }
   },
   {
@@ -797,20 +681,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "Console",
     "evidence": {
-      "stubs": [
-        "assert",
-        "debug",
-        "error",
-        "info",
-        "log",
-        "time",
-        "timeEnd",
-        "warn"
-      ],
       "missing": [
         "clear",
         "count",
@@ -828,13 +702,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "CustomElementRegistry",
     "evidence": {
-      "stubs": [
-        "define"
-      ],
       "missing": [
         "get",
         "getName",
@@ -844,13 +715,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "CustomEvent",
     "evidence": {
-      "stubs": [
-        "initCustomEvent"
-      ],
       "missing": [
         "CustomEvent"
       ]
@@ -889,19 +757,6 @@
     }
   },
   {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "DOMRectList",
-    "evidence": {
-      "stubs": [
-        "item"
-      ],
-      "present": [
-        "length"
-      ]
-    }
-  },
-  {
     "status": "partial",
     "surface": "js",
     "name": "DOMRectReadOnly",
@@ -925,81 +780,10 @@
     }
   },
   {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "DOMTokenList",
-    "evidence": {
-      "stubs": [
-        "add",
-        "contains",
-        "item",
-        "remove",
-        "replace",
-        "supports",
-        "toggle",
-        "toString",
-        "forEach",
-        "entries",
-        "keys",
-        "values"
-      ],
-      "present": [
-        "length",
-        "value"
-      ]
-    }
-  },
-  {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "DOMTokenListPart",
-    "evidence": {
-      "stubs": [
-        "add",
-        "contains",
-        "item",
-        "remove",
-        "replace",
-        "supports"
-      ],
-      "present": [
-        "length",
-        "value"
-      ]
-    }
-  },
-  {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "Document",
     "evidence": {
-      "stubs": [
-        "caretPositionFromPoint",
-        "createAttribute",
-        "createAttributeNS",
-        "createComment",
-        "createDocumentFragment",
-        "createElement",
-        "createElementNS",
-        "createEvent",
-        "createNodeIterator",
-        "createTextNode",
-        "elementFromPoint",
-        "elementsFromPoint",
-        "getElementById",
-        "getElementsByClassName",
-        "getElementsByName",
-        "getElementsByTagName",
-        "getSelection",
-        "hasFocus",
-        "importNode",
-        "querySelector",
-        "querySelectorAll",
-        "write",
-        "addEventListener",
-        "removeEventListener",
-        "append"
-      ],
       "missing": [
         "alinkColor",
         "all",
@@ -1106,16 +890,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "DocumentFragment",
     "evidence": {
-      "stubs": [
-        "getElementById",
-        "querySelector",
-        "querySelectorAll",
-        "append"
-      ],
       "missing": [
         "DocumentFragment",
         "moveBefore",
@@ -1125,64 +903,20 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "DocumentType",
     "evidence": {
-      "stubs": [
-        "after",
-        "before",
-        "remove"
-      ],
       "missing": [
         "replaceWith"
       ]
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "Element",
     "evidence": {
-      "stubs": [
-        "after",
-        "attachShadow",
-        "before",
-        "blur",
-        "closest",
-        "focus",
-        "getAnimations",
-        "getAttribute",
-        "getAttributeNS",
-        "getAttributeNames",
-        "getAttributeNode",
-        "getAttributeNodeNS",
-        "getBoundingClientRect",
-        "getClientRects",
-        "getElementsByClassName",
-        "getElementsByTagName",
-        "getElementsByTagNameNS",
-        "hasAttribute",
-        "hasAttributeNS",
-        "hasAttributes",
-        "insertAdjacentElement",
-        "insertAdjacentHTML",
-        "insertAdjacentText",
-        "matches",
-        "querySelector",
-        "querySelectorAll",
-        "remove",
-        "removeAttribute",
-        "removeAttributeNS",
-        "removeAttributeNode",
-        "setAttribute",
-        "setAttributeNS",
-        "setAttributeNode",
-        "setAttributeNodeNS",
-        "addEventListener",
-        "removeEventListener",
-        "append"
-      ],
       "missing": [
         "currentCSSZoom",
         "onfullscreenchange",
@@ -1279,16 +1013,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "Event",
     "evidence": {
-      "stubs": [
-        "initEvent",
-        "preventDefault",
-        "stopImmediatePropagation",
-        "stopPropagation"
-      ],
       "missing": [
         "cancelBubble",
         "isTrusted",
@@ -1303,27 +1031,13 @@
     }
   },
   {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "EventListener",
-    "evidence": {
-      "stubs": [
-        "handleEvent"
-      ],
-      "present": []
-    }
-  },
-  {
-    "status": "stub-heavy",
+    "status": "partial",
     "surface": "js",
     "name": "EventTarget",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "dispatchEvent",
-        "removeEventListener"
-      ],
-      "present": []
+      "missing": [
+        "EventTarget"
+      ]
     }
   },
   {
@@ -1368,14 +1082,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLBodyElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "aLink",
         "background",
@@ -1387,14 +1097,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLButtonElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "disabled",
         "form",
@@ -1421,15 +1127,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLCanvasElement",
     "evidence": {
-      "stubs": [
-        "getContext",
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "getContext2D",
         "captureStream",
@@ -1442,53 +1143,30 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLCollection",
     "evidence": {
-      "stubs": [
-        "item"
-      ],
       "missing": [
         "namedItem"
       ]
     }
   },
   {
-    "status": "stub-heavy",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLDivElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
-      "present": []
+      "missing": [
+        "align"
+      ]
     }
   },
   {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "HTMLDocument",
-    "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
-      "present": []
-    }
-  },
-  {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener",
-        "blur",
-        "focus"
-      ],
       "missing": [
         "accessKey",
         "accessKeyLabel",
@@ -1525,38 +1203,30 @@
     }
   },
   {
-    "status": "stub-heavy",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLHeadElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
-      "present": []
+      "missing": [
+        "profile"
+      ]
     }
   },
   {
-    "status": "stub-heavy",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLHtmlElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
-      "present": []
+      "missing": [
+        "version"
+      ]
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLIFrameElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "align",
         "allow",
@@ -1589,14 +1259,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLImageElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "align",
         "alt",
@@ -1629,17 +1295,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLInputElement",
     "evidence": {
-      "stubs": [
-        "select",
-        "setRangeText",
-        "setSelectionRange",
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "accept",
         "align",
@@ -1696,14 +1355,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLLinkElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "as",
         "charset",
@@ -1726,20 +1381,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLMediaElement",
     "evidence": {
-      "stubs": [
-        "canPlayType",
-        "cohGetKeyframeTimestamps",
-        "cohPrebufferKeyframe",
-        "load",
-        "pause",
-        "play",
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "srcObject",
         "controls",
@@ -1772,38 +1417,30 @@
     }
   },
   {
-    "status": "stub-heavy",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLParagraphElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
-      "present": []
+      "missing": [
+        "align"
+      ]
     }
   },
   {
-    "status": "stub-heavy",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLPreElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
-      "present": []
+      "missing": [
+        "width"
+      ]
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLScriptElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "charset",
         "crossOrigin",
@@ -1819,31 +1456,10 @@
     }
   },
   {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "HTMLSlotElement",
-    "evidence": {
-      "stubs": [
-        "assign",
-        "assignedElements",
-        "assignedNodes",
-        "addEventListener",
-        "removeEventListener"
-      ],
-      "present": [
-        "name"
-      ]
-    }
-  },
-  {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLSourceElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "height",
         "sizes",
@@ -1853,26 +1469,10 @@
     }
   },
   {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "HTMLSpanElement",
-    "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
-      "present": []
-    }
-  },
-  {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLStyleElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "disabled",
         "media",
@@ -1883,14 +1483,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLTemplateElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "shadowRootClonable",
         "shadowRootDelegatesFocus",
@@ -1900,17 +1496,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLTextAreaElement",
     "evidence": {
-      "stubs": [
-        "select",
-        "setRangeText",
-        "setSelectionRange",
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "autocomplete",
         "defaultValue",
@@ -1933,38 +1522,20 @@
     }
   },
   {
-    "status": "stub-heavy",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLTitleElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
-      "present": []
+      "missing": [
+        "text"
+      ]
     }
   },
   {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "HTMLUnknownElement",
-    "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
-      "present": []
-    }
-  },
-  {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "HTMLVideoElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "disablePictureInPicture",
         "onenterpictureinpicture",
@@ -1984,52 +1555,25 @@
     }
   },
   {
-    "status": "stub-heavy",
+    "status": "partial",
     "surface": "js",
     "name": "History",
     "evidence": {
-      "stubs": [
-        "back",
-        "forward",
-        "go",
-        "pushState",
-        "replaceState"
-      ],
-      "present": [
-        "index",
-        "length",
-        "state"
+      "missing": [
+        "scrollRestoration"
       ]
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "KeyboardEvent",
     "evidence": {
-      "stubs": [
-        "getModifierState",
-        "initKeyboardEvent"
-      ],
       "missing": [
         "isComposing",
         "KeyboardEvent",
         "keyIdentifier"
       ]
-    }
-  },
-  {
-    "status": "stub",
-    "surface": "js",
-    "name": "Location",
-    "evidence": {
-      "stubs": [
-        "assign",
-        "reload",
-        "replace",
-        "toString"
-      ],
-      "missing": []
     }
   },
   {
@@ -2047,14 +1591,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "MouseEvent",
     "evidence": {
-      "stubs": [
-        "getModifierState",
-        "initMouseEvent"
-      ],
       "missing": [
         "layerX",
         "layerY",
@@ -2067,27 +1607,20 @@
     }
   },
   {
-    "status": "stub-heavy",
+    "status": "partial",
     "surface": "js",
     "name": "MutationObserver",
     "evidence": {
-      "stubs": [
-        "disconnect",
-        "observe",
-        "takeRecords"
-      ],
-      "present": []
+      "missing": [
+        "MutationObserver"
+      ]
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "NamedNodeMap",
     "evidence": {
-      "stubs": [
-        "getNamedItem",
-        "item"
-      ],
       "missing": [
         "getNamedItemNS",
         "removeNamedItem",
@@ -2098,13 +1631,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "Navigator",
     "evidence": {
-      "stubs": [
-        "getGamepads"
-      ],
       "missing": [
         "clipboard",
         "credentials",
@@ -2197,83 +1727,20 @@
     }
   },
   {
-    "status": "stub",
-    "surface": "js",
-    "name": "Node",
-    "evidence": {
-      "stubs": [
-        "append",
-        "appendChild",
-        "cloneNode",
-        "compareDocumentPosition",
-        "contains",
-        "getRootNode",
-        "hasChildNodes",
-        "insertBefore",
-        "isDefaultNamespace",
-        "isEqualNode",
-        "isSameNode",
-        "lookupNamespaceURI",
-        "lookupPrefix",
-        "normalize",
-        "removeChild",
-        "replaceChild"
-      ],
-      "missing": []
-    }
-  },
-  {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "NodeFilter",
-    "evidence": {
-      "stubs": [
-        "acceptNode"
-      ],
-      "present": []
-    }
-  },
-  {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "NodeIterator",
     "evidence": {
-      "stubs": [
-        "nextNode",
-        "previousNode"
-      ],
       "missing": [
         "detach"
       ]
     }
   },
   {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "NodeList",
-    "evidence": {
-      "stubs": [
-        "item",
-        "forEach",
-        "entries",
-        "keys",
-        "values"
-      ],
-      "present": [
-        "length"
-      ]
-    }
-  },
-  {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "Performance",
     "evidence": {
-      "stubs": [
-        "now",
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "eventCounts",
         "navigation",
@@ -2327,16 +1794,13 @@
     }
   },
   {
-    "status": "stub-heavy",
+    "status": "partial",
     "surface": "js",
     "name": "ResizeObserver",
     "evidence": {
-      "stubs": [
-        "disconnect",
-        "observe",
-        "unobserve"
-      ],
-      "present": []
+      "missing": [
+        "ResizeObserver"
+      ]
     }
   },
   {
@@ -2380,16 +1844,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "SVGElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener",
-        "blur",
-        "focus"
-      ],
       "missing": [
         "ownerSVGElement",
         "viewportElement",
@@ -2402,14 +1860,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "SVGGraphicsElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "getBBox",
         "getCTM",
@@ -2444,14 +1898,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "SVGSVGElement",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "currentScale",
         "currentTranslate",
@@ -2487,19 +1937,6 @@
     }
   },
   {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "SVGTextElement",
-    "evidence": {
-      "stubs": [
-        "getComputedTextLength",
-        "addEventListener",
-        "removeEventListener"
-      ],
-      "present": []
-    }
-  },
-  {
     "status": "partial",
     "surface": "js",
     "name": "SVGTransform",
@@ -2522,13 +1959,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "SVGTransformList",
     "evidence": {
-      "stubs": [
-        "consolidate"
-      ],
       "missing": [
         "appendItem",
         "clear",
@@ -2561,16 +1995,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "Selection",
     "evidence": {
-      "stubs": [
-        "empty",
-        "removeAllRanges",
-        "setBaseAndExtent",
-        "toString"
-      ],
       "missing": [
         "direction",
         "isCollapsed",
@@ -2593,16 +2021,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "ShadowRoot",
     "evidence": {
-      "stubs": [
-        "elementFromPoint",
-        "elementsFromPoint",
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "serializable",
         "getHTML",
@@ -2617,44 +2039,20 @@
     }
   },
   {
-    "status": "stub-heavy",
+    "status": "partial",
     "surface": "js",
-    "name": "Storage",
+    "name": "StylePropertyMap",
     "evidence": {
-      "stubs": [
-        "clear",
-        "getItem",
-        "key",
-        "removeItem",
-        "setItem"
-      ],
-      "present": [
-        "length"
+      "missing": [
+        "append"
       ]
     }
   },
   {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "StylePropertyMap",
-    "evidence": {
-      "stubs": [
-        "clear",
-        "delete",
-        "set"
-      ],
-      "present": []
-    }
-  },
-  {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "StylePropertyMapReadOnly",
     "evidence": {
-      "stubs": [
-        "get",
-        "has"
-      ],
       "missing": [
         "getAll",
         "forEach",
@@ -2680,26 +2078,10 @@
     }
   },
   {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "StyleSheetList",
-    "evidence": {
-      "stubs": [
-        "item"
-      ],
-      "present": [
-        "length"
-      ]
-    }
-  },
-  {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "Text",
     "evidence": {
-      "stubs": [
-        "splitText"
-      ],
       "missing": [
         "Text",
         "getBoxQuads"
@@ -2719,20 +2101,6 @@
         "fontBoundingBoxDescent",
         "hangingBaseline",
         "ideographicBaseline"
-      ]
-    }
-  },
-  {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "TimeRanges",
-    "evidence": {
-      "stubs": [
-        "end",
-        "start"
-      ],
-      "present": [
-        "length"
       ]
     }
   },
@@ -2766,19 +2134,6 @@
     }
   },
   {
-    "status": "stub-heavy",
-    "surface": "js",
-    "name": "TouchList",
-    "evidence": {
-      "stubs": [
-        "item"
-      ],
-      "present": [
-        "length"
-      ]
-    }
-  },
-  {
     "status": "partial",
     "surface": "js",
     "name": "TransitionEvent",
@@ -2789,13 +2144,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "UIEvent",
     "evidence": {
-      "stubs": [
-        "initUIEvent"
-      ],
       "missing": [
         "view",
         "which",
@@ -2805,14 +2157,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "URL",
     "evidence": {
-      "stubs": [
-        "toJSON",
-        "toString"
-      ],
       "missing": [
         "revokeObjectURL",
         "password",
@@ -2823,42 +2171,20 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "WebSocket",
     "evidence": {
-      "stubs": [
-        "close",
-        "send",
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "WebSocket"
       ]
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "Window",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "cancelAnimationFrame",
-        "clearInterval",
-        "clearTimeout",
-        "dispatchEvent",
-        "getComputedStyle",
-        "getSelection",
-        "queueMicrotask",
-        "removeEventListener",
-        "requestAnimationFrame",
-        "scrollBy",
-        "scrollTo",
-        "setInterval",
-        "setTimeout"
-      ],
       "missing": [
         "console",
         "chrome",
@@ -2948,21 +2274,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "XMLHttpRequest",
     "evidence": {
-      "stubs": [
-        "abort",
-        "getAllResponseHeaders",
-        "getResponseHeader",
-        "open",
-        "overrideMimeType",
-        "send",
-        "setRequestHeader",
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "responseArrayBuffer",
         "responseBlob",
@@ -2975,14 +2290,10 @@
     }
   },
   {
-    "status": "stub",
+    "status": "partial",
     "surface": "js",
     "name": "XMLHttpRequestEventTarget",
     "evidence": {
-      "stubs": [
-        "addEventListener",
-        "removeEventListener"
-      ],
       "missing": [
         "onabort",
         "onerror",

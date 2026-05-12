@@ -8,7 +8,49 @@
   {
     "status": "supported",
     "surface": "js",
+    "name": "CSSTransformComponent",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "CanvasGradient",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "CoherentDebug",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "DOMRectList",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "DOMTokenList",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "DOMTokenListPart",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
     "name": "ElementDefinitionOptions",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "EventListener",
     "evidence": {}
   },
   {
@@ -21,6 +63,36 @@
     "status": "supported",
     "surface": "js",
     "name": "GamepadPose",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "HTMLDocument",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "HTMLSlotElement",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "HTMLSpanElement",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "HTMLUnknownElement",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "Location",
     "evidence": {}
   },
   {
@@ -44,6 +116,24 @@
   {
     "status": "supported",
     "surface": "js",
+    "name": "Node",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "NodeFilter",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "NodeList",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
     "name": "ResizeObserverEntry",
     "evidence": {}
   },
@@ -57,6 +147,36 @@
     "status": "supported",
     "surface": "js",
     "name": "SVGRect",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "SVGTextElement",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "Storage",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "StyleSheetList",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "TimeRanges",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "js",
+    "name": "TouchList",
     "evidence": {}
   },
   {

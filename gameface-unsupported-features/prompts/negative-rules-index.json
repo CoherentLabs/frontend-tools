@@ -7116,9 +7116,9 @@
     {
       "id": "CSS-340",
       "surface": "css-selector",
-      "status": "parser-only",
-      "severity": "critical",
-      "summary": ":nth-child(... of <selector-list>) syntax is parsed but never applied",
+      "status": "partial-values",
+      "severity": "medium",
+      "summary": ":nth-last-of-type(2) works in An+B form only; the [ of <selector-list> ] extension is not honored",
       "source_file": "results/selectors/partial.json",
       "source_path": "$[?(@.name==\":nth-last-of-type(2)\")]",
       "name": ":nth-last-of-type(2)"
@@ -7126,9 +7126,9 @@
     {
       "id": "CSS-341",
       "surface": "css-selector",
-      "status": "parser-only",
-      "severity": "critical",
-      "summary": ":nth-child(... of <selector-list>) syntax is parsed but never applied",
+      "status": "partial-values",
+      "severity": "medium",
+      "summary": ":nth-of-type(2) works in An+B form only; the [ of <selector-list> ] extension is not honored",
       "source_file": "results/selectors/partial.json",
       "source_path": "$[?(@.name==\":nth-of-type(2)\")]",
       "name": ":nth-of-type(2)"
