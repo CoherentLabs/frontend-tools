@@ -107,7 +107,10 @@ class CSSExporter {
         );
 
         const { width, height } = await generateFlexSize(this.node as AvailableNode);
-        const gap = calculateGap(this.node.children[0] as AvailableNode);
+        const firstChild = 'children' in this.node && this.node.children.length > 0
+            ? this.node.children[0] as AvailableNode
+            : undefined;
+        const gap = firstChild ? calculateGap(firstChild) : '0';
 
         this.flexContainerStyles.add('width', width);
         this.flexContainerStyles.add('height', height);
