@@ -123,7 +123,7 @@ async function getConfig() {
           label: 'Concepts',
           autogenerate: { directory: 'vite-gameface-style-transformer/concepts' },
         },
-        generateChangelog('vite-gameface-style-transformer'),
+                 generateMultipleDocsChangelog('vite-gameface-style-transformer', path.join(__dirname, `./src/content/docs/vite-gameface-style-transformer/changelog/index.mdx`)),
       ],
     },
     {
