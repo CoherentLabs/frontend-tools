@@ -12,6 +12,7 @@ import * as readline from 'node:readline';
  *   Warning: dashed is not supported for border-style
  *   Warning: mask-mode Luminance currently not supported falling back to alpha
  *   Warning: Space repeat type is not supported falling back to round
+ *   Warning: Unable to evaluate calc() expression: calc(sign(-1)*-100px)
  *   Warning: Unsupported CSS pseudo class selector encountered: focus-within
  *   Warning: Unsupported CSS pseudo element encountered: first-line
  *   Warning: CSS parsing error "syntax error" near text: |
@@ -54,6 +55,19 @@ export interface LogParseResults {
      * Currently only "all" is known to produce this.
      */
     shorthandsWithLimitations: Set<string>;
+
+    /**
+     * Property-agnostic `calc()` rejections.  Gameface emits these when an
+     * expression PARSES successfully but contains a math sub-function the
+     * engine cannot evaluate (`sign`, `pow`, `sqrt`, …):
+     *
+     *   Warning: Unable to evaluate calc() expression: calc(sign(-1)*-100px)
+     *
+     * The warning does not name the property that triggered it, so this
+     * channel stores the bare calc-expression string.  The reconciler
+     * canonicalises whitespace before comparing against catalogue values.
+     */
+    unsupportedCalcExpressions: Set<string>;
 
     /** Raw matching warning lines (for debugging / evidence in output). */
     rawWarnings: string[];
@@ -150,12 +164,47 @@ const LOG_PATTERNS: Array<{
     // "Warning: Unable to parse declaration: align-content - baseline"
     // Emitted by the stylesheet parser when a property recognises the name but
     // not the supplied value.  The property is always kebab-case here.
+    //
+    // The separator MUST be whitespace + dash + whitespace.  Greedy/lazy
+    // backtracking would otherwise match the `<prop>: <value>` form below
+    // by consuming part of a hyphenated property name as a separator (e.g.
+    // `font-size: clamp(…)` → prop=`font`, sep=`-`, value=`size: clamp(…)`).
     {
-        re: /Unable to parse declaration:\s*(?<prop>[\w-]+)\s*-\s*(?<value>.+)/i,
+        re: /Unable to parse declaration:\s*(?<prop>[\w-]+?)\s+-\s+(?<value>.+)/i,
         handler: (m, _line, r) => {
             const prop = m.groups?.prop;
             const value = m.groups?.value ?? '';
             if (prop) recordInvalidValue(r, prop, value);
+        },
+    },
+
+    // "Warning: Unable to parse declaration: font-size: clamp(100px, 20vw, 200px);"
+    // Same warning class as above, but Gameface uses the canonical
+    // `<prop>: <value>;` form when the value is structurally complex
+    // (function calls, multi-token shorthands, …) instead of the bare
+    // `<prop> - <value>` form used for keyword rejections.
+    // The semicolon is optional in the recorded value so the function probe
+    // can compare against the unterminated form it generated.
+    {
+        re: /Unable to parse declaration:\s*(?<prop>[\w-]+)\s*:\s*(?<value>.+?)\s*;?\s*$/i,
+        handler: (m, _line, r) => {
+            const prop = m.groups?.prop;
+            const value = m.groups?.value ?? '';
+            if (prop) recordInvalidValue(r, prop, value);
+        },
+    },
+
+    // "Warning: Unable to evaluate calc() expression: calc(sign(-1)*-100px)"
+    // Emitted when calc() itself parses but contains an inner math
+    // function Gameface cannot evaluate (sign, pow, sqrt, …).  No
+    // property name is included, so we stash the bare expression and let
+    // the reconciler match by canonicalised value against the function
+    // catalogue (see reconcileCssFunctions).
+    {
+        re: /^Warning:\s*Unable to evaluate calc\(\) expression:\s*(?<expr>.+?)\s*;?\s*$/i,
+        handler: (m, _line, r) => {
+            const expr = m.groups?.expr?.trim();
+            if (expr) r.unsupportedCalcExpressions.add(expr.toLowerCase());
         },
     },
 
@@ -304,6 +353,7 @@ function emptyResults(): LogParseResults {
         unsupportedPseudoClasses: new Set(),
         unsupportedPseudoElements: new Set(),
         shorthandsWithLimitations: new Set(),
+        unsupportedCalcExpressions: new Set(),
         rawWarnings: [],
         logFound: false,
     };

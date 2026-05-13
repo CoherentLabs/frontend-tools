@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gameface CSS Function Probe Page</title>
+  <!--
+    Mixed-units negative tests are INTENTIONAL: Gameface's documented
+    limitation is "no mixing units inside math/sizing functions", and the
+    reconciler relies on those rules failing to mark a function as
+    'partial'.  Do not consolidate them away.
+
+    Resource-fetching functions (url, image-set, cross-fade) are
+    deliberately skipped — see CssFunctionEntry.skipProbe.
+  -->
+  <style>
+  .gf-fn-0-canonical { font-size: calc(12px + 4px); }
+  .gf-fn-0-mixed { font-size: calc(12px + 1vw); }
+  .gf-fn-1-canonical { font-size: clamp(12px, 14px, 16px); }
+  .gf-fn-1-mixed { font-size: clamp(100px, 20vw, 200px); }
+  .gf-fn-2-canonical { font-size: min(12px, 16px); }
+  .gf-fn-2-mixed { font-size: min(12px, 1vw); }
+  .gf-fn-3-canonical { font-size: max(12px, 16px); }
+  .gf-fn-3-mixed { font-size: max(12px, 1vw); }
+  .gf-fn-4-canonical { font-size: mod(20px, 6px); }
+  .gf-fn-4-mixed { font-size: mod(20px, 1vw); }
+  .gf-fn-5-canonical { font-size: rem(20px, 6px); }
+  .gf-fn-5-mixed { font-size: rem(20px, 1vw); }
+  .gf-fn-6-canonical { font-size: round(14px, 2px); }
+  .gf-fn-6-mixed { font-size: round(14px, 1vw); }
+  .gf-fn-7-canonical { width: abs(-100px); }
+  .gf-fn-8-canonical { width: calc(sign(-1) * -100px); }
+  .gf-fn-9-canonical { width: calc(pow(2, 5) * 1px); }
+  .gf-fn-10-canonical { width: calc(sqrt(100) * 1px); }
+  .gf-fn-11-canonical { width: calc(hypot(3, 4) * 1px); }
+  .gf-fn-12-canonical { width: calc(log(100) * 1px); }
+  .gf-fn-13-canonical { width: calc(exp(1) * 1px); }
+  .gf-fn-14-canonical { width: calc(sin(0) * 100px + 100px); }
+  .gf-fn-15-canonical { width: calc(cos(0) * 100px); }
+  .gf-fn-16-canonical { width: calc(tan(0) * 100px + 100px); }
+  .gf-fn-17-canonical { transform: rotate(asin(1)); }
+  .gf-fn-18-canonical { transform: rotate(acos(1)); }
+  .gf-fn-19-canonical { transform: rotate(atan(1)); }
+  .gf-fn-20-canonical { transform: rotate(atan2(1, 1)); }
+  .gf-fn-21-canonical { color: rgb(255, 0, 0); }
+  .gf-fn-22-canonical { color: rgba(255, 0, 0, 0.5); }
+  .gf-fn-23-canonical { color: hsl(0, 100%, 50%); }
+  .gf-fn-24-canonical { color: hsla(0, 100%, 50%, 0.5); }
+  .gf-fn-25-canonical { color: hwb(0 0% 0%); }
+  .gf-fn-26-canonical { color: lab(50% 40 59.5); }
+  .gf-fn-27-canonical { color: lch(50% 70 30); }
+  .gf-fn-28-canonical { color: oklab(0.5 0.1 0.1); }
+  .gf-fn-29-canonical { color: oklch(0.5 0.1 30); }
+  .gf-fn-30-canonical { color: color(srgb 1 0 0); }
+  .gf-fn-31-canonical { color: color-mix(in srgb, red, blue); }
+  .gf-fn-33-canonical { background-image: linear-gradient(red, blue); }
+  .gf-fn-34-canonical { background-image: radial-gradient(red, blue); }
+  .gf-fn-35-canonical { background-image: conic-gradient(red, blue); }
+  .gf-fn-36-canonical { background-image: repeating-linear-gradient(red 0 10px, blue 10px 20px); }
+  .gf-fn-37-canonical { background-image: repeating-radial-gradient(red 0 10px, blue 10px 20px); }
+  .gf-fn-40-canonical { transform: translate(10px, 20px); }
+  .gf-fn-40-mixed { transform: translate(10px, 5%); }
+  .gf-fn-41-canonical { transform: translateX(10px); }
+  .gf-fn-42-canonical { transform: translateY(10px); }
+  .gf-fn-43-canonical { transform: translateZ(10px); }
+  .gf-fn-44-canonical { transform: translate3d(10px, 20px, 30px); }
+  .gf-fn-45-canonical { transform: rotate(45deg); }
+  .gf-fn-46-canonical { transform: rotateX(45deg); }
+  .gf-fn-47-canonical { transform: rotateY(45deg); }
+  .gf-fn-48-canonical { transform: rotateZ(45deg); }
+  .gf-fn-49-canonical { transform: rotate3d(1, 1, 1, 45deg); }
+  .gf-fn-50-canonical { transform: scale(2); }
+  .gf-fn-51-canonical { transform: scaleX(2); }
+  .gf-fn-52-canonical { transform: scaleY(2); }
+  .gf-fn-53-canonical { transform: scaleZ(2); }
+  .gf-fn-54-canonical { transform: scale3d(2, 2, 2); }
+  .gf-fn-55-canonical { transform: skew(10deg); }
+  .gf-fn-56-canonical { transform: skewX(10deg); }
+  .gf-fn-57-canonical { transform: skewY(10deg); }
+  .gf-fn-58-canonical { transform: matrix(1, 0, 0, 1, 10, 20); }
+  .gf-fn-59-canonical { transform: matrix3d(1,0,0,0, 0,1,0,0, 0,0,1,0, 10,20,30,1); }
+  .gf-fn-60-canonical { transform: perspective(500px); }
+  .gf-fn-61-canonical { filter: blur(5px); }
+  .gf-fn-62-canonical { filter: brightness(0.5); }
+  .gf-fn-63-canonical { filter: contrast(2); }
+  .gf-fn-64-canonical { filter: drop-shadow(2px 4px 6px black); }
+  .gf-fn-65-canonical { filter: grayscale(1); }
+  .gf-fn-66-canonical { filter: hue-rotate(45deg); }
+  .gf-fn-67-canonical { filter: invert(1); }
+  .gf-fn-68-canonical { filter: opacity(0.5); }
+  .gf-fn-69-canonical { filter: saturate(2); }
+  .gf-fn-70-canonical { filter: sepia(1); }
+  .gf-fn-71-canonical { transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1); }
+  .gf-fn-72-canonical { transition-timing-function: steps(4, end); }
+  .gf-fn-73-canonical { transition-timing-function: linear(0, 0.25, 0.5, 0.75, 1); }
+  .gf-fn-74-canonical { clip-path: circle(50%); }
+  .gf-fn-75-canonical { clip-path: ellipse(40% 30%); }
+  .gf-fn-76-canonical { clip-path: polygon(0 0, 100% 0, 50% 100%); }
+  .gf-fn-77-canonical { clip-path: inset(10px); }
+  .gf-fn-78-canonical { clip-path: path("M 0 0 L 10 0 L 10 10 Z"); }
+  .gf-fn-79-canonical { clip-path: rect(0 100% 100% 0); }
+  .gf-fn-80-canonical { clip-path: xywh(0 0 100% 100%); }
+  .gf-fn-81-canonical { grid-template-columns: repeat(3, 1fr); }
+  .gf-fn-82-canonical { grid-template-columns: minmax(100px, 1fr); }
+  .gf-fn-82-mixed { grid-template-columns: minmax(10%, 1fr); }
+  .gf-fn-83-canonical { grid-template-columns: fit-content(200px); }
+  .gf-fn-84-canonical { content: counter(item); }
+  .gf-fn-85-canonical { content: counters(item, "."); }
+  .gf-fn-86-canonical { width: var(--gf-test-x, 100px); }
+  .gf-fn-87-canonical { width: env(safe-area-inset-top, 100px); }
+  .gf-fn-88-canonical { content: attr(data-gf); }
+  </style>
+</head>
+<body></body>
+</html>

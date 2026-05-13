@@ -57,17 +57,6 @@
   {
     "status": "parser-only",
     "surface": "css-selector",
-    "name": ":buffering",
-    "evidence": {
-      "group": "pseudo-class",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: :buffering"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
     "name": ":checked",
     "evidence": {
       "group": "pseudo-class",
@@ -107,6 +96,248 @@
       "probeA": false,
       "probeB": false,
       "logWarning": "unsupported pseudo: ::cue"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":default",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :default"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":defined",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :defined"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::details-content",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::details-content"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":dir(ltr)",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :dir"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":disabled",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :disabled"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":empty",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :empty"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":enabled",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :enabled"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::file-selector-button",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::file-selector-button"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":first",
+    "evidence": {
+      "group": "page-pseudo",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :first"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::first-letter",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::first-letter"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::first-line",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::first-line"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":first-of-type",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :first-of-type"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":focus-visible",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :focus-visible"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":focus-within",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :focus-within"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":fullscreen",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :fullscreen"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":future",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :future"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::grammar-error",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::grammar-error"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":has(.child)",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :has"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":has-slotted",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :has-slotted"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":host-context",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :host-context"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":has(> .child)",
+    "evidence": {
+      "group": "pseudo-relational-direct",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :has"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":host-context(.foo)",
+    "evidence": {
+      "group": "pseudo-shadow",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :host-context"
     }
   }
 ]

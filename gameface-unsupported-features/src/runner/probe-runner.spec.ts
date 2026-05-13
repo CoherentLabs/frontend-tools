@@ -39,6 +39,7 @@ import {
     getBcdJsInterfaces,
 } from '../static/bcd-source';
 import { CSS_KEYWORD_VALUES } from '../static/css-keyword-values';
+import { CSS_FUNCTIONS } from '../static/css-functions';
 
 import { jsProbe } from '../probes/js-probe';
 import {
@@ -238,6 +239,14 @@ function generateCssSheetProbePage(valueVariants: Record<string, string[]>): str
     // executeScript can read it without re-running the slow `for...in` loop
     // (which on Gameface takes ~40 ms per property and routinely exceeds the
     // ~10 s Runtime.evaluate timeout when called via runProbe).
+    //
+    // CSS function probing intentionally lives in its OWN page navigated
+    // LAST (see the css-function-probe it() block) — earlier attempts to
+    // fold the function rules into this page caused the immediately-
+    // following Runtime.evaluate (the css-value readback) to time out,
+    // because Gameface's image pipeline started chasing the URL-bearing
+    // function values (url(…), image-set(…), cross-fade(…)) and tied up
+    // the renderer thread.
     const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -268,6 +277,69 @@ ${rules.join('\n')}
     const outDir = path.resolve(__dirname, '../../probe-page');
     fs.mkdirSync(outDir, { recursive: true });
     const outPath = path.join(outDir, 'css-sheet-probe.html');
+    fs.writeFileSync(outPath, html, 'utf-8');
+    return outPath.replace(/\\/g, '/');
+}
+
+/**
+ * Standalone CSS-function probe page.
+ *
+ * One rule per (function, variant) pair in CSS_FUNCTIONS, skipping any
+ * entry marked `skipProbe` (URL/image-fetching functions — see
+ * css-functions.ts for the rationale).  No `<script>`, no apply-elements:
+ * Gameface emits parse-time "Unable to parse declaration" warnings for
+ * unsupported function values regardless of whether anything applies the
+ * rule (matches the user-reported `font-size: clamp(100px, 20vw, 200px)`
+ * observation), so we keep the page minimal to limit any chance of the
+ * renderer stalling on speculative resource resolution.
+ *
+ * This page is navigated to LAST — see the matching it() block at the end
+ * of the spec — so that if Gameface still happens to hang on some function
+ * value we haven't blacklisted yet, every other surface is already
+ * captured.
+ *
+ * Writes to probe-page/css-function-probe.html and returns the path in
+ * forward-slash form for gf.navigate().
+ */
+function generateCssFunctionProbePage(): string {
+    const rules: string[] = [];
+    CSS_FUNCTIONS.forEach((entry, i) => {
+        if (entry.skipProbe) return;
+        rules.push(
+            `  .gf-fn-${i}-canonical { ${entry.testProperty}: ${entry.canonicalValue}; }`,
+        );
+        if (entry.mixedUnitsValue !== undefined) {
+            rules.push(
+                `  .gf-fn-${i}-mixed { ${entry.testProperty}: ${entry.mixedUnitsValue}; }`,
+            );
+        }
+    });
+
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gameface CSS Function Probe Page</title>
+  <!--
+    Mixed-units negative tests are INTENTIONAL: Gameface's documented
+    limitation is "no mixing units inside math/sizing functions", and the
+    reconciler relies on those rules failing to mark a function as
+    'partial'.  Do not consolidate them away.
+
+    Resource-fetching functions (url, image-set, cross-fade) are
+    deliberately skipped — see CssFunctionEntry.skipProbe.
+  -->
+  <style>
+${rules.join('\n')}
+  </style>
+</head>
+<body></body>
+</html>
+`;
+
+    const outDir = path.resolve(__dirname, '../../probe-page');
+    fs.mkdirSync(outDir, { recursive: true });
+    const outPath = path.join(outDir, 'css-function-probe.html');
     fs.writeFileSync(outPath, html, 'utf-8');
     return outPath.replace(/\\/g, '/');
 }
@@ -948,6 +1020,47 @@ describe('Gameface Feature Inventory', function () {
         console.log('[input-type-probe]', JSON.stringify(counts));
     });
 
+    // ── CSS functions (deliberately last) ────────────────────────────────────
+    // Navigated AFTER all other probes so that if Gameface stalls on any
+    // function value we haven't blacklisted via skipProbe yet, every other
+    // surface has already been collected.  No browser-side read is needed:
+    // the log captures parse-time "Unable to parse declaration" warnings
+    // and the after() hook turns them into per-function status entries
+    // through reconcileCssFunctions().
+    it('CSS surface: function probe page (parse-time log capture)', async function () {
+        const gf = (global as any).gf;
+        if (!gf) {
+            console.warn('[css-function-probe] gf global not available — skipping.');
+            return;
+        }
+        try {
+            const probedCount = CSS_FUNCTIONS.filter((e) => !e.skipProbe).length;
+            const skippedCount = CSS_FUNCTIONS.length - probedCount;
+            const cssFunctionPage = generateCssFunctionProbePage();
+            console.log(
+                `[css-function-probe] Generated probe page — ` +
+                `${probedCount} functions probed, ${skippedCount} skipped (resource-fetching): ` +
+                cssFunctionPage,
+            );
+
+            console.log('[css-function-probe] Navigating to function probe page…');
+            await withTimeout(
+                gf.navigate(cssFunctionPage),
+                30_000,
+                'css-function-probe navigate',
+            );
+            console.log('[css-function-probe] Navigation complete (log warnings collected in after()).');
+        } catch (e) {
+            // Soft-fail: skipped entries will still get their `unknown` bucket
+            // and probed entries that didn't get a chance to parse will land
+            // in the `supported` bucket by default (no log evidence).  Both
+            // are honest outcomes — the alternative is making every later
+            // run fail just because the function probe hit a new Gameface
+            // pathology.
+            console.error(`[css-function-probe] FAILED (function results may be incomplete): ${e}`);
+        }
+    });
+
     // ── Teardown: merge + write ──────────────────────────────────────────────
 
     after(async function () {
@@ -1028,7 +1141,7 @@ describe('Gameface Feature Inventory', function () {
             console.log(`[writer] Wrote ${filePath}`);
         };
 
-        for (const folder of ['js', 'css', 'selectors', 'html'] as const) {
+        for (const folder of ['js', 'css', 'selectors', 'functions', 'html'] as const) {
             const dir = path.join(OUTPUT_DIR, folder);
             fs.mkdirSync(dir, { recursive: true });
             const { supported: s, partial: p, unsupported: u, summary: sum } = partitioned[folder];

@@ -4,7 +4,7 @@ module.exports = {
      * Path to the Gameface Player executable.
      * Example: "C:/Gameface/Player/Player.exe"
      */
-    gamefacePath: "D:\\gameface-packages\\Cohtml-3.0.0.3-Trial-WinDesktop-Fragment\\Player\\Player.exe",
+    gamefacePath: "D:\\gameface-packages\\Cohtml-2.3.0.63-Pro-WinDesktop-Fragment\\Player\\Player.exe",
 
     /**
      * Path to the compiled probe spec.

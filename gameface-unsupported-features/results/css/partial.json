@@ -49,9 +49,9 @@
       "logRejectedValues": [
         "start",
         "anchor-center",
-        "normal",
+        "baseline",
         "end",
-        "baseline"
+        "normal"
       ]
     }
   },
@@ -79,22 +79,6 @@
         "anchor-center",
         "end"
       ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "all",
-    "evidence": {
-      "logWarning": "shorthand has known limitations"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "animation",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
     }
   },
   {
@@ -128,25 +112,6 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "animation-iteration-count",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "<number>"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "animation-name",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "animation-timing-function",
     "evidence": {
       "supportedValues": [
@@ -169,27 +134,11 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "aspect-ratio",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "backdrop-filter",
     "evidence": {
       "logRejectedValues": [
         "initial"
       ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "background",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
     }
   },
   {
@@ -220,67 +169,9 @@
         "gradients",
         "image-set",
         "image-rect",
-        "element"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "background-position",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "background-position-x",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "background-position-y",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%"
+        "element",
+        "repeating-linear-gradient(red 0 10px,blue 10px 20px)",
+        "repeating-radial-gradient(red 0 10px,blue 10px 20px)"
       ]
     }
   },
@@ -302,50 +193,6 @@
       "logRejectedValues": [
         "space"
       ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "background-size",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-bottom",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-bottom-color",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
     }
   },
   {
@@ -399,11 +246,11 @@
     "evidence": {
       "supportedValues": [
         "none",
-        "solid",
-        "dashed",
-        "dotted"
+        "solid"
       ],
       "unsupportedValues": [
+        "dashed",
+        "dotted",
         "double",
         "groove",
         "ridge",
@@ -415,43 +262,10 @@
         "ridge",
         "outset",
         "inset",
-        "groove"
+        "groove",
+        "dashed",
+        "dotted"
       ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-bottom-width",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-color",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-image",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
     }
   },
   {
@@ -507,60 +321,15 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "border-image-source",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-image-width",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%",
-        "<number>"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-left",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-left-color",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "border-left-style",
     "evidence": {
       "supportedValues": [
         "none",
-        "solid",
-        "dashed",
-        "dotted"
+        "solid"
       ],
       "unsupportedValues": [
+        "dashed",
+        "dotted",
         "double",
         "groove",
         "ridge",
@@ -572,63 +341,10 @@
         "groove",
         "outset",
         "inset",
-        "ridge"
+        "ridge",
+        "dashed",
+        "dotted"
       ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-left-width",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-radius",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-right",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-right-color",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
     }
   },
   {
@@ -638,11 +354,11 @@
     "evidence": {
       "supportedValues": [
         "none",
-        "solid",
-        "dashed",
-        "dotted"
+        "solid"
       ],
       "unsupportedValues": [
+        "dashed",
+        "dotted",
         "double",
         "groove",
         "ridge",
@@ -654,26 +370,9 @@
         "ridge",
         "inset",
         "outset",
-        "groove"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-right-width",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax"
+        "groove",
+        "dashed",
+        "dotted"
       ]
     }
   },
@@ -686,22 +385,6 @@
         "dashed",
         "dotted"
       ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-top",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-top-color",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
     }
   },
   {
@@ -755,11 +438,11 @@
     "evidence": {
       "supportedValues": [
         "none",
-        "solid",
-        "dashed",
-        "dotted"
+        "solid"
       ],
       "unsupportedValues": [
+        "dashed",
+        "dotted",
         "double",
         "groove",
         "ridge",
@@ -771,45 +454,9 @@
         "double",
         "groove",
         "ridge",
-        "inset"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-top-width",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "border-width",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax"
+        "inset",
+        "dashed",
+        "dotted"
       ]
     }
   },
@@ -890,16 +537,10 @@
         "fill-box",
         "path",
         "stroke-box",
-        "view-box"
+        "view-box",
+        "rect(0 100% 100% 0)",
+        "xywh(0 0 100% 100%)"
       ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "clip-rule",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
     }
   },
   {
@@ -908,27 +549,15 @@
     "name": "color",
     "evidence": {
       "logRejectedValues": [
-        "initial"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "column-gap",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%"
+        "initial",
+        "oklab(0.5 0.1 0.1)",
+        "lch(50% 70 30)",
+        "color-mix(in srgb,red,blue)",
+        "hsla(0,100%,50%,0.5)",
+        "hsl(0,100%,50%)",
+        "lab(50% 40 59.5)",
+        "hwb(0 0% 0%)",
+        "oklch(0.5 0.1 30)"
       ]
     }
   },
@@ -971,16 +600,11 @@
       "logRejectedValues": [
         "url",
         "gradient",
-        "image-set"
+        "image-set",
+        "counters(item,\".\")",
+        "attr(data-gf)",
+        "counter(item)"
       ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "cursor",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
     }
   },
   {
@@ -1057,22 +681,22 @@
         "table-row-group",
         "inline-table",
         "contents",
-        "inline-grid",
-        "table-footer-group",
-        "table-caption",
-        "ruby-base-container",
-        "ruby-text-container",
         "grid",
-        "list-item",
-        "table",
-        "ruby",
-        "table-row",
-        "math",
-        "table-header-group",
         "inline-block",
+        "inline-grid",
+        "list-item",
+        "math",
+        "ruby",
         "ruby-base",
+        "ruby-base-container",
         "ruby-text",
-        "table-column"
+        "ruby-text-container",
+        "table",
+        "table-caption",
+        "table-column",
+        "table-footer-group",
+        "table-header-group",
+        "table-row"
       ]
     }
   },
@@ -1102,27 +726,11 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "fill-rule",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "filter",
     "evidence": {
       "logRejectedValues": [
         "initial"
       ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "flex",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
     }
   },
   {
@@ -1188,22 +796,6 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "font",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "font-family",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "font-size",
     "evidence": {
       "supportedValues": [
@@ -1213,7 +805,19 @@
         "math"
       ],
       "logRejectedValues": [
-        "math"
+        "math",
+        "round(14px,2px)",
+        "min(12px,16px)",
+        "max(12px,16px)",
+        "mod(20px,6px)",
+        "mod(20px,1vw)",
+        "min(12px,1vw)",
+        "rem(20px,6px)",
+        "rem(20px,1vw)",
+        "clamp(100px,20vw,200px)",
+        "clamp(12px,14px,16px)",
+        "max(12px,1vw)",
+        "round(14px,1vw)"
       ],
       "supportedUnits": [
         "px",
@@ -1250,37 +854,6 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "font-variant-east-asian",
-    "evidence": {
-      "supportedValues": [
-        "normal",
-        "proportional-width"
-      ],
-      "unsupportedValues": [
-        "full-width",
-        "jis04",
-        "jis78",
-        "jis83",
-        "jis90",
-        "ruby",
-        "simplified",
-        "traditional"
-      ],
-      "logRejectedValues": [
-        "jis04",
-        "jis83",
-        "ruby",
-        "simplified",
-        "jis90",
-        "traditional",
-        "full-width",
-        "jis78"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "font-weight",
     "evidence": {
       "supportedValues": [
@@ -1294,26 +867,6 @@
       ],
       "logRejectedValues": [
         "number"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "gap",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%"
       ]
     }
   },
@@ -1378,14 +931,6 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "isolation",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "justify-content",
     "evidence": {
       "supportedValues": [
@@ -1406,8 +951,8 @@
         "start",
         "stretch",
         "space-evenly",
-        "normal",
-        "end"
+        "end",
+        "normal"
       ]
     }
   },
@@ -1427,67 +972,6 @@
         "anchor-size",
         "anchor"
       ],
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "letter-spacing",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "line-height",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "<number>",
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "margin",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
       "supportedUnits": [
         "px",
         "em",
@@ -1617,14 +1101,6 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "mask",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "mask-border-repeat",
     "evidence": {
       "logRejectedValues": [
@@ -1655,14 +1131,6 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "mask-image",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "mask-mode",
     "evidence": {
       "supportedValues": [
@@ -1681,60 +1149,12 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "mask-position",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "mask-repeat",
     "evidence": {
       "logRejectedValues": [
         "space",
         "initial"
       ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "mask-size",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "mask-type",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
     }
   },
   {
@@ -1940,22 +1360,6 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "overflow",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "overflow-wrap",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "overflow-x",
     "evidence": {
       "supportedValues": [
@@ -1988,26 +1392,6 @@
       ],
       "logRejectedValues": [
         "clip"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "padding",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%"
       ]
     }
   },
@@ -2085,45 +1469,6 @@
       "logRejectedValues": [
         "initial"
       ],
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "perspective",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "perspective-origin",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
       "supportedUnits": [
         "px",
         "em",
@@ -2231,26 +1576,6 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "row-gap",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "rx",
     "evidence": {
       "logRejectedValues": [
@@ -2334,22 +1659,6 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "stroke-linecap",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "stroke-linejoin",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "stroke-miterlimit",
     "evidence": {
       "logRejectedValues": [
@@ -2410,8 +1719,8 @@
         "start"
       ],
       "logRejectedValues": [
-        "match-parent",
         "end",
+        "match-parent",
         "start"
       ]
     }
@@ -2424,14 +1733,6 @@
       "logRejectedValues": [
         "initial"
       ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "text-decoration",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
     }
   },
   {
@@ -2521,33 +1822,6 @@
       ],
       "logRejectedValues": [
         "string"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "text-rendering",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "text-shadow",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax"
       ]
     }
   },
@@ -2647,44 +1921,14 @@
     "name": "transform",
     "evidence": {
       "logRejectedValues": [
-        "initial"
+        "initial",
+        "rotate(acos(1))",
+        "perspective(500px)",
+        "rotate(asin(1))",
+        "rotate(atan(1))",
+        "skew(10deg)",
+        "rotate(atan2(1,1))"
       ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "transform-origin",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "px",
-        "em",
-        "rem",
-        "in",
-        "pt",
-        "vh",
-        "vw",
-        "vmin",
-        "vmax",
-        "%"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "transition",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "transition-behavior",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
     }
   },
   {
@@ -2718,14 +1962,6 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "transition-property",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "transition-timing-function",
     "evidence": {
       "supportedValues": [
@@ -2741,7 +1977,8 @@
         "jump"
       ],
       "logRejectedValues": [
-        "jump"
+        "jump",
+        "linear(0,0.25,0.5,0.75,1)"
       ]
     }
   },
@@ -2848,7 +2085,9 @@
         "stretch",
         "fit-content",
         "max-content",
-        "min-content"
+        "min-content",
+        "abs(-100px)",
+        "env(safe-area-inset-top,100px)"
       ],
       "supportedUnits": [
         "px",
@@ -2887,17 +2126,6 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "z-index",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed",
-      "supportedUnits": [
-        "<number>"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "text-stroke-width",
     "evidence": {
       "logRejectedValues": [
@@ -2918,195 +2146,11 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "text-stroke",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-enable-backdrop-filter",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "coh-simple-opacity",
     "evidence": {
       "logRejectedValues": [
         "1"
       ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-font-fit-mode",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-font-fit-max-size",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-font-fit-min-size",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-font-fit",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-sdf",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-custom-effect-name",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param1",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param2",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param3",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param4",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param5",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param6",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param7",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param8",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param9",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param10",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param11",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param12",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-custom-effect-string-param1",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-custom-effect-string-param2",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-composition-id",
-    "evidence": {
-      "probe": "value-accepted-but-not-computed"
     }
   },
   {

@@ -1,10 +1,9 @@
 {
-  "supported": 7,
-  "partial": 195,
-  "unsupported": 341,
+  "supported": 0,
+  "partial": 109,
+  "unsupported": 434,
   "byStatus": {
-    "supported": 7,
-    "partial": 195,
-    "missing": 341
+    "partial": 109,
+    "missing": 434
   }
 }

@@ -16,6 +16,37 @@ import {
     getGamefaceSupportedUnits,
     getSupportedUnitsForProperty,
 } from '../static/css-unit-support';
+import { CSS_FUNCTIONS, MIXED_UNITS_NOTE } from '../static/css-functions';
+import { SHORTHAND_MAP } from '../static/shorthand-map';
+
+// ── Shorthand→longhand fan-out for log-derived rejections ─────────────────────
+//
+// The CSS sheet probe tests shorthands using their canonical multi-keyword
+// value (e.g. `border-style: solid dashed dotted double`).  When Gameface
+// rejects a keyword Gameface emits per-keyword warnings against the
+// shorthand name only — `Warning: dashed is not supported for border-style`
+// — so the corresponding longhand entries (border-top-style, border-right-
+// style, …) see no log evidence even though the limitation applies to them
+// just as much.
+//
+// The reverse map below lets each longhand union in the rejected-value
+// set of every shorthand that owns it, so partial.json shows the full list
+// of unsupported keywords whether the reader looks up the shorthand or a
+// longhand spelling.
+//
+// Built once at module load (SHORTHAND_MAP is a static constant).
+const SHORTHANDS_BY_LONGHAND: ReadonlyMap<string, readonly string[]> = (() => {
+    const m = new Map<string, string[]>();
+    for (const [shorthand, { longhands }] of Object.entries(SHORTHAND_MAP)) {
+        for (const longhand of longhands) {
+            const key = longhand.toLowerCase();
+            const arr = m.get(key);
+            if (arr) arr.push(shorthand);
+            else m.set(key, [shorthand]);
+        }
+    }
+    return m;
+})();
 
 // ── Output types ──────────────────────────────────────────────────────────────
 
@@ -43,7 +74,13 @@ export type FeatureStatus =
 
 export interface FeatureEntry {
     status: FeatureStatus;
-    surface: 'css-property' | 'css-selector' | 'js' | 'html' | 'input-type';
+    surface:
+        | 'css-property'
+        | 'css-selector'
+        | 'css-function'
+        | 'js'
+        | 'html'
+        | 'input-type';
     /** Human-readable name of the feature (property, tag, interface name, etc.) */
     name: string;
     evidence?: Record<string, unknown>;
@@ -161,6 +198,7 @@ export function reconcile(input: ReconcileInput): ReconcileOutput {
 
     reconcileCssProperties(input, output);
     reconcileCssSelectors(input, output);
+    reconcileCssFunctions(input, output);
     reconcileJs(input, output);
     reconcileHtml(input, output);
     reconcileInputTypes(input, output);
@@ -181,13 +219,14 @@ export function reconcile(input: ReconcileInput): ReconcileOutput {
 
 // ── Surface partition ─────────────────────────────────────────────────────────
 
-/** The four top-level output folders. */
-export type SurfaceFolder = 'js' | 'css' | 'selectors' | 'html';
+/** The five top-level output folders. */
+export type SurfaceFolder = 'js' | 'css' | 'selectors' | 'functions' | 'html';
 
 /**
  * Maps each FeatureEntry surface to the output folder it belongs to.
  * `css-property`  → css        (property support + value-level evidence)
  * `css-selector`  → selectors  (pseudo-classes, pseudo-elements, combinators)
+ * `css-function`  → functions  (calc, clamp, gradient, transform, …)
  * `html`          → html
  * `input-type`    → html
  * `js`            → js
@@ -196,6 +235,7 @@ const SURFACE_FOLDER: Record<FeatureEntry['surface'], SurfaceFolder> = {
     'js': 'js',
     'css-property': 'css',
     'css-selector': 'selectors',
+    'css-function': 'functions',
     'html': 'html',
     'input-type': 'html',
 };
@@ -226,6 +266,7 @@ export function partitionBySurface(
         js:        { supported: [], partial: [], unsupported: [] },
         css:       { supported: [], partial: [], unsupported: [] },
         selectors: { supported: [], partial: [], unsupported: [] },
+        functions: { supported: [], partial: [], unsupported: [] },
         html:      { supported: [], partial: [], unsupported: [] },
     };
 
@@ -240,7 +281,7 @@ export function partitionBySurface(
     }
 
     const result = {} as Record<SurfaceFolder, ReconcileOutput>;
-    for (const folder of ['js', 'css', 'selectors', 'html'] as SurfaceFolder[]) {
+    for (const folder of ['js', 'css', 'selectors', 'functions', 'html'] as SurfaceFolder[]) {
         const { supported, partial, unsupported } = buckets[folder];
         const all = [...supported, ...partial, ...unsupported];
         result[folder] = { supported, partial, unsupported, summary: buildSummary(all) };
@@ -282,11 +323,27 @@ function reconcileCssProperties(input: ReconcileInput, output: ReconcileOutput):
         }
 
         // ── Merge invalid-value log entries from both sources ─────────────────
+        // Three contributors per property:
+        //   1. propertiesWithInvalidValues from the full-log parse
+        //   2. propertiesWithInvalidValues from the offset-scoped sheet parse
+        //   3. fan-out from any shorthand that owns this property as a longhand
+        //      (so `border-top-style` inherits the `dashed`/`dotted`
+        //      rejections logged against the `border-style` shorthand).
+        // Fan-out collects from BOTH log sources for each parent shorthand —
+        // the offset-scoped parse can omit warnings the full parse caught
+        // and vice versa, and union is always safe.
         const sheetInvalidValues = cssSheetLogResults?.propertiesWithInvalidValues.get(propLower);
         const allInvalidValues = new Set([
             ...(invalidValues ?? []),
             ...(sheetInvalidValues ?? []),
         ]);
+        const parentShorthands = SHORTHANDS_BY_LONGHAND.get(propLower) ?? [];
+        for (const shorthand of parentShorthands) {
+            const fromFull = logResults.propertiesWithInvalidValues.get(shorthand);
+            if (fromFull) for (const v of fromFull) allInvalidValues.add(v);
+            const fromSheet = cssSheetLogResults?.propertiesWithInvalidValues.get(shorthand);
+            if (fromSheet) for (const v of fromSheet) allInvalidValues.add(v);
+        }
 
         // ── Per-value evidence ────────────────────────────────────────────────
         // Prefer the JS readback results (set+readback is more accurate than
@@ -544,6 +601,151 @@ function findLogSelectorMatch(
         }
     }
     return null;
+}
+
+// ── CSS function reconciliation ───────────────────────────────────────────────
+
+/**
+ * Classifies each CSS function in `CSS_FUNCTIONS` by looking up its
+ * canonical and (optionally) mixed-units test values in the log-derived
+ * `propertiesWithInvalidValues` map.  No browser-side probe data is
+ * consumed: the catalogue is the test plan, and the log is the result.
+ *
+ * Matching is by exact value string (lower-cased, trimmed by the log
+ * parser).  This avoids the attribution problem you'd hit if you tried to
+ * key on function-name occurrences in arbitrary rejected values — two
+ * functions can share the same test property without their evidence
+ * leaking into each other.
+ *
+ * Status mapping:
+ *   canonical rejected         → 'missing'   (function is not implemented)
+ *   canonical accepted,
+ *     mixed-units rejected     → 'partial'   (function works, mixing units doesn't)
+ *   canonical accepted,
+ *     mixed-units accepted     → 'supported' (Gameface lifted the limitation)
+ *   canonical accepted,
+ *     no mixed-units variant   → 'supported'
+ *
+ * The reconciler unions both `logResults` and `cssSheetLogResults` for the
+ * lookup so the function probe page's warnings are picked up regardless of
+ * which log parse captured them (the function probe runs as a stylesheet
+ * navigation, so its warnings show up in the offset-based capture if one
+ * is recorded, and in the full-log parse done in after()).
+ */
+function reconcileCssFunctions(input: ReconcileInput, output: ReconcileOutput): void {
+    const { logResults, cssSheetLogResults } = input;
+
+    // Whitespace-insensitive canonical form.  Gameface normalises CSS values
+    // before logging them — it strips spaces after commas and around
+    // parentheses, so the catalogue value `clamp(100px, 20vw, 200px)` is
+    // recorded as `clamp(100px,20vw,200px)`.  A plain Set.has() comparison
+    // misses these matches and the function ends up incorrectly classified
+    // as supported.  Stripping ALL whitespace on both sides is safe here
+    // because CSS function syntax tolerates arbitrary inter-token whitespace
+    // — two values that differ only in spacing are semantically identical.
+    const canonical = (s: string): string => s.replace(/\s+/g, '').toLowerCase();
+
+    // Pre-canonicalise the property-agnostic calc() rejection set so each
+    // catalogue lookup is a single Set.has() rather than a linear scan.
+    // Both maps in propertiesWithInvalidValues are kept as raw values and
+    // canonicalised lazily because per-property sets are typically small.
+    const calcRejectedFromFull = new Set<string>();
+    for (const e of logResults.unsupportedCalcExpressions) {
+        calcRejectedFromFull.add(canonical(e));
+    }
+    const calcRejectedFromSheet = new Set<string>();
+    if (cssSheetLogResults) {
+        for (const e of cssSheetLogResults.unsupportedCalcExpressions) {
+            calcRejectedFromSheet.add(canonical(e));
+        }
+    }
+
+    const isRejected = (prop: string, value: string): boolean => {
+        const propLower = prop.toLowerCase();
+        const target = canonical(value);
+        const matchAny = (set: Set<string> | undefined): boolean => {
+            if (!set) return false;
+            for (const v of set) {
+                if (canonical(v) === target) return true;
+            }
+            return false;
+        };
+        if (matchAny(logResults.propertiesWithInvalidValues.get(propLower))) return true;
+        if (matchAny(cssSheetLogResults?.propertiesWithInvalidValues.get(propLower))) return true;
+        // Property-agnostic calc() evaluation failures: Gameface logs the
+        // expression but not the property it was applied against, so we
+        // ignore `prop` for this channel.  The catalogue's canonicalValue
+        // / mixedUnitsValue strings are unique enough that matching by
+        // value alone doesn't risk cross-function false positives.
+        if (calcRejectedFromFull.has(target)) return true;
+        if (calcRejectedFromSheet.has(target)) return true;
+        return false;
+    };
+
+    for (const entry of CSS_FUNCTIONS) {
+        const evidence: Record<string, unknown> = {
+            category: entry.category,
+            testProperty: entry.testProperty,
+            canonicalValue: entry.canonicalValue,
+        };
+        if (entry.note) evidence['note'] = entry.note;
+        if (entry.mixedUnitsValue !== undefined) {
+            evidence['mixedUnitsValue'] = entry.mixedUnitsValue;
+        }
+
+        // ── Skipped probes (resource-fetching functions) ────────────────
+        // No CSS rule is emitted for these entries — see CssFunctionEntry
+        // skipProbe docs.  Classify as `unknown` so they show up in
+        // partial.json with the skip reason rather than being silently
+        // assumed supported (which would mirror the bug we are trying to
+        // fix) or unsupported (which would be a false negative).
+        if (entry.skipProbe) {
+            evidence['skipReason'] = entry.skipProbe.reason;
+            bucket(
+                { status: 'unknown', surface: 'css-function', name: entry.name, evidence },
+                output,
+            );
+            continue;
+        }
+
+        const canonicalRejected = isRejected(entry.testProperty, entry.canonicalValue);
+        const mixedRejected = entry.mixedUnitsValue !== undefined
+            ? isRejected(entry.testProperty, entry.mixedUnitsValue)
+            : null;
+
+        let status: FeatureStatus;
+        if (canonicalRejected) {
+            // The canonical, single-unit form was rejected by the parser —
+            // the function as a whole isn't implemented.
+            status = 'missing';
+            evidence['logWarning'] =
+                `Unable to parse declaration: ${entry.testProperty}: ${entry.canonicalValue}`;
+        } else if (entry.mixedUnitsValue !== undefined && mixedRejected) {
+            // Function works in its canonical form but the mixed-units
+            // variant was rejected — flag the documented "no mixing units"
+            // limitation as the partial evidence.
+            status = 'partial';
+            evidence['mixedUnitsRejected'] = true;
+            // Prefer the entry's own note if one is set, otherwise use the
+            // shared mixed-units note so the reader has a one-line summary
+            // of why this function landed in `partial`.
+            if (!entry.note) evidence['note'] = MIXED_UNITS_NOTE;
+            evidence['logWarning'] =
+                `Unable to parse declaration: ${entry.testProperty}: ${entry.mixedUnitsValue}`;
+        } else {
+            // Canonical accepted, and either there is no mixed-units form
+            // to test or Gameface accepted both — function is supported.
+            status = 'supported';
+            if (entry.mixedUnitsValue !== undefined) {
+                evidence['mixedUnitsRejected'] = false;
+            }
+        }
+
+        bucket(
+            { status, surface: 'css-function', name: entry.name, evidence },
+            output,
+        );
+    }
 }
 
 // ── JS surface reconciliation ─────────────────────────────────────────────────

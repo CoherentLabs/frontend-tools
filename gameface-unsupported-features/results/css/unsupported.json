@@ -14,6 +14,12 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "all",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "alt",
     "evidence": {}
   },
@@ -32,7 +38,43 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "animation",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "animation-composition",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "animation-direction",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "animation-fill-mode",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "animation-iteration-count",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "animation-name",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "animation-play-state",
     "evidence": {}
   },
   {
@@ -68,6 +110,24 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "aspect-ratio",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "backface-visibility",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "background",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "background-attachment",
     "evidence": {}
   },
@@ -92,6 +152,30 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "background-position",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "background-position-x",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "background-position-y",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "background-size",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "baseline-shift",
     "evidence": {}
   },
@@ -105,6 +189,12 @@
     "status": "missing",
     "surface": "css-property",
     "name": "block-size",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border",
     "evidence": {}
   },
   {
@@ -182,7 +272,31 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "border-bottom",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-bottom-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-bottom-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "border-collapse",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-color",
     "evidence": {}
   },
   {
@@ -195,6 +309,24 @@
     "status": "missing",
     "surface": "css-property",
     "name": "border-end-start-radius",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-image",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-image-source",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-image-width",
     "evidence": {}
   },
   {
@@ -272,6 +404,48 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "border-left",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-left-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-left-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-radius",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-right",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-right-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-right-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "border-spacing",
     "evidence": {}
   },
@@ -285,6 +459,30 @@
     "status": "missing",
     "surface": "css-property",
     "name": "border-start-start-radius",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-top",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-top-color",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-top-width",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-width",
     "evidence": {}
   },
   {
@@ -344,6 +542,12 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "box-sizing",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "break-after",
     "evidence": {}
   },
@@ -380,6 +584,12 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "clip-rule",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "color-adjust",
     "evidence": {}
   },
@@ -411,6 +621,12 @@
     "status": "missing",
     "surface": "css-property",
     "name": "column-fill",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-gap",
     "evidence": {}
   },
   {
@@ -530,6 +746,12 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "cursor",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "custom-property",
     "evidence": {}
   },
@@ -566,7 +788,31 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "fill-rule",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "flex",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "flex-direction",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "flex-flow",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "flex-wrap",
     "evidence": {}
   },
   {
@@ -585,6 +831,18 @@
     "status": "missing",
     "surface": "css-property",
     "name": "flood-opacity",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-family",
     "evidence": {}
   },
   {
@@ -686,6 +944,12 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "font-variant-east-asian",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "font-variant-emoji",
     "evidence": {}
   },
@@ -723,6 +987,12 @@
     "status": "missing",
     "surface": "css-property",
     "name": "forced-color-adjust",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "gap",
     "evidence": {}
   },
   {
@@ -926,6 +1196,12 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "isolation",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "justify-items",
     "evidence": {}
   },
@@ -933,6 +1209,12 @@
     "status": "missing",
     "surface": "css-property",
     "name": "justify-self",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "letter-spacing",
     "evidence": {}
   },
   {
@@ -951,6 +1233,12 @@
     "status": "missing",
     "surface": "css-property",
     "name": "line-clamp",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "line-height",
     "evidence": {}
   },
   {
@@ -981,6 +1269,12 @@
     "status": "missing",
     "surface": "css-property",
     "name": "list-style-type",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "margin",
     "evidence": {}
   },
   {
@@ -1052,6 +1346,12 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "mask",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "mask-border",
     "evidence": {}
   },
@@ -1088,7 +1388,31 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "mask-image",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "mask-origin",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-position",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-size",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-type",
     "evidence": {}
   },
   {
@@ -1226,6 +1550,12 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "overflow",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "overflow-anchor",
     "evidence": {}
   },
@@ -1245,6 +1575,12 @@
     "status": "missing",
     "surface": "css-property",
     "name": "overflow-inline",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overflow-wrap",
     "evidence": {}
   },
   {
@@ -1281,6 +1617,12 @@
     "status": "missing",
     "surface": "css-property",
     "name": "overscroll-behavior-y",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "padding",
     "evidence": {}
   },
   {
@@ -1347,6 +1689,18 @@
     "status": "missing",
     "surface": "css-property",
     "name": "paint-order",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "perspective",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "perspective-origin",
     "evidence": {}
   },
   {
@@ -1431,6 +1785,12 @@
     "status": "missing",
     "surface": "css-property",
     "name": "rotate",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "row-gap",
     "evidence": {}
   },
   {
@@ -1700,6 +2060,18 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "stroke-linecap",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "stroke-linejoin",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "tab-size",
     "evidence": {}
   },
@@ -1743,6 +2115,12 @@
     "status": "missing",
     "surface": "css-property",
     "name": "text-combine-upright",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-decoration",
     "evidence": {}
   },
   {
@@ -1802,6 +2180,18 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "text-rendering",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-shadow",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "text-size-adjust",
     "evidence": {}
   },
@@ -1850,7 +2240,31 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "transform-origin",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "transform-style",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "transition",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "transition-behavior",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "transition-property",
     "evidence": {}
   },
   {
@@ -1952,7 +2366,151 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "z-index",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "zoom",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-stroke",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-enable-backdrop-filter",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-font-fit-mode",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-font-fit-max-size",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-font-fit-min-size",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-font-fit",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-sdf",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-name",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param1",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param2",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param3",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param4",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param5",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param6",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param7",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param8",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param9",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param10",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param11",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param12",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-string-param1",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-string-param2",
+    "evidence": {}
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-composition-id",
     "evidence": {}
   },
   {
