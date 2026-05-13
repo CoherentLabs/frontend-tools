@@ -1,8 +1,8 @@
 import JSZip from 'jszip';
-import { GFFont } from '../commonTypes';
+import { ComponentExportResult, ExportMode, GFFont } from '../commonTypes';
 import MessageBus from '../MessageBus/MessageBus';
 
-type ExporterResult = {
+type PageExporterResult = {
     [pageName: string]: {
         html: string;
         css: string;
@@ -11,10 +11,21 @@ type ExporterResult = {
     };
 };
 
-export default function downloadPages(data: { pages: ExporterResult; filename: string }) {
-    const pages = data.pages;
+function addFontsToZip(jszip: JSZip, fonts: GFFont, folder: string): void {
+    for (const [font, fontWeights] of Object.entries(fonts)) {
+        for (const [weight, weightStyles] of Object.entries(fontWeights)) {
+            for (const [style, styleData] of Object.entries(weightStyles)) {
+                for (const [subset, data] of Object.entries(styleData.subsets)) {
+                    if (data) {
+                        jszip.file(`${folder}${font}-${style}_${weight}_${subset}.ttf`, data);
+                    }
+                }
+            }
+        }
+    }
+}
 
-    const jszip = new JSZip();
+function packagePageMode(jszip: JSZip, pages: PageExporterResult): void {
     for (const [name, { html, css, images, fonts }] of Object.entries(pages)) {
         jszip.file(`${name}/${name}.html`, html);
         jszip.file(`${name}/${name}.css`, css);
@@ -28,29 +39,49 @@ export default function downloadPages(data: { pages: ExporterResult; filename: s
         }
 
         if (fonts && Object.keys(fonts).length > 0) {
-            for (const [font, fontWeights] of Object.entries(fonts)) {
-                for (const [weight, weightStyles] of Object.entries(fontWeights)) {
-                    for (const [style, styleData] of Object.entries(weightStyles)) {
-                        for (const [subset, data] of Object.entries(styleData.subsets)) {
-                            if (data) {
-                                jszip.file(`${name}/fonts/${font}-${style}_${weight}_${subset}.ttf`, data);
-                            }
-                        }
-                    }
-                }
+            addFontsToZip(jszip, fonts, `${name}/fonts/`);
+        }
+    }
+}
+
+function packageComponentMode(jszip: JSZip, result: ComponentExportResult): void {
+    if (result.fontsCss) {
+        jszip.file('fonts.css', result.fontsCss);
+    }
+
+    if (result.fonts && Object.keys(result.fonts).length > 0) {
+        addFontsToZip(jszip, result.fonts, 'fonts/');
+    }
+
+    for (const [name, { html, css, images }] of Object.entries(result.components)) {
+        jszip.file(`components/${name}/${name}.html`, html);
+        jszip.file(`components/${name}/${name}.css`, css);
+
+        for (const image of images) {
+            if (image.data) {
+                jszip.file(`components/${name}/${image.name}`, image.data);
             }
         }
+    }
+}
+
+export default function downloadPages(data: { mode?: ExportMode; payload: PageExporterResult | ComponentExportResult; filename: string }) {
+    const jszip = new JSZip();
+
+    if (data.mode === 'component') {
+        packageComponentMode(jszip, data.payload as ComponentExportResult);
+    } else {
+        packagePageMode(jszip, data.payload as PageExporterResult);
     }
 
     jszip.generateAsync({ type: 'blob' }).then((archive) => {
         const archiveUrl = URL.createObjectURL(archive);
 
-        // Create download links and trigger the downloads
         const aZip = document.createElement('a');
         aZip.href = archiveUrl;
-        aZip.download = data.filename; // Default download filename for ZIP
+        aZip.download = data.filename;
         aZip.click();
-        URL.revokeObjectURL(archiveUrl); // Clean up the URL object
+        URL.revokeObjectURL(archiveUrl);
 
         MessageBus.postMessage('close-plugin', {});
     });

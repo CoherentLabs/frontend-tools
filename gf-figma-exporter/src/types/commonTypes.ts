@@ -1,6 +1,20 @@
 import { FontMapData } from './../FontExporter/utils/typings';
 export type GFImage = { name: string; data: Uint8Array | null };
 
+export type ExportMode = 'page' | 'component';
+
+export type ComponentExportEntry = {
+    html: string;
+    css: string;
+    images: GFImage[];
+};
+
+export type ComponentExportResult = {
+    components: { [name: string]: ComponentExportEntry };
+    fontsCss: string;
+    fonts: GFFont;
+};
+
 export type PrimitiveNodes = FrameNode | RectangleNode | EllipseNode | GroupNode;
 
 export type NodesWithFillsAndStrokes = FrameNode | RectangleNode | EllipseNode;

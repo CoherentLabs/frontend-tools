@@ -27,7 +27,7 @@ export async function generateFlexSize(node: AvailableNode): Promise<{ width: st
     let width = '100%';
     let height = '100%';
 
-    if (node.type === 'FRAME' || node.type === 'INSTANCE') {
+    if (node.type === 'FRAME' || node.type === 'INSTANCE' || node.type === 'COMPONENT') {
         if (node.layoutSizingHorizontal === 'HUG') {
             width = 'auto';
         }

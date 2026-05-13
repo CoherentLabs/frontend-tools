@@ -26,7 +26,7 @@ export default class GFBaseNode {
         return `<div class="${this.className}"><div class="${this.className}${BACKGROUND_SUFFIX}"></div></div>`;
     }
 
-    async createCSS(): Promise<string> {
+    async createCSS(isComponentRoot: boolean = false): Promise<string> {
         let beforePseudo = '';
         let afterPseudo = '';
 
@@ -57,7 +57,7 @@ export default class GFBaseNode {
 
         return `
         .${this.className} {
-            ${await CSSExporterInstance.generateElementStyle()}
+            ${await CSSExporterInstance.generateElementStyle(isComponentRoot)}
         }
 
         .${this.className}${BACKGROUND_SUFFIX} {

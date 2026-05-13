@@ -5,10 +5,11 @@ import MessageBus from './MessageBus/MessageBus';
 import downloadPages from './listeners/download-pages';
 import flattenSVG from './listeners/flatten-svg';
 import PathBBox from './listeners/path-bbox';
-import { GFFont } from './commonTypes';
+import { ExportMode, GFFont } from './commonTypes';
 import toast, { Toaster } from 'solid-toast';
 
 const App: Component = () => {
+    const [exportMode, setExportMode] = createSignal<ExportMode>('page');
     const [exportStarted, setExportStarted] = createSignal(false);
     const [exportProgress, setExportProgress] = createSignal(0);
     const [exportMessage, setExportMessage] = createSignal('');
@@ -17,7 +18,7 @@ const App: Component = () => {
 
     const handleExportClick = () => {
         setExportStarted(true);
-        MessageBus.postMessage('start-export', {});
+        MessageBus.postMessage('start-export', { mode: exportMode() });
     };
 
     const handleContinueWithFallback = () => {
@@ -158,6 +159,22 @@ const App: Component = () => {
                         : 'Press the button to get started'
                     : 'Export Paused: Missing Fonts.'}
             </div>
+            <Show when={!exportStarted()}>
+                <div class={styles.ModeToggle}>
+                    <div
+                        class={`${styles.ModeToggleOption} ${exportMode() === 'page' ? styles.ModeToggleOptionActive : ''}`}
+                        onClick={() => setExportMode('page')}
+                    >
+                        Pages
+                    </div>
+                    <div
+                        class={`${styles.ModeToggleOption} ${exportMode() === 'component' ? styles.ModeToggleOptionActive : ''}`}
+                        onClick={() => setExportMode('component')}
+                    >
+                        Components
+                    </div>
+                </div>
+            </Show>
             <div class={styles.ButtonContainer}>
                 <div
                     class={`${styles.Button} ${exportStarted() ? styles.TriggeredButton : ''}`}

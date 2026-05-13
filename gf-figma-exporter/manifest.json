@@ -1,6 +1,6 @@
 {
-  "name": "gameface-figma-exporter",
-  "id": "1550491053099685323",
+  "name": "Coherent Gameface Exporter",
+  "id": "1595556380268929590",
   "api": "1.0.0",
   "main": "code.js",
   "capabilities": [],
@@ -14,7 +14,11 @@
     "allowedDomains": [
       "https://cdnjs.cloudflare.com",
       "https://fonts.googleapis.com",
-      "https://fonts.gstatic.com"
+      "https://fonts.gstatic.com",
+      "https://coherent-labs.com"
+    ],
+    "devAllowedDomains": [
+      "http://localhost:54322"
     ]
   }
 }

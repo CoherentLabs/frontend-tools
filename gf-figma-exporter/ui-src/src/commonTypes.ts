@@ -1,6 +1,20 @@
 
 export type GFImage = { name: string; data: Uint8Array | null };
 
+export type ExportMode = 'page' | 'component';
+
+export type ComponentExportEntry = {
+    html: string;
+    css: string;
+    images: Array<{ name: string; data: Uint8Array | null }>;
+};
+
+export type ComponentExportResult = {
+    components: { [name: string]: ComponentExportEntry };
+    fontsCss: string;
+    fonts: GFFont;
+};
+
 export interface FontMapData {
   [fontFamily: string]: FontWeightData;
 }
