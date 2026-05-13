@@ -1,0 +1,146 @@
+---
+title: Key Features and how to use
+---
+
+## 1. Tailwind Arbitrary Values & Variants
+Write standard Tailwind/UnoCSS classes. The plugin automatically strips brackets and colons so Gameface can parse them.
+
+You write:
+
+```html
+<div class="w-[50.5px] hover:bg-[#ff0000]"></div>
+```
+Plugin transforms to:
+
+```html
+<div class="w-50_5px __hover__bg-hex-ff0000"></div>
+```
+UnoCSS then safely generates `.w-50_5px` and `.__hover__bg-hex-ff0000:hover`.
+
+## 2. Inline Style Extraction
+Inline styles are automatically extracted into reusable, atomic utility classes at build-time to keep your DOM clean and performant. Dynamic runtime variables are safely ignored and left intact.
+
+You write:
+
+```tsx
+<div style={{ marginTop: "20px", color: isError ? "red" : "white" }}></div>
+```
+Plugin transforms to:
+
+```tsx
+<div class="gf-prop--margin-top--20px" style={{ color: isError ? "red" : "white" }}></div>
+```
+UnoCSS generates `.gf-prop--margin-top--20px` and leaves the dynamic color style for runtime processing.
+    
+## 3. Modular Pseudo-Classes (style:state)
+Avoid cluttered CSS files by declaring hover, focus, and active states directly on the element using `style:modifier`.
+
+You write:
+
+```tsx
+<button style:hover={{ backgroundColor: "blue", color: "white" }}>
+  Hover Me!
+</button>
+```
+Plugin transforms to:
+
+```tsx
+<button class="__hover__gf-prop--background-color--blue __hover__gf-prop--color--white">
+  Hover Me!
+</button>
+```
+Supported pseudo-classes: `hover`, `focus`, `active`, `first-child`, `last-child`, `only-child`, `before`, `after`, `selection`, and `nth-child-X`.
+
+### 3.1 Custom States
+You can also create your own custom states (e.g., `style:error`, `style:custom-state`) and write any styles you want for them. The plugin will convert them into classes that you can toggle with JavaScript or your framework of choice.
+
+You write:
+
+```tsx
+<div style:error={{ backgroundColor: "red", color: "white" }}>
+  Error state
+</div>
+```
+
+Plugin transforms to:
+
+```tsx
+<div class="__error__gf-prop--background-color--red __error__gf-prop--color--white">
+  Error state
+</div>
+```
+
+In the CSS output, this will generate selectors like `.__error__.__error__gf-prop--background-color--red` that you can toggle on your element to apply the error styles when needed.
+
+To apply the styles, simply toggle the `__{STATE_NAME}__` class on the element:
+
+```ts
+const element = document.querySelector('.my-element');
+element.classList.add('__error__'); // Apply error styles
+element.classList.remove('__error__'); // Remove error styles
+```
+
+### Note on States
+When using states or custom states, you have to write them in a specific format for the plugin to recognize and transform them. The format is `style:stateName={{ cssProperty: value }}`. The plugin will then convert this into a class format that UnoCSS can understand, allowing you to write dynamic styles without worrying about Gameface's CSS limitations.
+
+The reason is that if you are using Svelte, the plugin respects Svelte's native style directives.
+
+Writing `style:margin-top="10px"` will automatically be extracted into Gameface-safe atomic classes. Dynamic Svelte variables (e.g., `style:color={myColor}`) are safely ignored so Svelte's compiler can handle them at runtime.
+
+## 4. Gameface Validation Engine
+Gameface does not support every web CSS property (e.g., display: grid). The plugin scans your inline styles and throws terminal warnings during your build step if you use an unsupported property or value.
+
+```tsx
+// This will trigger a terminal warning:
+// ⚠️ [gameface-style-transformer] warning: Gameface does not support "display: grid".
+<div style={{ display: "grid" }}></div>
+```
+This allows you to catch and fix Gameface compatibility issues early in development instead of discovering them later when testing your game.
+
+Unsupported properties and values are removed from the final CSS output to prevent Gameface parsing errors, but you will still see the original styles in your source code for easy reference.
+
+## 5. Typography Shortcuts
+The preset comes with built-in, Gameface-optimized typography shortcuts:
+
+`heading-{size}`: Sets font-size, font-weight: 700, and line-height: 1.3em.
+
+`paragraph-{size}`: Sets font-size, font-weight: 400, and dynamic line-height based on size.
+
+```html
+<h1 class="heading-24">Title</h1>
+<p class="paragraph-14">Body text</p>
+```
+
+Which generates:
+
+```css
+.heading-24 {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.3em;
+}
+.paragraph-14 {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: calc(14px * 1.5px);
+}
+```
+
+You can edit those and add more in your `uno.config.ts` file like this:
+
+```diff
+import { defineConfig } from 'unocss';
+import { presetGameface } from './plugin';
+
+export default defineConfig({
+  presets: [
+    presetGameface()
+  ],
++ shortcuts: {
++   // Custom static shortcut
++   'btn': 'py-2 px-4 font-semibold rounded-lg shadow-md',    
++   // Custom dynamic shortcut using Regex
++   [/^btn-(.*)$/, ([, c]) => `bg-${c}-400 text-white py-2 px-4`],
++ },
+});
+```

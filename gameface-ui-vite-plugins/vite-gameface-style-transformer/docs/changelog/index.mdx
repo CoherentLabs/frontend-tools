@@ -1,0 +1,17 @@
+---
+title: Changelog
+---
+
+import { Badge } from '@astrojs/starlight/components'
+
+## 1.0.0
+
+<Badge text="Feature" variant="success" size="small" /> Plugin adds option to create custom states like `style:error={{'background-color': 'red'}}`.
+
+<Badge text="Feature" variant="success" size="small" /> Plugin adds option to write out full styles for a state or pseudo-element (e.g. `style:hover={{"background-color" : "red"}}`, `style:before={{"content" : "'Hello'"}}`).
+
+<Badge text="Feature" variant="success" size="small" /> Plugin adds option to write state classes like `hover:background-color-red` and `focus:text-color-blue`. It also allows you to write pseudo-element classes like `before:content-['Hello']`.
+
+<Badge text="Feature" variant="success" size="small" /> Plugin automatically converts `styles` property to `UnoCSS` compatible classes.
+
+<Badge text="Feature" variant="success" size="small" /> Plugin converts class names to remove arbitrary-value brackets and other symbols that can't be escaped in class names.

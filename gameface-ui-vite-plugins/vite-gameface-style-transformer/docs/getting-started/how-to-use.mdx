@@ -1,0 +1,65 @@
+---
+title: How to use
+sidebar:
+    order: 2
+---
+## 🚀 Setup
+### 1. Vite Configuration (vite.config.ts)
+Add the plugin to your Vite config. Important: It must be placed before your framework's plugin (e.g., before `solidPlugin()` or `@vitejs/plugin-react`) so it can transform the raw templates before they are compiled.
+
+```ts
+import { defineConfig } from 'vite';
+import solidPlugin from 'vite-plugin-solid';
+import UnoCSS from 'unocss/vite';
+import gamefaceStyleTransformerPlugin from 'vite-plugin-gameface-styles';
+
+export default defineConfig({
+  plugins: [
+    gamefaceStyleTransformerPlugin({ //Make sure to set the plugin before the framework plugin
+        suppressWarnings: false, // Set to true to hide Gameface CSS constraint warnings
+        isSolidProject: true     // Set to true if using SolidJS (handles class vs className)
+    }),
+    solidPlugin(), // You can use any framework plugin here (e.g., React, Vue, Svelte) - just make sure it's after the style transformer
+    UnoCSS(), // UnoCSS should be after the style transformer so it can process the generated classes. 
+  ],
+});
+```
+
+### 2. UnoCSS Configuration (uno.config.ts)
+Import and apply the Gameface preset. This tells UnoCSS how to decode the safely transformed strings back into valid CSS.
+
+This has to be done in a separate UnoCSS config file (e.g., `uno.config.ts`) because the plugin generates classes in a format that only the preset can understand. If you don't use UnoCSS or prefer to write your own preset, you can skip this step, but you won't get automatic class generation from inline styles.
+
+```ts
+import { defineConfig } from 'unocss';
+import { presetGameface } from 'vite-plugin-gameface-styles';
+
+export default defineConfig({
+  presets: [
+    presetGameface()
+  ]
+});
+```
+
+### 3. 🛠️ TypeScript Setup
+To prevent TypeScript from throwing errors on custom states like `style:hover` or `style:custom-state`, you need to tell your project about our custom typings. Choose one of the following methods:
+
+#### Option 1: The Triple-Slash Reference (Recommended for Vite)
+Open your src/vite-env.d.ts (or env.d.ts) file and add this single line to the top:
+
+```ts title="src/vite-env.d.ts"
+/// <reference types="vite-plugin-gameface-styles/solid" />
+```
+(Available frameworks: solid, react, preact, vue, svelte)
+
+#### Option 2: tsconfig.json
+Add the framework to your types array in the config file that handles your frontend code (usually tsconfig.app.json in modern Vite setups):
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "types": ["vite-plugin-gameface-styles/solid"]
+  }
+}
+```
+(Available frameworks: solid, react, preact, vue, svelte)
