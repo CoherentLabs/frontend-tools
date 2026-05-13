@@ -33,7 +33,7 @@ Plugin transforms to:
 UnoCSS generates `.gf-prop--margin-top--20px` and leaves the dynamic color style for runtime processing.
     
 ## 3. Modular Pseudo-Classes (style:state)
-Avoid cluttered CSS files by declaring hover, focus, and active states directly on the element using style:modifier.
+Avoid cluttered CSS files by declaring hover, focus, and active states directly on the element using `style:modifier`.
 
 You write:
 
@@ -109,6 +109,21 @@ The preset comes with built-in, Gameface-optimized typography shortcuts:
 ```html
 <h1 class="heading-24">Title</h1>
 <p class="paragraph-14">Body text</p>
+```
+
+Which generates:
+
+```css
+.heading-24 {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.3em;
+}
+.paragraph-14 {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: calc(14px * 1.5px);
+}
 ```
 
 You can edit those and add more in your `uno.config.ts` file like this:
