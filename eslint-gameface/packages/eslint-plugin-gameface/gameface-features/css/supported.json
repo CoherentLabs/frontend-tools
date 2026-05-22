@@ -1,0 +1,1003 @@
+[
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "animation",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "animation-direction",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "animation-fill-mode",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "animation-iteration-count",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "<number>"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "animation-name",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "animation-play-state",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "aspect-ratio",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "backface-visibility",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "background",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "background-position",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "background-position-x",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "background-position-y",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "background-size",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-bottom",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-bottom-color",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-bottom-width",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-color",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-image",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-image-source",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-image-width",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%",
+        "<number>"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-left",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-left-color",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-left-width",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-radius",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-right",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-right-color",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-right-width",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-top",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-top-color",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-top-width",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "border-width",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "box-sizing",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "clip-rule",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "column-gap",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "cursor",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "fill-rule",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "flex",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "flex-direction",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "flex-wrap",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "font",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "font-family",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "gap",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "isolation",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "letter-spacing",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "line-height",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "<number>",
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "margin",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "mask",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "mask-image",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "mask-position",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "mask-size",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "mask-type",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "overflow",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "overflow-wrap",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "padding",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "perspective",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "perspective-origin",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "row-gap",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "stroke-linecap",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "stroke-linejoin",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "text-decoration",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "text-rendering",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "text-shadow",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "transform-origin",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "px",
+        "em",
+        "rem",
+        "in",
+        "pt",
+        "vh",
+        "vw",
+        "vmin",
+        "vmax",
+        "%"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "transform-style",
+    "evidence": {}
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "transition",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "transition-behavior",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "transition-property",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "z-index",
+    "evidence": {
+      "probe": "log-silent-no-readback",
+      "supportedUnits": [
+        "<number>"
+      ]
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "text-stroke",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-enable-backdrop-filter",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-font-fit-mode",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-font-fit-max-size",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-font-fit-min-size",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-font-fit",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-custom-effect-name",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-composition-id",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-1",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-2",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-3",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-4",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-5",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-6",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-7",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-8",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-9",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-10",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-11",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param-12",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-custom-effect-string-param-1",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-property",
+    "name": "coh-custom-effect-string-param-2",
+    "evidence": {
+      "probe": "log-silent-no-readback"
+    }
+  }
+]

@@ -1,0 +1,29 @@
+{
+  "name": "eslint-plugin-gameface",
+  "version": "1.0.0",
+  "description": "Gameface-specific ESLint rules (HTML data binding, CSS) — stubs for incremental port from HTMLHint and Stylelint.",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "gameface",
+    "cohtml"
+  ],
+  "license": "MIT",
+  "files": [
+    "src",
+    "gameface-features"
+  ],
+  "dependencies": {
+    "css-tree": "^3.2.1"
+  },
+  "peerDependencies": {
+    "@eslint/css": ">=1.0.0",
+    "@html-eslint/eslint-plugin": ">=0.50.0",
+    "eslint": ">=9.15.0"
+  }
+}

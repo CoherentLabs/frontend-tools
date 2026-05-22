@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gameface ESLint sample</title>
+    <style>
+        .bad-prop {
+            accent-color: red;
+        }
+
+        .bad-partial:not(.test) {
+            align-content: space-between;
+            coh-font-fit-mode: 'test';
+        }
+
+        .bad-pseudo-unsupported :any-link {
+            color: red;
+        }
+
+        .bad-pseudo-partial :nth-child(2 of .class) {
+            color: red;
+        }
+
+        .bad-fn {
+            font-size: clamp(12px, 14px, 16px);
+        }
+    </style>
+</head>
+
+<body>
+    <p cohinline></p>
+    <select>
+        
+    </select>
+    <h1
+        data-bind-for="lor;af gaeg:{{Model.value}}"
+        data-bind-class-toggle="af;fae;faef:{{Model.value}}"
+    >Sample</h1>
+    <p
+        data-bind-value="{{Model.value}}"
+        data-bind-style-test="{{Model.drisko}}"
+    >Bound text</p>
+    <div style="font-size: min(12px, 16px)">inline clamp sibling</div>
+</body>
+
+</html>

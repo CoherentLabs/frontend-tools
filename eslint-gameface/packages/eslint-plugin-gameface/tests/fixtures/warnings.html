@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Fixture</title>
+    <style>
+        .a:any-link {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <input style="align-content: space-between;" type="checkbox">
+    <!-- Expect: gameface/html-parsed-no-impl on select -->
+    <select name="x">
+        <option>a</option>
+    </select>
+    <!-- Expect: gameface/html-partial-features (img + alt when altProperty is false in partial.json) -->
+    <img
+        src="a.png"
+        alt="x"
+    >
+
+</body>
+
+</html>

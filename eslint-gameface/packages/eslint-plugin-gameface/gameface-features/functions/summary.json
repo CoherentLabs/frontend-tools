@@ -1,0 +1,10 @@
+{
+  "supported": 56,
+  "partial": 0,
+  "unsupported": 33,
+  "byStatus": {
+    "supported": 56,
+    "missing": 30,
+    "unknown": 3
+  }
+}

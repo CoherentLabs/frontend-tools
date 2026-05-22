@@ -1,0 +1,12 @@
+{
+  "supported": 19,
+  "partial": 23,
+  "unsupported": 112,
+  "byStatus": {
+    "supported": 19,
+    "partial": 4,
+    "silently-coerced": 19,
+    "parsed-no-impl": 107,
+    "unknown": 5
+  }
+}

@@ -1,0 +1,42 @@
+/* Expect: gameface/css-no-unsupported-properties on accent-color; */
+/* gameface/css-partial-property-values on space-between; */
+/* gameface/css-no-unsupported-selectors on :any-link; */
+/* gameface/css-partial-selectors on :nth-child(2 of .class) when formatted exactly. */
+.bad-prop {
+  accent-color: red;
+  align-content: 10px;
+  test: alabala;
+  width: auto;
+}
+
+.bad-partial:not(.test) {
+  align-content: space-between;
+  coh-font-fit-mode: 'test';
+}
+
+.bad-pseudo-unsupported :any-link {
+  color: red;
+}
+
+.bad-pseudo-partial :nth-child(2 of .class) {
+  color: red;
+}
+
+.bad-fn {
+  font-size: clamp(12px, 14px, 16px);
+}
+
+@keyframes fade {
+  from {
+    opacity: var(--gf-opacity);
+    width: calc(10px + 5px);
+  }
+}
+
+.bad-var-fallback {
+  width: var(--gf-width, 100px);
+}
+
+.bad-calc-mixed {
+  margin-left: calc(50% - 20px);
+}
