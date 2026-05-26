@@ -1,0 +1,56 @@
+---
+title: Data binding
+sidebar:
+  order: 2
+---
+
+Gameface data binding attributes are easy to mistype. The plugin flags common mistakes in **HTML** and **JSX** before you load the page in the engine.
+
+## Typical issues caught
+
+| Problem | Example | Notes
+| --- | --- | --- |
+| Unknown attribute name | `data-bind-typo="{{Model.name}}"` ||
+| Missing `{{ }}` | `data-bind-value="Model.name"` ||
+| Broken model path | `data-bind-value="{{Model.}}"` | [Configure](#models) the path to your mock models folder first so the linter is able to validate their usage in the `data-bind-*` attributes!|
+| Invalid `bind-for` | Semicolon or wrong iterator syntax ||
+| Wrong class toggle format | Missing `class:{{condition}}` pattern ||
+| Unknown model field | Path does not exist in your model JSON ||
+
+## Point ESLint at your models \{#models\}
+
+Models validation compares bindings to JSON files in your models folder:
+
+```js
+settings: {
+  gameface: {
+    modelsDir: "Gameface-models",
+  },
+},
+```
+
+:::note
+The folder path should be relative to your eslint config.
+:::
+
+:::note
+The default folder configured in the flat config is `Gameface-models`.
+:::
+
+## Custom bind attributes
+
+Projects sometimes add proprietary `data-bind-*` names. Register them so they are not reported as spelling errors:
+
+```js
+settings: {
+  gameface: {
+    customDataBindAttributes: ["data-bind-custom-widget"],
+  },
+},
+```
+
+## HTML and JSX use the same rules
+
+HTML files use `gameface/html-databind-*` rules. React/Solid-style components use the matching `gameface/jsx-databind-*` rules on the opening tag.
+
+If you previously used [**HTMLLint**](https://docs.coherent-labs.com/cpp-gameface/content_development/htmllint/) plugin for the same checks, you can move those workflows to ESLint with the preset above and the same `modelsDir` / `customDataBindAttributes` settings you used in `.cohtmllintrc`.

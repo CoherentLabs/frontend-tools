@@ -1,0 +1,107 @@
+---
+title: Configuration
+sidebar:
+  order: 3
+---
+
+## Recommended setup
+
+Add this to `eslint.config.js` in your project root:
+
+```js
+import gameface from "eslint-plugin-gameface";
+
+export default [
+  { ignores: ["**/node_modules/**", "dist/**"] },
+  ...gameface.configs["flat/recommended"],
+];
+```
+
+That preset turns on Gameface checks for:
+
+| Files | Examples of what is checked |
+| --- | --- |
+| `*.html` | Unsupported tags, `data-bind-*`, `<style>` and `style=""` |
+| `*.css`, `*.scss` | Unsupported properties, selectors, functions |
+| `*.js`, `*.jsx` | Unsupported globals; JSX adds data binding and inline styles |
+| `*.ts`, `*.tsx` | Same as JS/JSX |
+
+Adjust `ignores` to match your build output folders.
+
+## Data binding models
+
+If you use Gameface model JSON files, point ESLint at the folder so bindings can be validated against real model fields:
+
+```js
+export default [
+  ...gameface.configs["flat/recommended"],
+  {
+    settings: {
+      gameface: {
+        modelsDir: "Gameface-models",
+      },
+    },
+  },
+];
+```
+
+`modelsDir` is resolved from the directory where you run ESLint (usually the project root). Change it if your models live elsewhere.
+
+## Custom data-bind attributes
+
+If your project uses extra `data-bind-*` attribute names, allow them so spelling rules do not report false positives:
+
+```json
+settings: {
+  gameface: {
+    customDataBindAttributes: ["data-bind-my-feature"],
+  },
+},
+```
+
+<Internal>
+## Pin checks to a Gameface version
+
+By default, rules use the **latest** support data shipped with the plugin. If your team targets a specific Gameface release and you have matching version data installed, set:
+
+```json
+settings: {
+  gameface: {
+    version: "1.2.3",
+  },
+},
+```
+</Internal>
+
+Only set this when your project actually depends on that version’s support tables. Most teams can leave the default.
+
+## Change rule severity or turn rules off
+
+Add a `rules` block after the preset. Use `"off"`, `"warn"`, or `"error"`; some rules also accept options:
+
+```js
+export default [
+  ...gameface.configs["flat/recommended"],
+  {
+    rules: {
+      "gameface/html-partial-features": "off",
+      "gameface/js-partial-member-access": "warn",
+      "gameface/html-parsed-no-impl": [
+        "error",
+        { scope: "all", ignoreTags: ["meta", "link"] },
+      ],
+    },
+  },
+];
+```
+
+See [Configure rules](/eslint-plugin-gameface/guides/rules-reference/#configure-rules-in-eslintconfigjs) and the [full rule list](/eslint-plugin-gameface/guides/rules-reference/) with descriptions and defaults.
+
+## IDE still shows other CSS warnings?
+
+`gameface/css-no-unsupported-properties` only reports properties Gameface does not support. Your editor may still underline `coh-*` or other vendor properties as “unknown” from **VS Code CSS validation**, not from this plugin.
+
+To reduce noise:
+
+- Add [VS Code `css.customData`](https://code.visualstudio.com/docs/languages/css#_css-specific-settings) for Gameface specific properties, or
+- Relax editor CSS lint settings for Gameface stylesheets.
