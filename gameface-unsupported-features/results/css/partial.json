@@ -8,18 +8,17 @@
         "flex-start",
         "flex-end",
         "center",
+        "space-evenly",
         "stretch"
       ],
       "unsupportedValues": [
         "space-between",
         "space-around",
-        "space-evenly",
         "start",
         "end",
         "normal"
       ],
       "logRejectedValues": [
-        "space-evenly",
         "space-around",
         "space-between",
         "end",
@@ -49,9 +48,9 @@
       "logRejectedValues": [
         "start",
         "anchor-center",
-        "baseline",
+        "normal",
         "end",
-        "normal"
+        "baseline"
       ]
     }
   },
@@ -79,6 +78,14 @@
         "anchor-center",
         "end"
       ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "all",
+    "evidence": {
+      "logWarning": "shorthand has known limitations"
     }
   },
   {
@@ -169,9 +176,7 @@
         "gradients",
         "image-set",
         "image-rect",
-        "element",
-        "repeating-linear-gradient(red 0 10px,blue 10px 20px)",
-        "repeating-radial-gradient(red 0 10px,blue 10px 20px)"
+        "element"
       ]
     }
   },
@@ -537,9 +542,7 @@
         "fill-box",
         "path",
         "stroke-box",
-        "view-box",
-        "rect(0 100% 100% 0)",
-        "xywh(0 0 100% 100%)"
+        "view-box"
       ]
     }
   },
@@ -549,15 +552,7 @@
     "name": "color",
     "evidence": {
       "logRejectedValues": [
-        "initial",
-        "oklab(0.5 0.1 0.1)",
-        "lch(50% 70 30)",
-        "color-mix(in srgb,red,blue)",
-        "hsla(0,100%,50%,0.5)",
-        "hsl(0,100%,50%)",
-        "lab(50% 40 59.5)",
-        "hwb(0 0% 0%)",
-        "oklch(0.5 0.1 30)"
+        "initial"
       ]
     }
   },
@@ -600,10 +595,7 @@
       "logRejectedValues": [
         "url",
         "gradient",
-        "image-set",
-        "counters(item,\".\")",
-        "attr(data-gf)",
-        "counter(item)"
+        "image-set"
       ]
     }
   },
@@ -681,22 +673,22 @@
         "table-row-group",
         "inline-table",
         "contents",
-        "grid",
-        "inline-block",
         "inline-grid",
-        "list-item",
-        "math",
-        "ruby",
-        "ruby-base",
-        "ruby-base-container",
-        "ruby-text",
-        "ruby-text-container",
-        "table",
-        "table-caption",
-        "table-column",
         "table-footer-group",
+        "table-caption",
+        "ruby-base-container",
+        "ruby-text-container",
+        "grid",
+        "list-item",
+        "table",
+        "ruby",
+        "table-row",
+        "math",
         "table-header-group",
-        "table-row"
+        "inline-block",
+        "ruby-base",
+        "ruby-text",
+        "table-column"
       ]
     }
   },
@@ -805,19 +797,7 @@
         "math"
       ],
       "logRejectedValues": [
-        "math",
-        "round(14px,2px)",
-        "min(12px,16px)",
-        "max(12px,16px)",
-        "mod(20px,6px)",
-        "mod(20px,1vw)",
-        "min(12px,1vw)",
-        "rem(20px,6px)",
-        "rem(20px,1vw)",
-        "clamp(100px,20vw,200px)",
-        "clamp(12px,14px,16px)",
-        "max(12px,1vw)",
-        "round(14px,1vw)"
+        "math"
       ],
       "supportedUnits": [
         "px",
@@ -848,6 +828,37 @@
       ],
       "logRejectedValues": [
         "oblique-angle"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "font-variant-east-asian",
+    "evidence": {
+      "supportedValues": [
+        "normal",
+        "proportional-width"
+      ],
+      "unsupportedValues": [
+        "full-width",
+        "jis04",
+        "jis78",
+        "jis83",
+        "jis90",
+        "ruby",
+        "simplified",
+        "traditional"
+      ],
+      "logRejectedValues": [
+        "jis04",
+        "jis83",
+        "ruby",
+        "simplified",
+        "jis90",
+        "traditional",
+        "full-width",
+        "jis78"
       ]
     }
   },
@@ -938,10 +949,10 @@
         "flex-end",
         "center",
         "space-between",
-        "space-around"
+        "space-around",
+        "space-evenly"
       ],
       "unsupportedValues": [
-        "space-evenly",
         "start",
         "end",
         "stretch",
@@ -950,9 +961,8 @@
       "logRejectedValues": [
         "start",
         "stretch",
-        "space-evenly",
-        "end",
-        "normal"
+        "normal",
+        "end"
       ]
     }
   },
@@ -1095,16 +1105,6 @@
         "vmin",
         "vmax",
         "%"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "mask-border-repeat",
-    "evidence": {
-      "logRejectedValues": [
-        "space"
       ]
     }
   },
@@ -1719,8 +1719,8 @@
         "start"
       ],
       "logRejectedValues": [
-        "end",
         "match-parent",
+        "end",
         "start"
       ]
     }
@@ -1921,13 +1921,7 @@
     "name": "transform",
     "evidence": {
       "logRejectedValues": [
-        "initial",
-        "rotate(acos(1))",
-        "perspective(500px)",
-        "rotate(asin(1))",
-        "rotate(atan(1))",
-        "skew(10deg)",
-        "rotate(atan2(1,1))"
+        "initial"
       ]
     }
   },
@@ -1977,8 +1971,7 @@
         "jump"
       ],
       "logRejectedValues": [
-        "jump",
-        "linear(0,0.25,0.5,0.75,1)"
+        "jump"
       ]
     }
   },
@@ -2085,9 +2078,7 @@
         "stretch",
         "fit-content",
         "max-content",
-        "min-content",
-        "abs(-100px)",
-        "env(safe-area-inset-top,100px)"
+        "min-content"
       ],
       "supportedUnits": [
         "px",

@@ -4,11 +4,12 @@ module.exports = {
      * Path to the Gameface Player executable.
      * Example: "C:/Gameface/Player/Player.exe"
      */
-    gamefacePath: "D:\\gameface-packages\\Cohtml-2.3.0.63-Pro-WinDesktop-Fragment\\Player\\Player.exe",
+    gamefacePath: "D:\\gameface-packages\\Cohtml-3.1.0.25-Pro-WinDesktop-Fragment\\Player\\Player.exe",
 
     /**
-     * Path to the compiled probe spec.
-     * After running `npm run build` this file will be emitted to dist/.
+     * Main probe spec (CSS properties, JS, HTML).
+     * Selectors run via gameface-e2e-config-selectors.js (first).
+     * Functions run via gameface-e2e-config-functions.js (last).
      */
     tests: "dist/runner/probe-runner.spec.js",
 

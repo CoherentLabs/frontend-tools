@@ -1,6 +1,6 @@
 /* eslint-disable */
-// Temporary generator — converts scraper outputs into negative-ruleset files in prompts/.
-// Deleted after run.
+// Generator — converts scraper outputs in results/ into negative-ruleset files
+// in prompts/. Re-run whenever results/ changes (`node gen-rules.js`).
 
 const fs = require('fs');
 const path = require('path');
@@ -30,6 +30,11 @@ const sel = {
   supported: read(path.join(RES, 'selectors', 'supported.json')),
   partial: read(path.join(RES, 'selectors', 'partial.json')),
   unsupported: read(path.join(RES, 'selectors', 'unsupported.json')),
+};
+const funcs = {
+  supported: read(path.join(RES, 'functions', 'supported.json')),
+  partial: read(path.join(RES, 'functions', 'partial.json')),
+  unsupported: read(path.join(RES, 'functions', 'unsupported.json')),
 };
 
 // ---------- helpers ----------
@@ -395,6 +400,16 @@ const cssMissing = css.unsupported;
 
 const cssFamilies = [
   {
+    name: 'legacy-box-flex',
+    label: 'Legacy `box-*` flexbox model',
+    severity: 'low',
+    test: n => /^(box-align|box-decoration-break|box-direction|box-flex|box-flex-group|box-lines|box-ordinal-group|box-orient|box-pack)$/.test(n),
+    rule: 'Never use the legacy `box-*` flexbox model (`box-align`, `box-flex`, `box-orient`, `box-pack`, …); use the modern flexbox longhands (`align-items`, `flex-grow`, `flex-direction`, `justify-content`).',
+    why: 'Scraper logWarning: "Unsupported CSS property detected (stylesheet parser)" for every legacy `box-*` property.',
+    bad: '.foo { box-align: center; box-flex: 1; box-orient: horizontal; }',
+    good: '.foo { align-items: center; flex-grow: 1; flex-direction: row; }',
+  },
+  {
     name: 'logical-physical-properties',
     label: 'Logical and physical-mapped CSS properties',
     severity: 'high',
@@ -566,13 +581,13 @@ const cssFamilies = [
   },
   {
     name: 'misc-cosmetic',
-    label: 'Other missing cosmetic / niche properties',
+    label: 'Other unsupported CSS properties',
     severity: 'low',
-    test: n => /^(quotes|alt$|speak|speak-as|image-orientation|shape-image-threshold|shape-margin|shape-outside|font-variant|font-feature-settings|font-kerning|font-optical-sizing|font-palette|font-size-adjust|font-stretch|font-synthesis|font-variation-settings|font-width|font-smooth|font-language-override|content-visibility|alt|appearance|accent-color|caret-color|field-sizing|outline|outline-(color|offset|style|width)|widows|orphans|will-change|color-adjust|forced-color-adjust|dynamic-range-limit|print-color-adjust|color-scheme|interpolate-size|interactivity|reading-flow|line-clamp|line-height-step|initial-letter|hanging-punctuation|hyphens|hyphenate-character|hyphenate-limit-chars|tab-size|writing-mode|direction|unicode-bidi|user-modify|ime-mode|zoom|translate|rotate|scale|transform-box|transform-style|float|clear|clip$|table-layout|caption-side|empty-cells|border-collapse|border-spacing|list-style|list-style-type|list-style-image|list-style-position|paint-order|object-fit|object-position|object-view-box|overflow-anchor|overflow-block|overflow-clip-margin|overflow-inline|overlay|order|justify-items|justify-self|place-content|place-items|place-self|page$|page-break-(after|before|inside)|break-(after|before|inside)|alignment-baseline|baseline-shift|baseline-source|dominant-baseline|color-interpolation|color-interpolation-filters|flood-color|flood-opacity|lighting-color|stroke-color|vector-effect|glyph-orientation-vertical|marker$|marker-(start|mid|end)|math-(depth|shift|style)|ruby-(align|overhang|position)|text-decoration-skip|text-decoration-skip-ink|text-emphasis|text-emphasis-color|text-emphasis-position|text-emphasis-style|text-justify|text-orientation|text-size-adjust|text-spacing-trim|text-autospace|text-box|text-box-edge|text-box-trim|text-combine-upright|text-indent|text-align-last|text-wrap|text-wrap-mode|text-wrap-style|word-break|word-spacing|line-break|hyphens|hyphenate-|inline-size|block-size|min-block-size|max-block-size|min-inline-size|max-inline-size|inset|inset-(block|inline)|border-(block|inline)(-|$)|margin-(block|inline)(-|$)|padding-(block|inline)(-|$)|border-(start|end)-(start|end)-radius|border-(end-end|end-start|start-end|start-start)-radius|scroll-(margin|padding)-(block|inline)(-|$)|overscroll-|columns?|column-|grid|grid-|gap-grid|container|container-(name|type)|anchor-|position-(anchor|area|try|try-fallbacks|try-order|visibility)|view-transition-|view-timeline|view-timeline-|animation-(timeline|range|range-end|range-start|composition)|timeline-scope|scroll-snap|scroll-margin|scroll-padding|scroll-marker|scroll-behavior|scroll-initial-target|scroll-timeline|scrollbar-|background-(attachment|blend-mode|clip|origin)|mask-(border|composite|origin)|offset-(anchor|distance|path|position|rotate)|counter-(increment|reset|set))/.test(n) === false,
-    rule: 'Never use these miscellaneous missing CSS properties; they have no Gameface implementation.',
-    why: 'Scraper marked these properties as `missing`. Names listed in the index JSON.',
-    bad: '/* No representative example — see index.json members for this family. */',
-    good: '/* Omit or replace with a supported property. */',
+    test: () => true,
+    rule: 'Never use these CSS properties; the engine logs "Unsupported CSS property detected (stylesheet parser)" for each. Members listed in the index JSON.',
+    why: 'Scraper logWarning: "Unsupported CSS property detected (stylesheet parser)" for every member.',
+    bad: '/* Property names listed in index.json under this family\'s `members`. */',
+    good: '/* Omit; pick a supported property from `results/css/supported.json` or `results/css/partial.json`. */',
   },
 ];
 
@@ -669,6 +684,118 @@ function selectorSeverity(name, group) {
   if (group === 'pseudo-class') return 'high';
   if (group === 'at-rule') return 'high';
   return 'medium';
+}
+
+// ----- CSS functions (results/functions/) -----
+// Group missing functions by their evidence.category. Each category becomes one family rule.
+const funcCategories = {
+  math: {
+    label: 'CSS modern math functions',
+    severity: 'critical',
+    rule: 'Never use the missing CSS math functions (`clamp`, `min`, `max`, `mod`, `rem`, `round`, `abs`, `asin`, `acos`, `atan`, `atan2`); precompute the value in JS or use `calc()` with arithmetic that resolves to a constant. `calc`, `sign`, `pow`, `sqrt`, `hypot`, `log`, `exp`, `sin`, `cos`, `tan` are honored.',
+    safe: 'calc(12px + 4px)',
+  },
+  color: {
+    label: 'CSS modern color functions',
+    severity: 'critical',
+    rule: 'Never use the modern color functions (`hsl`, `hsla`, `hwb`, `lab`, `lch`, `oklab`, `oklch`, `color-mix`); pre-convert to `rgb()`/`rgba()`/`color(srgb …)` (all of which are honored).',
+    safe: 'rgba(255, 0, 0, 0.5)',
+  },
+  image: {
+    label: 'CSS image functions',
+    severity: 'high',
+    rule: 'Never use `repeating-linear-gradient()` or `repeating-radial-gradient()`; emit a `linear-gradient()`/`radial-gradient()` with enough explicit color stops to look identical. `url(...)`, `image-set(...)`, and `cross-fade(...)` are unverified (resolving them at parse time stalls Gameface); use `url()` only with cached engine-side assets and treat `image-set`/`cross-fade` as missing.',
+    safe: 'linear-gradient(red 0 10px, blue 10px 20px, red 20px 30px, blue 30px 40px)',
+  },
+  transform: {
+    label: 'CSS transform functions',
+    severity: 'high',
+    rule: 'Never use the missing transform functions (`skew()` combined form, `perspective()`); use `skewX()` + `skewY()` and apply 3D effects via the engine-side camera. `translate*`, `scale*`, `rotate*`, `matrix`, `matrix3d` are honored.',
+    safe: 'skewX(10deg) skewY(5deg)',
+  },
+  timing: {
+    label: 'CSS timing functions',
+    severity: 'medium',
+    rule: 'Never use the `linear(...)` easing function (the multi-stop variant); use `cubic-bezier(...)` or `steps(...)` instead — both are honored.',
+    safe: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+  },
+  shape: {
+    label: 'CSS shape functions',
+    severity: 'medium',
+    rule: 'Never use `rect()` or `xywh()` shape functions in `clip-path`; the engine does not parse them. Use `inset()`, `circle()`, `ellipse()`, `polygon()`, or `path()`.',
+    safe: 'inset(10px)',
+  },
+  counter: {
+    label: 'CSS counter functions',
+    severity: 'low',
+    rule: 'Never use `counter()` or `counters()` in `content`; the engine does not implement CSS counters. Inject the number from JS or pre-render the text.',
+    safe: '"1."',
+  },
+  reference: {
+    label: 'CSS reference functions',
+    severity: 'high',
+    rule: 'Never use `env()` (no environment variables) or `attr()` (only the most basic spec form is shipped in browsers and Gameface does not parse it); inline the literal value, or write it via element.style/JS. `var(--name, fallback)` is supported.',
+    safe: 'var(--gf-width, 100px)',
+  },
+};
+
+const funcByCategory = {};
+for (const f of funcs.unsupported) {
+  const cat = (f.evidence && f.evidence.category) || 'other';
+  if (!funcByCategory[cat]) funcByCategory[cat] = { missing: [], unknown: [] };
+  if (f.status === 'unknown') funcByCategory[cat].unknown.push(f);
+  else funcByCategory[cat].missing.push(f);
+}
+
+for (const cat of Object.keys(funcByCategory).sort()) {
+  const meta = funcCategories[cat] || { label: `CSS ${cat} functions`, severity: 'medium', rule: `Never use these missing CSS ${cat} functions.`, safe: '' };
+  const { missing, unknown } = funcByCategory[cat];
+
+  if (missing.length) {
+    const sample = missing[0];
+    const badVal = sample.evidence?.canonicalValue || `${sample.name}(...)`;
+    const goodVal = meta.safe || `/* No Gameface equivalent — omit */`;
+    pushRule({
+      id: nextCssId(),
+      surface: 'css-function',
+      status: 'missing',
+      severity: meta.severity,
+      name: meta.label,
+      summary: `${missing.length} CSS function(s) in this category are not parsed by Gameface`,
+      badExample: `.foo { ${sample.evidence?.testProperty || 'width'}: ${badVal}; }`,
+      badLang: 'css',
+      goodExample: `.foo { ${sample.evidence?.testProperty || 'width'}: ${goodVal}; }`,
+      goodLang: 'css',
+      ruleSentence: meta.rule,
+      why: `Scraper logged "Unable to parse declaration: …" for every member. Missing functions: ${missing.map(m => m.name + '()').join(', ')}.`,
+      sourceFile: 'results/functions/unsupported.json',
+      sourcePath: `$[?(@.evidence.category=="${cat}" && @.status=="missing")]`,
+      bucket: 'css',
+      members: missing.map(m => m.name),
+    });
+  }
+
+  if (unknown.length) {
+    needsReview.push(`CSS functions in category "${cat}" with status=unknown: ${unknown.map(u => u.name + '()').join(', ')} — scraper skipped them (would stall the renderer at parse time). Verify support against Gameface docs and update prompts accordingly.`);
+    pushRule({
+      id: nextCssId(),
+      surface: 'css-function',
+      status: 'unknown',
+      severity: 'medium',
+      name: `${meta.label} — unverified (NEEDS REVIEW)`,
+      summary: `${unknown.length} CSS function(s) skipped by the scraper; verify against Gameface docs`,
+      badExample: `.foo { ${unknown[0].evidence?.testProperty || 'background-image'}: ${unknown[0].evidence?.canonicalValue || unknown[0].name + '(...)'}; }`,
+      badLang: 'css',
+      goodExample: `// [NEEDS REVIEW: scraper skipped this function because it stalls the renderer at parse time; confirm with Gameface docs whether it is supported]`,
+      goodLang: 'css',
+      ruleSentence: `Treat \`${unknown.map(u => u.name + '()').join('`, `')}\` as unverified — the scraper could not safely probe them; do not emit unless an integrator confirms support against the Gameface CSS reference.`,
+      why: `Scraper skipReason: "${unknown[0].evidence?.skipReason || 'function stalls the renderer at parse time'}".`,
+      sourceFile: 'results/functions/unsupported.json',
+      sourcePath: `$[?(@.evidence.category=="${cat}" && @.status=="unknown")]`,
+      bucket: 'css',
+      members: unknown.map(u => u.name),
+    });
+  }
 }
 
 // ----- HTML rules -----
@@ -842,32 +969,111 @@ function htmlNoImplRule(n, isUnknown) {
 let jsId = 0;
 const nextJsId = () => `JS-${String(++jsId).padStart(3, '0')}`;
 
-// stub + partial + stub-heavy → status: stub
+// JS partial → status: stub (matches user vocabulary mapping). Build rule text from
+// evidence.missing (the new scraper shape), not from old `stubs`/`present` fields.
 const jsStubLike = [...js.partial].sort((a, b) => a.name.localeCompare(b.name));
 for (const e of jsStubLike) {
   const ev = e.evidence || {};
-  const stubs = ev.stubs || [];
   const missing = ev.missing || [];
-  const present = ev.present || [];
   pushRule({
     id: nextJsId(),
     surface: 'js-stub',
     status: 'stub',
-    severity: jsSeverity(e.name, 'stub', ev),
+    severity: jsPartialSeverity(e.name, missing),
     name: e.name,
-    summary: jsStubSummary(e.name, stubs, missing, present),
-    badExample: jsStubBadExample(e.name, stubs, missing),
+    summary: jsPartialSummary(e.name, missing),
+    badExample: jsPartialBadExample(e.name, missing),
     badLang: 'js',
-    goodExample: jsStubGoodExample(e.name, stubs, missing, present),
+    goodExample: jsPartialGoodExample(e.name, missing),
     goodLang: 'js',
-    ruleSentence: jsStubRule(e.name, stubs, missing),
-    why: jsStubWhy(stubs, missing, present),
+    ruleSentence: jsPartialRule(e.name, missing),
+    why: `scraper missing: ${JSON.stringify(missing.slice(0, 12))}${missing.length > 12 ? ` …+${missing.length - 12} more` : ''}.`,
     sourceFile: 'results/js/partial.json',
     sourcePath: `$[?(@.name=="${e.name}")]`,
     bucket: 'js',
   });
 }
 
+function jsPartialSeverity(name, missing) {
+  const ctorOnly = missing.length === 1 && missing[0] === name;
+  const constructorFamilies = ['MutationObserver', 'ResizeObserver', 'WebSocket', 'XMLHttpRequest', 'EventTarget', 'URL', 'Event', 'CustomEvent', 'KeyboardEvent', 'MouseEvent', 'FocusEvent', 'TouchEvent', 'UIEvent', 'AnimationEvent', 'TransitionEvent', 'PopStateEvent', 'ProgressEvent', 'PromiseRejectionEvent', 'MessageEvent', 'ErrorEvent', 'GamepadEvent', 'CSSStyleSheet', 'DocumentFragment', 'Comment', 'Text', 'DOMMatrix', 'DOMRect', 'DOMRectReadOnly', 'DOMStringMap', 'Blob'];
+  if (ctorOnly && constructorFamilies.includes(name)) return 'critical';
+  if (['CSSStyleDeclaration', 'CSSStyleSheet', 'Document', 'Element', 'Window', 'Navigator', 'CanvasRenderingContext2D', 'Animation', 'HTMLInputElement', 'HTMLImageElement', 'HTMLLinkElement', 'HTMLCanvasElement', 'HTMLMediaElement', 'HTMLVideoElement', 'HTMLIFrameElement', 'HTMLTextAreaElement', 'CSS', 'Console', 'Performance', 'CustomElementRegistry', 'MutationObserver', 'ResizeObserver', 'XMLHttpRequest', 'WebSocket', 'URL', 'EventTarget', 'Selection', 'History', 'ShadowRoot'].includes(name)) return 'critical';
+  if (/^(HTML|SVG|CSS)/.test(name)) return 'high';
+  if (/Event$/.test(name)) return 'high';
+  return 'high';
+}
+
+function jsPartialSummary(name, missing) {
+  const ctorMissing = missing.includes(name);
+  const rest = missing.filter(m => m !== name);
+  if (ctorMissing && rest.length === 0) return `${name}: constructor missing — API not constructible in Gameface`;
+  if (ctorMissing) return `${name}: constructor missing + ${rest.length} other member(s) missing`;
+  return `${name}: ${rest.length} member(s) missing`;
+}
+
+function jsPartialBadExample(name, missing) {
+  const ctorMissing = missing.includes(name);
+  if (ctorMissing) return `const x = new ${name}(/* ... */); // TypeError: ${name} is not a constructor`;
+  const sample = missing[0] || 'member';
+  return `instance.${sample}; // ${name}.${sample} is undefined / not implemented in Gameface`;
+}
+
+function jsPartialGoodExample(name, missing) {
+  if (name === 'Animation' || name === 'CSSAnimation' || name === 'AnimationEvent') return `// Drive animation through CSS @keyframes + the animation-* longhands (all supported):\nel.style.animationName = 'fadeIn';\nel.style.animationDuration = '300ms';`;
+  if (name === 'CanvasRenderingContext2D' || name === 'CanvasPattern') return `// Canvas drawing is not functional. Render via DOM elements or the host engine.`;
+  if (name === 'CustomElementRegistry') return `// customElements.define() exists but get/getName/upgrade/whenDefined are missing — no upgrade lifecycle. Prefer plain factory functions that return DOM trees.`;
+  if (name === 'XMLHttpRequest' || name === 'WebSocket') return `// Communicate with the host via the Gameface bridge (engine.call, coh-* APIs). No HTTP/WS from page JS.`;
+  if (name === 'MutationObserver' || name === 'ResizeObserver') return `// No reactive observation — the constructor is missing. Recompute on requestAnimationFrame or apply changes synchronously when you cause them.`;
+  if (name === 'URL') return `// new URL() is missing. Concatenate path strings manually:\nconst path = base + '/' + segment + '?' + new URLSearchParams /* also missing */;`;
+  if (name === 'Performance') return `// Only performance.now() is supported. Don't call mark/measure/getEntries*/timing/navigation.`;
+  if (name === 'Console') return `// Use console.log/info/warn/error/debug/assert/time/timeEnd — they are present. Avoid dir/group*/table/count*/dirxml/timeLog/timeStamp/trace.`;
+  if (name === 'Document') return `// Use the documented Document API only: getElementById, querySelector(All), createElement(NS), createTextNode/Comment, body/head/documentElement, addEventListener/removeEventListener, defaultView, readyState.`;
+  if (name === 'Element') return `// Use the documented Element subset: querySelector(All), getBoundingClientRect, getAttribute/setAttribute/removeAttribute, classList (DOMTokenList is fully supported), className, id, addEventListener, dispatchEvent, children, parent/firstChild/lastChild, scrollTop/scrollLeft, getElementsByClassName/TagName.`;
+  if (name === 'Navigator') return `// Don't use navigator.clipboard/credentials/mediaDevices/geolocation/permissions/serviceWorker/storage/vibrate/share/userAgentData/locks/connection — missing. Engine bridge for host integrations.`;
+  if (name === 'History') return `// history.scrollRestoration is missing. pushState/replaceState/back/forward/length/state are present in the partial surface but do not perform navigation; treat as no-ops.`;
+  if (name === 'CSSStyleDeclaration') return `// Use el.style.<longhand> for the supported longhands only (see results/css/{supported,partial}.json). Avoid setProperty for custom CSS vars (var() is supported, but the CSSOM setter has 350 missing members).`;
+  if (name === 'CSSStyleSheet') return `// Don't construct CSSStyleSheet (missing). Toggle classes or set inline style to mutate visuals.`;
+  if (name === 'CSS') return `// CSS.escape works in browsers but unit helpers (CSS.px/em/vw/%, etc.) are missing here. Build raw strings: el.style.width = (n + 'px').`;
+  if (name === 'EventTarget' || /Event$/.test(name)) return `// Never construct ${name}; receive instances from listeners only. addEventListener/removeEventListener/dispatchEvent on supported host objects work.`;
+  if (name === 'Selection') return `// No text-selection workflow. Avoid features that depend on Selection/Range.`;
+  if (name === 'ShadowRoot') return `// element.attachShadow may exist on Element but adoptedStyleSheets/getAnimations/getSelection/setHTMLUnsafe are missing. Avoid Shadow DOM-dependent designs.`;
+  if (name === 'HTMLInputElement') return `// Use input.value, input.type ("text"/"password"/"button" only), focus(), blur(), select(), setRangeText, setSelectionRange, placeholder (writeable). Avoid checked/files/validity/required/min/max/pattern/list/labels.`;
+  if (name === 'HTMLImageElement') return `// Use img.src only. Avoid alt/complete/naturalWidth/Height/currentSrc/crossOrigin/decoding/fetchPriority/loading/referrerPolicy/sizes/srcset.`;
+  if (name === 'HTMLLinkElement') return `// Use link.href, link.rel. Avoid sheet/relList/media/crossOrigin/integrity/fetchPriority/hreflang/imageSizes/imageSrcset/referrerPolicy/sizes/disabled/as.`;
+  if (name === 'HTMLCanvasElement') return `// Use canvas.width, canvas.height, canvas.getContext('2d'). Avoid toDataURL/toBlob/captureStream/transferControlToOffscreen.`;
+  if (name === 'HTMLMediaElement' || name === 'HTMLVideoElement') return `// No real media playback. Bridge to the host engine for audio/video.`;
+  if (name === 'HTMLIFrameElement') return `// <iframe> is parsed-no-impl. Don't depend on contentDocument/contentWindow/src/srcdoc/allow/sandbox/loading.`;
+  if (name === 'HTMLTextAreaElement') return `// Use textarea.value, rows, cols, focus(), blur(), select(), setRangeText, setSelectionRange. Avoid form/labels/validity/required/disabled/readOnly/autocomplete.`;
+  if (name === 'HTMLElement') return `// Avoid hidden/inert/innerText/outerText/title/lang/dir/spellcheck/tabIndex/draggable/accessKey/translate/contentEditable/enterKeyHint/inputMode/popover* — missing. Use plain DOM (className, getAttribute, addEventListener).`;
+  if (name === 'Window') return `// Avoid alert/confirm/prompt/open/postMessage/print/matchMedia/requestIdleCallback/structuredClone — missing. setTimeout/clearTimeout/setInterval/clearInterval/queueMicrotask are supported.`;
+  if (name === 'Attr' || name === 'NamedNodeMap') return `// Read/write attributes via element.getAttribute/setAttribute/removeAttribute. Don't poke ${name} directly.`;
+  if (name === 'Comment' || name === 'Text') return `// document.createTextNode(...) / createComment(...) work. Avoid \`new ${name}()\` — constructor missing.`;
+  if (name === 'Blob') return `// Don't construct Blob or call text/arrayBuffer/stream/bytes; bridge binary data through the engine.`;
+  if (/^(DOMMatrix|DOMRect|DOMRectReadOnly|DOMStringMap)$/.test(name)) return `// Don't construct ${name}; read existing instances returned by DOM APIs (getBoundingClientRect, etc.).`;
+  if (/^(CSSKeywordValue|CSSMatrixComponent|CSSNumericValue|CSSRotate|CSSScale|CSSSkewX|CSSSkewY|CSSTransformValue|CSSTranslate|CSSUnitValue|CSSStyleValue|StylePropertyMap|StylePropertyMapReadOnly)$/.test(name)) return `// Typed CSSOM is not constructible. Use plain string CSS values (el.style.transform = 'translate(10px, 20px)').`;
+  if (/^SVG/.test(name)) return `// Use only the standard SVG attributes in markup; the SVG DOM (getBBox, animVal, createSVG*, ${name}-specific methods) is partial.`;
+  return `// ${name} is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.`;
+}
+
+function jsPartialRule(name, missing) {
+  const ctorMissing = missing.includes(name);
+  const rest = missing.filter(m => m !== name);
+  const formatList = (arr, max = 10) => {
+    if (!arr.length) return '';
+    if (arr.length <= max) return arr.map(m => '`' + m + '`').join(', ');
+    return arr.slice(0, max).map(m => '`' + m + '`').join(', ') + `, …+${arr.length - max} more`;
+  };
+  if (ctorMissing && rest.length === 0) {
+    return `Never \`new ${name}(...)\`; the constructor is missing in Gameface, so this API cannot be instantiated.`;
+  }
+  if (ctorMissing && rest.length > 0) {
+    return `Never \`new ${name}(...)\` (constructor missing) and do not read/write ${formatList(rest)} on existing \`${name}\` instances; all missing in Gameface.`;
+  }
+  return `Never read/write ${formatList(rest)} on \`${name}\` instances; missing in Gameface.`;
+}
+
+// (jsStub* helpers below are no longer used — superseded by jsPartial* above.)
 function jsStubSummary(name, stubs, missing, present) {
   if (stubs.length && missing.length) return `${name}: ${stubs.length} methods are stubs; ${missing.length} members missing`;
   if (stubs.length) return `${name}: ${stubs.length} methods are stubs (no-ops)`;
@@ -1155,15 +1361,24 @@ const indexJson = rules.map(r => ({
 
 fs.writeFileSync(path.join(OUT, 'negative-rules-index.json'), JSON.stringify({
   generatedAt: new Date().toISOString(),
-  generator: 'gen-rules.js (one-shot)',
+  generator: 'gen-rules.js',
+  surfaces: ['css-property', 'css-shorthand', 'css-value', 'css-function', 'css-selector', 'html-tag', 'html-input-type', 'js-stub', 'js-api'],
   vocabulary: ['supported', 'partial-shorthand', 'partial-values', 'parser-only', 'stub', 'parsed-no-impl', 'silently-coerced', 'unknown', 'missing'],
   vocabularyMapping: {
-    'partial → partial-shorthand': 'CSS partial entries on shorthand properties with probe=value-accepted-but-not-computed',
-    'partial → partial-values': 'CSS partial entries with explicit supportedValues/unsupportedValues/logRejectedValues',
-    'partial → parser-only': 'CSS partial entries on non-shorthand properties where probe=value-accepted-but-not-computed only',
-    'partial → stub': 'JS partial entries (objects with missing members)',
-    'stub-heavy → stub': 'JS objects where most methods are stubs',
-    'missing-from-window → missing': '1527 JS globals not present on window',
+    'CSS partial → partial-shorthand': 'shorthand property with probe=value-accepted-but-not-computed',
+    'CSS partial → partial-values': 'property whose evidence lists explicit supportedValues / unsupportedValues / logRejectedValues',
+    'CSS partial → parser-only': 'non-shorthand whose evidence is only probe=value-accepted-but-not-computed',
+    'CSS missing': `${css.unsupported.length} unsupported properties, each with logWarning "Unsupported CSS property detected (stylesheet parser)"`,
+    'CSS-function missing': `${funcs.unsupported.filter(f => f.status === 'missing').length} functions that fail to parse with "Unable to parse declaration: …"`,
+    'CSS-function unknown': `${funcs.unsupported.filter(f => f.status === 'unknown').length} functions the scraper skipped because they stall the renderer at parse time (NEEDS REVIEW)`,
+    'Selector parser-only': `${sel.unsupported.length} pseudo-class/element/at-rule names the engine logs as "unsupported pseudo: …"`,
+    'Selector partial': `${sel.partial.length} structural pseudos that match only the simplest form`,
+    'HTML partial → silently-coerced (input-type)': `${html.partial.filter(e => e.surface === 'input-type').length} input types reset to "text" after assignment`,
+    'HTML partial → partial-values (tag)': `${html.partial.filter(e => e.surface === 'html').length} tags (canvas/img/input/link) where the constructor exists but a documented subset of properties is missing`,
+    'HTML parsed-no-impl': `${html.unsupported.filter(e => e.status === 'parsed-no-impl').length} tags that parse to a generic HTMLElement with no specialised behavior`,
+    'HTML unknown': `${html.unsupported.filter(e => e.status === 'unknown').length} tags that resolve to HTMLUnknownElement`,
+    'JS partial → stub': `${js.partial.length} window-visible classes whose constructor and/or a subset of members are absent`,
+    'JS missing-from-window → missing': `${js.unsupported.length} window-scoped globals not defined`,
   },
   skippedBasicSelectors,
   needsReview,
@@ -1242,52 +1457,193 @@ fs.writeFileSync(path.join(OUT, 'negative-rules-js.md'), renderBucket(
   'js',
 ));
 
-// ---------- injection block ----------
+// ---------- injection block (dense, categorical, ~3000-3500 cl100k tokens) ----------
+//
+// Designed to be injected verbatim into LLM system prompts. Grouped by surface
+// and prefixed with a small "supported" cheat-sheet so the model doesn't avoid
+// features that actually work. The full rationale per rule lives in
+// `negative-rules-{css,html,js}.md` and `negative-rules-index.json`.
 const inject = [];
 inject.push('## GAMEFACE CONSTRAINTS — DO NOT VIOLATE');
 inject.push('');
-inject.push('### CSS — forbidden patterns');
-const cssCriticalHigh = rulesFor('css').filter(r => ['critical', 'high'].includes(r.severity) && r.surface !== 'css-selector');
-for (const r of cssCriticalHigh) inject.push(`- ${r.ruleSentence}`);
+inject.push('Gameface is a game-UI middleware that ships a subset of web standards. Emit only what the engine actually parses and renders. Lists below come from the feature-detection scraper under `results/`; see `negative-rules-{css,html,js}.md` for per-feature evidence.');
+inject.push('');
+
+// --- SUPPORTED cheat sheet (compact) ---
+inject.push('### Supported (use freely)');
+inject.push('- CSS shorthands propagate (`border`, `background`, `flex`, `font`, `gap`, `margin`, `padding`, `animation`, `transition`, `mask`, `text-decoration`, `text-shadow`, `text-stroke`, `border-radius`, etc.).');
+inject.push('- `var(--name, fallback)`, `calc`, `sign`/`pow`/`sqrt`/`hypot`/`log`/`exp`/`sin`/`cos`/`tan`, `rgb`/`rgba`/`color(srgb …)`, `linear-gradient`/`radial-gradient`/`conic-gradient`, `translate*`/`scale*`/`rotate*`/`matrix`/`matrix3d`/`skewX`/`skewY`, `blur`/`brightness`/`contrast`/`drop-shadow`/`grayscale`/`hue-rotate`/`invert`/`opacity`/`saturate`/`sepia`, `cubic-bezier`/`steps`, `circle`/`ellipse`/`polygon`/`inset`/`path`, `repeat`/`minmax`/`fit-content`.');
+inject.push('- At-rules `@media`/`@supports`/`@layer`/`@container`/`@scope`/`@starting-style`/`@keyframes`; CSS nesting (`& .child`).');
+inject.push('- Selectors: type / `.class` / `#id` / `*` / all `[attr…]` / all combinators / `:hover`/`:focus`/`:active`/`:first-child`/`:last-child`/`:is`/`:not`/`:where`/`:lang`/`:root`/`:scope`/`:link`/`:visited`/`:target`, all form-state and media-state pseudos, `::before`/`::after`/`::placeholder`/`::marker`/`::part`/`::highlight`/`::slotted`/`::view-transition*`.');
+inject.push('- JS: `console.{log,info,warn,error,debug,assert,time,timeEnd}`, `setTimeout`/`setInterval`/`clearTimeout`/`clearInterval`/`queueMicrotask`, `performance.now()`, `Node`/`NodeList`/`NodeFilter`/`HTMLCollection`, `DOMTokenList` (so `element.classList` works), `Storage`, `Location`.');
+
+// --- CSS forbidden ---
+inject.push('');
+inject.push('### CSS — forbidden property families');
+const cssFamilyRules = rulesFor('css').filter(r => r.surface === 'css-property' && r.status === 'missing');
+for (const r of cssFamilyRules) inject.push(`- ${r.ruleSentence}`);
+
+inject.push('');
+inject.push('### CSS — forbidden functions');
+const cssFnRules = rulesFor('css').filter(r => r.surface === 'css-function');
+for (const r of cssFnRules) inject.push(`- ${r.ruleSentence}`);
+
+// CSS partial-value restrictions — collapse into compact, scannable lines.
+// Drop noise: CSS-wide keywords (`initial`/`inherit`/`unset`/`revert`),
+// function calls already covered by the dedicated functions section,
+// anchor-positioning tokens already covered by their family rule.
+inject.push('');
+inject.push('### CSS — partial-value restrictions (only the listed tokens are rejected)');
+const partialValueRules = rulesFor('css').filter(r => ['css-value', 'css-shorthand'].includes(r.surface));
+const FN_NOISE = new Set([
+  'hsl', 'hsla', 'hwb', 'lab', 'lch', 'oklab', 'oklch', 'color-mix',
+  'clamp', 'min', 'max', 'mod', 'rem', 'round', 'abs', 'asin', 'acos', 'atan', 'atan2',
+  'env', 'attr', 'counter', 'counters', 'rect', 'xywh',
+  'image-set', 'cross-fade', 'repeating-linear-gradient', 'repeating-radial-gradient',
+  'skew', 'perspective', 'linear',
+]);
+const KW_NOISE = new Set(['initial', 'inherit', 'unset', 'revert', 'revert-layer']);
+const ANCHOR_NOISE = new Set(['anchor', 'anchor-size', 'anchor-center']);
+function isFnCall(tok) {
+  const m = tok.match(/^([\w-]+)\s*\(/);
+  if (m && FN_NOISE.has(m[1].toLowerCase())) return true;
+  // also drop tokens containing a noisy function name as a nested call
+  for (const fn of FN_NOISE) {
+    if (new RegExp(`\\b${fn}\\s*\\(`).test(tok)) return true;
+  }
+  return false;
+}
+function rejectedTokensFor(propName) {
+  const e = (css.partial.find(x => x.name === propName) || {}).evidence || {};
+  const raw = [...new Set([...(e.unsupportedValues || []), ...(e.logRejectedValues || [])])];
+  return raw.filter(t => {
+    const low = t.toLowerCase();
+    if (KW_NOISE.has(low)) return false;
+    if (ANCHOR_NOISE.has(low)) return false;
+    if (FN_NOISE.has(low)) return false;
+    if (isFnCall(low)) return false;
+    return true;
+  });
+}
+const compactedRules = [];
+for (const r of partialValueRules) {
+  const rejected = rejectedTokensFor(r.name);
+  if (!rejected.length) continue; // skip noise-only rejections
+  compactedRules.push({ name: r.name, rejected });
+}
+for (const { name, rejected } of compactedRules) {
+  inject.push(`- \`${name}\`: never assign ${rejected.map(v => '`' + v + '`').join(', ')}.`);
+}
+
+// CSS selectors
 inject.push('');
 inject.push('### CSS — selector restrictions');
-const selRules = rulesFor('css').filter(r => r.surface === 'css-selector' && ['critical', 'high'].includes(r.severity));
-for (const r of selRules) inject.push(`- ${r.ruleSentence}`);
+const selRules = rulesFor('css').filter(r => r.surface === 'css-selector');
+const selUnsupp = selRules.filter(r => r.status === 'parser-only').map(r => r.name).sort();
+const selPartial = selRules.filter(r => r.status === 'partial-values').map(r => r.name).sort();
+if (selUnsupp.length) inject.push(`- Never use (parses, never matches): ${selUnsupp.map(n => '`' + n + '`').join(', ')}.`);
+if (selPartial.length) inject.push(`- Partial — only the simplest forms work, avoid the \`An+B\` / \`of S\` variants: ${selPartial.map(n => '`' + n + '`').join(', ')}.`);
+
+// --- HTML forbidden ---
 inject.push('');
 inject.push('### HTML — forbidden tags and attributes');
-const htmlCriticalHigh = rulesFor('html').filter(r => ['critical', 'high'].includes(r.severity));
-for (const r of htmlCriticalHigh) inject.push(`- ${r.ruleSentence}`);
+const silentInputs = rulesFor('html').filter(r => r.surface === 'html-input-type').map(r => r.name.match(/"([^"]+)"/)[1]).sort();
+if (silentInputs.length) {
+  inject.push(`- \`<input type="${silentInputs.join('|')}">\` is silently coerced to \`type="text"\` — only \`type="text"\`, \`type="password"\`, \`type="button"\` are honored. Implement other behavior in JS or with custom widgets.`);
+}
+const noImpl = rulesFor('html').filter(r => r.status === 'parsed-no-impl').map(r => r.name);
+const widgets = noImpl.filter(n => ['select', 'option', 'optgroup', 'datalist'].includes(n));
+const forms = noImpl.filter(n => ['form', 'fieldset', 'legend', 'label', 'output', 'progress', 'meter'].includes(n));
+const media = noImpl.filter(n => ['audio', 'video', 'source', 'track', 'picture', 'embed', 'object', 'iframe', 'map', 'area'].includes(n));
+const tables = noImpl.filter(n => ['table', 'caption', 'col', 'colgroup', 'tbody', 'tfoot', 'thead', 'tr', 'td', 'th'].includes(n));
+const lists = noImpl.filter(n => ['ul', 'ol', 'li', 'dl', 'dt', 'dd', 'menu'].includes(n));
+const text = noImpl.filter(n => /^(h[1-6]|b|strong|i|em|u|s|mark|small|sub|sup|abbr|address|cite|code|kbd|samp|var|q|dfn|time|data|big|tt|font|center|blockquote|figure|figcaption|pre|br|hr|wbr|ruby|rt|rp|bdi|bdo|ins|del|noscript|noembed|noframes)$/.test(n));
+const dis = noImpl.filter(n => ['details', 'summary', 'dialog'].includes(n));
+const accountedFor = new Set([...widgets, ...forms, ...media, ...tables, ...lists, ...text, ...dis, 'a']);
+const otherNoImpl = noImpl.filter(n => !accountedFor.has(n));
+inject.push('- `<a href>` has no navigation — replace with `<div role="link">` + JS click handler that calls into the engine.');
+if (widgets.length) inject.push(`- \`<${widgets.join('>`/`<')}>\` — no widget behavior. Build custom dropdowns / autocomplete from \`<div>\` + class toggles.`);
+if (forms.length) inject.push(`- \`<${forms.join('>`/`<')}>\` — no form lifecycle / validation / labeling. Read input values from JS and POST via the engine bridge.`);
+if (media.length) inject.push(`- \`<${media.join('>`/`<')}>\` — no media / framing pipeline. Route through the host engine.`);
+if (tables.length) inject.push(`- \`<${tables.join('>`/`<')}>\` — no table layout. Use \`display: flex\` rows/cells.`);
+if (lists.length) inject.push(`- \`<${lists.join('>`/`<')}>\` — no list markers/numbering. Render bullets manually with styled \`<div>\`.`);
+if (text.length) inject.push(`- Headings + inline-text tags (\`<h1..h6>\`, \`<b>\`/\`<strong>\`/\`<i>\`/\`<em>\`/\`<u>\`/\`<s>\`/\`<mark>\`/\`<sub>\`/\`<sup>\`/\`<abbr>\`/\`<cite>\`/\`<code>\`/\`<kbd>\`/\`<samp>\`/\`<var>\`/\`<time>\`/\`<data>\`/\`<q>\`/\`<dfn>\`/\`<address>\`/\`<blockquote>\`/\`<figure>\`/\`<figcaption>\`/\`<pre>\`/\`<br>\`/\`<hr>\`/\`<wbr>\`/\`<ruby>\`/\`<bdi>\`/\`<bdo>\`/\`<ins>\`/\`<del>\`/legacy presentational) parse but have no default styling — wrap with \`<span>\`/\`<div>\` + explicit CSS classes.`);
+if (dis.length) inject.push(`- \`<${dis.join('>`/`<')}>\` — no disclosure/modal behavior. Build with class toggling + a \`<div class="modal">\` overlay.`);
+if (otherNoImpl.length) inject.push(`- Other tags parsed as generic \`HTMLElement\` (no specialised behavior): \`<${otherNoImpl.slice(0, 25).join('>`/`<')}>\`${otherNoImpl.length > 25 ? `, …+${otherNoImpl.length - 25} more` : ''}.`);
+const unknownTags = rulesFor('html').filter(r => r.status === 'unknown').map(r => r.name).sort();
+if (unknownTags.length) inject.push(`- \`<${unknownTags.join('>`/`<')}>\` resolve to \`HTMLUnknownElement\` — the engine doesn't recognize the tag at all.`);
+inject.push('- Partial tags — `<canvas>` is 2D-only, no `toDataURL`/`toBlob`; `<img>` exposes only `src` (no `alt`/`complete`/`naturalWidth/Height`); `<input>` lacks `checked`/`validity`/`files`/`required`/`min`/`max`/`pattern`/`list`/`labels`; `<link>` has no `.sheet`. Full per-tag list in `negative-rules-html.md`.');
+
+// --- JS forbidden ---
 inject.push('');
 inject.push('### JS — missing or stubbed APIs');
-const jsCriticalHigh = rulesFor('js').filter(r => ['critical', 'high'].includes(r.severity));
-for (const r of jsCriticalHigh) inject.push(`- ${r.ruleSentence}`);
+const jsFamilyRules = rulesFor('js').filter(r => r.surface === 'js-api');
+const miscRestRules = jsFamilyRules.filter(r => /missing globals \(rest|missing global symbols/i.test(r.name + ' ' + r.ruleSentence) && /\(rest|#\d+\)/.test(r.name + r.summary));
+const nonRestFamilies = jsFamilyRules.filter(r => !miscRestRules.includes(r));
+for (const r of nonRestFamilies) inject.push(`- ${r.ruleSentence}`);
+if (miscRestRules.length) {
+  const total = miscRestRules.reduce((n, r) => n + (r.members ? r.members.length : 0), 0);
+  inject.push(`- ${total} other window-scoped globals are absent (vendor-prefixed, experimental, trial APIs). Assume any standard symbol not listed under "Supported" is unavailable.`);
+}
+
+// JS partial — compact format
+const jsPartialAll = rulesFor('js').filter(r => r.surface === 'js-stub');
+function missingOf(name) {
+  const ev = (js.partial.find(e => e.name === name) || {}).evidence || {};
+  return ev.missing || [];
+}
+const ctorOnlyMissing = jsPartialAll.filter(r => {
+  const m = missingOf(r.name);
+  return m.length === 1 && m[0] === r.name;
+});
+if (ctorOnlyMissing.length) {
+  inject.push(`- Constructor-only-missing (receive instances from listeners / DOM APIs only, never \`new\` them): ${ctorOnlyMissing.map(r => '`' + r.name + '`').sort().join(', ')}.`);
+}
+
+// Group HTML element interfaces, SVG, Typed CSSOM into one bullet each (no inline name list).
+const partialWithMembers = jsPartialAll.filter(r => !ctorOnlyMissing.includes(r));
+const htmlElementInterfaces = partialWithMembers.filter(r => /^HTML/.test(r.name));
+if (htmlElementInterfaces.length) {
+  inject.push(`- All \`HTML*Element\` interfaces (${htmlElementInterfaces.length} classes) ship only a small subset of their standard surface — assume \`id\`/\`className\`/\`classList\`/\`getAttribute\`/\`setAttribute\`/\`addEventListener\`/\`removeEventListener\`/\`getBoundingClientRect\`/\`querySelector\`/parent-traversal exist; consult \`negative-rules-js.md\` before touching tag-specific properties.`);
+}
+const svgInterfaces = partialWithMembers.filter(r => /^SVG/.test(r.name));
+if (svgInterfaces.length) {
+  inject.push(`- SVG DOM (${svgInterfaces.length} \`SVG*\` interfaces) is partial — keep SVG configuration in markup; avoid \`getBBox\`/\`animVal\`/\`createSVG*\`/transform-list mutation.`);
+}
+const typedCssom = partialWithMembers.filter(r => /^CSS/.test(r.name) && !['CSSStyleDeclaration', 'CSSStyleSheet'].includes(r.name));
+if (typedCssom.length) {
+  inject.push(`- Typed CSSOM (${typedCssom.length} \`CSS*Value\`/\`CSS*Component\` classes) is not constructible — assemble plain CSS strings instead.`);
+}
+const groupedNames = new Set([...htmlElementInterfaces, ...svgInterfaces, ...typedCssom].map(r => r.name));
+
+// For high-value globals (the most-used DOM/Web APIs), emit one compact bullet each with ≤6 example missing members.
+const highValuePartial = ['Document', 'Element', 'Window', 'Navigator', 'CSSStyleDeclaration', 'CSSStyleSheet', 'Console', 'Performance', 'Selection', 'History', 'CSS', 'CanvasRenderingContext2D', 'Animation', 'CustomElementRegistry'];
+for (const n of highValuePartial) {
+  if (groupedNames.has(n)) continue;
+  const r = partialWithMembers.find(x => x.name === n);
+  if (!r) continue;
+  const m = missingOf(n).filter(x => x !== n);
+  const ctor = missingOf(n).includes(n);
+  const preview = m.slice(0, 6).map(x => '`' + x + '`').join(', ');
+  const more = m.length > 6 ? `, …+${m.length - 6} more` : '';
+  const note = ' (full list in `negative-rules-js.md`)';
+  if (ctor) {
+    inject.push(`- \`${n}\` — \`new ${n}()\` missing; instances also lack ${preview}${more}${note}.`);
+  } else {
+    inject.push(`- \`${n}\` instances lack ${preview}${more}${note}.`);
+  }
+  groupedNames.add(n);
+}
+
+// Remaining partial classes: lump together with a single pointer-bullet (no detail).
+const remaining = partialWithMembers.filter(r => !groupedNames.has(r.name));
+if (remaining.length) {
+  inject.push(`- Other partial classes (${remaining.length} more — see \`negative-rules-js.md\`): \`Attr\`, \`Blob\`, \`CharacterData\`, \`DocumentFragment\`, \`DocumentType\`, \`DOMMatrix\`/\`DOMRect*\`, \`Event\`/\`KeyboardEvent\`/\`MouseEvent\`/\`UIEvent\`/\`MessageEvent\`/\`PopStateEvent\`/\`TouchEvent\`/\`Touch\`, \`Gamepad\`, \`NamedNodeMap\`, \`NodeIterator\`, \`Screen\`, \`ShadowRoot\`, \`StylePropertyMap*\`, \`StyleSheet\`, \`Text\`, \`TextMetrics\`, \`XMLHttpRequestEventTarget\`, etc. — constructors typically missing, only a few properties exposed.`);
+}
 
 let injectStr = inject.join('\n');
 
-// Token estimate: rough 4 chars per token
-const estTokens = Math.ceil(injectStr.length / 4);
-let droppedNote = '';
-if (estTokens > 1500) {
-  // drop low-priority items: prefer keeping critical-only if necessary
-  const inject2 = [];
-  inject2.push('## GAMEFACE CONSTRAINTS — DO NOT VIOLATE');
-  inject2.push('');
-  inject2.push('### CSS — forbidden patterns');
-  for (const r of rulesFor('css').filter(r => r.severity === 'critical' && r.surface !== 'css-selector')) inject2.push(`- ${r.ruleSentence}`);
-  inject2.push('');
-  inject2.push('### CSS — selector restrictions');
-  for (const r of rulesFor('css').filter(r => r.surface === 'css-selector' && r.severity === 'critical')) inject2.push(`- ${r.ruleSentence}`);
-  inject2.push('');
-  inject2.push('### HTML — forbidden tags and attributes');
-  for (const r of rulesFor('html').filter(r => r.severity === 'critical')) inject2.push(`- ${r.ruleSentence}`);
-  inject2.push('');
-  inject2.push('### JS — missing or stubbed APIs');
-  for (const r of rulesFor('js').filter(r => r.severity === 'critical')) inject2.push(`- ${r.ruleSentence}`);
-  injectStr = inject2.join('\n');
-  droppedNote = `\n\n<!-- High-severity rules dropped to fit ~1500 tokens; see negative-rules-{css,html,js}.md and negative-rules-index.json for the full list. -->\n`;
-}
-
-fs.writeFileSync(path.join(OUT, 'negative-rules-injection.md'), injectStr + droppedNote);
+fs.writeFileSync(path.join(OUT, 'negative-rules-injection.md'), injectStr + '\n');
 
 // summary log
 const counts = { css: rulesFor('css').length, html: rulesFor('html').length, js: rulesFor('js').length };

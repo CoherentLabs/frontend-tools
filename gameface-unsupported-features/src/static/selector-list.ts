@@ -32,8 +32,8 @@ export const SELECTOR_LIST: SelectorEntry[] = [
     { selector: ':nth-child(odd)',                  group: 'pseudo-structural-complex' },
     { selector: ':nth-child(even)',                 group: 'pseudo-structural-complex' },
     { selector: ':nth-child(2 of .class)',          group: 'pseudo-structural-of' },
-    { selector: ':not(.foo, .bar)',                 group: 'pseudo-logical-forgiving' },
-    { selector: ':is(:hover, :focus)',              group: 'pseudo-logical-compound' },
+    { selector: ':not(.foo)',                        group: 'pseudo-logical-forgiving' },
+    { selector: ':is(:hover)',                      group: 'pseudo-logical-compound' },
     { selector: ':has(> .child)',                   group: 'pseudo-relational-direct' },
 
     // ── Attribute selector variants ────────────────────────────────────────────

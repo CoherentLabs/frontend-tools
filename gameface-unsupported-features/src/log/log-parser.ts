@@ -69,6 +69,20 @@ export interface LogParseResults {
      */
     unsupportedCalcExpressions: Set<string>;
 
+    /**
+     * At-rule names (without the `@`) that the engine rejected at parse time.
+     * Detected via a sentinel technique: each at-rule probe embeds a fake CSS
+     * property `at-{name}: ''` inside its body.  When the at-rule is NOT
+     * supported Gameface still processes the body through error recovery and
+     * emits "Unsupported CSS property detected: at-{name}" — but ONLY when
+     * that sentinel is preceded by a "CSS parsing error near text: @" line.
+     * When the at-rule IS supported, the sentinel is emitted without any
+     * preceding @-error, so the name is NOT added here.
+     *
+     * Keys are lower-case at-rule name strings, e.g. `"container"`, `"scope"`.
+     */
+    unsupportedAtRules: Set<string>;
+
     /** Raw matching warning lines (for debugging / evidence in output). */
     rawWarnings: string[];
 
@@ -131,20 +145,53 @@ function recordInvalidValue(
 }
 
 /**
+ * Internal parsing state passed through processLine.
+ * Tracks cross-line context (e.g. whether a CSS @-rule parse error was just seen).
+ */
+interface ProcessingState {
+    /**
+     * Set to true when a "CSS parsing error near text: @" line is encountered.
+     * Cleared when the next at-rule sentinel property (`at-{name}: ''`) is seen.
+     * Used to determine whether the sentinel indicates a rejected or accepted at-rule.
+     */
+    pendingAtRuleError: boolean;
+}
+
+/**
  * Actual Gameface log patterns derived from CohtmlApplication.log.
  * Order matters: more specific patterns first.
  */
 const LOG_PATTERNS: Array<{
     re: RegExp;
-    handler: (match: RegExpMatchArray, line: string, results: LogParseResults) => void;
+    handler: (match: RegExpMatchArray, line: string, results: LogParseResults, state: ProcessingState) => void;
 }> = [
     // "Warning: Unsupported CSS property detected: float"
     // Only emitted when CSS is parsed from a stylesheet, NOT from JS el.style writes.
+    //
+    // Properties whose names start with "at-" are SENTINEL markers used by the
+    // CSS selector probe to detect unsupported at-rules.  Each at-rule probe
+    // embeds `at-{name}: ''` in its body; when the at-rule IS supported the
+    // sentinel is merely an unknown property and is logged here.  When the
+    // at-rule is NOT supported, a "CSS parsing error near text: @" line
+    // appears BEFORE the sentinel (state.pendingAtRuleError = true).
+    //
+    // Sentinel properties are consumed here and NOT forwarded to
+    // `unsupportedProperties` (they are not real CSS properties).
     {
         re: /Unsupported CSS property detected:\s*(?<prop>[\w-]+)/i,
-        handler: (m, _line, r) => {
+        handler: (m, _line, r, state) => {
             const prop = m.groups?.prop;
-            if (prop) r.unsupportedProperties.add(normalizePropName(prop));
+            if (!prop) return;
+            if (prop.toLowerCase().startsWith('at-')) {
+                // Sentinel for at-rule support detection.
+                const atRuleName = prop.slice(3).toLowerCase();
+                if (state.pendingAtRuleError) {
+                    r.unsupportedAtRules.add(atRuleName);
+                }
+                state.pendingAtRuleError = false;
+                return; // Do not add to unsupportedProperties.
+            }
+            r.unsupportedProperties.add(normalizePropName(prop));
         },
     },
 
@@ -154,7 +201,7 @@ const LOG_PATTERNS: Array<{
     // camelCase (JS el.style.<name> origin) — normalise to kebab.
     {
         re: /Trying to set "(?<prop>[^"]+)" property to invalid value:\s*(?<value>.+)/i,
-        handler: (m, _line, r) => {
+        handler: (m, _line, r, _state) => {
             const prop = m.groups?.prop;
             const value = m.groups?.value ?? '';
             if (prop) recordInvalidValue(r, prop, value);
@@ -171,7 +218,7 @@ const LOG_PATTERNS: Array<{
     // `font-size: clamp(…)` → prop=`font`, sep=`-`, value=`size: clamp(…)`).
     {
         re: /Unable to parse declaration:\s*(?<prop>[\w-]+?)\s+-\s+(?<value>.+)/i,
-        handler: (m, _line, r) => {
+        handler: (m, _line, r, _state) => {
             const prop = m.groups?.prop;
             const value = m.groups?.value ?? '';
             if (prop) recordInvalidValue(r, prop, value);
@@ -187,7 +234,7 @@ const LOG_PATTERNS: Array<{
     // can compare against the unterminated form it generated.
     {
         re: /Unable to parse declaration:\s*(?<prop>[\w-]+)\s*:\s*(?<value>.+?)\s*;?\s*$/i,
-        handler: (m, _line, r) => {
+        handler: (m, _line, r, _state) => {
             const prop = m.groups?.prop;
             const value = m.groups?.value ?? '';
             if (prop) recordInvalidValue(r, prop, value);
@@ -202,7 +249,7 @@ const LOG_PATTERNS: Array<{
     // catalogue (see reconcileCssFunctions).
     {
         re: /^Warning:\s*Unable to evaluate calc\(\) expression:\s*(?<expr>.+?)\s*;?\s*$/i,
-        handler: (m, _line, r) => {
+        handler: (m, _line, r, _state) => {
             const expr = m.groups?.expr?.trim();
             if (expr) r.unsupportedCalcExpressions.add(expr.toLowerCase());
         },
@@ -217,7 +264,7 @@ const LOG_PATTERNS: Array<{
     // "is not supported for" pattern below.
     {
         re: /^Warning:\s*(?<value>\S+)\s+repeat type is not supported falling back to\b/i,
-        handler: (m, _line, r) => {
+        handler: (m, _line, r, _state) => {
             const value = m.groups?.value ?? '';
             if (!value) return;
             for (const prop of REPEAT_FAMILY_PROPERTIES) {
@@ -232,7 +279,7 @@ const LOG_PATTERNS: Array<{
     // ("X failed because Y is not supported for Z") don't false-positive.
     {
         re: /^Warning:\s*(?<value>\S+)\s+is not supported for\s+(?<prop>[\w-]+)\b/i,
-        handler: (m, _line, r) => {
+        handler: (m, _line, r, _state) => {
             const prop = m.groups?.prop;
             const value = m.groups?.value ?? '';
             if (prop) recordInvalidValue(r, prop, value);
@@ -243,7 +290,7 @@ const LOG_PATTERNS: Array<{
     // Property-then-value form with an explicit fallback value.
     {
         re: /^Warning:\s*(?<prop>[\w-]+)\s+(?<value>\S+)\s+currently not supported falling back to\b/i,
-        handler: (m, _line, r) => {
+        handler: (m, _line, r, _state) => {
             const prop = m.groups?.prop;
             const value = m.groups?.value ?? '';
             if (prop) recordInvalidValue(r, prop, value);
@@ -254,7 +301,7 @@ const LOG_PATTERNS: Array<{
     // Also covers functional pseudo-classes: "Unsupported CSS pseudo class selector encountered: not"
     {
         re: /Unsupported CSS pseudo class selector encountered:\s*(?<name>[\w-]+)/i,
-        handler: (m, _line, r) => {
+        handler: (m, _line, r, _state) => {
             const name = m.groups?.name?.trim();
             if (name) r.unsupportedPseudoClasses.add(name);
         },
@@ -263,7 +310,7 @@ const LOG_PATTERNS: Array<{
     // "Warning: Unsupported CSS pseudo element encountered: first-line"
     {
         re: /Unsupported CSS pseudo element encountered:\s*(?<name>[\w-]+)/i,
-        handler: (m, _line, r) => {
+        handler: (m, _line, r, _state) => {
             const name = m.groups?.name?.trim();
             if (name) r.unsupportedPseudoElements.add(name);
         },
@@ -272,20 +319,31 @@ const LOG_PATTERNS: Array<{
     // "Warning: The all shorthand doesn't support:"
     {
         re: /The (?<prop>[\w-]+) shorthand doesn'?t support/i,
-        handler: (m, _line, r) => {
+        handler: (m, _line, r, _state) => {
             const prop = m.groups?.prop?.toLowerCase().trim();
             if (prop) r.shorthandsWithLimitations.add(prop);
         },
     },
 
+    // "Warning: CSS parsing error "syntax error" near text: @"
+    // Specific pattern for at-rule failures.  Sets the pendingAtRuleError flag so
+    // that the next at-rule sentinel property (`at-{name}: ''`) is recognised as
+    // evidence of a rejected at-rule.  Must appear BEFORE the general CSS parsing
+    // error pattern below so it takes priority.
+    {
+        re: /CSS parsing error "syntax error" near text:\s*@/i,
+        handler: (_m, _line, _r, state) => {
+            state.pendingAtRuleError = true;
+        },
+    },
+
     // "Warning: CSS parsing error "syntax error" near text: TOKEN"
-    // Too granular for individual feature mapping, but record the line as evidence.
+    // General sub-token parse failures — too granular for individual feature mapping.
+    // The at-rule failure case is caught by the more specific pattern above.
     {
         re: /CSS parsing error "syntax error" near text:/i,
-        handler: (_m, _line, _r) => {
-            // Intentionally not mapped — these are sub-token errors from cascaded
-            // parse failures. The enclosing selector/property is captured by the
-            // pseudo-class / pseudo-element patterns above.
+        handler: (_m, _line, _r, _state) => {
+            // Intentionally not mapped.
         },
     },
 ];
@@ -308,13 +366,14 @@ export async function parseLog(logPath: string): Promise<LogParseResults> {
 
     results.logFound = true;
 
+    const state: ProcessingState = { pendingAtRuleError: false };
     const rl = readline.createInterface({
         input: fs.createReadStream(logPath, { encoding: 'utf-8' }),
         crlfDelay: Infinity,
     });
 
     for await (const line of rl) {
-        processLine(line, results);
+        processLine(line, results, state);
     }
 
     return results;
@@ -337,8 +396,9 @@ export function parseLogSync(logPath: string): LogParseResults {
 
     results.logFound = true;
 
+    const state: ProcessingState = { pendingAtRuleError: false };
     for (const line of content.split(/\r?\n/)) {
-        processLine(line, results);
+        processLine(line, results, state);
     }
 
     return results;
@@ -354,20 +414,25 @@ function emptyResults(): LogParseResults {
         unsupportedPseudoElements: new Set(),
         shorthandsWithLimitations: new Set(),
         unsupportedCalcExpressions: new Set(),
+        unsupportedAtRules: new Set(),
         rawWarnings: [],
         logFound: false,
     };
 }
 
-function processLine(line: string, results: LogParseResults): void {
-    // Only process Warning: lines to reduce noise.
-    if (!line.startsWith('Warning:')) return;
+function processLine(line: string, results: LogParseResults, state: ProcessingState): void {
+    // Gameface emits the "Unsupported CSS property detected: <name>" line at
+    // INFO level, not WARNING — but it's the strongest signal we have that a
+    // property name was rejected by the parser.  Accept both prefixes so the
+    // unsupportedProperties set is populated; pattern specificity prevents
+    // unrelated Info: lines from matching anything else.
+    if (!line.startsWith('Warning:') && !line.startsWith('Info:')) return;
 
     let matched = false;
     for (const { re, handler } of LOG_PATTERNS) {
         const m = line.match(re);
         if (m) {
-            handler(m, line, results);
+            handler(m, line, results, state);
             matched = true;
         }
     }
@@ -425,8 +490,9 @@ export function parseLogFromOffset(logPath: string, byteOffset: number): LogPars
     }
 
     results.logFound = true;
+    const state: ProcessingState = { pendingAtRuleError: false };
     for (const line of content.split(/\r?\n/)) {
-        processLine(line, results);
+        processLine(line, results, state);
     }
     return results;
 }

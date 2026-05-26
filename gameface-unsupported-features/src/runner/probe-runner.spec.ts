@@ -1,25 +1,22 @@
 /**
- * Gameface Feature Inventory — probe orchestrator.
+ * Gameface Feature Inventory — main probe orchestrator.
  *
- * This Mocha spec is executed by the gameface-e2e CLI, which handles:
- *   - Spawning the Player executable
- *   - Connecting to the CDP WebSocket
- *   - Providing the global `gf` object with executeScript / navigate
+ * Covers: CSS properties, JS interfaces, HTML constructor + fingerprints,
+ * input types.  CSS selectors and CSS functions run in their own dedicated
+ * specs (probe-selectors.spec.ts / probe-functions.spec.ts) so each gets a
+ * fresh Gameface session and a full log-flush window.
  *
- * Candidate sources (merged at runtime):
- *   CSS properties  – BCD standard set  ∪  DTS CSSStyleDeclaration props  ∪  coh-* custom props
- *   CSS selectors   – BCD selectors  ∪  at-rules + complex variants (selector-list.ts)
- *   HTML tags       – BCD elements  ∪  custom/non-standard tags (html-tags.ts)
- *   JS interfaces   – DTS interfaces  (with instance-factory fallback for non-window globals)
+ * Run order (see package.json "probe" script):
+ *   1. probe-selectors.spec.js  → results/selectors/ + intermediate/selector-data.json
+ *   2. probe-runner.spec.js     → results/css/, js/, html/  (loads selector + function intermediates)
+ *   3. probe-functions.spec.js  → results/functions/ + intermediate/function-data.json
  *
- * Execution order:
- *   before()  – static analysis (no Player needed) + navigate to probe page
+ * Execution order within this spec:
+ *   before()  – static analysis + navigate to probe pages
  *   it()      – one probe per surface; results stored in module-level vars
- *   after()   – parse CohtmlApplication.log → reconcile → write JSON files
- *
- * To run:
- *   npm run probe
- * (which does: tsc && gameface-e2e)
+ *               the last it() ends with gf.sleep() so Gameface flushes its
+ *               async log writes before after() parses the log
+ *   after()   – parse log → load intermediates → reconcile → write JSON files
  */
 
 import * as fs from 'node:fs';
@@ -29,18 +26,13 @@ import { parseDts } from '../static/dts-parser';
 import { SHORTHAND_MAP } from '../static/shorthand-map';
 import { CUSTOM_HTML_TAGS } from '../static/html-tags';
 import { INPUT_TYPES } from '../static/input-types';
-import { SELECTOR_LIST } from '../static/selector-list';
-import type { SelectorEntry } from '../static/selector-list';
 import {
     getBcdHtmlTags,
     getBcdCssProperties,
-    getBcdCssSelectors,
     getBcdCssPropertyValues,
     getBcdJsInterfaces,
 } from '../static/bcd-source';
 import { CSS_KEYWORD_VALUES } from '../static/css-keyword-values';
-import { CSS_FUNCTIONS } from '../static/css-functions';
-
 import { jsProbe } from '../probes/js-probe';
 import {
     htmlConstructorProbe,
@@ -105,7 +97,6 @@ let dtsParsed: DtsParsed = {
 };
 let jsResults: JsProbeResults = {};
 let cssPropertyResults: CssPropertyResults = {};
-let cssSelectorResults: CssSelectorResults = {};
 let htmlConstructorResults: HtmlConstructorResults = {};
 let htmlFingerprintResults: HtmlFingerprintResults = {};
 let inputTypeResults: InputTypeResults = {};
@@ -282,120 +273,6 @@ ${rules.join('\n')}
 }
 
 /**
- * Standalone CSS-function probe page.
- *
- * One rule per (function, variant) pair in CSS_FUNCTIONS, skipping any
- * entry marked `skipProbe` (URL/image-fetching functions — see
- * css-functions.ts for the rationale).  No `<script>`, no apply-elements:
- * Gameface emits parse-time "Unable to parse declaration" warnings for
- * unsupported function values regardless of whether anything applies the
- * rule (matches the user-reported `font-size: clamp(100px, 20vw, 200px)`
- * observation), so we keep the page minimal to limit any chance of the
- * renderer stalling on speculative resource resolution.
- *
- * This page is navigated to LAST — see the matching it() block at the end
- * of the spec — so that if Gameface still happens to hang on some function
- * value we haven't blacklisted yet, every other surface is already
- * captured.
- *
- * Writes to probe-page/css-function-probe.html and returns the path in
- * forward-slash form for gf.navigate().
- */
-function generateCssFunctionProbePage(): string {
-    const rules: string[] = [];
-    CSS_FUNCTIONS.forEach((entry, i) => {
-        if (entry.skipProbe) return;
-        rules.push(
-            `  .gf-fn-${i}-canonical { ${entry.testProperty}: ${entry.canonicalValue}; }`,
-        );
-        if (entry.mixedUnitsValue !== undefined) {
-            rules.push(
-                `  .gf-fn-${i}-mixed { ${entry.testProperty}: ${entry.mixedUnitsValue}; }`,
-            );
-        }
-    });
-
-    const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Gameface CSS Function Probe Page</title>
-  <!--
-    Mixed-units negative tests are INTENTIONAL: Gameface's documented
-    limitation is "no mixing units inside math/sizing functions", and the
-    reconciler relies on those rules failing to mark a function as
-    'partial'.  Do not consolidate them away.
-
-    Resource-fetching functions (url, image-set, cross-fade) are
-    deliberately skipped — see CssFunctionEntry.skipProbe.
-  -->
-  <style>
-${rules.join('\n')}
-  </style>
-</head>
-<body></body>
-</html>
-`;
-
-    const outDir = path.resolve(__dirname, '../../probe-page');
-    fs.mkdirSync(outDir, { recursive: true });
-    const outPath = path.join(outDir, 'css-function-probe.html');
-    fs.writeFileSync(outPath, html, 'utf-8');
-    return outPath.replace(/\\/g, '/');
-}
-
-/**
- * Generates a static HTML file with one `<style>` block per selector entry.
- *
- * Each block is isolated so a bad rule in one sheet does not prevent the
- * parser from processing the remaining sheets. CSS parsing happens at page-
- * load time — entirely outside the JS thread — so a slow or unsupported
- * selector silently fails without blocking CDP or crashing the Player.
- *
- * Rule construction per entry type:
- *   pseudo-element (::X)  → `p::X { color: rgb(1,2,3); content: ''; }`
- *   at-rule (@X …)        → `@X … { * { color: rgb(1,2,3); } }`
- *   everything else       → `selector { color: rgb(1,2,3); }`
- *
- * Each style element is given an id `gf-sel-{i}` so a single follow-up
- * executeScript can read sheet.cssRules.length for every entry.
- */
-function generateSelectorProbePage(entries: SelectorEntry[]): string {
-    const blocks = entries.map(({ selector }, i) => {
-        const isAtRule = selector.trimStart().startsWith('@');
-        const isPseudoElement = !isAtRule && selector.trimStart().startsWith('::');
-
-        let ruleText: string;
-        if (isAtRule) {
-            ruleText = `${selector} { * { color: rgb(1, 2, 3); } }`;
-        } else if (isPseudoElement) {
-            ruleText = `p${selector} { color: rgb(1, 2, 3); content: ''; }`;
-        } else {
-            ruleText = `${selector} { color: rgb(1, 2, 3); }`;
-        }
-
-        return `  <style id="gf-sel-${i}">${ruleText}</style>`;
-    });
-
-    const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Gameface CSS Selector Probe Page</title>
-${blocks.join('\n')}
-</head>
-<body><p id="__gf_sel_target__">probe</p></body>
-</html>
-`;
-
-    const outDir = path.resolve(__dirname, '../../probe-page');
-    fs.mkdirSync(outDir, { recursive: true });
-    const outPath = path.join(outDir, 'css-selector-probe.html');
-    fs.writeFileSync(outPath, html, 'utf-8');
-    return outPath.replace(/\\/g, '/');
-}
-
-/**
  * Generates a static HTML file whose inline <script> runs
  * `document.createElement` for every tag during page load — entirely outside
  * a CDP Runtime.evaluate call.
@@ -477,29 +354,6 @@ function readCssStyleKeys(): string[] {
 }
 
 /**
- * Tiny browser-side function executed after navigating to the selector probe
- * page.  All CSS parsing has already happened during page load; this function
- * only reads the pre-computed cssRules.length for each <style> block.
- *
- * Returns an array of rule counts, one per entry, in the same order as the
- * entries passed to generateSelectorProbePage.  -1 means the element was not
- * found; 0 means the rule was discarded; ≥1 means accepted.
- */
-function readSelectorRuleCounts(count: number): number[] {
-    const out: number[] = [];
-    for (let i = 0; i < count; i++) {
-        try {
-            const el = document.getElementById('gf-sel-' + i) as any;
-            if (!el || !el.sheet) { out.push(-1); continue; }
-            out.push((el.sheet.cssRules || []).length);
-        } catch (_) {
-            out.push(0);
-        }
-    }
-    return out;
-}
-
-/**
  * Builds `cssPropertyResults` from the recognition set + sheet log warnings,
  * without running the iterative runtime probe.
  *
@@ -526,17 +380,38 @@ function buildCssPropertyResultsFromStatic(
 ): CssPropertyResults {
     const results: CssPropertyResults = {};
 
+    // Classification policy: the stylesheet log is the source of truth.
+    //
+    //   sheetLog says "Unsupported CSS property detected"   → unrecognized
+    //   sheetLog has rejected values for the property        → recognized
+    //   sheetLog is silent on the property                   → value-accepted
+    //
+    // Gameface's CSSStyleDeclaration only enumerates a subset of accepted
+    // properties (252 of ~543 in Cohtml 2.3.0.63), so a missing JS-style
+    // key is NOT evidence the property is unsupported — only its absence
+    // from styleObjectKeys combined with an Info-level "Unsupported CSS
+    // property detected" log line is.  Without the explicit log signal we
+    // trust the stylesheet parser.
+    //
+    // styleObjectKeys is still consulted as a tie-break: when the log is
+    // silent AND the property name appears in the style object we know
+    // for certain that JS-side mutation is also possible.
     for (const prop of candidates) {
         const propLower = prop.toLowerCase();
         const isInStyleObject = styleObjectKeys.has(propLower);
         const sheetUnsupported = sheetLog?.unsupportedProperties.has(propLower) ?? false;
         const sheetHasInvalidValues = sheetLog?.propertiesWithInvalidValues.has(propLower) ?? false;
 
-        if (sheetUnsupported || !isInStyleObject) {
+        if (sheetUnsupported) {
             results[prop] = { status: 'unrecognized' };
         } else if (sheetHasInvalidValues) {
             results[prop] = { status: 'recognized' };
         } else {
+            // Log silent on this property.  Treat as accepted regardless of
+            // styleObjectKeys membership; the JS-style mismatch information
+            // is preserved indirectly by the reconciler (no readback ⇒
+            // 'log-silent-no-readback' probe evidence).
+            void isInStyleObject;
             results[prop] = { status: 'value-accepted' };
         }
     }
@@ -770,61 +645,6 @@ describe('Gameface Feature Inventory', function () {
             // cssSheetLogResults stays undefined; reconciler treats it as "no override".
         }
 
-
-        // ── CSS selector probe page ───────────────────────────────────────────
-        // Build a static HTML page with one <style> block per selector and
-        // navigate to it.  The CSS parser runs at page-load time (off the JS
-        // thread), so a bad selector silently fails instead of blocking CDP.
-        // After settling, a single tiny executeScript reads the pre-computed
-        // cssRules.length for every sheet — no parsing happens in that call.
-        try {
-            const selectorEntries: SelectorEntry[] = [
-                ...getBcdCssSelectors(),
-                ...SELECTOR_LIST,
-            ];
-            const selectorProbePage = generateSelectorProbePage(selectorEntries);
-            console.log(
-                `[css-selector-probe] Generated static page for ${selectorEntries.length} selectors: ${selectorProbePage}`,
-            );
-
-            console.log('[css-selector-probe] Navigating to selector probe page…');
-            await withTimeout(
-                gf.navigate(selectorProbePage),
-                30_000,
-                'css-selector-probe navigate',
-            );
-            console.log('[css-selector-probe] Navigation complete. Reading cssRules counts…');
-
-            // Short settle so the engine finishes any async stylesheet work.
-            await new Promise<void>((resolve) => setTimeout(resolve, 500));
-
-            // Single tiny call — just reads lengths, no CSS work done here.
-            const ruleCounts: number[] = await withTimeout(
-                runProbe(readSelectorRuleCounts, selectorEntries.length),
-                15_000,
-                'css-selector-probe read-results',
-            );
-
-            for (let i = 0; i < selectorEntries.length; i++) {
-                const { selector, group } = selectorEntries[i];
-                const count = ruleCounts[i] ?? -1;
-                cssSelectorResults[selector] = {
-                    status: count > 0 ? 'supported' : 'probe-b-failed',
-                    group,
-                    probeA: false,
-                    probeB: count > 0,
-                };
-            }
-
-            const supported = Object.values(cssSelectorResults).filter((r) => r.status === 'supported').length;
-            const notApplied = Object.values(cssSelectorResults).filter((r) => r.status === 'probe-b-failed').length;
-            console.log(
-                `[css-selector-probe] Complete — ${supported} supported, ${notApplied} not-applied.`,
-            );
-        } catch (e) {
-            console.error(`[css-selector-probe] FAILED (results will be incomplete): ${e}`);
-        }
-
         // ── HTML constructor probe page ───────────────────────────────────────
         // Follows the same pattern as the CSS selector probe: generate a static
         // page whose inline <script> runs all document.createElement calls
@@ -889,11 +709,14 @@ describe('Gameface Feature Inventory', function () {
             `[js-probe] ${summary.supported} supported, ` +
             `${summary.stubs} with stubs, ${summary.missing} missing.`,
         );
+        
+        const gf = (global as any).gf;
+        await gf.sleep(3000); // Allow any pending JS-side init to finish before the next navigation.
     });
 
     // ── CSS properties ───────────────────────────────────────────────────────
 
-    it('CSS surface: property recognition (single style-object read)', function () {
+    it('CSS surface: property recognition (single style-object read)', async function () {
         // Style-object key set was pre-computed by the css-sheet-probe page's
         // inline <script> at page-load time and read in before().  This test
         // is a pure logger so the Mocha report still shows progress per
@@ -902,27 +725,13 @@ describe('Gameface Feature Inventory', function () {
         console.log(
             `[css-property-probe] ${cssStyleObjectKeys.size} style-object property names available.`,
         );
+         const gf = (global as any).gf;
+        await gf.sleep(3000);
     });
-
-    // ── CSS selectors ────────────────────────────────────────────────────────
-    // Results are pre-computed in before() via the static selector probe page.
-    // Selector parsing happens at page-load time (off the JS thread), so bad
-    // selectors silently fail without blocking CDP or crashing the Player.
-
-    // it('CSS surface: selector support (static page probe)', function () {
-    //     const counts = Object.values(cssSelectorResults).reduce(
-    //         (acc, r) => { acc[r.status] = (acc[r.status] ?? 0) + 1; return acc; },
-    //         {} as Record<string, number>,
-    //     );
-    //     console.log(
-    //         `[css-selector-probe] ${Object.keys(cssSelectorResults).length} selectors:`,
-    //         JSON.stringify(counts),
-    //     );
-    // });
 
     // ── HTML constructor identity ────────────────────────────────────────────
 
-    it('HTML surface: constructor identity (three-tier classification)', function () {
+    it('HTML surface: constructor identity (three-tier classification)', async function () {
         // Results are pre-computed in before() via the static HTML constructor
         // probe page.  All document.createElement calls happen at page-load
         // time (off the CDP JS thread) so problematic tags (audio, canvas, …)
@@ -934,6 +743,8 @@ describe('Gameface Feature Inventory', function () {
         console.log(
             `[html-constructor-probe] ${Object.keys(htmlConstructorResults).length} tags classified: ${JSON.stringify(tiers)}`,
         );
+         const gf = (global as any).gf;
+        await gf.sleep(3000);
     });
 
     // ── HTML behavioral fingerprints ─────────────────────────────────────────
@@ -983,6 +794,8 @@ describe('Gameface Feature Inventory', function () {
         console.log(
             `[html-fingerprint-probe] ${Object.keys(htmlFingerprintResults).length}/${implementedTags.length} fingerprints captured: ${JSON.stringify(counts)}`,
         );
+         const gf = (global as any).gf;
+        await gf.sleep(3000);
     });
 
     // ── Input type matrix ────────────────────────────────────────────────────
@@ -1018,47 +831,10 @@ describe('Gameface Feature Inventory', function () {
             {} as Record<string, number>,
         );
         console.log('[input-type-probe]', JSON.stringify(counts));
-    });
 
-    // ── CSS functions (deliberately last) ────────────────────────────────────
-    // Navigated AFTER all other probes so that if Gameface stalls on any
-    // function value we haven't blacklisted via skipProbe yet, every other
-    // surface has already been collected.  No browser-side read is needed:
-    // the log captures parse-time "Unable to parse declaration" warnings
-    // and the after() hook turns them into per-function status entries
-    // through reconcileCssFunctions().
-    it('CSS surface: function probe page (parse-time log capture)', async function () {
+        // Give Gameface time to flush its async log writes before after() parses the log.
         const gf = (global as any).gf;
-        if (!gf) {
-            console.warn('[css-function-probe] gf global not available — skipping.');
-            return;
-        }
-        try {
-            const probedCount = CSS_FUNCTIONS.filter((e) => !e.skipProbe).length;
-            const skippedCount = CSS_FUNCTIONS.length - probedCount;
-            const cssFunctionPage = generateCssFunctionProbePage();
-            console.log(
-                `[css-function-probe] Generated probe page — ` +
-                `${probedCount} functions probed, ${skippedCount} skipped (resource-fetching): ` +
-                cssFunctionPage,
-            );
-
-            console.log('[css-function-probe] Navigating to function probe page…');
-            await withTimeout(
-                gf.navigate(cssFunctionPage),
-                30_000,
-                'css-function-probe navigate',
-            );
-            console.log('[css-function-probe] Navigation complete (log warnings collected in after()).');
-        } catch (e) {
-            // Soft-fail: skipped entries will still get their `unknown` bucket
-            // and probed entries that didn't get a chance to parse will land
-            // in the `supported` bucket by default (no log evidence).  Both
-            // are honest outcomes — the alternative is making every later
-            // run fail just because the function probe hit a new Gameface
-            // pathology.
-            console.error(`[css-function-probe] FAILED (function results may be incomplete): ${e}`);
-        }
+        await gf.sleep(3000);
     });
 
     // ── Teardown: merge + write ──────────────────────────────────────────────
@@ -1067,10 +843,7 @@ describe('Gameface Feature Inventory', function () {
         const logPath = resolveLogPath();
 
         // Parse the CSS sheet probe's warnings now (deferred from before() to
-        // give Gameface time to flush its async log writes).  Anything between
-        // the recorded baseline and the current file end is the sheet-probe
-        // window plus any warnings emitted by subsequent test pages — but only
-        // the property-related warnings matter for cssSheetLogResults.
+        // give Gameface time to flush its async log writes).
         try {
             cssSheetLogResults = parseLogFromOffset(logPath, cssSheetLogOffset);
             console.log(
@@ -1107,12 +880,61 @@ describe('Gameface Feature Inventory', function () {
 
         if (logResults.logFound) {
             console.log(
-                `[log-parser] Found ${logResults.propertiesWithInvalidValues.size} properties with invalid values, ` +
-                `${logResults.unsupportedPseudoClasses.size} unsupported pseudo-classes, ` +
-                `${logResults.unsupportedPseudoElements.size} unsupported pseudo-elements.`,
+                `[log-parser] Found ${logResults.propertiesWithInvalidValues.size} properties with invalid values.`,
             );
         } else {
             console.warn(`[log-parser] CohtmlApplication.log not found at ${logPath || '(no path configured)'}.`);
+        }
+
+        // ── Load selector intermediate data from probe-selectors.spec.js ─────
+        let cssSelectorResults: CssSelectorResults = {};
+        let cssSelectorLogResults: LogParseResults | undefined;
+        const selectorIntermediatePath = path.resolve(OUTPUT_DIR, 'intermediate', 'selector-data.json');
+        try {
+            const raw = JSON.parse(fs.readFileSync(selectorIntermediatePath, 'utf-8'));
+            cssSelectorResults = raw.cssSelectorResults ?? {};
+            cssSelectorLogResults = {
+                propertiesWithInvalidValues: new Map(),
+                unsupportedProperties: new Set(),
+                unsupportedPseudoClasses: new Set(raw.unsupportedPseudoClasses ?? []),
+                unsupportedPseudoElements: new Set(raw.unsupportedPseudoElements ?? []),
+                shorthandsWithLimitations: new Set(),
+                unsupportedCalcExpressions: new Set(),
+                unsupportedAtRules: new Set(raw.unsupportedAtRules ?? []),
+                rawWarnings: [],
+                logFound: true,
+            };
+            console.log(
+                `[selector-intermediate] Loaded ${Object.keys(cssSelectorResults).length} selector results, ` +
+                `${cssSelectorLogResults.unsupportedPseudoClasses.size} pseudo-classes, ` +
+                `${cssSelectorLogResults.unsupportedPseudoElements.size} pseudo-elements, ` +
+                `${cssSelectorLogResults.unsupportedAtRules.size} unsupported at-rules.`,
+            );
+        } catch (e) {
+            console.warn(`[selector-intermediate] Could not load "${selectorIntermediatePath}": ${e}`);
+        }
+
+        // ── Load function intermediate data from probe-functions.spec.js ─────
+        const functionIntermediatePath = path.resolve(OUTPUT_DIR, 'intermediate', 'function-data.json');
+        try {
+            const raw = JSON.parse(fs.readFileSync(functionIntermediatePath, 'utf-8'));
+            for (const [prop, values] of Object.entries(raw.propertiesWithInvalidValues ?? {})) {
+                const set = logResults.propertiesWithInvalidValues.get(prop) ?? new Set<string>();
+                for (const v of values as string[]) set.add(v);
+                logResults.propertiesWithInvalidValues.set(prop, set);
+            }
+            for (const expr of raw.unsupportedCalcExpressions ?? []) {
+                logResults.unsupportedCalcExpressions.add(expr as string);
+            }
+            console.log(
+                `[function-intermediate] Loaded ${Object.keys(raw.propertiesWithInvalidValues ?? {}).length} ` +
+                `properties with rejected function values.`,
+            );
+        } catch {
+            console.warn(
+                `[function-intermediate] "${functionIntermediatePath}" not found — ` +
+                `run probe-functions.spec.js after this spec to populate function results.`,
+            );
         }
 
         const { supported, partial, unsupported, summary } = reconcile({
@@ -1125,6 +947,7 @@ describe('Gameface Feature Inventory', function () {
             inputTypeResults,
             logResults,
             cssSheetLogResults,
+            cssSelectorLogResults,
             cssTestedValues,
             cssValueReadbackResults,
         });
@@ -1151,6 +974,7 @@ describe('Gameface Feature Inventory', function () {
             write(path.join(dir, 'summary.json'), sum);
         }
     });
+
 });
 
 // ── Internal helpers ──────────────────────────────────────────────────────────

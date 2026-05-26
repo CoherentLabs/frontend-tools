@@ -1,0 +1,891 @@
+{
+  "cssSelectorResults": {
+    ":active": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":active-view-transition": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":active-view-transition-type(fade)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "::after": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    ":any-link": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "[attr]": {
+      "status": "probe-b-failed",
+      "group": "basic-attribute",
+      "probeA": false,
+      "probeB": false
+    },
+    ":autofill": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "::backdrop": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    "::before": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    ":buffering": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":checked": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "::checkmark": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    "div > p": {
+      "status": "probe-b-failed",
+      "group": "combinator-child",
+      "probeA": false,
+      "probeB": false
+    },
+    ".foo": {
+      "status": "probe-b-failed",
+      "group": "basic-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":closed": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "div || td": {
+      "status": "probe-b-failed",
+      "group": "combinator-column",
+      "probeA": false,
+      "probeB": false
+    },
+    "::cue": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    ":default": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":defined": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "div p": {
+      "status": "probe-b-failed",
+      "group": "combinator-descendant",
+      "probeA": false,
+      "probeB": false
+    },
+    "::details-content": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    ":dir(ltr)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":disabled": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":empty": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":enabled": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "::file-selector-button": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    ":first": {
+      "status": "probe-b-failed",
+      "group": "page-pseudo",
+      "probeA": false,
+      "probeB": false
+    },
+    ":first-child": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "::first-letter": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    "::first-line": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    ":first-of-type": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":focus": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":focus-visible": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":focus-within": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":fullscreen": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":future": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "::grammar-error": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    ":has(.child)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":has-slotted": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "::highlight(custom)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    ":host": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":host-context": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":host(.foo)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-shadow",
+      "probeA": false,
+      "probeB": false
+    },
+    ":hover": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "#foo": {
+      "status": "probe-b-failed",
+      "group": "basic-id",
+      "probeA": false,
+      "probeB": false
+    },
+    ":in-range": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":indeterminate": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":invalid": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":is(.foo)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":lang(en)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":last-child": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":last-of-type": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":left": {
+      "status": "probe-b-failed",
+      "group": "page-pseudo",
+      "probeA": false,
+      "probeB": false
+    },
+    ":link": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "::marker": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    ":modal": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":muted": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "& .nested": {
+      "status": "probe-b-failed",
+      "group": "css-nesting",
+      "probeA": false,
+      "probeB": false
+    },
+    "div + p": {
+      "status": "probe-b-failed",
+      "group": "combinator-adjacent-sibling",
+      "probeA": false,
+      "probeB": false
+    },
+    ":not(.foo)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-logical-forgiving",
+      "probeA": false,
+      "probeB": false
+    },
+    ":nth-child(2)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":nth-last-child(2)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":nth-last-of-type(2)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":nth-of-type(2)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":only-child": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":only-of-type": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":open": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":optional": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":out-of-range": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "::part(foo)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element-shadow",
+      "probeA": false,
+      "probeB": false
+    },
+    ":past": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":paused": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "::picker(select)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    "::picker-icon": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    ":picture-in-picture": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "::placeholder": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    ":placeholder-shown": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":playing": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":popover-open": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":read-only": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":read-write": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":required": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":right": {
+      "status": "probe-b-failed",
+      "group": "page-pseudo",
+      "probeA": false,
+      "probeB": false
+    },
+    ":root": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":scope": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "::scroll-button(down)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    "::scroll-marker": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    "::scroll-marker-group": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    ":seeking": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "::selection": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    "::slotted(*)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element-shadow",
+      "probeA": false,
+      "probeB": false
+    },
+    "::spelling-error": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    ":stalled": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":state(custom-state)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "div ~ p": {
+      "status": "probe-b-failed",
+      "group": "combinator-general-sibling",
+      "probeA": false,
+      "probeB": false
+    },
+    ":target": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":target-current": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "::target-text": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    "div": {
+      "status": "probe-b-failed",
+      "group": "basic-type",
+      "probeA": false,
+      "probeB": false
+    },
+    "*": {
+      "status": "probe-b-failed",
+      "group": "basic-universal",
+      "probeA": false,
+      "probeB": false
+    },
+    ":user-invalid": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":user-valid": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":valid": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "::view-transition": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    "::view-transition-group(*)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    "::view-transition-image-pair(*)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    "::view-transition-new(*)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    "::view-transition-old(*)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false
+    },
+    ":visited": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":volume-locked": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":where(.foo)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    ":xr-overlay": {
+      "status": "probe-b-failed",
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false
+    },
+    "@supports (display: flex)": {
+      "status": "probe-b-failed",
+      "group": "at-rule",
+      "probeA": false,
+      "probeB": false
+    },
+    "@media (max-width: 600px)": {
+      "status": "probe-b-failed",
+      "group": "at-rule",
+      "probeA": false,
+      "probeB": false
+    },
+    "@layer base": {
+      "status": "probe-b-failed",
+      "group": "at-rule",
+      "probeA": false,
+      "probeB": false
+    },
+    "@container (min-width: 300px)": {
+      "status": "probe-b-failed",
+      "group": "at-rule",
+      "probeA": false,
+      "probeB": false
+    },
+    "@scope (.foo)": {
+      "status": "probe-b-failed",
+      "group": "at-rule",
+      "probeA": false,
+      "probeB": false
+    },
+    "@starting-style": {
+      "status": "probe-b-failed",
+      "group": "at-rule",
+      "probeA": false,
+      "probeB": false
+    },
+    ":nth-child(2n+1)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-structural-complex",
+      "probeA": false,
+      "probeB": false
+    },
+    ":nth-child(odd)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-structural-complex",
+      "probeA": false,
+      "probeB": false
+    },
+    ":nth-child(even)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-structural-complex",
+      "probeA": false,
+      "probeB": false
+    },
+    ":nth-child(2 of .class)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-structural-of",
+      "probeA": false,
+      "probeB": false
+    },
+    ":is(:hover)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-logical-compound",
+      "probeA": false,
+      "probeB": false
+    },
+    ":has(> .child)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-relational-direct",
+      "probeA": false,
+      "probeB": false
+    },
+    "[attr^=\"val\"]": {
+      "status": "probe-b-failed",
+      "group": "attribute-prefix",
+      "probeA": false,
+      "probeB": false
+    },
+    "[attr$=\"val\"]": {
+      "status": "probe-b-failed",
+      "group": "attribute-suffix",
+      "probeA": false,
+      "probeB": false
+    },
+    "[attr*=\"val\"]": {
+      "status": "probe-b-failed",
+      "group": "attribute-contains",
+      "probeA": false,
+      "probeB": false
+    },
+    "[attr~=\"val\"]": {
+      "status": "probe-b-failed",
+      "group": "attribute-word",
+      "probeA": false,
+      "probeB": false
+    },
+    "[attr|=\"val\"]": {
+      "status": "probe-b-failed",
+      "group": "attribute-hyphen",
+      "probeA": false,
+      "probeB": false
+    },
+    "[attr=\"val\"]": {
+      "status": "probe-b-failed",
+      "group": "attribute-exact",
+      "probeA": false,
+      "probeB": false
+    },
+    "[attr i]": {
+      "status": "probe-b-failed",
+      "group": "attribute-case-insensitive",
+      "probeA": false,
+      "probeB": false
+    },
+    ":host-context(.foo)": {
+      "status": "probe-b-failed",
+      "group": "pseudo-shadow",
+      "probeA": false,
+      "probeB": false
+    }
+  },
+  "unsupportedPseudoClasses": [
+    "active-view-transition",
+    "active-view-transition-type",
+    "any-link",
+    "autofill",
+    "buffering",
+    "checked",
+    "closed",
+    "default",
+    "defined",
+    "dir",
+    "disabled",
+    "empty",
+    "enabled",
+    "first",
+    "first-of-type",
+    "focus-visible",
+    "focus-within",
+    "fullscreen",
+    "future",
+    "has",
+    "has-slotted",
+    "highlight",
+    "host-context",
+    "in-range",
+    "indeterminate",
+    "invalid",
+    "is",
+    "lang",
+    "last-of-type",
+    "left",
+    "link",
+    "modal",
+    "muted",
+    "not",
+    "nth-last-child",
+    "nth-last-of-type",
+    "nth-of-type",
+    "only-of-type",
+    "open",
+    "optional",
+    "out-of-range",
+    "past",
+    "paused",
+    "picker",
+    "picture-in-picture",
+    "placeholder-shown",
+    "playing",
+    "popover-open",
+    "read-only",
+    "read-write",
+    "required",
+    "right",
+    "scope",
+    "scroll-button",
+    "seeking",
+    "stalled",
+    "state",
+    "target",
+    "target-current",
+    "user-invalid",
+    "user-valid",
+    "valid",
+    "view-transition-group",
+    "view-transition-image-pair",
+    "view-transition-new",
+    "view-transition-old",
+    "visited",
+    "volume-locked",
+    "where",
+    "xr-overlay"
+  ],
+  "unsupportedPseudoElements": [
+    "backdrop",
+    "checkmark",
+    "cue",
+    "details-content",
+    "file-selector-button",
+    "first-letter",
+    "first-line",
+    "grammar-error",
+    "marker",
+    "picker-icon",
+    "placeholder",
+    "scroll-marker",
+    "scroll-marker-group",
+    "spelling-error",
+    "target-text",
+    "view-transition"
+  ],
+  "unsupportedAtRules": [
+    "supports",
+    "container",
+    "scope"
+  ]
+}

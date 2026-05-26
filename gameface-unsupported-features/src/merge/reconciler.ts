@@ -123,6 +123,20 @@ export interface ReconcileInput {
      */
     cssSheetLogResults?: LogParseResults;
     /**
+     * Log results captured from the byte offset recorded just before the
+     * CSS selector probe page was loaded.  Parsed in after() (deferred) so
+     * Gameface has fully flushed its async log writes.
+     *
+     * Gameface sometimes buffers pseudo-class/element warnings asynchronously
+     * and may not flush them before subsequent page navigations.  Using an
+     * offset-scoped parse (like cssSheetLogResults) maximises the chance of
+     * capturing these warnings even when they arrive late.
+     *
+     * When present this takes precedence over logResults for selector
+     * reconciliation.
+     */
+    cssSelectorLogResults?: LogParseResults;
+    /**
      * The keyword values that were individually tested per property on the
      * CSS sheet probe page.  Keys are lower-case property names.  Values are
      * the tested value strings exactly as written in the generated CSS rules.
@@ -410,10 +424,18 @@ function reconcileCssProperties(input: ReconcileInput, output: ReconcileOutput):
                             evidence['probe'] = 'recognized-no-value-accepted';
                         }
                     } else {
-                        // No readback and no log warning — property is in the
-                        // style object but we couldn't verify value acceptance.
-                        status = 'partial';
-                        evidence['probe'] = 'value-accepted-but-not-computed';
+                        // No readback ran, BUT the stylesheet parser was
+                        // silent on this property too (no "Unsupported CSS
+                        // property" Info line, no "is not supported for"
+                        // Warning line).  Gameface accepted every value
+                        // the sheet probe page emitted without complaint,
+                        // which is positive evidence — treat as supported.
+                        // The 'log-silent-no-readback' marker tells the
+                        // reader the call wasn't backed by an in-engine
+                        // JS readback (still a softer signal than the
+                        // readback-all-accepted path above).
+                        status = 'supported';
+                        evidence['probe'] = 'log-silent-no-readback';
                     }
                     break;
                 }
@@ -487,11 +509,29 @@ function findKnownPartialSelector(
 }
 
 function reconcileCssSelectors(input: ReconcileInput, output: ReconcileOutput): void {
-    const { cssSelectorResults, logResults } = input;
+    const { cssSelectorResults, logResults, cssSelectorLogResults } = input;
     if (!cssSelectorResults) return;
 
-    // Build a flat set of ":pseudo-class" and "::pseudo-element" strings from log.
+    // Build a flat set of ":pseudo-class" and "::pseudo-element" strings from
+    // log.  Union the full-log parse with the selector-probe-scoped offset
+    // parse so that warnings flushed late (after subsequent page navigations)
+    // are still captured.  The offset-scoped parse is the more reliable source
+    // because it gives Gameface the most time to flush async log writes before
+    // after() reads it.
     const logUnsupportedSelectors = buildUnsupportedSelectorSet(logResults);
+    if (cssSelectorLogResults) {
+        for (const name of cssSelectorLogResults.unsupportedPseudoClasses) {
+            logUnsupportedSelectors.add(':' + name);
+        }
+        for (const name of cssSelectorLogResults.unsupportedPseudoElements) {
+            logUnsupportedSelectors.add('::' + name);
+        }
+    }
+
+    // At-rule names (e.g. "container", "scope") that the sentinel technique
+    // confirmed as unsupported.  Available only when the selector spec's
+    // intermediate data was loaded by probe-runner.
+    const unsupportedAtRuleNames: Set<string> = cssSelectorLogResults?.unsupportedAtRules ?? new Set();
 
     for (const [selector, result] of Object.entries(cssSelectorResults)) {
         let status: FeatureStatus;
@@ -516,6 +556,42 @@ function reconcileCssSelectors(input: ReconcileInput, output: ReconcileOutput): 
             continue;
         }
 
+        // ── At-rules: sentinel-property log technique ─────────────────────
+        // Gameface's CSSOM is unreliable for at-rules (cssRules.length does not
+        // consistently reflect whether an @-rule was accepted), and the engine
+        // does not emit a named "unsupported selector" warning for @-rules.
+        //
+        // Instead, the selector probe embeds a fake property `at-{name}: ''`
+        // inside every at-rule's body.  When the at-rule is NOT supported,
+        // Gameface's error-recovery parser still processes the body and emits
+        // "Unsupported CSS property detected: at-{name}" — always preceded by a
+        // "CSS parsing error near text: @" line for the rejected at-rule header.
+        // The log-parser captures this as `unsupportedAtRules`.  When the at-rule
+        // IS supported, only the sentinel unsupported-property line appears (no
+        // preceding @-error), so the name is absent from `unsupportedAtRules`.
+        if (selector.trimStart().startsWith('@')) {
+            // Extract the at-rule name: "@container (…)" → "container".
+            const atName = selector.trimStart().slice(1).split(/[\s(]/)[0].toLowerCase();
+            if (cssSelectorLogResults) {
+                // We have sentinel-based data — trust it.
+                if (unsupportedAtRuleNames.has(atName)) {
+                    status = 'missing';
+                    evidence['logWarning'] = `unsupported at-rule: @${atName} (sentinel-detected)`;
+                } else {
+                    status = 'supported';
+                    evidence['probe'] = 'at-rule-sentinel-log-silent';
+                }
+            } else {
+                // No sentinel data available (selector spec not run yet).
+                // Fall back to the probe result; cssRules is unreliable for
+                // at-rules so probe-b-failed is treated the same as supported.
+                status = result.status === 'supported' ? 'supported' : 'supported';
+                evidence['probe'] = 'at-rule-no-sentinel-data';
+            }
+            bucket({ status, surface: 'css-selector', name: selector, evidence }, output);
+            continue;
+        }
+
         // Check log: does the selector contain a pseudo-class or pseudo-element
         // that the log identified as unsupported?
         // e.g. selector ":focus-within" matches log entry "focus-within".
@@ -534,15 +610,13 @@ function reconcileCssSelectors(input: ReconcileInput, output: ReconcileOutput): 
                     status = 'supported';
                     break;
                 case 'probe-b-failed':
-                    // Gameface's CSSOM does not reliably expose `cssRules`
-                    // for parsed `<style>` blocks at probe time, so a zero
-                    // rule count is NOT evidence of non-support.  The
-                    // authoritative negative signal is the engine's own
-                    // log, which we already checked above; if it was
-                    // silent for this selector the parser accepted it and
-                    // we treat that as supported (mirrors the
-                    // "log silence as acceptance" rule used for CSS
-                    // properties).
+                    // Pseudo-classes/-elements: Gameface's CSSOM does NOT
+                    // reliably expose cssRules for parsed pseudo-class style
+                    // blocks, so a zero count here is a false negative.  The
+                    // authoritative signal is the "Unsupported pseudo class/
+                    // element" log warning; if the log is silent we treat it
+                    // as accepted (same "log silence = acceptance" rule used
+                    // for CSS properties).
                     status = 'supported';
                     evidence['probe'] = 'log-silent-no-rules-observed';
                     break;
@@ -594,6 +668,12 @@ function findLogSelectorMatch(
         if (elementName) {
             const key = '::' + elementName;
             if (logUnsupportedSelectors.has(key)) return key;
+            // Gameface sometimes logs pseudo-elements as "pseudo class selector"
+            // (e.g. "Unsupported CSS pseudo class selector encountered: highlight"
+            // for ::highlight).  Fall back to the single-colon form so we still
+            // catch these mislabelled warnings.
+            const fallback = ':' + elementName;
+            if (logUnsupportedSelectors.has(fallback)) return fallback;
         }
         if (className) {
             const key = ':' + className;

@@ -1,6 +1,17 @@
 {
-  "generatedAt": "2026-05-07T10:04:43.876Z",
-  "generator": "gen-rules.js (one-shot) + regen-selectors.js",
+  "generatedAt": "2026-05-20T14:41:11.035Z",
+  "generator": "gen-rules.js",
+  "surfaces": [
+    "css-property",
+    "css-shorthand",
+    "css-value",
+    "css-function",
+    "css-selector",
+    "html-tag",
+    "html-input-type",
+    "js-stub",
+    "js-api"
+  ],
   "vocabulary": [
     "supported",
     "partial-shorthand",
@@ -13,18 +24,28 @@
     "missing"
   ],
   "vocabularyMapping": {
-    "partial → partial-shorthand": "CSS partial entries on shorthand properties with probe=value-accepted-but-not-computed",
-    "partial → partial-values": "CSS partial entries with explicit supportedValues/unsupportedValues/logRejectedValues",
-    "partial → parser-only": "CSS partial entries on non-shorthand properties where probe=value-accepted-but-not-computed only",
-    "partial → stub": "JS partial entries (objects with missing members)",
-    "stub-heavy → stub": "JS objects where most methods are stubs",
-    "missing-from-window → missing": "1527 JS globals not present on window"
+    "CSS partial → partial-shorthand": "shorthand property with probe=value-accepted-but-not-computed",
+    "CSS partial → partial-values": "property whose evidence lists explicit supportedValues / unsupportedValues / logRejectedValues",
+    "CSS partial → parser-only": "non-shorthand whose evidence is only probe=value-accepted-but-not-computed",
+    "CSS missing": "344 unsupported properties, each with logWarning \"Unsupported CSS property detected (stylesheet parser)\"",
+    "CSS-function missing": "30 functions that fail to parse with \"Unable to parse declaration: …\"",
+    "CSS-function unknown": "3 functions the scraper skipped because they stall the renderer at parse time (NEEDS REVIEW)",
+    "Selector parser-only": "30 pseudo-class/element/at-rule names the engine logs as \"unsupported pseudo: …\"",
+    "Selector partial": "9 structural pseudos that match only the simplest form",
+    "HTML partial → silently-coerced (input-type)": "19 input types reset to \"text\" after assignment",
+    "HTML partial → partial-values (tag)": "4 tags (canvas/img/input/link) where the constructor exists but a documented subset of properties is missing",
+    "HTML parsed-no-impl": "107 tags that parse to a generic HTMLElement with no specialised behavior",
+    "HTML unknown": "5 tags that resolve to HTMLUnknownElement",
+    "JS partial → stub": "106 window-visible classes whose constructor and/or a subset of members are absent",
+    "JS missing-from-window → missing": "1527 window-scoped globals not defined"
   },
   "skippedBasicSelectors": [],
-  "needsReview": [],
+  "needsReview": [
+    "CSS functions in category \"image\" with status=unknown: url(), image-set(), cross-fade() — scraper skipped them (would stall the renderer at parse time). Verify support against Gameface docs and update prompts accordingly."
+  ],
   "rules": [
     {
-      "id": "CSS-017",
+      "id": "CSS-007",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "critical",
@@ -34,7 +55,7 @@
       "name": "align-content"
     },
     {
-      "id": "CSS-018",
+      "id": "CSS-008",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "critical",
@@ -44,7 +65,7 @@
       "name": "align-items"
     },
     {
-      "id": "CSS-019",
+      "id": "CSS-009",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "critical",
@@ -54,27 +75,7 @@
       "name": "align-self"
     },
     {
-      "id": "CSS-107",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "high",
-      "summary": "all shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"all\")]",
-      "name": "all"
-    },
-    {
-      "id": "CSS-020",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "critical",
-      "summary": "animation shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"animation\")]",
-      "name": "animation"
-    },
-    {
-      "id": "CSS-185",
+      "id": "CSS-085",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -84,7 +85,7 @@
       "name": "animation-delay"
     },
     {
-      "id": "CSS-186",
+      "id": "CSS-086",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -94,27 +95,7 @@
       "name": "animation-duration"
     },
     {
-      "id": "CSS-187",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "animation-iteration-count parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"animation-iteration-count\")]",
-      "name": "animation-iteration-count"
-    },
-    {
-      "id": "CSS-188",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "animation-name parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"animation-name\")]",
-      "name": "animation-name"
-    },
-    {
-      "id": "CSS-189",
+      "id": "CSS-087",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -124,17 +105,7 @@
       "name": "animation-timing-function"
     },
     {
-      "id": "CSS-108",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "high",
-      "summary": "aspect-ratio parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"aspect-ratio\")]",
-      "name": "aspect-ratio"
-    },
-    {
-      "id": "CSS-190",
+      "id": "CSS-088",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -144,17 +115,7 @@
       "name": "backdrop-filter"
     },
     {
-      "id": "CSS-021",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "critical",
-      "summary": "background shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"background\")]",
-      "name": "background"
-    },
-    {
-      "id": "CSS-191",
+      "id": "CSS-089",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -164,47 +125,17 @@
       "name": "background-color"
     },
     {
-      "id": "CSS-109",
+      "id": "CSS-039",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
-      "summary": "background-image rejects values: element, gradients, image-rect, image-set",
+      "summary": "background-image rejects values: element, gradients, image-rect, image-set, repeating-linear-gradient(red 0 10px,blue 10px 20px)",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"background-image\")]",
       "name": "background-image"
     },
     {
-      "id": "CSS-110",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "high",
-      "summary": "background-position parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"background-position\")]",
-      "name": "background-position"
-    },
-    {
-      "id": "CSS-192",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "background-position-x parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"background-position-x\")]",
-      "name": "background-position-x"
-    },
-    {
-      "id": "CSS-193",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "background-position-y parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"background-position-y\")]",
-      "name": "background-position-y"
-    },
-    {
-      "id": "CSS-111",
+      "id": "CSS-040",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -214,47 +145,7 @@
       "name": "background-repeat"
     },
     {
-      "id": "CSS-112",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "high",
-      "summary": "background-size parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"background-size\")]",
-      "name": "background-size"
-    },
-    {
-      "id": "CSS-022",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "critical",
-      "summary": "border shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border\")]",
-      "name": "border"
-    },
-    {
-      "id": "CSS-113",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "high",
-      "summary": "border-bottom shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-bottom\")]",
-      "name": "border-bottom"
-    },
-    {
-      "id": "CSS-194",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "border-bottom-color parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-bottom-color\")]",
-      "name": "border-bottom-color"
-    },
-    {
-      "id": "CSS-195",
+      "id": "CSS-090",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -264,7 +155,7 @@
       "name": "border-bottom-left-radius"
     },
     {
-      "id": "CSS-196",
+      "id": "CSS-091",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -274,47 +165,17 @@
       "name": "border-bottom-right-radius"
     },
     {
-      "id": "CSS-114",
+      "id": "CSS-041",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
-      "summary": "border-bottom-style rejects values: double, groove, ridge, inset, outset",
+      "summary": "border-bottom-style rejects values: dashed, dotted, double, groove, ridge",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"border-bottom-style\")]",
       "name": "border-bottom-style"
     },
     {
-      "id": "CSS-197",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "border-bottom-width parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-bottom-width\")]",
-      "name": "border-bottom-width"
-    },
-    {
-      "id": "CSS-115",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "high",
-      "summary": "border-color shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-color\")]",
-      "name": "border-color"
-    },
-    {
-      "id": "CSS-116",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "high",
-      "summary": "border-image shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-image\")]",
-      "name": "border-image"
-    },
-    {
-      "id": "CSS-198",
+      "id": "CSS-092",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -324,7 +185,7 @@
       "name": "border-image-outset"
     },
     {
-      "id": "CSS-117",
+      "id": "CSS-042",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -334,7 +195,7 @@
       "name": "border-image-repeat"
     },
     {
-      "id": "CSS-199",
+      "id": "CSS-093",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -344,117 +205,27 @@
       "name": "border-image-slice"
     },
     {
-      "id": "CSS-200",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "border-image-source parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-image-source\")]",
-      "name": "border-image-source"
-    },
-    {
-      "id": "CSS-201",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "border-image-width parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-image-width\")]",
-      "name": "border-image-width"
-    },
-    {
-      "id": "CSS-118",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "high",
-      "summary": "border-left shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-left\")]",
-      "name": "border-left"
-    },
-    {
-      "id": "CSS-202",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "border-left-color parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-left-color\")]",
-      "name": "border-left-color"
-    },
-    {
-      "id": "CSS-119",
+      "id": "CSS-043",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
-      "summary": "border-left-style rejects values: double, groove, ridge, inset, outset",
+      "summary": "border-left-style rejects values: dashed, dotted, double, groove, ridge",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"border-left-style\")]",
       "name": "border-left-style"
     },
     {
-      "id": "CSS-203",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "border-left-width parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-left-width\")]",
-      "name": "border-left-width"
-    },
-    {
-      "id": "CSS-120",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "high",
-      "summary": "border-radius shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-radius\")]",
-      "name": "border-radius"
-    },
-    {
-      "id": "CSS-121",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "high",
-      "summary": "border-right shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-right\")]",
-      "name": "border-right"
-    },
-    {
-      "id": "CSS-204",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "border-right-color parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-right-color\")]",
-      "name": "border-right-color"
-    },
-    {
-      "id": "CSS-122",
+      "id": "CSS-044",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
-      "summary": "border-right-style rejects values: double, groove, ridge, inset, outset",
+      "summary": "border-right-style rejects values: dashed, dotted, double, groove, ridge",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"border-right-style\")]",
       "name": "border-right-style"
     },
     {
-      "id": "CSS-205",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "border-right-width parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-right-width\")]",
-      "name": "border-right-width"
-    },
-    {
-      "id": "CSS-123",
+      "id": "CSS-045",
       "surface": "css-shorthand",
       "status": "partial-values",
       "severity": "high",
@@ -464,27 +235,7 @@
       "name": "border-style"
     },
     {
-      "id": "CSS-124",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "high",
-      "summary": "border-top shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-top\")]",
-      "name": "border-top"
-    },
-    {
-      "id": "CSS-206",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "border-top-color parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-top-color\")]",
-      "name": "border-top-color"
-    },
-    {
-      "id": "CSS-207",
+      "id": "CSS-094",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -494,7 +245,7 @@
       "name": "border-top-left-radius"
     },
     {
-      "id": "CSS-208",
+      "id": "CSS-095",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -504,37 +255,17 @@
       "name": "border-top-right-radius"
     },
     {
-      "id": "CSS-125",
+      "id": "CSS-046",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
-      "summary": "border-top-style rejects values: double, groove, ridge, inset, outset",
+      "summary": "border-top-style rejects values: dashed, dotted, double, groove, ridge",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"border-top-style\")]",
       "name": "border-top-style"
     },
     {
-      "id": "CSS-209",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "border-top-width parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-top-width\")]",
-      "name": "border-top-width"
-    },
-    {
-      "id": "CSS-126",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "high",
-      "summary": "border-width shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"border-width\")]",
-      "name": "border-width"
-    },
-    {
-      "id": "CSS-210",
+      "id": "CSS-096",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -544,7 +275,7 @@
       "name": "bottom"
     },
     {
-      "id": "CSS-211",
+      "id": "CSS-097",
       "surface": "css-shorthand",
       "status": "partial-values",
       "severity": "medium",
@@ -554,7 +285,7 @@
       "name": "box-shadow"
     },
     {
-      "id": "CSS-212",
+      "id": "CSS-098",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -564,237 +295,17 @@
       "name": "caret-color"
     },
     {
-      "id": "CSS-213",
+      "id": "CSS-099",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
-      "summary": "clip-path rejects values: fill-box, path, stroke-box, view-box",
+      "summary": "clip-path rejects values: fill-box, path, stroke-box, view-box, rect(0 100% 100% 0)",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"clip-path\")]",
       "name": "clip-path"
     },
     {
-      "id": "CSS-214",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "clip-rule parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"clip-rule\")]",
-      "name": "clip-rule"
-    },
-    {
-      "id": "CSS-215",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-composition-id parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-composition-id\")]",
-      "name": "coh-composition-id"
-    },
-    {
-      "id": "CSS-216",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-custom-effect-float-param1 parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-custom-effect-float-param1\")]",
-      "name": "coh-custom-effect-float-param1"
-    },
-    {
-      "id": "CSS-217",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-custom-effect-float-param10 parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-custom-effect-float-param10\")]",
-      "name": "coh-custom-effect-float-param10"
-    },
-    {
-      "id": "CSS-218",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-custom-effect-float-param11 parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-custom-effect-float-param11\")]",
-      "name": "coh-custom-effect-float-param11"
-    },
-    {
-      "id": "CSS-219",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-custom-effect-float-param12 parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-custom-effect-float-param12\")]",
-      "name": "coh-custom-effect-float-param12"
-    },
-    {
-      "id": "CSS-220",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-custom-effect-float-param2 parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-custom-effect-float-param2\")]",
-      "name": "coh-custom-effect-float-param2"
-    },
-    {
-      "id": "CSS-221",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-custom-effect-float-param3 parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-custom-effect-float-param3\")]",
-      "name": "coh-custom-effect-float-param3"
-    },
-    {
-      "id": "CSS-222",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-custom-effect-float-param4 parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-custom-effect-float-param4\")]",
-      "name": "coh-custom-effect-float-param4"
-    },
-    {
-      "id": "CSS-223",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-custom-effect-float-param5 parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-custom-effect-float-param5\")]",
-      "name": "coh-custom-effect-float-param5"
-    },
-    {
-      "id": "CSS-224",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-custom-effect-float-param6 parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-custom-effect-float-param6\")]",
-      "name": "coh-custom-effect-float-param6"
-    },
-    {
-      "id": "CSS-225",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-custom-effect-float-param7 parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-custom-effect-float-param7\")]",
-      "name": "coh-custom-effect-float-param7"
-    },
-    {
-      "id": "CSS-226",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-custom-effect-float-param8 parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-custom-effect-float-param8\")]",
-      "name": "coh-custom-effect-float-param8"
-    },
-    {
-      "id": "CSS-227",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-custom-effect-float-param9 parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-custom-effect-float-param9\")]",
-      "name": "coh-custom-effect-float-param9"
-    },
-    {
-      "id": "CSS-228",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-custom-effect-name parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-custom-effect-name\")]",
-      "name": "coh-custom-effect-name"
-    },
-    {
-      "id": "CSS-229",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-custom-effect-string-param1 parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-custom-effect-string-param1\")]",
-      "name": "coh-custom-effect-string-param1"
-    },
-    {
-      "id": "CSS-230",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-custom-effect-string-param2 parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-custom-effect-string-param2\")]",
-      "name": "coh-custom-effect-string-param2"
-    },
-    {
-      "id": "CSS-231",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-enable-backdrop-filter parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-enable-backdrop-filter\")]",
-      "name": "coh-enable-backdrop-filter"
-    },
-    {
-      "id": "CSS-232",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-font-fit parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-font-fit\")]",
-      "name": "coh-font-fit"
-    },
-    {
-      "id": "CSS-233",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-font-fit-max-size parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-font-fit-max-size\")]",
-      "name": "coh-font-fit-max-size"
-    },
-    {
-      "id": "CSS-234",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-font-fit-min-size parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-font-fit-min-size\")]",
-      "name": "coh-font-fit-min-size"
-    },
-    {
-      "id": "CSS-235",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-font-fit-mode parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-font-fit-mode\")]",
-      "name": "coh-font-fit-mode"
-    },
-    {
-      "id": "CSS-236",
+      "id": "CSS-100",
       "surface": "css-property",
       "status": "parser-only",
       "severity": "medium",
@@ -804,7 +315,7 @@
       "name": "coh-partitioned"
     },
     {
-      "id": "CSS-237",
+      "id": "CSS-101",
       "surface": "css-property",
       "status": "parser-only",
       "severity": "medium",
@@ -814,17 +325,7 @@
       "name": "coh-rendering-option"
     },
     {
-      "id": "CSS-238",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "coh-sdf parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"coh-sdf\")]",
-      "name": "coh-sdf"
-    },
-    {
-      "id": "CSS-239",
+      "id": "CSS-102",
       "surface": "css-property",
       "status": "parser-only",
       "severity": "medium",
@@ -834,27 +335,17 @@
       "name": "coh-simple-opacity"
     },
     {
-      "id": "CSS-240",
+      "id": "CSS-103",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
-      "summary": "color rejects values: initial",
+      "summary": "color rejects values: initial, oklab(0.5 0.1 0.1), lch(50% 70 30), color-mix(in srgb,red,blue), hsla(0,100%,50%,0.5)",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"color\")]",
       "name": "color"
     },
     {
-      "id": "CSS-241",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "column-gap parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"column-gap\")]",
-      "name": "column-gap"
-    },
-    {
-      "id": "CSS-242",
+      "id": "CSS-104",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -864,27 +355,17 @@
       "name": "contain"
     },
     {
-      "id": "CSS-244",
+      "id": "CSS-106",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
-      "summary": "content rejects values: gradient, image-set, url",
+      "summary": "content rejects values: gradient, image-set, url, counters(item,\".\"), attr(data-gf)",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"content\")]",
       "name": "content"
     },
     {
-      "id": "CSS-127",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "high",
-      "summary": "cursor parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"cursor\")]",
-      "name": "cursor"
-    },
-    {
-      "id": "CSS-246",
+      "id": "CSS-111",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -894,7 +375,7 @@
       "name": "cx"
     },
     {
-      "id": "CSS-247",
+      "id": "CSS-112",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -904,7 +385,7 @@
       "name": "cy"
     },
     {
-      "id": "CSS-248",
+      "id": "CSS-113",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -914,7 +395,7 @@
       "name": "d"
     },
     {
-      "id": "CSS-024",
+      "id": "CSS-013",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "critical",
@@ -924,7 +405,7 @@
       "name": "display"
     },
     {
-      "id": "CSS-249",
+      "id": "CSS-114",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -934,7 +415,7 @@
       "name": "fill"
     },
     {
-      "id": "CSS-250",
+      "id": "CSS-115",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -944,17 +425,7 @@
       "name": "fill-opacity"
     },
     {
-      "id": "CSS-251",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "fill-rule parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"fill-rule\")]",
-      "name": "fill-rule"
-    },
-    {
-      "id": "CSS-252",
+      "id": "CSS-116",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -964,17 +435,7 @@
       "name": "filter"
     },
     {
-      "id": "CSS-025",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "critical",
-      "summary": "flex shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"flex\")]",
-      "name": "flex"
-    },
-    {
-      "id": "CSS-026",
+      "id": "CSS-014",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "critical",
@@ -984,7 +445,7 @@
       "name": "flex-basis"
     },
     {
-      "id": "CSS-253",
+      "id": "CSS-117",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -994,7 +455,7 @@
       "name": "flex-grow"
     },
     {
-      "id": "CSS-254",
+      "id": "CSS-118",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1004,37 +465,17 @@
       "name": "flex-shrink"
     },
     {
-      "id": "CSS-027",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "critical",
-      "summary": "font shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"font\")]",
-      "name": "font"
-    },
-    {
-      "id": "CSS-255",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "font-family parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"font-family\")]",
-      "name": "font-family"
-    },
-    {
-      "id": "CSS-128",
+      "id": "CSS-050",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
-      "summary": "font-size rejects values: math",
+      "summary": "font-size rejects values: math, round(14px,2px), min(12px,16px), max(12px,16px), mod(20px,6px)",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"font-size\")]",
       "name": "font-size"
     },
     {
-      "id": "CSS-129",
+      "id": "CSS-051",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1044,17 +485,7 @@
       "name": "font-style"
     },
     {
-      "id": "CSS-130",
-      "surface": "css-value",
-      "status": "partial-values",
-      "severity": "high",
-      "summary": "font-variant-east-asian rejects values: full-width, jis04, jis78, jis83, jis90",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"font-variant-east-asian\")]",
-      "name": "font-variant-east-asian"
-    },
-    {
-      "id": "CSS-131",
+      "id": "CSS-052",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1064,17 +495,7 @@
       "name": "font-weight"
     },
     {
-      "id": "CSS-132",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "high",
-      "summary": "gap shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"gap\")]",
-      "name": "gap"
-    },
-    {
-      "id": "CSS-256",
+      "id": "CSS-119",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1084,7 +505,7 @@
       "name": "height"
     },
     {
-      "id": "CSS-133",
+      "id": "CSS-053",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1094,17 +515,7 @@
       "name": "image-rendering"
     },
     {
-      "id": "CSS-134",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "high",
-      "summary": "isolation parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"isolation\")]",
-      "name": "isolation"
-    },
-    {
-      "id": "CSS-028",
+      "id": "CSS-015",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "critical",
@@ -1114,7 +525,7 @@
       "name": "justify-content"
     },
     {
-      "id": "CSS-257",
+      "id": "CSS-120",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1124,37 +535,7 @@
       "name": "left"
     },
     {
-      "id": "CSS-258",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "letter-spacing parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"letter-spacing\")]",
-      "name": "letter-spacing"
-    },
-    {
-      "id": "CSS-259",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "line-height parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"line-height\")]",
-      "name": "line-height"
-    },
-    {
-      "id": "CSS-137",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "high",
-      "summary": "margin shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"margin\")]",
-      "name": "margin"
-    },
-    {
-      "id": "CSS-260",
+      "id": "CSS-121",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1164,7 +545,7 @@
       "name": "margin-bottom"
     },
     {
-      "id": "CSS-261",
+      "id": "CSS-122",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1174,7 +555,7 @@
       "name": "margin-left"
     },
     {
-      "id": "CSS-262",
+      "id": "CSS-123",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1184,7 +565,7 @@
       "name": "margin-right"
     },
     {
-      "id": "CSS-263",
+      "id": "CSS-124",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1194,27 +575,7 @@
       "name": "margin-top"
     },
     {
-      "id": "CSS-138",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "high",
-      "summary": "mask shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"mask\")]",
-      "name": "mask"
-    },
-    {
-      "id": "CSS-264",
-      "surface": "css-value",
-      "status": "partial-values",
-      "severity": "medium",
-      "summary": "mask-border-repeat rejects values: space",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"mask-border-repeat\")]",
-      "name": "mask-border-repeat"
-    },
-    {
-      "id": "CSS-139",
+      "id": "CSS-056",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1224,17 +585,7 @@
       "name": "mask-clip"
     },
     {
-      "id": "CSS-140",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "high",
-      "summary": "mask-image parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"mask-image\")]",
-      "name": "mask-image"
-    },
-    {
-      "id": "CSS-141",
+      "id": "CSS-057",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1244,17 +595,7 @@
       "name": "mask-mode"
     },
     {
-      "id": "CSS-142",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "high",
-      "summary": "mask-position parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"mask-position\")]",
-      "name": "mask-position"
-    },
-    {
-      "id": "CSS-265",
+      "id": "CSS-125",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1264,27 +605,7 @@
       "name": "mask-repeat"
     },
     {
-      "id": "CSS-143",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "high",
-      "summary": "mask-size parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"mask-size\")]",
-      "name": "mask-size"
-    },
-    {
-      "id": "CSS-266",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "mask-type parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"mask-type\")]",
-      "name": "mask-type"
-    },
-    {
-      "id": "CSS-267",
+      "id": "CSS-126",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1294,7 +615,7 @@
       "name": "max-height"
     },
     {
-      "id": "CSS-268",
+      "id": "CSS-127",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1304,7 +625,7 @@
       "name": "max-width"
     },
     {
-      "id": "CSS-269",
+      "id": "CSS-128",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1314,7 +635,7 @@
       "name": "min-height"
     },
     {
-      "id": "CSS-270",
+      "id": "CSS-129",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1324,7 +645,7 @@
       "name": "min-width"
     },
     {
-      "id": "CSS-145",
+      "id": "CSS-059",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1334,7 +655,7 @@
       "name": "mix-blend-mode"
     },
     {
-      "id": "CSS-275",
+      "id": "CSS-134",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1344,7 +665,7 @@
       "name": "offset"
     },
     {
-      "id": "CSS-276",
+      "id": "CSS-135",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1354,27 +675,7 @@
       "name": "opacity"
     },
     {
-      "id": "CSS-146",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "high",
-      "summary": "overflow parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"overflow\")]",
-      "name": "overflow"
-    },
-    {
-      "id": "CSS-147",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "high",
-      "summary": "overflow-wrap parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"overflow-wrap\")]",
-      "name": "overflow-wrap"
-    },
-    {
-      "id": "CSS-148",
+      "id": "CSS-060",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1384,7 +685,7 @@
       "name": "overflow-x"
     },
     {
-      "id": "CSS-149",
+      "id": "CSS-061",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1394,17 +695,7 @@
       "name": "overflow-y"
     },
     {
-      "id": "CSS-150",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "high",
-      "summary": "padding shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"padding\")]",
-      "name": "padding"
-    },
-    {
-      "id": "CSS-277",
+      "id": "CSS-136",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1414,7 +705,7 @@
       "name": "padding-bottom"
     },
     {
-      "id": "CSS-278",
+      "id": "CSS-137",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1424,7 +715,7 @@
       "name": "padding-left"
     },
     {
-      "id": "CSS-279",
+      "id": "CSS-138",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1434,7 +725,7 @@
       "name": "padding-right"
     },
     {
-      "id": "CSS-280",
+      "id": "CSS-139",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1444,27 +735,7 @@
       "name": "padding-top"
     },
     {
-      "id": "CSS-281",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "perspective parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"perspective\")]",
-      "name": "perspective"
-    },
-    {
-      "id": "CSS-282",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "perspective-origin parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"perspective-origin\")]",
-      "name": "perspective-origin"
-    },
-    {
-      "id": "CSS-151",
+      "id": "CSS-062",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1474,7 +745,7 @@
       "name": "pointer-events"
     },
     {
-      "id": "CSS-029",
+      "id": "CSS-016",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "critical",
@@ -1484,7 +755,7 @@
       "name": "position"
     },
     {
-      "id": "CSS-283",
+      "id": "CSS-140",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1494,7 +765,7 @@
       "name": "r"
     },
     {
-      "id": "CSS-284",
+      "id": "CSS-141",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1504,17 +775,7 @@
       "name": "right"
     },
     {
-      "id": "CSS-285",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "row-gap parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"row-gap\")]",
-      "name": "row-gap"
-    },
-    {
-      "id": "CSS-286",
+      "id": "CSS-142",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1524,7 +785,7 @@
       "name": "rx"
     },
     {
-      "id": "CSS-287",
+      "id": "CSS-143",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1534,7 +795,7 @@
       "name": "ry"
     },
     {
-      "id": "CSS-289",
+      "id": "CSS-145",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1544,7 +805,7 @@
       "name": "shape-rendering"
     },
     {
-      "id": "CSS-290",
+      "id": "CSS-146",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1554,7 +815,7 @@
       "name": "stop-color"
     },
     {
-      "id": "CSS-291",
+      "id": "CSS-147",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1564,7 +825,7 @@
       "name": "stop-opacity"
     },
     {
-      "id": "CSS-292",
+      "id": "CSS-148",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1574,7 +835,7 @@
       "name": "stroke"
     },
     {
-      "id": "CSS-293",
+      "id": "CSS-149",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1584,7 +845,7 @@
       "name": "stroke-dasharray"
     },
     {
-      "id": "CSS-294",
+      "id": "CSS-150",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1594,27 +855,7 @@
       "name": "stroke-dashoffset"
     },
     {
-      "id": "CSS-295",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "stroke-linecap parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"stroke-linecap\")]",
-      "name": "stroke-linecap"
-    },
-    {
-      "id": "CSS-296",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "stroke-linejoin parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"stroke-linejoin\")]",
-      "name": "stroke-linejoin"
-    },
-    {
-      "id": "CSS-297",
+      "id": "CSS-151",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1624,7 +865,7 @@
       "name": "stroke-miterlimit"
     },
     {
-      "id": "CSS-298",
+      "id": "CSS-152",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1634,7 +875,7 @@
       "name": "stroke-opacity"
     },
     {
-      "id": "CSS-299",
+      "id": "CSS-153",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1644,7 +885,7 @@
       "name": "stroke-width"
     },
     {
-      "id": "CSS-152",
+      "id": "CSS-063",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1654,7 +895,7 @@
       "name": "text-align"
     },
     {
-      "id": "CSS-301",
+      "id": "CSS-155",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1664,17 +905,7 @@
       "name": "text-anchor"
     },
     {
-      "id": "CSS-153",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "high",
-      "summary": "text-decoration shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"text-decoration\")]",
-      "name": "text-decoration"
-    },
-    {
-      "id": "CSS-302",
+      "id": "CSS-156",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1684,7 +915,7 @@
       "name": "text-decoration-color"
     },
     {
-      "id": "CSS-154",
+      "id": "CSS-064",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1694,7 +925,7 @@
       "name": "text-decoration-line"
     },
     {
-      "id": "CSS-155",
+      "id": "CSS-065",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1704,7 +935,7 @@
       "name": "text-decoration-style"
     },
     {
-      "id": "CSS-156",
+      "id": "CSS-066",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1714,7 +945,7 @@
       "name": "text-decoration-thickness"
     },
     {
-      "id": "CSS-157",
+      "id": "CSS-067",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1724,37 +955,7 @@
       "name": "text-overflow"
     },
     {
-      "id": "CSS-303",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "text-rendering parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"text-rendering\")]",
-      "name": "text-rendering"
-    },
-    {
-      "id": "CSS-158",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "high",
-      "summary": "text-shadow shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"text-shadow\")]",
-      "name": "text-shadow"
-    },
-    {
-      "id": "CSS-159",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "high",
-      "summary": "text-stroke shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"text-stroke\")]",
-      "name": "text-stroke"
-    },
-    {
-      "id": "CSS-304",
+      "id": "CSS-157",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1764,7 +965,7 @@
       "name": "text-stroke-color"
     },
     {
-      "id": "CSS-305",
+      "id": "CSS-158",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1774,7 +975,7 @@
       "name": "text-stroke-width"
     },
     {
-      "id": "CSS-160",
+      "id": "CSS-068",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1784,7 +985,7 @@
       "name": "text-transform"
     },
     {
-      "id": "CSS-161",
+      "id": "CSS-069",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1794,7 +995,7 @@
       "name": "text-underline-offset"
     },
     {
-      "id": "CSS-162",
+      "id": "CSS-070",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1804,7 +1005,7 @@
       "name": "text-underline-position"
     },
     {
-      "id": "CSS-306",
+      "id": "CSS-159",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1814,47 +1015,17 @@
       "name": "top"
     },
     {
-      "id": "CSS-307",
+      "id": "CSS-160",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
-      "summary": "transform rejects values: initial",
+      "summary": "transform rejects values: initial, rotate(acos(1)), perspective(500px), rotate(asin(1)), rotate(atan(1))",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"transform\")]",
       "name": "transform"
     },
     {
-      "id": "CSS-163",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "high",
-      "summary": "transform-origin parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"transform-origin\")]",
-      "name": "transform-origin"
-    },
-    {
-      "id": "CSS-030",
-      "surface": "css-shorthand",
-      "status": "partial-shorthand",
-      "severity": "critical",
-      "summary": "transition shorthand parses but does not propagate to longhands",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"transition\")]",
-      "name": "transition"
-    },
-    {
-      "id": "CSS-308",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "transition-behavior parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"transition-behavior\")]",
-      "name": "transition-behavior"
-    },
-    {
-      "id": "CSS-309",
+      "id": "CSS-161",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1864,7 +1035,7 @@
       "name": "transition-delay"
     },
     {
-      "id": "CSS-310",
+      "id": "CSS-162",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1874,27 +1045,17 @@
       "name": "transition-duration"
     },
     {
-      "id": "CSS-164",
-      "surface": "css-property",
-      "status": "parser-only",
-      "severity": "high",
-      "summary": "transition-property parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"transition-property\")]",
-      "name": "transition-property"
-    },
-    {
-      "id": "CSS-311",
+      "id": "CSS-163",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
-      "summary": "transition-timing-function rejects values: jump",
+      "summary": "transition-timing-function rejects values: jump, linear(0,0.25,0.5,0.75,1)",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"transition-timing-function\")]",
       "name": "transition-timing-function"
     },
     {
-      "id": "CSS-312",
+      "id": "CSS-164",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1904,7 +1065,7 @@
       "name": "user-select"
     },
     {
-      "id": "CSS-313",
+      "id": "CSS-165",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1914,7 +1075,7 @@
       "name": "vertical-align"
     },
     {
-      "id": "CSS-165",
+      "id": "CSS-071",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1924,7 +1085,7 @@
       "name": "visibility"
     },
     {
-      "id": "CSS-166",
+      "id": "CSS-072",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1934,7 +1095,7 @@
       "name": "white-space"
     },
     {
-      "id": "CSS-315",
+      "id": "CSS-167",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1944,7 +1105,7 @@
       "name": "width"
     },
     {
-      "id": "CSS-316",
+      "id": "CSS-168",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1954,7 +1115,7 @@
       "name": "x"
     },
     {
-      "id": "CSS-317",
+      "id": "CSS-169",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1964,17 +1125,28 @@
       "name": "y"
     },
     {
-      "id": "CSS-318",
+      "id": "CSS-172",
       "surface": "css-property",
-      "status": "parser-only",
-      "severity": "medium",
-      "summary": "z-index parses but is not applied at render time",
-      "source_file": "results/css/partial.json",
-      "source_path": "$[?(@.name==\"z-index\")]",
-      "name": "z-index"
+      "status": "missing",
+      "severity": "low",
+      "summary": "9 CSS properties in this family are not implemented",
+      "source_file": "results/css/unsupported.json",
+      "source_path": "$[?(family==\"legacy-box-flex\")]",
+      "members": [
+        "box-align",
+        "box-decoration-break",
+        "box-direction",
+        "box-flex",
+        "box-flex-group",
+        "box-lines",
+        "box-ordinal-group",
+        "box-orient",
+        "box-pack"
+      ],
+      "name": "Legacy `box-*` flexbox model"
     },
     {
-      "id": "CSS-136",
+      "id": "CSS-055",
       "surface": "css-property",
       "status": "missing",
       "severity": "high",
@@ -2051,7 +1223,7 @@
       "name": "Logical and physical-mapped CSS properties"
     },
     {
-      "id": "CSS-023",
+      "id": "CSS-010",
       "surface": "css-property",
       "status": "missing",
       "severity": "critical",
@@ -2079,7 +1251,7 @@
       "name": "CSS Grid layout"
     },
     {
-      "id": "CSS-274",
+      "id": "CSS-133",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -2100,7 +1272,7 @@
       "name": "Multi-column layout"
     },
     {
-      "id": "CSS-243",
+      "id": "CSS-105",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -2115,7 +1287,7 @@
       "name": "Container queries"
     },
     {
-      "id": "CSS-184",
+      "id": "CSS-084",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -2135,7 +1307,7 @@
       "name": "Anchor positioning"
     },
     {
-      "id": "CSS-288",
+      "id": "CSS-144",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -2174,7 +1346,7 @@
       "name": "Scroll snap, scroll margin / padding, scrollbar customization"
     },
     {
-      "id": "CSS-314",
+      "id": "CSS-166",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -2198,11 +1370,11 @@
       "name": "View transitions, animation timeline, scroll timeline"
     },
     {
-      "id": "CSS-273",
+      "id": "CSS-132",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
-      "summary": "54 CSS properties in this family are not implemented",
+      "summary": "55 CSS properties in this family are not implemented",
       "source_file": "results/css/unsupported.json",
       "source_path": "$[?(family==\"modern-typography\")]",
       "members": [
@@ -2222,6 +1394,7 @@
         "font-variant",
         "font-variant-alternates",
         "font-variant-caps",
+        "font-variant-east-asian",
         "font-variant-emoji",
         "font-variant-ligatures",
         "font-variant-numeric",
@@ -2264,7 +1437,7 @@
       "name": "Modern typography (font-variant, hyphens, text-wrap, font-feature-settings, etc.)"
     },
     {
-      "id": "CSS-321",
+      "id": "CSS-174",
       "surface": "css-property",
       "status": "missing",
       "severity": "low",
@@ -2292,7 +1465,7 @@
       "name": "Page / print layout"
     },
     {
-      "id": "CSS-135",
+      "id": "CSS-054",
       "surface": "css-property",
       "status": "missing",
       "severity": "high",
@@ -2322,7 +1495,7 @@
       "name": "List, table, form-control native styling"
     },
     {
-      "id": "CSS-300",
+      "id": "CSS-154",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -2352,11 +1525,11 @@
       "name": "SVG-only presentation properties"
     },
     {
-      "id": "CSS-144",
+      "id": "CSS-058",
       "surface": "css-property",
       "status": "missing",
       "severity": "high",
-      "summary": "42 CSS properties in this family are not implemented",
+      "summary": "41 CSS properties in this family are not implemented",
       "source_file": "results/css/unsupported.json",
       "source_path": "$[?(family==\"modern-positioning-misc\")]",
       "members": [
@@ -2396,7 +1569,6 @@
         "scale",
         "touch-action",
         "transform-box",
-        "transform-style",
         "translate",
         "unicode-bidi",
         "will-change",
@@ -2406,7 +1578,7 @@
       "name": "Misc modern positioning / sizing helpers"
     },
     {
-      "id": "CSS-322",
+      "id": "CSS-175",
       "surface": "css-property",
       "status": "missing",
       "severity": "low",
@@ -2421,7 +1593,7 @@
       "name": "Ruby, BIDI, CJK, math, hanja"
     },
     {
-      "id": "CSS-271",
+      "id": "CSS-130",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -2437,16 +1609,17 @@
       "name": "Modern background properties"
     },
     {
-      "id": "CSS-272",
+      "id": "CSS-131",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
-      "summary": "7 CSS properties in this family are not implemented",
+      "summary": "8 CSS properties in this family are not implemented",
       "source_file": "results/css/unsupported.json",
       "source_path": "$[?(family==\"mask-modern\")]",
       "members": [
         "mask-border",
         "mask-border-outset",
+        "mask-border-repeat",
         "mask-border-slice",
         "mask-border-source",
         "mask-border-width",
@@ -2456,7 +1629,7 @@
       "name": "Modern mask longhands"
     },
     {
-      "id": "CSS-245",
+      "id": "CSS-108",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -2473,7 +1646,7 @@
       "name": "CSS Motion-path / offset-*"
     },
     {
-      "id": "CSS-319",
+      "id": "CSS-171",
       "surface": "css-property",
       "status": "missing",
       "severity": "low",
@@ -2488,37 +1661,30 @@
       "name": "CSS counters"
     },
     {
-      "id": "CSS-320",
+      "id": "CSS-173",
       "surface": "css-property",
       "status": "missing",
       "severity": "low",
-      "summary": "31 CSS properties in this family are not implemented",
+      "summary": "24 CSS properties in this family are not implemented",
       "source_file": "results/css/unsupported.json",
       "source_path": "$[?(family==\"misc-cosmetic\")]",
       "members": [
-        "box-align",
-        "box-decoration-break",
-        "box-direction",
-        "box-flex",
-        "box-flex-group",
-        "box-lines",
-        "box-ordinal-group",
-        "box-orient",
-        "box-pack",
-        "coh-custom-effect-float-param-1",
-        "coh-custom-effect-float-param-10",
-        "coh-custom-effect-float-param-11",
-        "coh-custom-effect-float-param-12",
-        "coh-custom-effect-float-param-2",
-        "coh-custom-effect-float-param-3",
-        "coh-custom-effect-float-param-4",
-        "coh-custom-effect-float-param-5",
-        "coh-custom-effect-float-param-6",
-        "coh-custom-effect-float-param-7",
-        "coh-custom-effect-float-param-8",
-        "coh-custom-effect-float-param-9",
-        "coh-custom-effect-string-param-1",
-        "coh-custom-effect-string-param-2",
+        "box-sizing",
+        "coh-custom-effect-float-param1",
+        "coh-custom-effect-float-param10",
+        "coh-custom-effect-float-param11",
+        "coh-custom-effect-float-param12",
+        "coh-custom-effect-float-param2",
+        "coh-custom-effect-float-param3",
+        "coh-custom-effect-float-param4",
+        "coh-custom-effect-float-param5",
+        "coh-custom-effect-float-param6",
+        "coh-custom-effect-float-param7",
+        "coh-custom-effect-float-param8",
+        "coh-custom-effect-float-param9",
+        "coh-custom-effect-string-param1",
+        "coh-custom-effect-string-param2",
+        "coh-sdf",
         "custom-property",
         "flex-flow",
         "image-orientation",
@@ -2528,7 +1694,538 @@
         "shape-margin",
         "shape-outside"
       ],
-      "name": "Other missing cosmetic / niche properties"
+      "name": "Other unsupported CSS properties"
+    },
+    {
+      "id": "CSS-073",
+      "surface": "css-selector",
+      "status": "partial-values",
+      "severity": "medium",
+      "summary": "::selection: only the `color` and `background-color` properties are honoured; other declarations are ignored.",
+      "source_file": "results/selectors/partial.json",
+      "source_path": "$[?(@.name==\"::selection\")]",
+      "name": "::selection"
+    },
+    {
+      "id": "CSS-076",
+      "surface": "css-selector",
+      "status": "partial-values",
+      "severity": "medium",
+      "summary": ":nth-child(2 of .class): no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).",
+      "source_file": "results/selectors/partial.json",
+      "source_path": "$[?(@.name==\":nth-child(2 of .class)\")]",
+      "name": ":nth-child(2 of .class)"
+    },
+    {
+      "id": "CSS-077",
+      "surface": "css-selector",
+      "status": "partial-values",
+      "severity": "medium",
+      "summary": ":nth-child(2): no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).",
+      "source_file": "results/selectors/partial.json",
+      "source_path": "$[?(@.name==\":nth-child(2)\")]",
+      "name": ":nth-child(2)"
+    },
+    {
+      "id": "CSS-078",
+      "surface": "css-selector",
+      "status": "partial-values",
+      "severity": "medium",
+      "summary": ":nth-child(2n+1): no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).",
+      "source_file": "results/selectors/partial.json",
+      "source_path": "$[?(@.name==\":nth-child(2n+1)\")]",
+      "name": ":nth-child(2n+1)"
+    },
+    {
+      "id": "CSS-079",
+      "surface": "css-selector",
+      "status": "partial-values",
+      "severity": "medium",
+      "summary": ":nth-child(even): no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).",
+      "source_file": "results/selectors/partial.json",
+      "source_path": "$[?(@.name==\":nth-child(even)\")]",
+      "name": ":nth-child(even)"
+    },
+    {
+      "id": "CSS-080",
+      "surface": "css-selector",
+      "status": "partial-values",
+      "severity": "medium",
+      "summary": ":nth-child(odd): no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).",
+      "source_file": "results/selectors/partial.json",
+      "source_path": "$[?(@.name==\":nth-child(odd)\")]",
+      "name": ":nth-child(odd)"
+    },
+    {
+      "id": "CSS-081",
+      "surface": "css-selector",
+      "status": "partial-values",
+      "severity": "medium",
+      "summary": ":nth-last-child(2): no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).",
+      "source_file": "results/selectors/partial.json",
+      "source_path": "$[?(@.name==\":nth-last-child(2)\")]",
+      "name": ":nth-last-child(2)"
+    },
+    {
+      "id": "CSS-082",
+      "surface": "css-selector",
+      "status": "partial-values",
+      "severity": "medium",
+      "summary": ":nth-last-of-type(2): no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).",
+      "source_file": "results/selectors/partial.json",
+      "source_path": "$[?(@.name==\":nth-last-of-type(2)\")]",
+      "name": ":nth-last-of-type(2)"
+    },
+    {
+      "id": "CSS-083",
+      "surface": "css-selector",
+      "status": "partial-values",
+      "severity": "medium",
+      "summary": ":nth-of-type(2): no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).",
+      "source_file": "results/selectors/partial.json",
+      "source_path": "$[?(@.name==\":nth-of-type(2)\")]",
+      "name": ":nth-of-type(2)"
+    },
+    {
+      "id": "CSS-017",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::backdrop (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::backdrop\")]",
+      "name": "::backdrop"
+    },
+    {
+      "id": "CSS-018",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::checkmark (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::checkmark\")]",
+      "name": "::checkmark"
+    },
+    {
+      "id": "CSS-019",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::cue (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::cue\")]",
+      "name": "::cue"
+    },
+    {
+      "id": "CSS-020",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::details-content (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::details-content\")]",
+      "name": "::details-content"
+    },
+    {
+      "id": "CSS-021",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::file-selector-button (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::file-selector-button\")]",
+      "name": "::file-selector-button"
+    },
+    {
+      "id": "CSS-022",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::first-letter (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::first-letter\")]",
+      "name": "::first-letter"
+    },
+    {
+      "id": "CSS-023",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::first-line (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::first-line\")]",
+      "name": "::first-line"
+    },
+    {
+      "id": "CSS-024",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::grammar-error (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::grammar-error\")]",
+      "name": "::grammar-error"
+    },
+    {
+      "id": "CSS-025",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":active-view-transition (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":active-view-transition\")]",
+      "name": ":active-view-transition"
+    },
+    {
+      "id": "CSS-026",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":active-view-transition-type(fade) (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":active-view-transition-type(fade)\")]",
+      "name": ":active-view-transition-type(fade)"
+    },
+    {
+      "id": "CSS-027",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":any-link (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":any-link\")]",
+      "name": ":any-link"
+    },
+    {
+      "id": "CSS-028",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":autofill (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":autofill\")]",
+      "name": ":autofill"
+    },
+    {
+      "id": "CSS-029",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":buffering (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":buffering\")]",
+      "name": ":buffering"
+    },
+    {
+      "id": "CSS-001",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "critical",
+      "summary": ":checked (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":checked\")]",
+      "name": ":checked"
+    },
+    {
+      "id": "CSS-030",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":closed (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":closed\")]",
+      "name": ":closed"
+    },
+    {
+      "id": "CSS-031",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":default (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":default\")]",
+      "name": ":default"
+    },
+    {
+      "id": "CSS-032",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":defined (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":defined\")]",
+      "name": ":defined"
+    },
+    {
+      "id": "CSS-033",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":dir(ltr) (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":dir(ltr)\")]",
+      "name": ":dir(ltr)"
+    },
+    {
+      "id": "CSS-002",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "critical",
+      "summary": ":disabled (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":disabled\")]",
+      "name": ":disabled"
+    },
+    {
+      "id": "CSS-034",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":empty (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":empty\")]",
+      "name": ":empty"
+    },
+    {
+      "id": "CSS-003",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "critical",
+      "summary": ":enabled (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":enabled\")]",
+      "name": ":enabled"
+    },
+    {
+      "id": "CSS-074",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "medium",
+      "summary": ":first (page-pseudo) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":first\")]",
+      "name": ":first"
+    },
+    {
+      "id": "CSS-004",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "critical",
+      "summary": ":first-of-type (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":first-of-type\")]",
+      "name": ":first-of-type"
+    },
+    {
+      "id": "CSS-005",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "critical",
+      "summary": ":focus-visible (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":focus-visible\")]",
+      "name": ":focus-visible"
+    },
+    {
+      "id": "CSS-006",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "critical",
+      "summary": ":focus-within (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":focus-within\")]",
+      "name": ":focus-within"
+    },
+    {
+      "id": "CSS-035",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":fullscreen (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":fullscreen\")]",
+      "name": ":fullscreen"
+    },
+    {
+      "id": "CSS-036",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":future (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":future\")]",
+      "name": ":future"
+    },
+    {
+      "id": "CSS-037",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":has-slotted (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":has-slotted\")]",
+      "name": ":has-slotted"
+    },
+    {
+      "id": "CSS-038",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":has(.child) (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":has(.child)\")]",
+      "name": ":has(.child)"
+    },
+    {
+      "id": "CSS-075",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "medium",
+      "summary": ":has(> .child) (pseudo-relational-direct) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":has(> .child)\")]",
+      "name": ":has(> .child)"
+    },
+    {
+      "id": "CSS-011",
+      "surface": "css-function",
+      "status": "missing",
+      "severity": "critical",
+      "summary": "8 CSS function(s) in this category are not parsed by Gameface",
+      "source_file": "results/functions/unsupported.json",
+      "source_path": "$[?(@.evidence.category==\"color\" && @.status==\"missing\")]",
+      "members": [
+        "hsl",
+        "hsla",
+        "hwb",
+        "lab",
+        "lch",
+        "oklab",
+        "oklch",
+        "color-mix"
+      ],
+      "name": "CSS modern color functions"
+    },
+    {
+      "id": "CSS-170",
+      "surface": "css-function",
+      "status": "missing",
+      "severity": "low",
+      "summary": "2 CSS function(s) in this category are not parsed by Gameface",
+      "source_file": "results/functions/unsupported.json",
+      "source_path": "$[?(@.evidence.category==\"counter\" && @.status==\"missing\")]",
+      "members": [
+        "counter",
+        "counters"
+      ],
+      "name": "CSS counter functions"
+    },
+    {
+      "id": "CSS-047",
+      "surface": "css-function",
+      "status": "missing",
+      "severity": "high",
+      "summary": "2 CSS function(s) in this category are not parsed by Gameface",
+      "source_file": "results/functions/unsupported.json",
+      "source_path": "$[?(@.evidence.category==\"image\" && @.status==\"missing\")]",
+      "members": [
+        "repeating-linear-gradient",
+        "repeating-radial-gradient"
+      ],
+      "name": "CSS image functions"
+    },
+    {
+      "id": "CSS-107",
+      "surface": "css-function",
+      "status": "unknown",
+      "severity": "medium",
+      "summary": "3 CSS function(s) skipped by the scraper; verify against Gameface docs",
+      "source_file": "results/functions/unsupported.json",
+      "source_path": "$[?(@.evidence.category==\"image\" && @.status==\"unknown\")]",
+      "members": [
+        "url",
+        "image-set",
+        "cross-fade"
+      ],
+      "name": "CSS image functions — unverified (NEEDS REVIEW)"
+    },
+    {
+      "id": "CSS-012",
+      "surface": "css-function",
+      "status": "missing",
+      "severity": "critical",
+      "summary": "11 CSS function(s) in this category are not parsed by Gameface",
+      "source_file": "results/functions/unsupported.json",
+      "source_path": "$[?(@.evidence.category==\"math\" && @.status==\"missing\")]",
+      "members": [
+        "clamp",
+        "min",
+        "max",
+        "mod",
+        "rem",
+        "round",
+        "abs",
+        "asin",
+        "acos",
+        "atan",
+        "atan2"
+      ],
+      "name": "CSS modern math functions"
+    },
+    {
+      "id": "CSS-048",
+      "surface": "css-function",
+      "status": "missing",
+      "severity": "high",
+      "summary": "2 CSS function(s) in this category are not parsed by Gameface",
+      "source_file": "results/functions/unsupported.json",
+      "source_path": "$[?(@.evidence.category==\"reference\" && @.status==\"missing\")]",
+      "members": [
+        "env",
+        "attr"
+      ],
+      "name": "CSS reference functions"
+    },
+    {
+      "id": "CSS-109",
+      "surface": "css-function",
+      "status": "missing",
+      "severity": "medium",
+      "summary": "2 CSS function(s) in this category are not parsed by Gameface",
+      "source_file": "results/functions/unsupported.json",
+      "source_path": "$[?(@.evidence.category==\"shape\" && @.status==\"missing\")]",
+      "members": [
+        "rect",
+        "xywh"
+      ],
+      "name": "CSS shape functions"
+    },
+    {
+      "id": "CSS-110",
+      "surface": "css-function",
+      "status": "missing",
+      "severity": "medium",
+      "summary": "1 CSS function(s) in this category are not parsed by Gameface",
+      "source_file": "results/functions/unsupported.json",
+      "source_path": "$[?(@.evidence.category==\"timing\" && @.status==\"missing\")]",
+      "members": [
+        "linear"
+      ],
+      "name": "CSS timing functions"
+    },
+    {
+      "id": "CSS-049",
+      "surface": "css-function",
+      "status": "missing",
+      "severity": "high",
+      "summary": "2 CSS function(s) in this category are not parsed by Gameface",
+      "source_file": "results/functions/unsupported.json",
+      "source_path": "$[?(@.evidence.category==\"transform\" && @.status==\"missing\")]",
+      "members": [
+        "skew",
+        "perspective"
+      ],
+      "name": "CSS transform functions"
     },
     {
       "id": "HTML-046",
@@ -3885,587 +3582,507 @@
       "surface": "js-stub",
       "status": "stub",
       "severity": "critical",
-      "summary": "Animation: 8 methods are stubs; 16 members missing",
+      "summary": "Animation: constructor missing + 15 other member(s) missing",
       "source_file": "results/js/partial.json",
       "source_path": "$[?(@.name==\"Animation\")]",
       "name": "Animation"
-    },
-    {
-      "id": "JS-027",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "AnimationEvent: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"AnimationEvent\")]",
-      "name": "AnimationEvent"
-    },
-    {
-      "id": "JS-028",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "Attr: 2 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Attr\")]",
-      "name": "Attr"
-    },
-    {
-      "id": "JS-029",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "Blob: 1 methods are stubs; 5 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Blob\")]",
-      "name": "Blob"
-    },
-    {
-      "id": "JS-030",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "BlobPropertyBag: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"BlobPropertyBag\")]",
-      "name": "BlobPropertyBag"
-    },
-    {
-      "id": "JS-031",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "CanvasGradient: 1 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CanvasGradient\")]",
-      "name": "CanvasGradient"
-    },
-    {
-      "id": "JS-032",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "CanvasPattern: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CanvasPattern\")]",
-      "name": "CanvasPattern"
     },
     {
       "id": "JS-002",
       "surface": "js-stub",
       "status": "stub",
       "severity": "critical",
-      "summary": "CanvasRenderingContext2D: 31 methods are stubs; 26 members missing",
+      "summary": "AnimationEvent: constructor missing — API not constructible in Gameface",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CanvasRenderingContext2D\")]",
-      "name": "CanvasRenderingContext2D"
-    },
-    {
-      "id": "JS-033",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "CaretPosition: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CaretPosition\")]",
-      "name": "CaretPosition"
-    },
-    {
-      "id": "JS-034",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "CharacterData: 8 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CharacterData\")]",
-      "name": "CharacterData"
-    },
-    {
-      "id": "JS-035",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "CoherentDebug: 1 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CoherentDebug\")]",
-      "name": "CoherentDebug"
-    },
-    {
-      "id": "JS-036",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "Comment: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Comment\")]",
-      "name": "Comment"
-    },
-    {
-      "id": "JS-037",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "Console: 8 methods are stubs; 12 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Console\")]",
-      "name": "Console"
-    },
-    {
-      "id": "JS-038",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "CSS: 14 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSS\")]",
-      "name": "CSS"
-    },
-    {
-      "id": "JS-039",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "CSSAnimation: 2 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSSAnimation\")]",
-      "name": "CSSAnimation"
-    },
-    {
-      "id": "JS-040",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "CSSKeywordValue: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSSKeywordValue\")]",
-      "name": "CSSKeywordValue"
-    },
-    {
-      "id": "JS-041",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "CSSMatrixComponent: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSSMatrixComponent\")]",
-      "name": "CSSMatrixComponent"
-    },
-    {
-      "id": "JS-042",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "CSSNumericValue: 10 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSSNumericValue\")]",
-      "name": "CSSNumericValue"
+      "source_path": "$[?(@.name==\"AnimationEvent\")]",
+      "name": "AnimationEvent"
     },
     {
       "id": "JS-043",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "CSSRotate: 1 members missing",
+      "summary": "Attr: 2 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSSRotate\")]",
-      "name": "CSSRotate"
+      "source_path": "$[?(@.name==\"Attr\")]",
+      "name": "Attr"
     },
     {
       "id": "JS-044",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "CSSRuleList: 1 members missing",
+      "summary": "Blob: constructor missing + 4 other member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSSRuleList\")]",
-      "name": "CSSRuleList"
+      "source_path": "$[?(@.name==\"Blob\")]",
+      "name": "Blob"
     },
     {
       "id": "JS-045",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "CSSScale: 1 members missing",
+      "summary": "BlobPropertyBag: 1 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSSScale\")]",
-      "name": "CSSScale"
+      "source_path": "$[?(@.name==\"BlobPropertyBag\")]",
+      "name": "BlobPropertyBag"
     },
     {
       "id": "JS-046",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "CSSSkewX: 1 members missing",
+      "summary": "CanvasPattern: 1 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSSSkewX\")]",
-      "name": "CSSSkewX"
+      "source_path": "$[?(@.name==\"CanvasPattern\")]",
+      "name": "CanvasPattern"
+    },
+    {
+      "id": "JS-003",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "CanvasRenderingContext2D: 26 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"CanvasRenderingContext2D\")]",
+      "name": "CanvasRenderingContext2D"
     },
     {
       "id": "JS-047",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "CSSSkewY: 1 members missing",
+      "summary": "CaretPosition: 1 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSSSkewY\")]",
-      "name": "CSSSkewY"
-    },
-    {
-      "id": "JS-004",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "critical",
-      "summary": "CSSStyleDeclaration: 3 methods are stubs; 348 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSSStyleDeclaration\")]",
-      "name": "CSSStyleDeclaration"
-    },
-    {
-      "id": "JS-005",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "critical",
-      "summary": "CSSStyleSheet: 2 methods are stubs; 7 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSSStyleSheet\")]",
-      "name": "CSSStyleSheet"
+      "source_path": "$[?(@.name==\"CaretPosition\")]",
+      "name": "CaretPosition"
     },
     {
       "id": "JS-048",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "CSSStyleValue: 1 methods are stubs (no-ops)",
+      "summary": "CharacterData: 1 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSSStyleValue\")]",
-      "name": "CSSStyleValue"
+      "source_path": "$[?(@.name==\"CharacterData\")]",
+      "name": "CharacterData"
     },
     {
-      "id": "JS-049",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "CSSTransformComponent: 2 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSSTransformComponent\")]",
-      "name": "CSSTransformComponent"
-    },
-    {
-      "id": "JS-050",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "CSSTransformValue: 7 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSSTransformValue\")]",
-      "name": "CSSTransformValue"
-    },
-    {
-      "id": "JS-051",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "CSSTranslate: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSSTranslate\")]",
-      "name": "CSSTranslate"
-    },
-    {
-      "id": "JS-052",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "CSSUnitValue: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CSSUnitValue\")]",
-      "name": "CSSUnitValue"
-    },
-    {
-      "id": "JS-006",
+      "id": "JS-004",
       "surface": "js-stub",
       "status": "stub",
       "severity": "critical",
-      "summary": "CustomElementRegistry: 1 methods are stubs; 4 members missing",
+      "summary": "Comment: constructor missing — API not constructible in Gameface",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CustomElementRegistry\")]",
-      "name": "CustomElementRegistry"
+      "source_path": "$[?(@.name==\"Comment\")]",
+      "name": "Comment"
+    },
+    {
+      "id": "JS-005",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "Console: 12 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"Console\")]",
+      "name": "Console"
     },
     {
       "id": "JS-007",
       "surface": "js-stub",
       "status": "stub",
       "severity": "critical",
-      "summary": "CustomEvent: 1 methods are stubs; 1 members missing",
+      "summary": "CSS: 14 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"CustomEvent\")]",
-      "name": "CustomEvent"
+      "source_path": "$[?(@.name==\"CSS\")]",
+      "name": "CSS"
     },
     {
-      "id": "JS-008",
+      "id": "JS-049",
       "surface": "js-stub",
       "status": "stub",
-      "severity": "critical",
-      "summary": "Document: 25 methods are stubs; 101 members missing",
+      "severity": "high",
+      "summary": "CSSAnimation: 2 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Document\")]",
-      "name": "Document"
+      "source_path": "$[?(@.name==\"CSSAnimation\")]",
+      "name": "CSSAnimation"
+    },
+    {
+      "id": "JS-050",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "CSSKeywordValue: constructor missing — API not constructible in Gameface",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"CSSKeywordValue\")]",
+      "name": "CSSKeywordValue"
+    },
+    {
+      "id": "JS-051",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "CSSMatrixComponent: constructor missing — API not constructible in Gameface",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"CSSMatrixComponent\")]",
+      "name": "CSSMatrixComponent"
+    },
+    {
+      "id": "JS-052",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "CSSNumericValue: 10 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"CSSNumericValue\")]",
+      "name": "CSSNumericValue"
     },
     {
       "id": "JS-053",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "DocumentFragment: 4 methods are stubs; 4 members missing",
+      "summary": "CSSRotate: constructor missing — API not constructible in Gameface",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"DocumentFragment\")]",
-      "name": "DocumentFragment"
+      "source_path": "$[?(@.name==\"CSSRotate\")]",
+      "name": "CSSRotate"
     },
     {
       "id": "JS-054",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "DocumentType: 3 methods are stubs; 1 members missing",
+      "summary": "CSSRuleList: 1 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"DocumentType\")]",
-      "name": "DocumentType"
+      "source_path": "$[?(@.name==\"CSSRuleList\")]",
+      "name": "CSSRuleList"
+    },
+    {
+      "id": "JS-055",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "CSSScale: constructor missing — API not constructible in Gameface",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"CSSScale\")]",
+      "name": "CSSScale"
     },
     {
       "id": "JS-056",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "DOMMatrix: 13 members missing",
+      "summary": "CSSSkewX: constructor missing — API not constructible in Gameface",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"DOMMatrix\")]",
-      "name": "DOMMatrix"
+      "source_path": "$[?(@.name==\"CSSSkewX\")]",
+      "name": "CSSSkewX"
     },
     {
       "id": "JS-057",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "DOMRect: 1 members missing",
+      "summary": "CSSSkewY: constructor missing — API not constructible in Gameface",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"DOMRect\")]",
-      "name": "DOMRect"
+      "source_path": "$[?(@.name==\"CSSSkewY\")]",
+      "name": "CSSSkewY"
     },
     {
-      "id": "JS-058",
+      "id": "JS-008",
       "surface": "js-stub",
       "status": "stub",
-      "severity": "high",
-      "summary": "DOMRectList: 1 methods are stubs (no-ops)",
+      "severity": "critical",
+      "summary": "CSSStyleDeclaration: 350 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"DOMRectList\")]",
-      "name": "DOMRectList"
-    },
-    {
-      "id": "JS-059",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "DOMRectReadOnly: 2 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"DOMRectReadOnly\")]",
-      "name": "DOMRectReadOnly"
-    },
-    {
-      "id": "JS-060",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "DOMStringMap: 3 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"DOMStringMap\")]",
-      "name": "DOMStringMap"
-    },
-    {
-      "id": "JS-061",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "DOMTokenList: 12 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"DOMTokenList\")]",
-      "name": "DOMTokenList"
-    },
-    {
-      "id": "JS-062",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "DOMTokenListPart: 6 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"DOMTokenListPart\")]",
-      "name": "DOMTokenListPart"
+      "source_path": "$[?(@.name==\"CSSStyleDeclaration\")]",
+      "name": "CSSStyleDeclaration"
     },
     {
       "id": "JS-009",
       "surface": "js-stub",
       "status": "stub",
       "severity": "critical",
-      "summary": "Element: 37 methods are stubs; 81 members missing",
+      "summary": "CSSStyleSheet: constructor missing + 6 other member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Element\")]",
-      "name": "Element"
+      "source_path": "$[?(@.name==\"CSSStyleSheet\")]",
+      "name": "CSSStyleSheet"
     },
     {
-      "id": "JS-063",
+      "id": "JS-058",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "ErrorEvent: 1 members missing",
+      "summary": "CSSStyleValue: 1 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"ErrorEvent\")]",
-      "name": "ErrorEvent"
+      "source_path": "$[?(@.name==\"CSSStyleValue\")]",
+      "name": "CSSStyleValue"
+    },
+    {
+      "id": "JS-059",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "CSSTransformValue: constructor missing — API not constructible in Gameface",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"CSSTransformValue\")]",
+      "name": "CSSTransformValue"
+    },
+    {
+      "id": "JS-060",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "CSSTranslate: constructor missing — API not constructible in Gameface",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"CSSTranslate\")]",
+      "name": "CSSTranslate"
+    },
+    {
+      "id": "JS-061",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "CSSUnitValue: constructor missing — API not constructible in Gameface",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"CSSUnitValue\")]",
+      "name": "CSSUnitValue"
     },
     {
       "id": "JS-010",
       "surface": "js-stub",
       "status": "stub",
       "severity": "critical",
-      "summary": "Event: 4 methods are stubs; 9 members missing",
+      "summary": "CustomElementRegistry: 4 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Event\")]",
-      "name": "Event"
-    },
-    {
-      "id": "JS-064",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "EventListener: 1 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"EventListener\")]",
-      "name": "EventListener"
+      "source_path": "$[?(@.name==\"CustomElementRegistry\")]",
+      "name": "CustomElementRegistry"
     },
     {
       "id": "JS-011",
       "surface": "js-stub",
       "status": "stub",
       "severity": "critical",
-      "summary": "EventTarget: 3 methods are stubs (no-ops)",
+      "summary": "CustomEvent: constructor missing — API not constructible in Gameface",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"EventTarget\")]",
-      "name": "EventTarget"
+      "source_path": "$[?(@.name==\"CustomEvent\")]",
+      "name": "CustomEvent"
+    },
+    {
+      "id": "JS-012",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "Document: constructor missing + 100 other member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"Document\")]",
+      "name": "Document"
+    },
+    {
+      "id": "JS-062",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "DocumentFragment: constructor missing + 3 other member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"DocumentFragment\")]",
+      "name": "DocumentFragment"
+    },
+    {
+      "id": "JS-063",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "DocumentType: 1 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"DocumentType\")]",
+      "name": "DocumentType"
     },
     {
       "id": "JS-065",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "FocusEvent: 1 members missing",
+      "summary": "DOMMatrix: constructor missing + 12 other member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"FocusEvent\")]",
-      "name": "FocusEvent"
-    },
-    {
-      "id": "JS-066",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "Gamepad: 2 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Gamepad\")]",
-      "name": "Gamepad"
-    },
-    {
-      "id": "JS-067",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "GamepadEvent: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"GamepadEvent\")]",
-      "name": "GamepadEvent"
-    },
-    {
-      "id": "JS-068",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "GetAnimationsOptions: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"GetAnimationsOptions\")]",
-      "name": "GetAnimationsOptions"
+      "source_path": "$[?(@.name==\"DOMMatrix\")]",
+      "name": "DOMMatrix"
     },
     {
       "id": "JS-013",
       "surface": "js-stub",
       "status": "stub",
       "severity": "critical",
-      "summary": "History: 5 methods are stubs (no-ops)",
+      "summary": "DOMRect: constructor missing — API not constructible in Gameface",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"History\")]",
-      "name": "History"
+      "source_path": "$[?(@.name==\"DOMRect\")]",
+      "name": "DOMRect"
+    },
+    {
+      "id": "JS-066",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "DOMRectReadOnly: constructor missing + 1 other member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"DOMRectReadOnly\")]",
+      "name": "DOMRectReadOnly"
+    },
+    {
+      "id": "JS-067",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "DOMStringMap: 3 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"DOMStringMap\")]",
+      "name": "DOMStringMap"
+    },
+    {
+      "id": "JS-014",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "Element: 81 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"Element\")]",
+      "name": "Element"
+    },
+    {
+      "id": "JS-015",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "ErrorEvent: constructor missing — API not constructible in Gameface",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"ErrorEvent\")]",
+      "name": "ErrorEvent"
+    },
+    {
+      "id": "JS-068",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "Event: constructor missing + 8 other member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"Event\")]",
+      "name": "Event"
+    },
+    {
+      "id": "JS-016",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "EventTarget: constructor missing — API not constructible in Gameface",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"EventTarget\")]",
+      "name": "EventTarget"
+    },
+    {
+      "id": "JS-018",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "FocusEvent: constructor missing — API not constructible in Gameface",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"FocusEvent\")]",
+      "name": "FocusEvent"
     },
     {
       "id": "JS-069",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "HTMLBodyElement: 2 methods are stubs; 6 members missing",
+      "summary": "Gamepad: 2 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLBodyElement\")]",
-      "name": "HTMLBodyElement"
+      "source_path": "$[?(@.name==\"Gamepad\")]",
+      "name": "Gamepad"
+    },
+    {
+      "id": "JS-019",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "GamepadEvent: constructor missing — API not constructible in Gameface",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"GamepadEvent\")]",
+      "name": "GamepadEvent"
     },
     {
       "id": "JS-070",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "HTMLButtonElement: 2 methods are stubs; 21 members missing",
+      "summary": "GetAnimationsOptions: 1 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLButtonElement\")]",
-      "name": "HTMLButtonElement"
+      "source_path": "$[?(@.name==\"GetAnimationsOptions\")]",
+      "name": "GetAnimationsOptions"
+    },
+    {
+      "id": "JS-020",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "History: 1 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"History\")]",
+      "name": "History"
     },
     {
       "id": "JS-071",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "HTMLCanvasElement: 3 methods are stubs; 7 members missing",
+      "summary": "HTMLBodyElement: 6 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLCanvasElement\")]",
-      "name": "HTMLCanvasElement"
+      "source_path": "$[?(@.name==\"HTMLBodyElement\")]",
+      "name": "HTMLBodyElement"
     },
     {
       "id": "JS-072",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "HTMLCollection: 1 methods are stubs; 1 members missing",
+      "summary": "HTMLButtonElement: 21 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLCollection\")]",
-      "name": "HTMLCollection"
+      "source_path": "$[?(@.name==\"HTMLButtonElement\")]",
+      "name": "HTMLButtonElement"
+    },
+    {
+      "id": "JS-021",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "HTMLCanvasElement: 7 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"HTMLCanvasElement\")]",
+      "name": "HTMLCanvasElement"
     },
     {
       "id": "JS-073",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "HTMLDivElement: 2 methods are stubs (no-ops)",
+      "summary": "HTMLCollection: 1 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLDivElement\")]",
-      "name": "HTMLDivElement"
+      "source_path": "$[?(@.name==\"HTMLCollection\")]",
+      "name": "HTMLCollection"
     },
     {
       "id": "JS-074",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "HTMLDocument: 2 methods are stubs (no-ops)",
+      "summary": "HTMLDivElement: 1 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLDocument\")]",
-      "name": "HTMLDocument"
+      "source_path": "$[?(@.name==\"HTMLDivElement\")]",
+      "name": "HTMLDivElement"
     },
     {
       "id": "JS-075",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "HTMLElement: 4 methods are stubs; 31 members missing",
+      "summary": "HTMLElement: 31 member(s) missing",
       "source_file": "results/js/partial.json",
       "source_path": "$[?(@.name==\"HTMLElement\")]",
       "name": "HTMLElement"
@@ -4475,7 +4092,7 @@
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "HTMLHeadElement: 2 methods are stubs (no-ops)",
+      "summary": "HTMLHeadElement: 1 member(s) missing",
       "source_file": "results/js/partial.json",
       "source_path": "$[?(@.name==\"HTMLHeadElement\")]",
       "name": "HTMLHeadElement"
@@ -4485,663 +4102,543 @@
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "HTMLHtmlElement: 2 methods are stubs (no-ops)",
+      "summary": "HTMLHtmlElement: 1 member(s) missing",
       "source_file": "results/js/partial.json",
       "source_path": "$[?(@.name==\"HTMLHtmlElement\")]",
       "name": "HTMLHtmlElement"
-    },
-    {
-      "id": "JS-078",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLIFrameElement: 2 methods are stubs; 27 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLIFrameElement\")]",
-      "name": "HTMLIFrameElement"
-    },
-    {
-      "id": "JS-079",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLImageElement: 2 methods are stubs; 27 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLImageElement\")]",
-      "name": "HTMLImageElement"
-    },
-    {
-      "id": "JS-080",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLInputElement: 5 methods are stubs; 51 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLInputElement\")]",
-      "name": "HTMLInputElement"
-    },
-    {
-      "id": "JS-081",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLLinkElement: 2 methods are stubs; 17 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLLinkElement\")]",
-      "name": "HTMLLinkElement"
-    },
-    {
-      "id": "JS-082",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLMediaElement: 8 methods are stubs; 27 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLMediaElement\")]",
-      "name": "HTMLMediaElement"
-    },
-    {
-      "id": "JS-083",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLParagraphElement: 2 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLParagraphElement\")]",
-      "name": "HTMLParagraphElement"
-    },
-    {
-      "id": "JS-084",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLPreElement: 2 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLPreElement\")]",
-      "name": "HTMLPreElement"
-    },
-    {
-      "id": "JS-085",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLScriptElement: 2 methods are stubs; 10 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLScriptElement\")]",
-      "name": "HTMLScriptElement"
-    },
-    {
-      "id": "JS-086",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLSlotElement: 5 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLSlotElement\")]",
-      "name": "HTMLSlotElement"
-    },
-    {
-      "id": "JS-087",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLSourceElement: 2 methods are stubs; 4 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLSourceElement\")]",
-      "name": "HTMLSourceElement"
-    },
-    {
-      "id": "JS-088",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLSpanElement: 2 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLSpanElement\")]",
-      "name": "HTMLSpanElement"
-    },
-    {
-      "id": "JS-089",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLStyleElement: 2 methods are stubs; 5 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLStyleElement\")]",
-      "name": "HTMLStyleElement"
-    },
-    {
-      "id": "JS-090",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLTemplateElement: 2 methods are stubs; 4 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLTemplateElement\")]",
-      "name": "HTMLTemplateElement"
-    },
-    {
-      "id": "JS-091",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLTextAreaElement: 5 methods are stubs; 17 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLTextAreaElement\")]",
-      "name": "HTMLTextAreaElement"
-    },
-    {
-      "id": "JS-092",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLTitleElement: 2 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLTitleElement\")]",
-      "name": "HTMLTitleElement"
-    },
-    {
-      "id": "JS-093",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLUnknownElement: 2 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLUnknownElement\")]",
-      "name": "HTMLUnknownElement"
-    },
-    {
-      "id": "JS-094",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "HTMLVideoElement: 2 methods are stubs; 14 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"HTMLVideoElement\")]",
-      "name": "HTMLVideoElement"
-    },
-    {
-      "id": "JS-014",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "critical",
-      "summary": "KeyboardEvent: 2 methods are stubs; 3 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"KeyboardEvent\")]",
-      "name": "KeyboardEvent"
-    },
-    {
-      "id": "JS-095",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "Location: 4 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Location\")]",
-      "name": "Location"
-    },
-    {
-      "id": "JS-097",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "MessageEvent: 5 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"MessageEvent\")]",
-      "name": "MessageEvent"
-    },
-    {
-      "id": "JS-015",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "critical",
-      "summary": "MouseEvent: 2 methods are stubs; 7 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"MouseEvent\")]",
-      "name": "MouseEvent"
-    },
-    {
-      "id": "JS-016",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "critical",
-      "summary": "MutationObserver: 3 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"MutationObserver\")]",
-      "name": "MutationObserver"
-    },
-    {
-      "id": "JS-100",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "NamedNodeMap: 2 methods are stubs; 5 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"NamedNodeMap\")]",
-      "name": "NamedNodeMap"
-    },
-    {
-      "id": "JS-017",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "critical",
-      "summary": "Navigator: 1 methods are stubs; 87 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Navigator\")]",
-      "name": "Navigator"
-    },
-    {
-      "id": "JS-018",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "critical",
-      "summary": "Node: 16 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Node\")]",
-      "name": "Node"
-    },
-    {
-      "id": "JS-101",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "NodeFilter: 1 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"NodeFilter\")]",
-      "name": "NodeFilter"
-    },
-    {
-      "id": "JS-102",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "NodeIterator: 2 methods are stubs; 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"NodeIterator\")]",
-      "name": "NodeIterator"
-    },
-    {
-      "id": "JS-103",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "NodeList: 5 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"NodeList\")]",
-      "name": "NodeList"
-    },
-    {
-      "id": "JS-019",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "critical",
-      "summary": "Performance: 3 methods are stubs; 17 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Performance\")]",
-      "name": "Performance"
-    },
-    {
-      "id": "JS-104",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "PopStateEvent: 2 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"PopStateEvent\")]",
-      "name": "PopStateEvent"
-    },
-    {
-      "id": "JS-105",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "ProgressEvent: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"ProgressEvent\")]",
-      "name": "ProgressEvent"
-    },
-    {
-      "id": "JS-106",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "PromiseRejectionEvent: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"PromiseRejectionEvent\")]",
-      "name": "PromiseRejectionEvent"
-    },
-    {
-      "id": "JS-020",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "critical",
-      "summary": "ResizeObserver: 3 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"ResizeObserver\")]",
-      "name": "ResizeObserver"
-    },
-    {
-      "id": "JS-107",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "ResizeObserverOptions: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"ResizeObserverOptions\")]",
-      "name": "ResizeObserverOptions"
-    },
-    {
-      "id": "JS-108",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "Screen: 10 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Screen\")]",
-      "name": "Screen"
-    },
-    {
-      "id": "JS-021",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "critical",
-      "summary": "Selection: 4 methods are stubs; 17 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Selection\")]",
-      "name": "Selection"
-    },
-    {
-      "id": "JS-109",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "ShadowRoot: 4 methods are stubs; 9 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"ShadowRoot\")]",
-      "name": "ShadowRoot"
     },
     {
       "id": "JS-022",
       "surface": "js-stub",
       "status": "stub",
       "severity": "critical",
-      "summary": "Storage: 5 methods are stubs (no-ops)",
+      "summary": "HTMLIFrameElement: 27 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Storage\")]",
-      "name": "Storage"
+      "source_path": "$[?(@.name==\"HTMLIFrameElement\")]",
+      "name": "HTMLIFrameElement"
     },
     {
-      "id": "JS-110",
+      "id": "JS-023",
       "surface": "js-stub",
       "status": "stub",
-      "severity": "high",
-      "summary": "StylePropertyMap: 3 methods are stubs (no-ops)",
+      "severity": "critical",
+      "summary": "HTMLImageElement: 27 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"StylePropertyMap\")]",
-      "name": "StylePropertyMap"
-    },
-    {
-      "id": "JS-111",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "StylePropertyMapReadOnly: 2 methods are stubs; 5 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"StylePropertyMapReadOnly\")]",
-      "name": "StylePropertyMapReadOnly"
-    },
-    {
-      "id": "JS-112",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "StyleSheet: 6 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"StyleSheet\")]",
-      "name": "StyleSheet"
-    },
-    {
-      "id": "JS-113",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "StyleSheetList: 1 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"StyleSheetList\")]",
-      "name": "StyleSheetList"
-    },
-    {
-      "id": "JS-114",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "SVGAnimatedLength: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"SVGAnimatedLength\")]",
-      "name": "SVGAnimatedLength"
-    },
-    {
-      "id": "JS-115",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "SVGAnimatedRect: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"SVGAnimatedRect\")]",
-      "name": "SVGAnimatedRect"
-    },
-    {
-      "id": "JS-116",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "SVGAnimatedTransformList: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"SVGAnimatedTransformList\")]",
-      "name": "SVGAnimatedTransformList"
-    },
-    {
-      "id": "JS-117",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "SVGElement: 4 methods are stubs; 7 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"SVGElement\")]",
-      "name": "SVGElement"
-    },
-    {
-      "id": "JS-118",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "SVGGraphicsElement: 2 methods are stubs; 5 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"SVGGraphicsElement\")]",
-      "name": "SVGGraphicsElement"
-    },
-    {
-      "id": "JS-119",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "SVGLength: 15 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"SVGLength\")]",
-      "name": "SVGLength"
-    },
-    {
-      "id": "JS-120",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "SVGSVGElement: 2 methods are stubs; 30 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"SVGSVGElement\")]",
-      "name": "SVGSVGElement"
-    },
-    {
-      "id": "JS-121",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "SVGTextElement: 3 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"SVGTextElement\")]",
-      "name": "SVGTextElement"
-    },
-    {
-      "id": "JS-122",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "SVGTransform: 13 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"SVGTransform\")]",
-      "name": "SVGTransform"
-    },
-    {
-      "id": "JS-123",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "SVGTransformList: 1 methods are stubs; 8 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"SVGTransformList\")]",
-      "name": "SVGTransformList"
-    },
-    {
-      "id": "JS-124",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "Text: 1 methods are stubs; 2 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Text\")]",
-      "name": "Text"
-    },
-    {
-      "id": "JS-125",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "TextMetrics: 7 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"TextMetrics\")]",
-      "name": "TextMetrics"
-    },
-    {
-      "id": "JS-126",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "TimeRanges: 2 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"TimeRanges\")]",
-      "name": "TimeRanges"
-    },
-    {
-      "id": "JS-127",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "Touch: 8 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Touch\")]",
-      "name": "Touch"
-    },
-    {
-      "id": "JS-128",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "TouchEvent: 3 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"TouchEvent\")]",
-      "name": "TouchEvent"
-    },
-    {
-      "id": "JS-129",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "TouchList: 1 methods are stubs (no-ops)",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"TouchList\")]",
-      "name": "TouchList"
-    },
-    {
-      "id": "JS-130",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "TransitionEvent: 1 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"TransitionEvent\")]",
-      "name": "TransitionEvent"
-    },
-    {
-      "id": "JS-131",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "UIEvent: 1 methods are stubs; 4 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"UIEvent\")]",
-      "name": "UIEvent"
+      "source_path": "$[?(@.name==\"HTMLImageElement\")]",
+      "name": "HTMLImageElement"
     },
     {
       "id": "JS-024",
       "surface": "js-stub",
       "status": "stub",
       "severity": "critical",
-      "summary": "URL: 2 methods are stubs; 5 members missing",
+      "summary": "HTMLInputElement: 51 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"URL\")]",
-      "name": "URL"
+      "source_path": "$[?(@.name==\"HTMLInputElement\")]",
+      "name": "HTMLInputElement"
     },
     {
       "id": "JS-025",
       "surface": "js-stub",
       "status": "stub",
       "severity": "critical",
-      "summary": "WebSocket: 4 methods are stubs; 1 members missing",
+      "summary": "HTMLLinkElement: 17 member(s) missing",
       "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"WebSocket\")]",
-      "name": "WebSocket"
-    },
-    {
-      "id": "JS-133",
-      "surface": "js-stub",
-      "status": "stub",
-      "severity": "high",
-      "summary": "Window: 14 methods are stubs; 84 members missing",
-      "source_file": "results/js/partial.json",
-      "source_path": "$[?(@.name==\"Window\")]",
-      "name": "Window"
+      "source_path": "$[?(@.name==\"HTMLLinkElement\")]",
+      "name": "HTMLLinkElement"
     },
     {
       "id": "JS-026",
       "surface": "js-stub",
       "status": "stub",
       "severity": "critical",
-      "summary": "XMLHttpRequest: 9 methods are stubs; 7 members missing",
+      "summary": "HTMLMediaElement: 27 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"HTMLMediaElement\")]",
+      "name": "HTMLMediaElement"
+    },
+    {
+      "id": "JS-078",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "HTMLParagraphElement: 1 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"HTMLParagraphElement\")]",
+      "name": "HTMLParagraphElement"
+    },
+    {
+      "id": "JS-079",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "HTMLPreElement: 1 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"HTMLPreElement\")]",
+      "name": "HTMLPreElement"
+    },
+    {
+      "id": "JS-080",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "HTMLScriptElement: 10 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"HTMLScriptElement\")]",
+      "name": "HTMLScriptElement"
+    },
+    {
+      "id": "JS-081",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "HTMLSourceElement: 4 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"HTMLSourceElement\")]",
+      "name": "HTMLSourceElement"
+    },
+    {
+      "id": "JS-082",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "HTMLStyleElement: 5 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"HTMLStyleElement\")]",
+      "name": "HTMLStyleElement"
+    },
+    {
+      "id": "JS-083",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "HTMLTemplateElement: 4 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"HTMLTemplateElement\")]",
+      "name": "HTMLTemplateElement"
+    },
+    {
+      "id": "JS-027",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "HTMLTextAreaElement: 17 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"HTMLTextAreaElement\")]",
+      "name": "HTMLTextAreaElement"
+    },
+    {
+      "id": "JS-084",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "HTMLTitleElement: 1 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"HTMLTitleElement\")]",
+      "name": "HTMLTitleElement"
+    },
+    {
+      "id": "JS-028",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "HTMLVideoElement: 14 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"HTMLVideoElement\")]",
+      "name": "HTMLVideoElement"
+    },
+    {
+      "id": "JS-085",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "KeyboardEvent: constructor missing + 2 other member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"KeyboardEvent\")]",
+      "name": "KeyboardEvent"
+    },
+    {
+      "id": "JS-087",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "MessageEvent: constructor missing + 4 other member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"MessageEvent\")]",
+      "name": "MessageEvent"
+    },
+    {
+      "id": "JS-090",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "MouseEvent: constructor missing + 6 other member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"MouseEvent\")]",
+      "name": "MouseEvent"
+    },
+    {
+      "id": "JS-029",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "MutationObserver: constructor missing — API not constructible in Gameface",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"MutationObserver\")]",
+      "name": "MutationObserver"
+    },
+    {
+      "id": "JS-091",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "NamedNodeMap: 5 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"NamedNodeMap\")]",
+      "name": "NamedNodeMap"
+    },
+    {
+      "id": "JS-030",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "Navigator: 87 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"Navigator\")]",
+      "name": "Navigator"
+    },
+    {
+      "id": "JS-092",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "NodeIterator: 1 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"NodeIterator\")]",
+      "name": "NodeIterator"
+    },
+    {
+      "id": "JS-031",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "Performance: 17 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"Performance\")]",
+      "name": "Performance"
+    },
+    {
+      "id": "JS-093",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "PopStateEvent: constructor missing + 1 other member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"PopStateEvent\")]",
+      "name": "PopStateEvent"
+    },
+    {
+      "id": "JS-032",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "ProgressEvent: constructor missing — API not constructible in Gameface",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"ProgressEvent\")]",
+      "name": "ProgressEvent"
+    },
+    {
+      "id": "JS-033",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "PromiseRejectionEvent: constructor missing — API not constructible in Gameface",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"PromiseRejectionEvent\")]",
+      "name": "PromiseRejectionEvent"
+    },
+    {
+      "id": "JS-034",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "ResizeObserver: constructor missing — API not constructible in Gameface",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"ResizeObserver\")]",
+      "name": "ResizeObserver"
+    },
+    {
+      "id": "JS-094",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "ResizeObserverOptions: 1 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"ResizeObserverOptions\")]",
+      "name": "ResizeObserverOptions"
+    },
+    {
+      "id": "JS-095",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "Screen: 10 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"Screen\")]",
+      "name": "Screen"
+    },
+    {
+      "id": "JS-035",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "Selection: 17 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"Selection\")]",
+      "name": "Selection"
+    },
+    {
+      "id": "JS-036",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "ShadowRoot: 9 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"ShadowRoot\")]",
+      "name": "ShadowRoot"
+    },
+    {
+      "id": "JS-096",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "StylePropertyMap: 1 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"StylePropertyMap\")]",
+      "name": "StylePropertyMap"
+    },
+    {
+      "id": "JS-097",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "StylePropertyMapReadOnly: 5 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"StylePropertyMapReadOnly\")]",
+      "name": "StylePropertyMapReadOnly"
+    },
+    {
+      "id": "JS-098",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "StyleSheet: 6 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"StyleSheet\")]",
+      "name": "StyleSheet"
+    },
+    {
+      "id": "JS-099",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "SVGAnimatedLength: 1 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"SVGAnimatedLength\")]",
+      "name": "SVGAnimatedLength"
+    },
+    {
+      "id": "JS-100",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "SVGAnimatedRect: 1 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"SVGAnimatedRect\")]",
+      "name": "SVGAnimatedRect"
+    },
+    {
+      "id": "JS-101",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "SVGAnimatedTransformList: 1 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"SVGAnimatedTransformList\")]",
+      "name": "SVGAnimatedTransformList"
+    },
+    {
+      "id": "JS-102",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "SVGElement: 7 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"SVGElement\")]",
+      "name": "SVGElement"
+    },
+    {
+      "id": "JS-103",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "SVGGraphicsElement: 5 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"SVGGraphicsElement\")]",
+      "name": "SVGGraphicsElement"
+    },
+    {
+      "id": "JS-104",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "SVGLength: 15 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"SVGLength\")]",
+      "name": "SVGLength"
+    },
+    {
+      "id": "JS-105",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "SVGSVGElement: 30 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"SVGSVGElement\")]",
+      "name": "SVGSVGElement"
+    },
+    {
+      "id": "JS-106",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "SVGTransform: 13 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"SVGTransform\")]",
+      "name": "SVGTransform"
+    },
+    {
+      "id": "JS-107",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "SVGTransformList: 8 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"SVGTransformList\")]",
+      "name": "SVGTransformList"
+    },
+    {
+      "id": "JS-108",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "Text: constructor missing + 1 other member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"Text\")]",
+      "name": "Text"
+    },
+    {
+      "id": "JS-109",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "TextMetrics: 7 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"TextMetrics\")]",
+      "name": "TextMetrics"
+    },
+    {
+      "id": "JS-110",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "Touch: constructor missing + 7 other member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"Touch\")]",
+      "name": "Touch"
+    },
+    {
+      "id": "JS-111",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "TouchEvent: constructor missing + 2 other member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"TouchEvent\")]",
+      "name": "TouchEvent"
+    },
+    {
+      "id": "JS-038",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "TransitionEvent: constructor missing — API not constructible in Gameface",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"TransitionEvent\")]",
+      "name": "TransitionEvent"
+    },
+    {
+      "id": "JS-112",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "high",
+      "summary": "UIEvent: constructor missing + 3 other member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"UIEvent\")]",
+      "name": "UIEvent"
+    },
+    {
+      "id": "JS-039",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "URL: constructor missing + 4 other member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"URL\")]",
+      "name": "URL"
+    },
+    {
+      "id": "JS-040",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "WebSocket: constructor missing — API not constructible in Gameface",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"WebSocket\")]",
+      "name": "WebSocket"
+    },
+    {
+      "id": "JS-041",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "Window: 84 member(s) missing",
+      "source_file": "results/js/partial.json",
+      "source_path": "$[?(@.name==\"Window\")]",
+      "name": "Window"
+    },
+    {
+      "id": "JS-042",
+      "surface": "js-stub",
+      "status": "stub",
+      "severity": "critical",
+      "summary": "XMLHttpRequest: constructor missing + 6 other member(s) missing",
       "source_file": "results/js/partial.json",
       "source_path": "$[?(@.name==\"XMLHttpRequest\")]",
       "name": "XMLHttpRequest"
     },
     {
-      "id": "JS-135",
+      "id": "JS-115",
       "surface": "js-stub",
       "status": "stub",
       "severity": "high",
-      "summary": "XMLHttpRequestEventTarget: 2 methods are stubs; 7 members missing",
+      "summary": "XMLHttpRequestEventTarget: 7 member(s) missing",
       "source_file": "results/js/partial.json",
       "source_path": "$[?(@.name==\"XMLHttpRequestEventTarget\")]",
       "name": "XMLHttpRequestEventTarget"
     },
     {
-      "id": "JS-012",
+      "id": "JS-017",
       "surface": "js-api",
       "status": "missing",
       "severity": "critical",
@@ -5171,7 +4668,7 @@
       "name": "Fetch / network APIs"
     },
     {
-      "id": "JS-023",
+      "id": "JS-037",
       "surface": "js-api",
       "status": "missing",
       "severity": "critical",
@@ -5233,7 +4730,7 @@
       "name": "Storage and database APIs"
     },
     {
-      "id": "JS-003",
+      "id": "JS-006",
       "surface": "js-api",
       "status": "missing",
       "severity": "critical",
@@ -5254,7 +4751,7 @@
       "name": "Crypto, encoding, structured-clone"
     },
     {
-      "id": "JS-132",
+      "id": "JS-113",
       "surface": "js-api",
       "status": "missing",
       "severity": "high",
@@ -5327,7 +4824,7 @@
       "name": "WebGL and WebGPU"
     },
     {
-      "id": "JS-096",
+      "id": "JS-086",
       "surface": "js-api",
       "status": "missing",
       "severity": "high",
@@ -5502,7 +4999,7 @@
       "name": "Media, WebRTC, Web Audio"
     },
     {
-      "id": "JS-099",
+      "id": "JS-089",
       "surface": "js-api",
       "status": "missing",
       "severity": "high",
@@ -5534,7 +5031,7 @@
       "name": "Modern observer APIs"
     },
     {
-      "id": "JS-055",
+      "id": "JS-064",
       "surface": "js-api",
       "status": "missing",
       "severity": "high",
@@ -5560,7 +5057,7 @@
       "name": "DOM traversal / Range / Selection helpers"
     },
     {
-      "id": "JS-098",
+      "id": "JS-088",
       "surface": "js-api",
       "status": "missing",
       "severity": "high",
@@ -5582,7 +5079,7 @@
       "name": "Modern navigation"
     },
     {
-      "id": "JS-136",
+      "id": "JS-116",
       "surface": "js-api",
       "status": "missing",
       "severity": "medium",
@@ -5625,7 +5122,7 @@
       "name": "Auth / credentials / payment"
     },
     {
-      "id": "JS-140",
+      "id": "JS-120",
       "surface": "js-api",
       "status": "missing",
       "severity": "medium",
@@ -5745,7 +5242,7 @@
       "name": "Sensors, device APIs"
     },
     {
-      "id": "JS-139",
+      "id": "JS-119",
       "surface": "js-api",
       "status": "missing",
       "severity": "medium",
@@ -5767,7 +5264,7 @@
       "name": "Permissions / quotas / clipboard"
     },
     {
-      "id": "JS-141",
+      "id": "JS-121",
       "surface": "js-api",
       "status": "missing",
       "severity": "medium",
@@ -5799,7 +5296,7 @@
       "name": "Streams API"
     },
     {
-      "id": "JS-134",
+      "id": "JS-114",
       "surface": "js-api",
       "status": "missing",
       "severity": "high",
@@ -5826,7 +5323,7 @@
       "name": "Workers, scheduler, idle/animation/microtask"
     },
     {
-      "id": "JS-143",
+      "id": "JS-123",
       "surface": "js-api",
       "status": "missing",
       "severity": "low",
@@ -5866,7 +5363,7 @@
       "name": "Geometry / Typed CSSOM extras"
     },
     {
-      "id": "JS-138",
+      "id": "JS-118",
       "surface": "js-api",
       "status": "missing",
       "severity": "medium",
@@ -5893,7 +5390,7 @@
       "name": "Modern editing / input APIs"
     },
     {
-      "id": "JS-142",
+      "id": "JS-122",
       "surface": "js-api",
       "status": "missing",
       "severity": "low",
@@ -5906,7 +5403,7 @@
       "name": "Concurrency primitives (browser-side)"
     },
     {
-      "id": "JS-137",
+      "id": "JS-117",
       "surface": "js-api",
       "status": "missing",
       "severity": "medium",
@@ -5970,7 +5467,7 @@
       "name": "GPU compute / WebCodecs / Web Codec helpers"
     },
     {
-      "id": "JS-144",
+      "id": "JS-124",
       "surface": "js-api",
       "status": "missing",
       "severity": "low",
@@ -5995,7 +5492,7 @@
       "name": "Misc and vendor-specific globals"
     },
     {
-      "id": "JS-145",
+      "id": "JS-125",
       "surface": "js-api",
       "status": "missing",
       "severity": "low",
@@ -6207,7 +5704,7 @@
       "name": "Other missing globals (#1)"
     },
     {
-      "id": "JS-146",
+      "id": "JS-126",
       "surface": "js-api",
       "status": "missing",
       "severity": "low",
@@ -6419,7 +5916,7 @@
       "name": "Other missing globals (#2)"
     },
     {
-      "id": "JS-147",
+      "id": "JS-127",
       "surface": "js-api",
       "status": "missing",
       "severity": "low",
@@ -6631,7 +6128,7 @@
       "name": "Other missing globals (#3)"
     },
     {
-      "id": "JS-148",
+      "id": "JS-128",
       "surface": "js-api",
       "status": "missing",
       "severity": "low",
@@ -6843,7 +6340,7 @@
       "name": "Other missing globals (#4)"
     },
     {
-      "id": "JS-149",
+      "id": "JS-129",
       "surface": "js-api",
       "status": "missing",
       "severity": "low",
@@ -6942,196 +6439,6 @@
         "origin"
       ],
       "name": "Other missing globals (#5)"
-    },
-    {
-      "id": "CSS-323",
-      "surface": "css-selector",
-      "status": "parser-only",
-      "severity": "critical",
-      "summary": "::backdrop (pseudo-element) parses but is never honored by the renderer",
-      "source_file": "results/selectors/unsupported.json",
-      "source_path": "$[?(@.name==\"::backdrop\")]",
-      "name": "::backdrop"
-    },
-    {
-      "id": "CSS-324",
-      "surface": "css-selector",
-      "status": "parser-only",
-      "severity": "critical",
-      "summary": "::checkmark (pseudo-element) parses but is never honored by the renderer",
-      "source_file": "results/selectors/unsupported.json",
-      "source_path": "$[?(@.name==\"::checkmark\")]",
-      "name": "::checkmark"
-    },
-    {
-      "id": "CSS-325",
-      "surface": "css-selector",
-      "status": "parser-only",
-      "severity": "critical",
-      "summary": "::cue (pseudo-element) parses but is never honored by the renderer",
-      "source_file": "results/selectors/unsupported.json",
-      "source_path": "$[?(@.name==\"::cue\")]",
-      "name": "::cue"
-    },
-    {
-      "id": "CSS-326",
-      "surface": "css-selector",
-      "status": "parser-only",
-      "severity": "critical",
-      "summary": ":active-view-transition (pseudo-class) parses but is never honored by the renderer",
-      "source_file": "results/selectors/unsupported.json",
-      "source_path": "$[?(@.name==\":active-view-transition\")]",
-      "name": ":active-view-transition"
-    },
-    {
-      "id": "CSS-327",
-      "surface": "css-selector",
-      "status": "parser-only",
-      "severity": "critical",
-      "summary": ":active-view-transition-type(fade) (pseudo-class) parses but is never honored by the renderer",
-      "source_file": "results/selectors/unsupported.json",
-      "source_path": "$[?(@.name==\":active-view-transition-type(fade)\")]",
-      "name": ":active-view-transition-type(fade)"
-    },
-    {
-      "id": "CSS-328",
-      "surface": "css-selector",
-      "status": "parser-only",
-      "severity": "critical",
-      "summary": ":any-link (pseudo-class) parses but is never honored by the renderer",
-      "source_file": "results/selectors/unsupported.json",
-      "source_path": "$[?(@.name==\":any-link\")]",
-      "name": ":any-link"
-    },
-    {
-      "id": "CSS-329",
-      "surface": "css-selector",
-      "status": "parser-only",
-      "severity": "critical",
-      "summary": ":autofill (pseudo-class) parses but is never honored by the renderer",
-      "source_file": "results/selectors/unsupported.json",
-      "source_path": "$[?(@.name==\":autofill\")]",
-      "name": ":autofill"
-    },
-    {
-      "id": "CSS-330",
-      "surface": "css-selector",
-      "status": "parser-only",
-      "severity": "critical",
-      "summary": ":buffering (pseudo-class) parses but is never honored by the renderer",
-      "source_file": "results/selectors/unsupported.json",
-      "source_path": "$[?(@.name==\":buffering\")]",
-      "name": ":buffering"
-    },
-    {
-      "id": "CSS-331",
-      "surface": "css-selector",
-      "status": "parser-only",
-      "severity": "critical",
-      "summary": ":checked (pseudo-class) parses but is never honored by the renderer",
-      "source_file": "results/selectors/unsupported.json",
-      "source_path": "$[?(@.name==\":checked\")]",
-      "name": ":checked"
-    },
-    {
-      "id": "CSS-332",
-      "surface": "css-selector",
-      "status": "parser-only",
-      "severity": "critical",
-      "summary": ":closed (pseudo-class) parses but is never honored by the renderer",
-      "source_file": "results/selectors/unsupported.json",
-      "source_path": "$[?(@.name==\":closed\")]",
-      "name": ":closed"
-    },
-    {
-      "id": "CSS-333",
-      "surface": "css-selector",
-      "status": "partial-values",
-      "severity": "high",
-      "summary": "::selection accepts only color and background-color; other declarations are ignored",
-      "source_file": "results/selectors/partial.json",
-      "source_path": "$[?(@.name==\"::selection\")]",
-      "name": "::selection"
-    },
-    {
-      "id": "CSS-334",
-      "surface": "css-selector",
-      "status": "parser-only",
-      "severity": "critical",
-      "summary": ":nth-child(... of <selector-list>) syntax is parsed but never applied",
-      "source_file": "results/selectors/partial.json",
-      "source_path": "$[?(@.name==\":nth-child(2 of .class)\")]",
-      "name": ":nth-child(2 of .class)"
-    },
-    {
-      "id": "CSS-335",
-      "surface": "css-selector",
-      "status": "partial-values",
-      "severity": "medium",
-      "summary": ":nth-child(2) works in An+B form only; the [ of <selector-list> ] extension is not honored",
-      "source_file": "results/selectors/partial.json",
-      "source_path": "$[?(@.name==\":nth-child(2)\")]",
-      "name": ":nth-child(2)"
-    },
-    {
-      "id": "CSS-336",
-      "surface": "css-selector",
-      "status": "partial-values",
-      "severity": "medium",
-      "summary": ":nth-child(2n+1) works in An+B form only; the [ of <selector-list> ] extension is not honored",
-      "source_file": "results/selectors/partial.json",
-      "source_path": "$[?(@.name==\":nth-child(2n+1)\")]",
-      "name": ":nth-child(2n+1)"
-    },
-    {
-      "id": "CSS-337",
-      "surface": "css-selector",
-      "status": "partial-values",
-      "severity": "medium",
-      "summary": ":nth-child(even) works in An+B form only; the [ of <selector-list> ] extension is not honored",
-      "source_file": "results/selectors/partial.json",
-      "source_path": "$[?(@.name==\":nth-child(even)\")]",
-      "name": ":nth-child(even)"
-    },
-    {
-      "id": "CSS-338",
-      "surface": "css-selector",
-      "status": "partial-values",
-      "severity": "medium",
-      "summary": ":nth-child(odd) works in An+B form only; the [ of <selector-list> ] extension is not honored",
-      "source_file": "results/selectors/partial.json",
-      "source_path": "$[?(@.name==\":nth-child(odd)\")]",
-      "name": ":nth-child(odd)"
-    },
-    {
-      "id": "CSS-339",
-      "surface": "css-selector",
-      "status": "partial-values",
-      "severity": "medium",
-      "summary": ":nth-last-child(2) works in An+B form only; the [ of <selector-list> ] extension is not honored",
-      "source_file": "results/selectors/partial.json",
-      "source_path": "$[?(@.name==\":nth-last-child(2)\")]",
-      "name": ":nth-last-child(2)"
-    },
-    {
-      "id": "CSS-340",
-      "surface": "css-selector",
-      "status": "partial-values",
-      "severity": "medium",
-      "summary": ":nth-last-of-type(2) works in An+B form only; the [ of <selector-list> ] extension is not honored",
-      "source_file": "results/selectors/partial.json",
-      "source_path": "$[?(@.name==\":nth-last-of-type(2)\")]",
-      "name": ":nth-last-of-type(2)"
-    },
-    {
-      "id": "CSS-341",
-      "surface": "css-selector",
-      "status": "partial-values",
-      "severity": "medium",
-      "summary": ":nth-of-type(2) works in An+B form only; the [ of <selector-list> ] extension is not honored",
-      "source_file": "results/selectors/partial.json",
-      "source_path": "$[?(@.name==\":nth-of-type(2)\")]",
-      "name": ":nth-of-type(2)"
     }
   ]
 }

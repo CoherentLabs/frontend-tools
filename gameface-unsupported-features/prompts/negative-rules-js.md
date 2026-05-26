@@ -2,9 +2,9 @@
 
 Generated from `results/js/{partial,unsupported}.json`. Stubbed APIs (`stub`, `stub-heavy`, `partial`) are collapsed into the `stub` status; `missing-from-window` becomes `missing`. Missing globals are grouped into family rules to keep the file scannable.
 
-Total rules in this file: **149** (critical: 26, high: 109, medium: 6, low: 8).
+Total rules in this file: **129** (critical: 42, high: 73, medium: 6, low: 8).
 
-## CRITICAL (26)
+## CRITICAL (42)
 
 ---
 ### [JS-001] — Animation
@@ -14,477 +14,785 @@ Total rules in this file: **149** (critical: 26, high: 109, medium: 6, low: 8).
 
 **❌ Never generate:**
 ```js
-const a = el.animate([{ opacity: 0 }, { opacity: 1 }], 300);
-a.play(); a.pause(); a.finish(); // all no-op stubs
+const x = new Animation(/* ... */); // TypeError: Animation is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Use CSS @keyframes + animation longhands instead. Listen with element.style.animationName / events:
-el.style.animation = 'fade 300ms ease-in-out forwards';
+// Drive animation through CSS @keyframes + the animation-* longhands (all supported):
+el.style.animationName = 'fadeIn';
+el.style.animationDuration = '300ms';
 ```
 
-**Rule for AI agents:** Never call `element.animate()` or `Animation` methods (`play`, `pause`, `finish`, `reverse`, `cancel`); they are no-op stubs. Drive animation through CSS `@keyframes` only.
+**Rule for AI agents:** Never `new Animation(...)` (constructor missing) and do not read/write `effect`, `finished`, `id`, `oncancel`, `onremove`, `pending`, `playState`, `ready`, `replaceState`, `startTime`, …+5 more on existing `Animation` instances; all missing in Gameface.
 
-**Why:** scraper stubs: ["cancel","commitStyles","finish","pause","persist","play","playFromTo","reverse"]; scraper missing: ["effect","finished","id","oncancel","onremove","pending","playState","ready","replaceState","startTime","timeline","updatePlaybackRate"] …+4 more
+**Why:** scraper missing: ["effect","finished","id","oncancel","onremove","pending","playState","ready","replaceState","startTime","timeline","updatePlaybackRate"] …+4 more.
 
 ---
-### [JS-002] — CanvasRenderingContext2D
+### [JS-002] — AnimationEvent
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-const ctx = canvas.getContext('2d');
-ctx.beginPath(); ctx.arc(0,0,10,0,Math.PI*2); ctx.fill(); // all no-op
+const x = new AnimationEvent(/* ... */); // TypeError: AnimationEvent is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Canvas is a no-op for drawing. Render in the host engine or via DOM elements.
+// Drive animation through CSS @keyframes + the animation-* longhands (all supported):
+el.style.animationName = 'fadeIn';
+el.style.animationDuration = '300ms';
 ```
 
-**Rule for AI agents:** Never call any `CanvasRenderingContext2D` drawing method (`arc`, `fill`, `stroke`, `drawImage`, `fillText`, etc.); all are no-op stubs. Render via DOM or the host engine.
+**Rule for AI agents:** Never `new AnimationEvent(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper stubs: ["arc","arcTo","beginPath","bezierCurveTo","clearRect","clip","closePath","createConicGradient","createLinearGradient","createRadialGradient","drawFocusIfNeeded","fill"] …; scraper missing: ["createImageData","direction","ellipse","filter","fontKerning","fontStretch","fontVariantCaps","getContextAttributes","getImageData","getLineDash","getTransform","imageSmoothingEnabled"] …+14 more
+**Why:** scraper missing: ["AnimationEvent"].
 
 ---
-### [JS-004] — CSSStyleDeclaration
+### [JS-003] — CanvasRenderingContext2D
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-el.style.borderInline = '1px solid red'; // missing
-el.style.setProperty('--x', '1'); // stub
+instance.createImageData; // CanvasRenderingContext2D.createImageData is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Set only documented physical-axis properties; don't expect setProperty to round-trip through getPropertyValue.
-el.style.color = 'red';
+// Canvas drawing is not functional. Render via DOM elements or the host engine.
 ```
 
-**Rule for AI agents:** Never read/write the long list of missing CSS DOM properties on `element.style`; `setProperty`/`getPropertyValue`/`removeProperty` are stubs and `-webkit-*`/logical-axis properties are missing entirely.
+**Rule for AI agents:** Never read/write `createImageData`, `direction`, `ellipse`, `filter`, `fontKerning`, `fontStretch`, `fontVariantCaps`, `getContextAttributes`, `getImageData`, `getLineDash`, …+16 more on `CanvasRenderingContext2D` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["getPropertyValue","removeProperty","setProperty"]; scraper missing: ["accentColor","alignmentBaseline","animationComposition","appearance","backgroundAttachment","backgroundBlendMode","backgroundClip","backgroundOrigin","baselineShift","baselineSource","blockSize","borderBlock"] …+336 more
+**Why:** scraper missing: ["createImageData","direction","ellipse","filter","fontKerning","fontStretch","fontVariantCaps","getContextAttributes","getImageData","getLineDash","getTransform","imageSmoothingEnabled"] …+14 more.
 
 ---
-### [JS-005] — CSSStyleSheet
+### [JS-004] — Comment
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-const s = new CSSStyleSheet(); // constructor missing
-doc.styleSheets[0].insertRule('.x{}', 0); // insertRule is a stub
+const x = new Comment(/* ... */); // TypeError: Comment is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Mutate styles by toggling class names or by writing inline style on the element.
-el.classList.add('active');
+// document.createTextNode(...) / createComment(...) work. Avoid `new Comment()` — constructor missing.
 ```
 
-**Rule for AI agents:** Never use `new CSSStyleSheet()` (constructor missing); never call `insertRule`/`deleteRule` (stubs). Mutate styles via class toggling or inline `style`.
+**Rule for AI agents:** Never `new Comment(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper stubs: ["deleteRule","insertRule"]; scraper missing: ["ownerRule","rules","addRule","removeRule","replace","replaceSync","CSSStyleSheet"]
+**Why:** scraper missing: ["Comment"].
 
 ---
-### [JS-006] — CustomElementRegistry
+### [JS-005] — Console
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-customElements.define('my-thing', class extends HTMLElement {}); // stub: registration is recorded but no upgrade lifecycle
+instance.clear; // Console.clear is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Limit to component frameworks that don't depend on connectedCallback / lifecycle. Or build factory functions that return DOM trees.
+// Use console.log/info/warn/error/debug/assert/time/timeEnd — they are present. Avoid dir/group*/table/count*/dirxml/timeLog/timeStamp/trace.
 ```
 
-**Rule for AI agents:** Never rely on `customElements.define` for lifecycle (connected/disconnected/attributeChanged); only `define` exists, and it does not run the upgrade machinery. `get`, `whenDefined`, `upgrade` are missing.
+**Rule for AI agents:** Never read/write `clear`, `count`, `countReset`, `dir`, `dirxml`, `group`, `groupCollapsed`, `groupEnd`, `table`, `timeLog`, …+2 more on `Console` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["define"]; scraper missing: ["get","getName","upgrade","whenDefined"]
+**Why:** scraper missing: ["clear","count","countReset","dir","dirxml","group","groupCollapsed","groupEnd","table","timeLog","timeStamp","trace"].
 
 ---
-### [JS-007] — CustomEvent
+### [JS-007] — CSS
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-const e = new CustomEvent('x', { detail: {} }); // constructor missing
+instance.deg; // CSS.deg is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Don't construct Event subclasses with new. Receive them from listeners; preventDefault/stopPropagation are no-ops.
+// CSS.escape works in browsers but unit helpers (CSS.px/em/vw/%, etc.) are missing here. Build raw strings: el.style.width = (n + 'px').
 ```
 
-**Rule for AI agents:** Never construct `new CustomEvent(...)`; the constructor is missing. `preventDefault`/`stopPropagation` exist as no-op stubs on incoming events.
+**Rule for AI agents:** Never read/write `deg`, `em`, `in`, `ms`, `number`, `percent`, `pt`, `px`, `rem`, `s`, …+4 more on `CSS` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["initCustomEvent"]; scraper missing: ["CustomEvent"]
+**Why:** scraper missing: ["deg","em","in","ms","number","percent","pt","px","rem","s","vh","vmax"] …+2 more.
 
 ---
-### [JS-008] — Document
+### [JS-008] — CSSStyleDeclaration
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-document.createElement('div'); // stub: returns an element but lifecycle hooks are no-ops
+instance.boxSizing; // CSSStyleDeclaration.boxSizing is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Use the supported DOM ops only: getElementById, querySelector, querySelectorAll, createElement, addEventListener.
+// Use el.style.<longhand> for the supported longhands only (see results/css/{supported,partial}.json). Avoid setProperty for custom CSS vars (var() is supported, but the CSSOM setter has 350 missing members).
 ```
 
-**Rule for AI agents:** Never assume a full `Document` API; methods like `createElement`/`querySelector`/`getElementById` exist as stubs that work for basic cases, but `adoptNode`, `createRange`, `createTreeWalker`, `evaluate`, `getAnimations`, `exitFullscreen`, `startViewTransition`, `fonts`, `adoptedStyleSheets`, etc. are missing.
+**Rule for AI agents:** Never read/write `boxSizing`, `fontVariantEastAsian`, `accentColor`, `alignmentBaseline`, `animationComposition`, `appearance`, `backgroundAttachment`, `backgroundBlendMode`, `backgroundClip`, `backgroundOrigin`, …+340 more on `CSSStyleDeclaration` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["caretPositionFromPoint","createAttribute","createAttributeNS","createComment","createDocumentFragment","createElement","createElementNS","createEvent","createNodeIterator","createTextNode","elementFromPoint","elementsFromPoint"] …; scraper missing: ["alinkColor","all","anchors","applets","bgColor","cookie","designMode","dir","domain","embeds","fgColor","forms"] …+89 more
+**Why:** scraper missing: ["boxSizing","fontVariantEastAsian","accentColor","alignmentBaseline","animationComposition","appearance","backgroundAttachment","backgroundBlendMode","backgroundClip","backgroundOrigin","baselineShift","baselineSource"] …+338 more.
 
 ---
-### [JS-009] — Element
+### [JS-009] — CSSStyleSheet
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-el.attachShadow({ mode: 'open' }); // stub
-el.scrollIntoView(); // missing
+const x = new CSSStyleSheet(/* ... */); // TypeError: CSSStyleSheet is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Restrict to documented APIs (classList add/remove via the supported subset, getBoundingClientRect, querySelector).
-el.querySelector('.x').getBoundingClientRect();
+// Don't construct CSSStyleSheet (missing). Toggle classes or set inline style to mutate visuals.
 ```
 
-**Rule for AI agents:** Never call `element.attachShadow`, `scrollIntoView`, `scroll`/`scrollTo`/`scrollBy`, `requestFullscreen`, `requestPointerLock`, `getHTML`/`setHTMLUnsafe`, `computedStyleMap`, `animate`, `toggleAttribute`, or any of the `aria*Element`/role properties; they are missing or stubbed.
+**Rule for AI agents:** Never `new CSSStyleSheet(...)` (constructor missing) and do not read/write `ownerRule`, `rules`, `addRule`, `removeRule`, `replace`, `replaceSync` on existing `CSSStyleSheet` instances; all missing in Gameface.
 
-**Why:** scraper stubs: ["after","attachShadow","before","blur","closest","focus","getAnimations","getAttribute","getAttributeNS","getAttributeNames","getAttributeNode","getAttributeNodeNS"] …; scraper missing: ["currentCSSZoom","onfullscreenchange","onfullscreenerror","checkVisibility","computedStyleMap","getHTML","hasPointerCapture","releasePointerCapture","requestFullscreen","requestPointerLock","scroll","scrollBy"] …+69 more
+**Why:** scraper missing: ["ownerRule","rules","addRule","removeRule","replace","replaceSync","CSSStyleSheet"].
 
 ---
-### [JS-010] — Event
+### [JS-010] — CustomElementRegistry
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-const e = new Event('x'); // constructor missing
-ev.stopPropagation(); // stub
+instance.get; // CustomElementRegistry.get is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Don't construct Event subclasses with new. Receive them from listeners; preventDefault/stopPropagation are no-ops.
+// customElements.define() exists but get/getName/upgrade/whenDefined are missing — no upgrade lifecycle. Prefer plain factory functions that return DOM trees.
 ```
 
-**Rule for AI agents:** Never construct `new Event(...)`; the constructor is missing. `preventDefault`/`stopPropagation` exist as no-op stubs on incoming events.
+**Rule for AI agents:** Never read/write `get`, `getName`, `upgrade`, `whenDefined` on `CustomElementRegistry` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["initEvent","preventDefault","stopImmediatePropagation","stopPropagation"]; scraper missing: ["cancelBubble","isTrusted","returnValue","srcElement","timeStamp","composedPath","Event","explicitOriginalTarget","originalTarget"]
+**Why:** scraper missing: ["get","getName","upgrade","whenDefined"].
 
 ---
-### [JS-011] — EventTarget
+### [JS-011] — CustomEvent
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-target.addEventListener('x', cb); target.dispatchEvent(ev); // stubs
+const x = new CustomEvent(/* ... */); // TypeError: CustomEvent is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Never construct CustomEvent; receive instances from listeners only. addEventListener/removeEventListener/dispatchEvent on supported host objects work.
 ```
 
-**Rule for AI agents:** Never `new EventTarget()`; constructor is missing. `addEventListener`/`removeEventListener`/`dispatchEvent` exist as stubs only on supported host objects.
+**Rule for AI agents:** Never `new CustomEvent(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper stubs: ["addEventListener","dispatchEvent","removeEventListener"]
+**Why:** scraper missing: ["CustomEvent"].
 
 ---
-### [JS-013] — History
+### [JS-012] — Document
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-history.pushState({}, "", "/x"); // method exists but is a no-op
+const x = new Document(/* ... */); // TypeError: Document is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// No history navigation. Use in-page state and class toggling.
+// Use the documented Document API only: getElementById, querySelector(All), createElement(NS), createTextNode/Comment, body/head/documentElement, addEventListener/removeEventListener, defaultView, readyState.
 ```
 
-**Rule for AI agents:** Never use `history.pushState`/`replaceState`/`back`/`forward`/`go`; all are stubs and there is no real navigation.
+**Rule for AI agents:** Never `new Document(...)` (constructor missing) and do not read/write `alinkColor`, `all`, `anchors`, `applets`, `bgColor`, `cookie`, `designMode`, `dir`, `domain`, `embeds`, …+90 more on existing `Document` instances; all missing in Gameface.
 
-**Why:** scraper stubs: ["back","forward","go","pushState","replaceState"]; only present: ["index","length","state"]
+**Why:** scraper missing: ["alinkColor","all","anchors","applets","bgColor","cookie","designMode","dir","domain","embeds","fgColor","forms"] …+89 more.
 
 ---
-### [JS-014] — KeyboardEvent
+### [JS-013] — DOMRect
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-const e = new KeyboardEvent('keydown'); // constructor missing
-ev.isComposing; // missing
+const x = new DOMRect(/* ... */); // TypeError: DOMRect is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Don't construct Event subclasses with new. Receive them from listeners; preventDefault/stopPropagation are no-ops.
+// Don't construct DOMRect; read existing instances returned by DOM APIs (getBoundingClientRect, etc.).
 ```
 
-**Rule for AI agents:** Never construct `new KeyboardEvent(...)`; the constructor is missing. `preventDefault`/`stopPropagation` exist as no-op stubs on incoming events.
+**Rule for AI agents:** Never `new DOMRect(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper stubs: ["getModifierState","initKeyboardEvent"]; scraper missing: ["isComposing","KeyboardEvent","keyIdentifier"]
+**Why:** scraper missing: ["DOMRect"].
 
 ---
-### [JS-015] — MouseEvent
+### [JS-014] — Element
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-// getModifierState is a stub on MouseEvent
+instance.currentCSSZoom; // Element.currentCSSZoom is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Don't construct Event subclasses with new. Receive them from listeners; preventDefault/stopPropagation are no-ops.
+// Use the documented Element subset: querySelector(All), getBoundingClientRect, getAttribute/setAttribute/removeAttribute, classList (DOMTokenList is fully supported), className, id, addEventListener, dispatchEvent, children, parent/firstChild/lastChild, scrollTop/scrollLeft, getElementsByClassName/TagName.
 ```
 
-**Rule for AI agents:** Never construct `new MouseEvent(...)`; the constructor is missing. `preventDefault`/`stopPropagation` exist as no-op stubs on incoming events.
+**Rule for AI agents:** Never read/write `currentCSSZoom`, `onfullscreenchange`, `onfullscreenerror`, `checkVisibility`, `computedStyleMap`, `getHTML`, `hasPointerCapture`, `releasePointerCapture`, `requestFullscreen`, `requestPointerLock`, …+71 more on `Element` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["getModifierState","initMouseEvent"]; scraper missing: ["layerX","layerY","offsetX","offsetY","pageX","pageY","MouseEvent"]
+**Why:** scraper missing: ["currentCSSZoom","onfullscreenchange","onfullscreenerror","checkVisibility","computedStyleMap","getHTML","hasPointerCapture","releasePointerCapture","requestFullscreen","requestPointerLock","scroll","scrollBy"] …+69 more.
 
 ---
-### [JS-016] — MutationObserver
+### [JS-015] — ErrorEvent
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-const o = new MutationObserver(cb);
-o.observe(el, { childList: true }); // stub: callback never fires
+const x = new ErrorEvent(/* ... */); // TypeError: ErrorEvent is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// No reactive observation. Poll on requestAnimationFrame or apply changes immediately when you cause them.
+// Never construct ErrorEvent; receive instances from listeners only. addEventListener/removeEventListener/dispatchEvent on supported host objects work.
 ```
 
-**Rule for AI agents:** Never use `MutationObserver`; `observe`/`disconnect`/`takeRecords` are no-op stubs and the callback never fires.
+**Rule for AI agents:** Never `new ErrorEvent(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper stubs: ["disconnect","observe","takeRecords"]
+**Why:** scraper missing: ["ErrorEvent"].
 
 ---
-### [JS-017] — Navigator
+### [JS-016] — EventTarget
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-navigator.clipboard.writeText('hi'); // missing
-navigator.getGamepads(); // stub
+const x = new EventTarget(/* ... */); // TypeError: EventTarget is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// No clipboard / credentials / mediaDevices / geolocation. getGamepads is a stub. Use the engine bridge.
+// Never construct EventTarget; receive instances from listeners only. addEventListener/removeEventListener/dispatchEvent on supported host objects work.
 ```
 
-**Rule for AI agents:** Never use `navigator.clipboard`/`credentials`/`mediaDevices`/`geolocation`/`permissions`/`serviceWorker`/`storage`/`vibrate`/`share`/`userAgentData`; missing. `getGamepads` is a stub.
+**Rule for AI agents:** Never `new EventTarget(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper stubs: ["getGamepads"]; scraper missing: ["clipboard","credentials","doNotTrack","geolocation","login","maxTouchPoints","mediaCapabilities","mediaDevices","mediaSession","permissions","serviceWorker","userActivation"] …+75 more
+**Why:** scraper missing: ["EventTarget"].
 
 ---
-### [JS-018] — Node
+### [JS-018] — FocusEvent
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-node.appendChild(child); node.cloneNode(); // both stubs
+const x = new FocusEvent(/* ... */); // TypeError: FocusEvent is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Use parent.appendChild(child) only when both nodes were created via the supported document.createElement path.
+// Never construct FocusEvent; receive instances from listeners only. addEventListener/removeEventListener/dispatchEvent on supported host objects work.
 ```
 
-**Rule for AI agents:** Never assume `Node` traversal/mutation methods compose across all node types; `appendChild`, `cloneNode`, `compareDocumentPosition`, `contains`, `insertBefore`, `removeChild`, `replaceChild` are all stubs (basic usage works, edge cases may not).
+**Rule for AI agents:** Never `new FocusEvent(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper stubs: ["append","appendChild","cloneNode","compareDocumentPosition","contains","getRootNode","hasChildNodes","insertBefore","isDefaultNamespace","isEqualNode","isSameNode","lookupNamespaceURI"] …
+**Why:** scraper missing: ["FocusEvent"].
 
 ---
-### [JS-019] — Performance
+### [JS-019] — GamepadEvent
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-performance.mark('x'); performance.measure('y'); // missing
+const x = new GamepadEvent(/* ... */); // TypeError: GamepadEvent is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Only performance.now() is supported. Don't call mark/measure/getEntries.
+// Never construct GamepadEvent; receive instances from listeners only. addEventListener/removeEventListener/dispatchEvent on supported host objects work.
 ```
 
-**Rule for AI agents:** Never call `performance.mark`/`measure`/`getEntries`/`getEntriesByName`/`getEntriesByType`/`clearMarks`/`clearMeasures`/`navigation`/`timing`; only `performance.now()` is supported.
+**Rule for AI agents:** Never `new GamepadEvent(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper stubs: ["now","addEventListener","removeEventListener"]; scraper missing: ["eventCounts","navigation","onresourcetimingbufferfull","timeOrigin","timing","clearMarks","clearMeasures","clearResourceTimings","getEntries","getEntriesByName","getEntriesByType","mark"] …+5 more
+**Why:** scraper missing: ["GamepadEvent"].
 
 ---
-### [JS-020] — ResizeObserver
+### [JS-020] — History
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-const o = new ResizeObserver(cb);
-o.observe(el); // stub: cb never fires
+instance.scrollRestoration; // History.scrollRestoration is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// No reactive observation. Poll on requestAnimationFrame or apply changes immediately when you cause them.
+// history.scrollRestoration is missing. pushState/replaceState/back/forward/length/state are present in the partial surface but do not perform navigation; treat as no-ops.
 ```
 
-**Rule for AI agents:** Never use `ResizeObserver`; `observe`/`unobserve`/`disconnect` are no-op stubs and the callback never fires.
+**Rule for AI agents:** Never read/write `scrollRestoration` on `History` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["disconnect","observe","unobserve"]
+**Why:** scraper missing: ["scrollRestoration"].
 
 ---
-### [JS-021] — Selection
+### [JS-021] — HTMLCanvasElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-getSelection().toString(); // method exists but is a no-op
+instance.getContext2D; // HTMLCanvasElement.getContext2D is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// No text selection API. Avoid features that depend on selection.
+// Use canvas.width, canvas.height, canvas.getContext('2d'). Avoid toDataURL/toBlob/captureStream/transferControlToOffscreen.
 ```
 
-**Rule for AI agents:** Never depend on `getSelection()` for ranges; methods (`removeAllRanges`, `setBaseAndExtent`, `empty`, `toString`) are stubs and most range APIs are missing.
+**Rule for AI agents:** Never read/write `getContext2D`, `captureStream`, `toBlob`, `toDataURL`, `transferControlToOffscreen`, `mozOpaque`, `mozPrintCallback` on `HTMLCanvasElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["empty","removeAllRanges","setBaseAndExtent","toString"]; scraper missing: ["direction","isCollapsed","rangeCount","type","addRange","collapse","collapseToEnd","collapseToStart","containsNode","deleteFromDocument","extend","getComposedRanges"] …+5 more
+**Why:** scraper missing: ["getContext2D","captureStream","toBlob","toDataURL","transferControlToOffscreen","mozOpaque","mozPrintCallback"].
 
 ---
-### [JS-022] — Storage
+### [JS-022] — HTMLIFrameElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-localStorage.setItem("k","v"); // method exists but is a no-op
+instance.align; // HTMLIFrameElement.align is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// No localStorage / sessionStorage. Persist via the engine bridge.
+// <iframe> is parsed-no-impl. Don't depend on contentDocument/contentWindow/src/srcdoc/allow/sandbox/loading.
 ```
 
-**Rule for AI agents:** Never use `localStorage`/`sessionStorage` for persistence; `setItem`/`getItem`/`removeItem`/`clear`/`key` are stubs.
+**Rule for AI agents:** Never read/write `align`, `allow`, `allowFullscreen`, `contentDocument`, `contentWindow`, `frameBorder`, `height`, `loading`, `longDesc`, `marginHeight`, …+17 more on `HTMLIFrameElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["clear","getItem","key","removeItem","setItem"]; only present: ["length"]
+**Why:** scraper missing: ["align","allow","allowFullscreen","contentDocument","contentWindow","frameBorder","height","loading","longDesc","marginHeight","marginWidth","name"] …+15 more.
 
 ---
-### [JS-024] — URL
+### [JS-023] — HTMLImageElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-new URL('https://x'); // constructor missing
+instance.align; // HTMLImageElement.align is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Don't construct URL. Use string operations.
-const path = base + '/' + segment;
+// Use img.src only. Avoid alt/complete/naturalWidth/Height/currentSrc/crossOrigin/decoding/fetchPriority/loading/referrerPolicy/sizes/srcset.
 ```
 
-**Rule for AI agents:** Never `new URL(...)`; the constructor is missing. Use string operations.
+**Rule for AI agents:** Never read/write `align`, `alt`, `border`, `complete`, `crossOrigin`, `currentSrc`, `decoding`, `fetchPriority`, `hspace`, `isMap`, …+17 more on `HTMLImageElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["toJSON","toString"]; scraper missing: ["revokeObjectURL","password","searchParams","username","URL"]
+**Why:** scraper missing: ["align","alt","border","complete","crossOrigin","currentSrc","decoding","fetchPriority","hspace","isMap","loading","longDesc"] …+15 more.
 
 ---
-### [JS-025] — WebSocket
+### [JS-024] — HTMLInputElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-const s = new WebSocket('ws://x');
-s.send('hi'); // send is a no-op stub
+instance.accept; // HTMLInputElement.accept is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Communicate with the host engine via the Gameface bridge (engine.call, coh-* APIs). Don't make HTTP/WS calls from page JS.
+// Use input.value, input.type ("text"/"password"/"button" only), focus(), blur(), select(), setRangeText, setSelectionRange, placeholder (writeable). Avoid checked/files/validity/required/min/max/pattern/list/labels.
 ```
 
-**Rule for AI agents:** Never call `WebSocket` (`new WebSocket` constructor missing; `close`/`send` are stubs). Communicate via the engine bridge.
+**Rule for AI agents:** Never read/write `accept`, `align`, `alt`, `autocomplete`, `capture`, `checked`, `defaultChecked`, `defaultValue`, `dirName`, `disabled`, …+41 more on `HTMLInputElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["close","send","addEventListener","removeEventListener"]; scraper missing: ["WebSocket"]
+**Why:** scraper missing: ["accept","align","alt","autocomplete","capture","checked","defaultChecked","defaultValue","dirName","disabled","files","form"] …+39 more.
 
 ---
-### [JS-026] — XMLHttpRequest
+### [JS-025] — HTMLLinkElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** critical
 
 **❌ Never generate:**
 ```js
-const x = new XMLHttpRequest();
-x.open('GET','/api'); x.send(); // open/send are stubs
+instance.as; // HTMLLinkElement.as is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Communicate with the host engine via the Gameface bridge (engine.call, coh-* APIs). Don't make HTTP/WS calls from page JS.
+// Use link.href, link.rel. Avoid sheet/relList/media/crossOrigin/integrity/fetchPriority/hreflang/imageSizes/imageSrcset/referrerPolicy/sizes/disabled/as.
 ```
 
-**Rule for AI agents:** Never call `XMLHttpRequest` methods (`open`, `send`, `abort`, `setRequestHeader` …); they are stubs. Use the Gameface engine bridge.
+**Rule for AI agents:** Never read/write `as`, `charset`, `crossOrigin`, `disabled`, `fetchPriority`, `hreflang`, `imageSizes`, `imageSrcset`, `integrity`, `media`, …+7 more on `HTMLLinkElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["abort","getAllResponseHeaders","getResponseHeader","open","overrideMimeType","send","setRequestHeader","addEventListener","removeEventListener"]; scraper missing: ["responseArrayBuffer","responseBlob","responseXML","upload","XMLHttpRequest","setAttributionReporting","setPrivateToken"]
+**Why:** scraper missing: ["as","charset","crossOrigin","disabled","fetchPriority","hreflang","imageSizes","imageSrcset","integrity","media","referrerPolicy","rev"] …+5 more.
 
 ---
-### [JS-012] — Fetch / network APIs
+### [JS-026] — HTMLMediaElement
+**Status:** stub
+**Surface:** js-stub
+**Severity:** critical
+
+**❌ Never generate:**
+```js
+instance.srcObject; // HTMLMediaElement.srcObject is undefined / not implemented in Gameface
+```
+
+**✅ Generate instead:**
+```js
+// No real media playback. Bridge to the host engine for audio/video.
+```
+
+**Rule for AI agents:** Never read/write `srcObject`, `controls`, `defaultMuted`, `disableRemotePlayback`, `mediaKeys`, `onencrypted`, `onwaitingforkey`, `preservesPitch`, `remote`, `sinkId`, …+17 more on `HTMLMediaElement` instances; missing in Gameface.
+
+**Why:** scraper missing: ["srcObject","controls","defaultMuted","disableRemotePlayback","mediaKeys","onencrypted","onwaitingforkey","preservesPitch","remote","sinkId","textTracks","addTextTrack"] …+15 more.
+
+---
+### [JS-027] — HTMLTextAreaElement
+**Status:** stub
+**Surface:** js-stub
+**Severity:** critical
+
+**❌ Never generate:**
+```js
+instance.autocomplete; // HTMLTextAreaElement.autocomplete is undefined / not implemented in Gameface
+```
+
+**✅ Generate instead:**
+```js
+// Use textarea.value, rows, cols, focus(), blur(), select(), setRangeText, setSelectionRange. Avoid form/labels/validity/required/disabled/readOnly/autocomplete.
+```
+
+**Rule for AI agents:** Never read/write `autocomplete`, `defaultValue`, `dirName`, `disabled`, `form`, `labels`, `name`, `placeholder`, `readOnly`, `required`, …+7 more on `HTMLTextAreaElement` instances; missing in Gameface.
+
+**Why:** scraper missing: ["autocomplete","defaultValue","dirName","disabled","form","labels","name","placeholder","readOnly","required","type","validationMessage"] …+5 more.
+
+---
+### [JS-028] — HTMLVideoElement
+**Status:** stub
+**Surface:** js-stub
+**Severity:** critical
+
+**❌ Never generate:**
+```js
+instance.disablePictureInPicture; // HTMLVideoElement.disablePictureInPicture is undefined / not implemented in Gameface
+```
+
+**✅ Generate instead:**
+```js
+// No real media playback. Bridge to the host engine for audio/video.
+```
+
+**Rule for AI agents:** Never read/write `disablePictureInPicture`, `onenterpictureinpicture`, `onleavepictureinpicture`, `playsInline`, `cancelVideoFrameCallback`, `getVideoPlaybackQuality`, `requestPictureInPicture`, `requestVideoFrameCallback`, `mozDecodedFrames`, `mozFrameDelay`, …+4 more on `HTMLVideoElement` instances; missing in Gameface.
+
+**Why:** scraper missing: ["disablePictureInPicture","onenterpictureinpicture","onleavepictureinpicture","playsInline","cancelVideoFrameCallback","getVideoPlaybackQuality","requestPictureInPicture","requestVideoFrameCallback","mozDecodedFrames","mozFrameDelay","mozHasAudio","mozPaintedFrames"] …+2 more.
+
+---
+### [JS-029] — MutationObserver
+**Status:** stub
+**Surface:** js-stub
+**Severity:** critical
+
+**❌ Never generate:**
+```js
+const x = new MutationObserver(/* ... */); // TypeError: MutationObserver is not a constructor
+```
+
+**✅ Generate instead:**
+```js
+// No reactive observation — the constructor is missing. Recompute on requestAnimationFrame or apply changes synchronously when you cause them.
+```
+
+**Rule for AI agents:** Never `new MutationObserver(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
+
+**Why:** scraper missing: ["MutationObserver"].
+
+---
+### [JS-030] — Navigator
+**Status:** stub
+**Surface:** js-stub
+**Severity:** critical
+
+**❌ Never generate:**
+```js
+instance.clipboard; // Navigator.clipboard is undefined / not implemented in Gameface
+```
+
+**✅ Generate instead:**
+```js
+// Don't use navigator.clipboard/credentials/mediaDevices/geolocation/permissions/serviceWorker/storage/vibrate/share/userAgentData/locks/connection — missing. Engine bridge for host integrations.
+```
+
+**Rule for AI agents:** Never read/write `clipboard`, `credentials`, `doNotTrack`, `geolocation`, `login`, `maxTouchPoints`, `mediaCapabilities`, `mediaDevices`, `mediaSession`, `permissions`, …+77 more on `Navigator` instances; missing in Gameface.
+
+**Why:** scraper missing: ["clipboard","credentials","doNotTrack","geolocation","login","maxTouchPoints","mediaCapabilities","mediaDevices","mediaSession","permissions","serviceWorker","userActivation"] …+75 more.
+
+---
+### [JS-031] — Performance
+**Status:** stub
+**Surface:** js-stub
+**Severity:** critical
+
+**❌ Never generate:**
+```js
+instance.eventCounts; // Performance.eventCounts is undefined / not implemented in Gameface
+```
+
+**✅ Generate instead:**
+```js
+// Only performance.now() is supported. Don't call mark/measure/getEntries*/timing/navigation.
+```
+
+**Rule for AI agents:** Never read/write `eventCounts`, `navigation`, `onresourcetimingbufferfull`, `timeOrigin`, `timing`, `clearMarks`, `clearMeasures`, `clearResourceTimings`, `getEntries`, `getEntriesByName`, …+7 more on `Performance` instances; missing in Gameface.
+
+**Why:** scraper missing: ["eventCounts","navigation","onresourcetimingbufferfull","timeOrigin","timing","clearMarks","clearMeasures","clearResourceTimings","getEntries","getEntriesByName","getEntriesByType","mark"] …+5 more.
+
+---
+### [JS-032] — ProgressEvent
+**Status:** stub
+**Surface:** js-stub
+**Severity:** critical
+
+**❌ Never generate:**
+```js
+const x = new ProgressEvent(/* ... */); // TypeError: ProgressEvent is not a constructor
+```
+
+**✅ Generate instead:**
+```js
+// Never construct ProgressEvent; receive instances from listeners only. addEventListener/removeEventListener/dispatchEvent on supported host objects work.
+```
+
+**Rule for AI agents:** Never `new ProgressEvent(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
+
+**Why:** scraper missing: ["ProgressEvent"].
+
+---
+### [JS-033] — PromiseRejectionEvent
+**Status:** stub
+**Surface:** js-stub
+**Severity:** critical
+
+**❌ Never generate:**
+```js
+const x = new PromiseRejectionEvent(/* ... */); // TypeError: PromiseRejectionEvent is not a constructor
+```
+
+**✅ Generate instead:**
+```js
+// Never construct PromiseRejectionEvent; receive instances from listeners only. addEventListener/removeEventListener/dispatchEvent on supported host objects work.
+```
+
+**Rule for AI agents:** Never `new PromiseRejectionEvent(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
+
+**Why:** scraper missing: ["PromiseRejectionEvent"].
+
+---
+### [JS-034] — ResizeObserver
+**Status:** stub
+**Surface:** js-stub
+**Severity:** critical
+
+**❌ Never generate:**
+```js
+const x = new ResizeObserver(/* ... */); // TypeError: ResizeObserver is not a constructor
+```
+
+**✅ Generate instead:**
+```js
+// No reactive observation — the constructor is missing. Recompute on requestAnimationFrame or apply changes synchronously when you cause them.
+```
+
+**Rule for AI agents:** Never `new ResizeObserver(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
+
+**Why:** scraper missing: ["ResizeObserver"].
+
+---
+### [JS-035] — Selection
+**Status:** stub
+**Surface:** js-stub
+**Severity:** critical
+
+**❌ Never generate:**
+```js
+instance.direction; // Selection.direction is undefined / not implemented in Gameface
+```
+
+**✅ Generate instead:**
+```js
+// No text-selection workflow. Avoid features that depend on Selection/Range.
+```
+
+**Rule for AI agents:** Never read/write `direction`, `isCollapsed`, `rangeCount`, `type`, `addRange`, `collapse`, `collapseToEnd`, `collapseToStart`, `containsNode`, `deleteFromDocument`, …+7 more on `Selection` instances; missing in Gameface.
+
+**Why:** scraper missing: ["direction","isCollapsed","rangeCount","type","addRange","collapse","collapseToEnd","collapseToStart","containsNode","deleteFromDocument","extend","getComposedRanges"] …+5 more.
+
+---
+### [JS-036] — ShadowRoot
+**Status:** stub
+**Surface:** js-stub
+**Severity:** critical
+
+**❌ Never generate:**
+```js
+instance.serializable; // ShadowRoot.serializable is undefined / not implemented in Gameface
+```
+
+**✅ Generate instead:**
+```js
+// element.attachShadow may exist on Element but adoptedStyleSheets/getAnimations/getSelection/setHTMLUnsafe are missing. Avoid Shadow DOM-dependent designs.
+```
+
+**Rule for AI agents:** Never read/write `serializable`, `getHTML`, `setHTMLUnsafe`, `adoptedStyleSheets`, `fullscreenElement`, `getAnimations`, `getSelection`, `pictureInPictureElement`, `pointerLockElement` on `ShadowRoot` instances; missing in Gameface.
+
+**Why:** scraper missing: ["serializable","getHTML","setHTMLUnsafe","adoptedStyleSheets","fullscreenElement","getAnimations","getSelection","pictureInPictureElement","pointerLockElement"].
+
+---
+### [JS-038] — TransitionEvent
+**Status:** stub
+**Surface:** js-stub
+**Severity:** critical
+
+**❌ Never generate:**
+```js
+const x = new TransitionEvent(/* ... */); // TypeError: TransitionEvent is not a constructor
+```
+
+**✅ Generate instead:**
+```js
+// Never construct TransitionEvent; receive instances from listeners only. addEventListener/removeEventListener/dispatchEvent on supported host objects work.
+```
+
+**Rule for AI agents:** Never `new TransitionEvent(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
+
+**Why:** scraper missing: ["TransitionEvent"].
+
+---
+### [JS-039] — URL
+**Status:** stub
+**Surface:** js-stub
+**Severity:** critical
+
+**❌ Never generate:**
+```js
+const x = new URL(/* ... */); // TypeError: URL is not a constructor
+```
+
+**✅ Generate instead:**
+```js
+// new URL() is missing. Concatenate path strings manually:
+const path = base + '/' + segment + '?' + new URLSearchParams /* also missing */;
+```
+
+**Rule for AI agents:** Never `new URL(...)` (constructor missing) and do not read/write `revokeObjectURL`, `password`, `searchParams`, `username` on existing `URL` instances; all missing in Gameface.
+
+**Why:** scraper missing: ["revokeObjectURL","password","searchParams","username","URL"].
+
+---
+### [JS-040] — WebSocket
+**Status:** stub
+**Surface:** js-stub
+**Severity:** critical
+
+**❌ Never generate:**
+```js
+const x = new WebSocket(/* ... */); // TypeError: WebSocket is not a constructor
+```
+
+**✅ Generate instead:**
+```js
+// Communicate with the host via the Gameface bridge (engine.call, coh-* APIs). No HTTP/WS from page JS.
+```
+
+**Rule for AI agents:** Never `new WebSocket(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
+
+**Why:** scraper missing: ["WebSocket"].
+
+---
+### [JS-041] — Window
+**Status:** stub
+**Surface:** js-stub
+**Severity:** critical
+
+**❌ Never generate:**
+```js
+instance.console; // Window.console is undefined / not implemented in Gameface
+```
+
+**✅ Generate instead:**
+```js
+// Avoid alert/confirm/prompt/open/postMessage/print/matchMedia/requestIdleCallback/structuredClone — missing. setTimeout/clearTimeout/setInterval/clearInterval/queueMicrotask are supported.
+```
+
+**Rule for AI agents:** Never read/write `console`, `chrome`, `clientInformation`, `closed`, `cookieStore`, `event`, `external`, `frameElement`, `frames`, `length`, …+74 more on `Window` instances; missing in Gameface.
+
+**Why:** scraper missing: ["console","chrome","clientInformation","closed","cookieStore","event","external","frameElement","frames","length","locationbar","menubar"] …+72 more.
+
+---
+### [JS-042] — XMLHttpRequest
+**Status:** stub
+**Surface:** js-stub
+**Severity:** critical
+
+**❌ Never generate:**
+```js
+const x = new XMLHttpRequest(/* ... */); // TypeError: XMLHttpRequest is not a constructor
+```
+
+**✅ Generate instead:**
+```js
+// Communicate with the host via the Gameface bridge (engine.call, coh-* APIs). No HTTP/WS from page JS.
+```
+
+**Rule for AI agents:** Never `new XMLHttpRequest(...)` (constructor missing) and do not read/write `responseArrayBuffer`, `responseBlob`, `responseXML`, `upload`, `setAttributionReporting`, `setPrivateToken` on existing `XMLHttpRequest` instances; all missing in Gameface.
+
+**Why:** scraper missing: ["responseArrayBuffer","responseBlob","responseXML","upload","XMLHttpRequest","setAttributionReporting","setPrivateToken"].
+
+---
+### [JS-017] — Fetch / network APIs
 **Status:** missing
 **Surface:** js-api
 **Severity:** critical
@@ -504,7 +812,7 @@ BroadcastChannel; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: BroadcastChannel, EventSource, FormData, Headers, MessageChannel, MessagePort, Request, Response, ServiceWorker, ServiceWorkerContainer, ServiceWorkerContainerEventMap, ServiceWorkerEventMap, ServiceWorkerGlobalScope, ServiceWorkerRegistration, ServiceWorkerRegistrationEventMap, SharedWorker, Worker, fetch.
 
 ---
-### [JS-023] — Storage and database APIs
+### [JS-037] — Storage and database APIs
 **Status:** missing
 **Surface:** js-api
 **Severity:** critical
@@ -524,7 +832,7 @@ File; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: File, FileCallback, FileEntrySync, FileList, FilePropertyBag, FileReader, FileReaderEventMap, FileReaderSync, FileSystem, FileSystemCreateWritableOptions, FileSystemDirectoryEntry, FileSystemDirectoryHandle, FileSystemDirectoryReader, FileSystemEntriesCallback, FileSystemEntry, FileSystemEntryCallback, FileSystemFileEntry, FileSystemFileHandle, FileSystemFlags, FileSystemGetDirectoryOptions, FileSystemGetFileOptions, FileSystemHandle, FileSystemObserver, FileSystemRemoveOptions, FileSystemSync, FileSystemSyncAccessHandle, FileSystemWritableFileStream, IDBCursor, IDBCursorWithValue, IDBDatabase, IDBDatabaseEventMap, IDBDatabaseInfo, IDBFactory, IDBIndex, IDBIndexParameters, IDBKeyRange, IDBObjectStore, IDBObjectStoreParameters, IDBOpenDBRequest, IDBOpenDBRequestEventMap, IDBRequest, IDBRequestEventMap, IDBTransaction, IDBTransactionEventMap, IDBTransactionOptions, IDBVersionChangeEvent, IDBVersionChangeEventInit, StorageManager, caches, indexedDB.
 
 ---
-### [JS-003] — Crypto, encoding, structured-clone
+### [JS-006] — Crypto, encoding, structured-clone
 **Status:** missing
 **Surface:** js-api
 **Severity:** critical
@@ -545,949 +853,629 @@ SubtleCrypto; // ReferenceError or undefined on window
 
 ---
 
-## HIGH (109)
+## HIGH (73)
 
 ---
-### [JS-027] — AnimationEvent
+### [JS-043] — Attr
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// AnimationEvent is missing on AnimationEvent
+instance.ownerElement; // Attr.ownerElement is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Read/write attributes via element.getAttribute/setAttribute/removeAttribute. Don't poke Attr directly.
 ```
 
-**Rule for AI agents:** Never `new AnimationEvent(...)`; constructor missing. Receive instances from listeners.
+**Rule for AI agents:** Never read/write `ownerElement`, `specified` on `Attr` instances; missing in Gameface.
 
-**Why:** scraper missing: ["AnimationEvent"]
+**Why:** scraper missing: ["ownerElement","specified"].
 
 ---
-### [JS-028] — Attr
+### [JS-044] — Blob
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// ownerElement is missing on Attr
+const x = new Blob(/* ... */); // TypeError: Blob is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Don't construct Blob or call text/arrayBuffer/stream/bytes; bridge binary data through the engine.
 ```
 
-**Rule for AI agents:** Never read `Attr.ownerElement` or `Attr.specified`; missing. Use `element.getAttribute`/`setAttribute` directly.
+**Rule for AI agents:** Never `new Blob(...)` (constructor missing) and do not read/write `arrayBuffer`, `bytes`, `stream`, `text` on existing `Blob` instances; all missing in Gameface.
 
-**Why:** scraper missing: ["ownerElement","specified"]
+**Why:** scraper missing: ["arrayBuffer","bytes","stream","text","Blob"].
 
 ---
-### [JS-029] — Blob
+### [JS-045] — BlobPropertyBag
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// slice is a stub on Blob
+instance.endings; // BlobPropertyBag.endings is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// BlobPropertyBag is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never call `Blob.text()`/`arrayBuffer()`/`stream()`/`bytes()` or `new Blob()`; missing. `slice` is a no-op stub.
+**Rule for AI agents:** Never read/write `endings` on `BlobPropertyBag` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["slice"]; scraper missing: ["arrayBuffer","bytes","stream","text","Blob"]
+**Why:** scraper missing: ["endings"].
 
 ---
-### [JS-030] — BlobPropertyBag
+### [JS-046] — CanvasPattern
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// endings is missing on BlobPropertyBag
+instance.setTransform; // CanvasPattern.setTransform is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Canvas drawing is not functional. Render via DOM elements or the host engine.
 ```
 
-**Rule for AI agents:** Never set the missing dictionary fields on `BlobPropertyBag` (per scraper evidence); they are silently ignored.
+**Rule for AI agents:** Never read/write `setTransform` on `CanvasPattern` instances; missing in Gameface.
 
-**Why:** scraper missing: ["endings"]
+**Why:** scraper missing: ["setTransform"].
 
 ---
-### [JS-031] — CanvasGradient
+### [JS-047] — CaretPosition
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// addColorStop is a stub on CanvasGradient
+instance.getClientRect; // CaretPosition.getClientRect is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// CaretPosition is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never use CanvasGradient; `addColorStop`/`setTransform` are stubs and the canvas pipeline is non-functional.
+**Rule for AI agents:** Never read/write `getClientRect` on `CaretPosition` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["addColorStop"]
+**Why:** scraper missing: ["getClientRect"].
 
 ---
-### [JS-032] — CanvasPattern
+### [JS-048] — CharacterData
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// setTransform is missing on CanvasPattern
+instance.replaceWith; // CharacterData.replaceWith is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// CharacterData is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never use CanvasPattern; `addColorStop`/`setTransform` are stubs and the canvas pipeline is non-functional.
+**Rule for AI agents:** Never read/write `replaceWith` on `CharacterData` instances; missing in Gameface.
 
-**Why:** scraper missing: ["setTransform"]
+**Why:** scraper missing: ["replaceWith"].
 
 ---
-### [JS-033] — CaretPosition
+### [JS-049] — CSSAnimation
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// getClientRect is missing on CaretPosition
+instance.addEventListener; // CSSAnimation.addEventListener is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Drive animation through CSS @keyframes + the animation-* longhands (all supported):
+el.style.animationName = 'fadeIn';
+el.style.animationDuration = '300ms';
 ```
 
-**Rule for AI agents:** Never call `CaretPosition.getClientRect()`; missing.
+**Rule for AI agents:** Never read/write `addEventListener`, `removeEventListener` on `CSSAnimation` instances; missing in Gameface.
 
-**Why:** scraper missing: ["getClientRect"]
+**Why:** scraper missing: ["addEventListener","removeEventListener"].
 
 ---
-### [JS-034] — CharacterData
+### [JS-050] — CSSKeywordValue
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// after is a stub on CharacterData
+const x = new CSSKeywordValue(/* ... */); // TypeError: CSSKeywordValue is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Typed CSSOM is not constructible. Use plain string CSS values (el.style.transform = 'translate(10px, 20px)').
 ```
 
-**Rule for AI agents:** Never call `appendData`/`deleteData`/`insertData`/`replaceData`/`substringData`/`after`/`before`/`remove`; all stubs. Mutate Text via `textContent`.
+**Rule for AI agents:** Never `new CSSKeywordValue(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper stubs: ["after","appendData","before","deleteData","insertData","remove","replaceData","substringData"]; only present: ["data","length","previousElementSibling","nextElementSibling","ownerDocument"]
+**Why:** scraper missing: ["CSSKeywordValue"].
 
 ---
-### [JS-035] — CoherentDebug
+### [JS-051] — CSSMatrixComponent
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// triggerPageCapture is a stub on CoherentDebug
+const x = new CSSMatrixComponent(/* ... */); // TypeError: CSSMatrixComponent is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Typed CSSOM is not constructible. Use plain string CSS values (el.style.transform = 'translate(10px, 20px)').
 ```
 
-**Rule for AI agents:** Never rely on `CoherentDebug.triggerPageCapture`; it is a stub.
+**Rule for AI agents:** Never `new CSSMatrixComponent(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper stubs: ["triggerPageCapture"]
+**Why:** scraper missing: ["CSSMatrixComponent"].
 
 ---
-### [JS-036] — Comment
+### [JS-052] — CSSNumericValue
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// Comment is missing on Comment
+instance.add; // CSSNumericValue.add is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Typed CSSOM is not constructible. Use plain string CSS values (el.style.transform = 'translate(10px, 20px)').
 ```
 
-**Rule for AI agents:** Never `new Comment()`; constructor missing. Create comments/text via `document.createComment`/`document.createTextNode` (stubs).
+**Rule for AI agents:** Never read/write `add`, `div`, `equals`, `max`, `min`, `mul`, `sub`, `to`, `toSum`, `type` on `CSSNumericValue` instances; missing in Gameface.
 
-**Why:** scraper missing: ["Comment"]
+**Why:** scraper missing: ["add","div","equals","max","min","mul","sub","to","toSum","type"].
 
 ---
-### [JS-037] — Console
+### [JS-053] — CSSRotate
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-console.dir(obj); console.group(); // missing
+const x = new CSSRotate(/* ... */); // TypeError: CSSRotate is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Only console.log/info/debug/warn/error/assert/time/timeEnd are stubbed. Don't call .group/.dir/.table.
+// Typed CSSOM is not constructible. Use plain string CSS values (el.style.transform = 'translate(10px, 20px)').
 ```
 
-**Rule for AI agents:** Never call `console.dir`, `console.group`/`groupEnd`/`groupCollapsed`, `console.table`, `console.count`/`countReset`, `console.dirxml`, `console.timeLog`/`timeStamp`, or `console.trace`; only `log`/`info`/`debug`/`warn`/`error`/`assert`/`time`/`timeEnd` are present.
+**Rule for AI agents:** Never `new CSSRotate(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper stubs: ["assert","debug","error","info","log","time","timeEnd","warn"]; scraper missing: ["clear","count","countReset","dir","dirxml","group","groupCollapsed","groupEnd","table","timeLog","timeStamp","trace"]
+**Why:** scraper missing: ["CSSRotate"].
 
 ---
-### [JS-038] — CSS
+### [JS-054] — CSSRuleList
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// deg is missing on CSS
+instance.item; // CSSRuleList.item is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// CSSRuleList is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never call `CSS.px`/`em`/`%`/`rem`/`vw`/`vh`/`vmin`/`vmax`/`s`/`ms`/`deg`/`number`/`pt`/`in`/`percent`; the unit factories are missing.
+**Rule for AI agents:** Never read/write `item` on `CSSRuleList` instances; missing in Gameface.
 
-**Why:** scraper missing: ["deg","em","in","ms","number","percent","pt","px","rem","s","vh","vmax"] …+2 more
+**Why:** scraper missing: ["item"].
 
 ---
-### [JS-039] — CSSAnimation
+### [JS-055] — CSSScale
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// addEventListener is missing on CSSAnimation
+const x = new CSSScale(/* ... */); // TypeError: CSSScale is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Use CSS @keyframes + animation longhands instead. Listen with element.style.animationName / events:
-el.style.animation = 'fade 300ms ease-in-out forwards';
+// Typed CSSOM is not constructible. Use plain string CSS values (el.style.transform = 'translate(10px, 20px)').
 ```
 
-**Rule for AI agents:** Never call `element.animate()` or `Animation` methods (`play`, `pause`, `finish`, `reverse`, `cancel`); they are no-op stubs. Drive animation through CSS `@keyframes` only.
+**Rule for AI agents:** Never `new CSSScale(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper missing: ["addEventListener","removeEventListener"]
+**Why:** scraper missing: ["CSSScale"].
 
 ---
-### [JS-040] — CSSKeywordValue
+### [JS-056] — CSSSkewX
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// CSSKeywordValue is missing on CSSKeywordValue
+const x = new CSSSkewX(/* ... */); // TypeError: CSSSkewX is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Typed CSSOM is not constructible. Use plain string CSS values (el.style.transform = 'translate(10px, 20px)').
 ```
 
-**Rule for AI agents:** Never `new CSSKeywordValue(...)`; constructor missing in Typed CSSOM.
+**Rule for AI agents:** Never `new CSSSkewX(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper missing: ["CSSKeywordValue"]
+**Why:** scraper missing: ["CSSSkewX"].
 
 ---
-### [JS-041] — CSSMatrixComponent
+### [JS-057] — CSSSkewY
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// CSSMatrixComponent is missing on CSSMatrixComponent
+const x = new CSSSkewY(/* ... */); // TypeError: CSSSkewY is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Typed CSSOM is not constructible. Use plain string CSS values (el.style.transform = 'translate(10px, 20px)').
 ```
 
-**Rule for AI agents:** Never `new CSSMatrixComponent(...)`; constructor missing in Typed CSSOM.
+**Rule for AI agents:** Never `new CSSSkewY(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper missing: ["CSSMatrixComponent"]
+**Why:** scraper missing: ["CSSSkewY"].
 
 ---
-### [JS-042] — CSSNumericValue
+### [JS-058] — CSSStyleValue
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// add is missing on CSSNumericValue
+instance.parse; // CSSStyleValue.parse is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Typed CSSOM is not constructible. Use plain string CSS values (el.style.transform = 'translate(10px, 20px)').
 ```
 
-**Rule for AI agents:** Never use the Typed-CSSOM (CSSNumericValue); `get`/`set`/`has`/`clear`/`delete` are stubs and the constructors are missing.
+**Rule for AI agents:** Never read/write `parse` on `CSSStyleValue` instances; missing in Gameface.
 
-**Why:** scraper missing: ["add","div","equals","max","min","mul","sub","to","toSum","type"]
+**Why:** scraper missing: ["parse"].
 
 ---
-### [JS-043] — CSSRotate
+### [JS-059] — CSSTransformValue
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// CSSRotate is missing on CSSRotate
+const x = new CSSTransformValue(/* ... */); // TypeError: CSSTransformValue is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Typed CSSOM is not constructible. Use plain string CSS values (el.style.transform = 'translate(10px, 20px)').
 ```
 
-**Rule for AI agents:** Never `new CSSRotate(...)`; constructor missing in Typed CSSOM.
+**Rule for AI agents:** Never `new CSSTransformValue(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper missing: ["CSSRotate"]
+**Why:** scraper missing: ["CSSTransformValue"].
 
 ---
-### [JS-044] — CSSRuleList
+### [JS-060] — CSSTranslate
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// item is missing on CSSRuleList
+const x = new CSSTranslate(/* ... */); // TypeError: CSSTranslate is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Typed CSSOM is not constructible. Use plain string CSS values (el.style.transform = 'translate(10px, 20px)').
 ```
 
-**Rule for AI agents:** Never call `CSSRuleList.item`; missing. Use index access only.
+**Rule for AI agents:** Never `new CSSTranslate(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper missing: ["item"]
+**Why:** scraper missing: ["CSSTranslate"].
 
 ---
-### [JS-045] — CSSScale
+### [JS-061] — CSSUnitValue
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// CSSScale is missing on CSSScale
+const x = new CSSUnitValue(/* ... */); // TypeError: CSSUnitValue is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Typed CSSOM is not constructible. Use plain string CSS values (el.style.transform = 'translate(10px, 20px)').
 ```
 
-**Rule for AI agents:** Never `new CSSScale(...)`; constructor missing in Typed CSSOM.
+**Rule for AI agents:** Never `new CSSUnitValue(...)`; the constructor is missing in Gameface, so this API cannot be instantiated.
 
-**Why:** scraper missing: ["CSSScale"]
+**Why:** scraper missing: ["CSSUnitValue"].
 
 ---
-### [JS-046] — CSSSkewX
+### [JS-062] — DocumentFragment
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// CSSSkewX is missing on CSSSkewX
+const x = new DocumentFragment(/* ... */); // TypeError: DocumentFragment is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// DocumentFragment is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never `new CSSSkewX(...)`; constructor missing in Typed CSSOM.
+**Rule for AI agents:** Never `new DocumentFragment(...)` (constructor missing) and do not read/write `moveBefore`, `prepend`, `replaceChildren` on existing `DocumentFragment` instances; all missing in Gameface.
 
-**Why:** scraper missing: ["CSSSkewX"]
+**Why:** scraper missing: ["DocumentFragment","moveBefore","prepend","replaceChildren"].
 
 ---
-### [JS-047] — CSSSkewY
+### [JS-063] — DocumentType
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// CSSSkewY is missing on CSSSkewY
+instance.replaceWith; // DocumentType.replaceWith is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// DocumentType is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never `new CSSSkewY(...)`; constructor missing in Typed CSSOM.
+**Rule for AI agents:** Never read/write `replaceWith` on `DocumentType` instances; missing in Gameface.
 
-**Why:** scraper missing: ["CSSSkewY"]
+**Why:** scraper missing: ["replaceWith"].
 
 ---
-### [JS-048] — CSSStyleValue
+### [JS-065] — DOMMatrix
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// toString is a stub on CSSStyleValue
+const x = new DOMMatrix(/* ... */); // TypeError: DOMMatrix is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Don't construct DOMMatrix; read existing instances returned by DOM APIs (getBoundingClientRect, etc.).
 ```
 
-**Rule for AI agents:** Never use the Typed-CSSOM (CSSStyleValue); `get`/`set`/`has`/`clear`/`delete` are stubs and the constructors are missing.
+**Rule for AI agents:** Never `new DOMMatrix(...)` (constructor missing) and do not read/write `invertSelf`, `multiplySelf`, `preMultiplySelf`, `rotateAxisAngleSelf`, `rotateFromVectorSelf`, `rotateSelf`, `scale3dSelf`, `scaleSelf`, `setMatrixValue`, `skewXSelf`, …+2 more on existing `DOMMatrix` instances; all missing in Gameface.
 
-**Why:** scraper stubs: ["toString"]
+**Why:** scraper missing: ["invertSelf","multiplySelf","preMultiplySelf","rotateAxisAngleSelf","rotateFromVectorSelf","rotateSelf","scale3dSelf","scaleSelf","setMatrixValue","skewXSelf","skewYSelf","translateSelf"] …+1 more.
 
 ---
-### [JS-049] — CSSTransformComponent
+### [JS-066] — DOMRectReadOnly
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// toMatrix is a stub on CSSTransformComponent
+const x = new DOMRectReadOnly(/* ... */); // TypeError: DOMRectReadOnly is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Don't construct DOMRectReadOnly; read existing instances returned by DOM APIs (getBoundingClientRect, etc.).
 ```
 
-**Rule for AI agents:** Never use the Typed-CSSOM (CSSTransformComponent); `get`/`set`/`has`/`clear`/`delete` are stubs and the constructors are missing.
+**Rule for AI agents:** Never `new DOMRectReadOnly(...)` (constructor missing) and do not read/write `toJSON` on existing `DOMRectReadOnly` instances; all missing in Gameface.
 
-**Why:** scraper stubs: ["toMatrix","toString"]; only present: ["is2D"]
+**Why:** scraper missing: ["toJSON","DOMRectReadOnly"].
 
 ---
-### [JS-050] — CSSTransformValue
+### [JS-067] — DOMStringMap
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// GetTransformAtIndex is a stub on CSSTransformValue
+instance.itemDeleter; // DOMStringMap.itemDeleter is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Don't construct DOMStringMap; read existing instances returned by DOM APIs (getBoundingClientRect, etc.).
 ```
 
-**Rule for AI agents:** Never use the Typed-CSSOM (CSSTransformValue); `get`/`set`/`has`/`clear`/`delete` are stubs and the constructors are missing.
+**Rule for AI agents:** Never read/write `itemDeleter`, `itemGetter`, `itemSetter` on `DOMStringMap` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["GetTransformAtIndex","SetTransformAtIndex","toMatrix","forEach","entries","keys","values"]; only present: ["length","is2D"]
+**Why:** scraper missing: ["itemDeleter","itemGetter","itemSetter"].
 
 ---
-### [JS-051] — CSSTranslate
+### [JS-068] — Event
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// CSSTranslate is missing on CSSTranslate
+const x = new Event(/* ... */); // TypeError: Event is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Never construct Event; receive instances from listeners only. addEventListener/removeEventListener/dispatchEvent on supported host objects work.
 ```
 
-**Rule for AI agents:** Never `new CSSTranslate(...)`; constructor missing in Typed CSSOM.
+**Rule for AI agents:** Never `new Event(...)` (constructor missing) and do not read/write `cancelBubble`, `isTrusted`, `returnValue`, `srcElement`, `timeStamp`, `composedPath`, `explicitOriginalTarget`, `originalTarget` on existing `Event` instances; all missing in Gameface.
 
-**Why:** scraper missing: ["CSSTranslate"]
+**Why:** scraper missing: ["cancelBubble","isTrusted","returnValue","srcElement","timeStamp","composedPath","Event","explicitOriginalTarget","originalTarget"].
 
 ---
-### [JS-052] — CSSUnitValue
+### [JS-069] — Gamepad
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// CSSUnitValue is missing on CSSUnitValue
+instance.vibrationActuator; // Gamepad.vibrationActuator is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Gamepad is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never `new CSSUnitValue(...)`; constructor missing in Typed CSSOM.
+**Rule for AI agents:** Never read/write `vibrationActuator`, `hapticActuators` on `Gamepad` instances; missing in Gameface.
 
-**Why:** scraper missing: ["CSSUnitValue"]
+**Why:** scraper missing: ["vibrationActuator","hapticActuators"].
 
 ---
-### [JS-053] — DocumentFragment
+### [JS-070] — GetAnimationsOptions
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// getElementById is a stub on DocumentFragment
+instance.subtree; // GetAnimationsOptions.subtree is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// GetAnimationsOptions is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never `new DocumentFragment()`; constructor missing. `getElementById`/`querySelector`/`querySelectorAll`/`append` are stubs.
+**Rule for AI agents:** Never read/write `subtree` on `GetAnimationsOptions` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["getElementById","querySelector","querySelectorAll","append"]; scraper missing: ["DocumentFragment","moveBefore","prepend","replaceChildren"]
+**Why:** scraper missing: ["subtree"].
 
 ---
-### [JS-054] — DocumentType
+### [JS-071] — HTMLBodyElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// after is a stub on DocumentType
+instance.aLink; // HTMLBodyElement.aLink is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// HTMLBodyElement is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never call `DocumentType.replaceWith`; missing. `after`/`before`/`remove` are stubs.
+**Rule for AI agents:** Never read/write `aLink`, `background`, `bgColor`, `link`, `text`, `vLink` on `HTMLBodyElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["after","before","remove"]; scraper missing: ["replaceWith"]
+**Why:** scraper missing: ["aLink","background","bgColor","link","text","vLink"].
 
 ---
-### [JS-056] — DOMMatrix
+### [JS-072] — HTMLButtonElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// invertSelf is missing on DOMMatrix
+instance.disabled; // HTMLButtonElement.disabled is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// HTMLButtonElement is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never `new DOMMatrix(...)`; constructor missing. Mutating self-* methods (`invertSelf`, `multiplySelf`, `rotateSelf`, etc.) are missing.
+**Rule for AI agents:** Never read/write `disabled`, `form`, `formAction`, `formEnctype`, `formMethod`, `formNoValidate`, `formTarget`, `labels`, `name`, `type`, …+11 more on `HTMLButtonElement` instances; missing in Gameface.
 
-**Why:** scraper missing: ["invertSelf","multiplySelf","preMultiplySelf","rotateAxisAngleSelf","rotateFromVectorSelf","rotateSelf","scale3dSelf","scaleSelf","setMatrixValue","skewXSelf","skewYSelf","translateSelf"] …+1 more
+**Why:** scraper missing: ["disabled","form","formAction","formEnctype","formMethod","formNoValidate","formTarget","labels","name","type","validationMessage","validity"] …+9 more.
 
 ---
-### [JS-057] — DOMRect
+### [JS-073] — HTMLCollection
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// DOMRect is missing on DOMRect
+instance.namedItem; // HTMLCollection.namedItem is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// HTMLCollection is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never `new DOMRect(...)`; constructor missing. 
+**Rule for AI agents:** Never read/write `namedItem` on `HTMLCollection` instances; missing in Gameface.
 
-**Why:** scraper missing: ["DOMRect"]
+**Why:** scraper missing: ["namedItem"].
 
 ---
-### [JS-058] — DOMRectList
+### [JS-074] — HTMLDivElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// item is a stub on DOMRectList
+instance.align; // HTMLDivElement.align is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// HTMLDivElement is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never call `DOMRectList.item` or iteration methods; they are stubs. Use `length` + index access only.
+**Rule for AI agents:** Never read/write `align` on `HTMLDivElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["item"]; only present: ["length"]
-
----
-### [JS-059] — DOMRectReadOnly
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// toJSON is missing on DOMRectReadOnly
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never `new DOMRectReadOnly(...)`; constructor missing. 
-
-**Why:** scraper missing: ["toJSON","DOMRectReadOnly"]
-
----
-### [JS-060] — DOMStringMap
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// itemDeleter is missing on DOMStringMap
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never `new DOMStringMap(...)`; constructor missing. 
-
-**Why:** scraper missing: ["itemDeleter","itemGetter","itemSetter"]
-
----
-### [JS-061] — DOMTokenList
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-el.classList.add('x'); el.classList.toggle('y'); // both stubs
-```
-
-**✅ Generate instead:**
-```js
-// Use el.className = '...' assignment for guaranteed effect; classList methods exist but are stubs.
-el.className = 'panel panel--active';
-```
-
-**Rule for AI agents:** Never call `classList` methods (`add`, `remove`, `toggle`, `replace`, `contains`, `supports`, `item`); they are stubs. Assign `element.className` directly.
-
-**Why:** scraper stubs: ["add","contains","item","remove","replace","supports","toggle","toString","forEach","entries","keys","values"]; only present: ["length","value"]
-
----
-### [JS-062] — DOMTokenListPart
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// add is a stub on DOMTokenListPart
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never assume the full standard surface of `DOMTokenListPart`; multiple methods/properties are stubs or missing per the scraper.
-
-**Why:** scraper stubs: ["add","contains","item","remove","replace","supports"]; only present: ["length","value"]
-
----
-### [JS-063] — ErrorEvent
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// ErrorEvent is missing on ErrorEvent
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never `new ErrorEvent(...)`; constructor missing. Receive instances from listeners.
-
-**Why:** scraper missing: ["ErrorEvent"]
-
----
-### [JS-064] — EventListener
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// handleEvent is a stub on EventListener
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never assume the full standard surface of `EventListener`; multiple methods/properties are stubs or missing per the scraper.
-
-**Why:** scraper stubs: ["handleEvent"]
-
----
-### [JS-065] — FocusEvent
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// FocusEvent is missing on FocusEvent
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never `new FocusEvent(...)`; constructor missing. Receive instances from listeners.
-
-**Why:** scraper missing: ["FocusEvent"]
-
----
-### [JS-066] — Gamepad
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// vibrationActuator is missing on Gamepad
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never assume the full standard surface of `Gamepad`; multiple methods/properties are stubs or missing per the scraper.
-
-**Why:** scraper missing: ["vibrationActuator","hapticActuators"]
-
----
-### [JS-067] — GamepadEvent
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// GamepadEvent is missing on GamepadEvent
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never `new GamepadEvent(...)`; constructor missing. Receive instances from listeners.
-
-**Why:** scraper missing: ["GamepadEvent"]
-
----
-### [JS-068] — GetAnimationsOptions
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// subtree is missing on GetAnimationsOptions
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never set the missing dictionary fields on `GetAnimationsOptions` (per scraper evidence); they are silently ignored.
-
-**Why:** scraper missing: ["subtree"]
-
----
-### [JS-069] — HTMLBodyElement
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// addEventListener is a stub on HTMLBodyElement
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never expect HTMLBodyElement-specific properties beyond Element; `addEventListener`/`removeEventListener` are stubs and there are no element-typed extras.
-
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]; scraper missing: ["aLink","background","bgColor","link","text","vLink"]
-
----
-### [JS-070] — HTMLButtonElement
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// addEventListener is a stub on HTMLButtonElement
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never use `HTMLButtonElement` form/validation properties (`form`, `validity`, `labels`, `formAction`, `checkValidity`, `reportValidity`, `setCustomValidity`, `disabled`, `type`, `value`, `name`, `willValidate`, `command`/`commandFor*`, `popoverTarget*`); all missing.
-
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]; scraper missing: ["disabled","form","formAction","formEnctype","formMethod","formNoValidate","formTarget","labels","name","type","validationMessage","validity"] …+9 more
-
----
-### [JS-071] — HTMLCanvasElement
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// getContext is a stub on HTMLCanvasElement
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never call `canvas.toDataURL`, `toBlob`, `captureStream`, `transferControlToOffscreen`; missing. `getContext`/`addEventListener` are stubs.
-
-**Why:** scraper stubs: ["getContext","addEventListener","removeEventListener"]; scraper missing: ["getContext2D","captureStream","toBlob","toDataURL","transferControlToOffscreen","mozOpaque","mozPrintCallback"]
-
----
-### [JS-072] — HTMLCollection
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// item is a stub on HTMLCollection
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never assume the full standard surface of `HTMLCollection`; multiple methods/properties are stubs or missing per the scraper.
-
-**Why:** scraper stubs: ["item"]; scraper missing: ["namedItem"]
-
----
-### [JS-073] — HTMLDivElement
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// addEventListener is a stub on HTMLDivElement
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never expect HTMLDivElement-specific properties beyond Element; `addEventListener`/`removeEventListener` are stubs and there are no element-typed extras.
-
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]
-
----
-### [JS-074] — HTMLDocument
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// addEventListener is a stub on HTMLDocument
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never expect HTMLDocument-specific properties beyond Element; `addEventListener`/`removeEventListener` are stubs and there are no element-typed extras.
-
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]
+**Why:** scraper missing: ["align"].
 
 ---
 ### [JS-075] — HTMLElement
@@ -1497,17 +1485,17 @@ el.className = 'panel panel--active';
 
 **❌ Never generate:**
 ```js
-// addEventListener is a stub on HTMLElement
+instance.accessKey; // HTMLElement.accessKey is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Avoid hidden/inert/innerText/outerText/title/lang/dir/spellcheck/tabIndex/draggable/accessKey/translate/contentEditable/enterKeyHint/inputMode/popover* — missing. Use plain DOM (className, getAttribute, addEventListener).
 ```
 
-**Rule for AI agents:** Never use `hidden`, `inert`, `innerText`/`outerText`, `title`, `lang`, `dir`, `autocapitalize`, `autocorrect`, `spellcheck`, `tabIndex`, `accessKey`, `draggable`, `translate`, `isContentEditable`/`contentEditable`, `enterKeyHint`, `inputMode`, `virtualKeyboardPolicy`, `popover`/`showPopover`/`hidePopover`/`togglePopover`, `click()`, `attachInternals`, `autofocus`; all missing.
+**Rule for AI agents:** Never read/write `accessKey`, `accessKeyLabel`, `autocapitalize`, `autocorrect`, `dir`, `draggable`, `hidden`, `inert`, `innerText`, `lang`, …+21 more on `HTMLElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["addEventListener","removeEventListener","blur","focus"]; scraper missing: ["accessKey","accessKeyLabel","autocapitalize","autocorrect","dir","draggable","hidden","inert","innerText","lang","outerText","popover"] …+19 more
+**Why:** scraper missing: ["accessKey","accessKeyLabel","autocapitalize","autocorrect","dir","draggable","hidden","inert","innerText","lang","outerText","popover"] …+19 more.
 
 ---
 ### [JS-076] — HTMLHeadElement
@@ -1517,17 +1505,17 @@ el.className = 'panel panel--active';
 
 **❌ Never generate:**
 ```js
-// addEventListener is a stub on HTMLHeadElement
+instance.profile; // HTMLHeadElement.profile is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// HTMLHeadElement is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never expect HTMLHeadElement-specific properties beyond Element; `addEventListener`/`removeEventListener` are stubs and there are no element-typed extras.
+**Rule for AI agents:** Never read/write `profile` on `HTMLHeadElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]
+**Why:** scraper missing: ["profile"].
 
 ---
 ### [JS-077] — HTMLHtmlElement
@@ -1537,1081 +1525,680 @@ el.className = 'panel panel--active';
 
 **❌ Never generate:**
 ```js
-// addEventListener is a stub on HTMLHtmlElement
+instance.version; // HTMLHtmlElement.version is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// HTMLHtmlElement is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never expect HTMLHtmlElement-specific properties beyond Element; `addEventListener`/`removeEventListener` are stubs and there are no element-typed extras.
+**Rule for AI agents:** Never read/write `version` on `HTMLHtmlElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]
+**Why:** scraper missing: ["version"].
 
 ---
-### [JS-078] — HTMLIFrameElement
+### [JS-078] — HTMLParagraphElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// addEventListener is a stub on HTMLIFrameElement
+instance.align; // HTMLParagraphElement.align is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// HTMLParagraphElement is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never use `iframe.contentDocument`/`contentWindow`, `src`/`srcdoc`, `allow`, `allowFullscreen`, `sandbox`, `loading`, `name`, `height`/`width`; iframe is parsed-no-impl. All missing.
+**Rule for AI agents:** Never read/write `align` on `HTMLParagraphElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]; scraper missing: ["align","allow","allowFullscreen","contentDocument","contentWindow","frameBorder","height","loading","longDesc","marginHeight","marginWidth","name"] …+15 more
+**Why:** scraper missing: ["align"].
 
 ---
-### [JS-079] — HTMLImageElement
+### [JS-079] — HTMLPreElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// addEventListener is a stub on HTMLImageElement
+instance.width; // HTMLPreElement.width is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// HTMLPreElement is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never read `img.alt`, `complete`, `naturalWidth`/`Height`, `currentSrc`, `crossOrigin`, `decoding`, `fetchPriority`, `loading`, `referrerPolicy`, `sizes`, `srcset`, `useMap`, `x`, `y`; all missing. `src` works.
+**Rule for AI agents:** Never read/write `width` on `HTMLPreElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]; scraper missing: ["align","alt","border","complete","crossOrigin","currentSrc","decoding","fetchPriority","hspace","isMap","loading","longDesc"] …+15 more
+**Why:** scraper missing: ["width"].
 
 ---
-### [JS-080] — HTMLInputElement
+### [JS-080] — HTMLScriptElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// select is a stub on HTMLInputElement
+instance.charset; // HTMLScriptElement.charset is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// HTMLScriptElement is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never use `input.checked`, `files`, `form`, `labels`, `list`, `max`/`min`/`step`, `multiple`, `pattern`, `placeholder`, `readOnly`, `required`, `validity`, `valueAsDate`/`valueAsNumber`, `stepUp`/`stepDown`, `checkValidity`/`reportValidity`/`setCustomValidity`, `showPicker`, `indeterminate`, `autocomplete`, `accept`, `alt`, `disabled`, `name`; all missing. `value`, `type`, `focus`, `blur`, `select`, `setRangeText`, `setSelectionRange` are stubs/supported.
+**Rule for AI agents:** Never read/write `charset`, `crossOrigin`, `event`, `fetchPriority`, `htmlFor`, `integrity`, `noModule`, `referrerPolicy`, `attributionSrc`, `blocking` on `HTMLScriptElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["select","setRangeText","setSelectionRange","addEventListener","removeEventListener"]; scraper missing: ["accept","align","alt","autocomplete","capture","checked","defaultChecked","defaultValue","dirName","disabled","files","form"] …+39 more
+**Why:** scraper missing: ["charset","crossOrigin","event","fetchPriority","htmlFor","integrity","noModule","referrerPolicy","attributionSrc","blocking"].
 
 ---
-### [JS-081] — HTMLLinkElement
+### [JS-081] — HTMLSourceElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// addEventListener is a stub on HTMLLinkElement
+instance.height; // HTMLSourceElement.height is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// HTMLSourceElement is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never use `link.sheet`, `relList`, `media`, `crossOrigin`, `integrity`, `fetchPriority`, `hreflang`, `imageSizes`/`imageSrcset`, `referrerPolicy`, `sizes`, `disabled`, `as`; all missing. `href`/`rel` work.
+**Rule for AI agents:** Never read/write `height`, `sizes`, `srcset`, `width` on `HTMLSourceElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]; scraper missing: ["as","charset","crossOrigin","disabled","fetchPriority","hreflang","imageSizes","imageSrcset","integrity","media","referrerPolicy","rev"] …+5 more
+**Why:** scraper missing: ["height","sizes","srcset","width"].
 
 ---
-### [JS-082] — HTMLMediaElement
+### [JS-082] — HTMLStyleElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// canPlayType is a stub on HTMLMediaElement
+instance.disabled; // HTMLStyleElement.disabled is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// HTMLStyleElement is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never call `addTextTrack`, `fastSeek`, `setMediaKeys`, `setSinkId`; missing. `canPlayType`/`load`/`pause`/`play`/`coh*` are stubs.
+**Rule for AI agents:** Never read/write `disabled`, `media`, `type`, `blocking`, `sheet` on `HTMLStyleElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["canPlayType","cohGetKeyframeTimestamps","cohPrebufferKeyframe","load","pause","play","addEventListener","removeEventListener"]; scraper missing: ["srcObject","controls","defaultMuted","disableRemotePlayback","mediaKeys","onencrypted","onwaitingforkey","preservesPitch","remote","sinkId","textTracks","addTextTrack"] …+15 more
+**Why:** scraper missing: ["disabled","media","type","blocking","sheet"].
 
 ---
-### [JS-083] — HTMLParagraphElement
+### [JS-083] — HTMLTemplateElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// addEventListener is a stub on HTMLParagraphElement
+instance.shadowRootClonable; // HTMLTemplateElement.shadowRootClonable is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// HTMLTemplateElement is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never expect HTMLParagraphElement-specific properties beyond Element; `addEventListener`/`removeEventListener` are stubs and there are no element-typed extras.
+**Rule for AI agents:** Never read/write `shadowRootClonable`, `shadowRootDelegatesFocus`, `shadowRootMode`, `shadowRootSerializable` on `HTMLTemplateElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]
+**Why:** scraper missing: ["shadowRootClonable","shadowRootDelegatesFocus","shadowRootMode","shadowRootSerializable"].
 
 ---
-### [JS-084] — HTMLPreElement
+### [JS-084] — HTMLTitleElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// addEventListener is a stub on HTMLPreElement
+instance.text; // HTMLTitleElement.text is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// HTMLTitleElement is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never expect HTMLPreElement-specific properties beyond Element; `addEventListener`/`removeEventListener` are stubs and there are no element-typed extras.
+**Rule for AI agents:** Never read/write `text` on `HTMLTitleElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]
+**Why:** scraper missing: ["text"].
 
 ---
-### [JS-085] — HTMLScriptElement
+### [JS-085] — KeyboardEvent
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// addEventListener is a stub on HTMLScriptElement
+const x = new KeyboardEvent(/* ... */); // TypeError: KeyboardEvent is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Never construct KeyboardEvent; receive instances from listeners only. addEventListener/removeEventListener/dispatchEvent on supported host objects work.
 ```
 
-**Rule for AI agents:** Never use `script.crossOrigin`, `integrity`, `fetchPriority`, `referrerPolicy`, `noModule`, `htmlFor`, `event`, `charset`; missing.
+**Rule for AI agents:** Never `new KeyboardEvent(...)` (constructor missing) and do not read/write `isComposing`, `keyIdentifier` on existing `KeyboardEvent` instances; all missing in Gameface.
 
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]; scraper missing: ["charset","crossOrigin","event","fetchPriority","htmlFor","integrity","noModule","referrerPolicy","attributionSrc","blocking"]
+**Why:** scraper missing: ["isComposing","KeyboardEvent","keyIdentifier"].
 
 ---
-### [JS-086] — HTMLSlotElement
+### [JS-087] — MessageEvent
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// assign is a stub on HTMLSlotElement
+const x = new MessageEvent(/* ... */); // TypeError: MessageEvent is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Never construct MessageEvent; receive instances from listeners only. addEventListener/removeEventListener/dispatchEvent on supported host objects work.
 ```
 
-**Rule for AI agents:** Never assume the full standard surface of `HTMLSlotElement`; multiple methods/properties are stubs or missing per the scraper.
+**Rule for AI agents:** Never `new MessageEvent(...)` (constructor missing) and do not read/write `ports`, `source`, `initMessageEvent`, `userActivation` on existing `MessageEvent` instances; all missing in Gameface.
 
-**Why:** scraper stubs: ["assign","assignedElements","assignedNodes","addEventListener","removeEventListener"]; only present: ["name"]
+**Why:** scraper missing: ["ports","source","initMessageEvent","MessageEvent","userActivation"].
 
 ---
-### [JS-087] — HTMLSourceElement
+### [JS-090] — MouseEvent
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// addEventListener is a stub on HTMLSourceElement
+const x = new MouseEvent(/* ... */); // TypeError: MouseEvent is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Never construct MouseEvent; receive instances from listeners only. addEventListener/removeEventListener/dispatchEvent on supported host objects work.
 ```
 
-**Rule for AI agents:** Never use `source.height`, `width`, `sizes`, `srcset`; missing.
+**Rule for AI agents:** Never `new MouseEvent(...)` (constructor missing) and do not read/write `layerX`, `layerY`, `offsetX`, `offsetY`, `pageX`, `pageY` on existing `MouseEvent` instances; all missing in Gameface.
 
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]; scraper missing: ["height","sizes","srcset","width"]
+**Why:** scraper missing: ["layerX","layerY","offsetX","offsetY","pageX","pageY","MouseEvent"].
 
 ---
-### [JS-088] — HTMLSpanElement
+### [JS-091] — NamedNodeMap
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// addEventListener is a stub on HTMLSpanElement
+instance.getNamedItemNS; // NamedNodeMap.getNamedItemNS is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Read/write attributes via element.getAttribute/setAttribute/removeAttribute. Don't poke NamedNodeMap directly.
 ```
 
-**Rule for AI agents:** Never expect HTMLSpanElement-specific properties beyond Element; `addEventListener`/`removeEventListener` are stubs and there are no element-typed extras.
+**Rule for AI agents:** Never read/write `getNamedItemNS`, `removeNamedItem`, `removeNamedItemNS`, `setNamedItem`, `setNamedItemNS` on `NamedNodeMap` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]
+**Why:** scraper missing: ["getNamedItemNS","removeNamedItem","removeNamedItemNS","setNamedItem","setNamedItemNS"].
 
 ---
-### [JS-089] — HTMLStyleElement
+### [JS-092] — NodeIterator
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// addEventListener is a stub on HTMLStyleElement
+instance.detach; // NodeIterator.detach is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// NodeIterator is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never use `style.sheet`, `disabled`, `media`, `type`; missing.
+**Rule for AI agents:** Never read/write `detach` on `NodeIterator` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]; scraper missing: ["disabled","media","type","blocking","sheet"]
+**Why:** scraper missing: ["detach"].
 
 ---
-### [JS-090] — HTMLTemplateElement
+### [JS-093] — PopStateEvent
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// addEventListener is a stub on HTMLTemplateElement
+const x = new PopStateEvent(/* ... */); // TypeError: PopStateEvent is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Never construct PopStateEvent; receive instances from listeners only. addEventListener/removeEventListener/dispatchEvent on supported host objects work.
 ```
 
-**Rule for AI agents:** Never use `template.shadowRootMode`/`shadowRootClonable`/`shadowRootDelegatesFocus`/`shadowRootSerializable`; missing. `content` works.
+**Rule for AI agents:** Never `new PopStateEvent(...)` (constructor missing) and do not read/write `hasUAVisualTransition` on existing `PopStateEvent` instances; all missing in Gameface.
 
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]; scraper missing: ["shadowRootClonable","shadowRootDelegatesFocus","shadowRootMode","shadowRootSerializable"]
+**Why:** scraper missing: ["hasUAVisualTransition","PopStateEvent"].
 
 ---
-### [JS-091] — HTMLTextAreaElement
+### [JS-094] — ResizeObserverOptions
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// select is a stub on HTMLTextAreaElement
+instance.box; // ResizeObserverOptions.box is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// ResizeObserverOptions is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never use `textarea.form`, `labels`, `name`, `disabled`, `readOnly`, `required`, `placeholder`, `autocomplete`, `validity`/`willValidate`/`checkValidity`/`reportValidity`/`setCustomValidity`; missing. `value`, `rows`, `cols`, `select`, `setRangeText`, `setSelectionRange` work.
+**Rule for AI agents:** Never read/write `box` on `ResizeObserverOptions` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["select","setRangeText","setSelectionRange","addEventListener","removeEventListener"]; scraper missing: ["autocomplete","defaultValue","dirName","disabled","form","labels","name","placeholder","readOnly","required","type","validationMessage"] …+5 more
+**Why:** scraper missing: ["box"].
 
 ---
-### [JS-092] — HTMLTitleElement
+### [JS-095] — Screen
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// addEventListener is a stub on HTMLTitleElement
+instance.orientation; // Screen.orientation is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Screen is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never expect HTMLTitleElement-specific properties beyond Element; `addEventListener`/`removeEventListener` are stubs and there are no element-typed extras.
+**Rule for AI agents:** Never read/write `orientation`, `availLeft`, `availTop`, `isExtended`, `left`, `lockOrientation`, `mozBrightness`, `mozEnabled`, `top`, `unlockOrientation` on `Screen` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]
+**Why:** scraper missing: ["orientation","availLeft","availTop","isExtended","left","lockOrientation","mozBrightness","mozEnabled","top","unlockOrientation"].
 
 ---
-### [JS-093] — HTMLUnknownElement
+### [JS-096] — StylePropertyMap
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// addEventListener is a stub on HTMLUnknownElement
+instance.append; // StylePropertyMap.append is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Typed CSSOM is not constructible. Use plain string CSS values (el.style.transform = 'translate(10px, 20px)').
 ```
 
-**Rule for AI agents:** Never expect HTMLUnknownElement-specific properties beyond Element; `addEventListener`/`removeEventListener` are stubs and there are no element-typed extras.
+**Rule for AI agents:** Never read/write `append` on `StylePropertyMap` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]
+**Why:** scraper missing: ["append"].
 
 ---
-### [JS-094] — HTMLVideoElement
+### [JS-097] — StylePropertyMapReadOnly
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// addEventListener is a stub on HTMLVideoElement
+instance.getAll; // StylePropertyMapReadOnly.getAll is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Typed CSSOM is not constructible. Use plain string CSS values (el.style.transform = 'translate(10px, 20px)').
 ```
 
-**Rule for AI agents:** Never use `video.requestPictureInPicture`, `getVideoPlaybackQuality`, `requestVideoFrameCallback`/`cancelVideoFrameCallback`, `disablePictureInPicture`, `playsInline`; missing.
+**Rule for AI agents:** Never read/write `getAll`, `forEach`, `entries`, `keys`, `values` on `StylePropertyMapReadOnly` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]; scraper missing: ["disablePictureInPicture","onenterpictureinpicture","onleavepictureinpicture","playsInline","cancelVideoFrameCallback","getVideoPlaybackQuality","requestPictureInPicture","requestVideoFrameCallback","mozDecodedFrames","mozFrameDelay","mozHasAudio","mozPaintedFrames"] …+2 more
+**Why:** scraper missing: ["getAll","forEach","entries","keys","values"].
 
 ---
-### [JS-095] — Location
+### [JS-098] — StyleSheet
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// assign is a stub on Location
+instance.disabled; // StyleSheet.disabled is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// StyleSheet is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never assume the full standard surface of `Location`; multiple methods/properties are stubs or missing per the scraper.
+**Rule for AI agents:** Never read/write `disabled`, `href`, `parentStyleSheet`, `title`, `type`, `media` on `StyleSheet` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["assign","reload","replace","toString"]
+**Why:** scraper missing: ["disabled","href","parentStyleSheet","title","type","media"].
 
 ---
-### [JS-097] — MessageEvent
+### [JS-099] — SVGAnimatedLength
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// ports is missing on MessageEvent
+instance.animVal; // SVGAnimatedLength.animVal is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Use only the standard SVG attributes in markup; the SVG DOM (getBBox, animVal, createSVG*, SVGAnimatedLength-specific methods) is partial.
 ```
 
-**Rule for AI agents:** Never `new MessageEvent(...)`; constructor missing. Receive instances from listeners.
+**Rule for AI agents:** Never read/write `animVal` on `SVGAnimatedLength` instances; missing in Gameface.
 
-**Why:** scraper missing: ["ports","source","initMessageEvent","MessageEvent","userActivation"]
+**Why:** scraper missing: ["animVal"].
 
 ---
-### [JS-100] — NamedNodeMap
+### [JS-100] — SVGAnimatedRect
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// getNamedItem is a stub on NamedNodeMap
+instance.animVal; // SVGAnimatedRect.animVal is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Use only the standard SVG attributes in markup; the SVG DOM (getBBox, animVal, createSVG*, SVGAnimatedRect-specific methods) is partial.
 ```
 
-**Rule for AI agents:** Never call `NamedNodeMap.setNamedItem`/`removeNamedItem`/`getNamedItemNS`; missing. `item`/`getNamedItem` are stubs. Use `element.getAttribute`/`setAttribute` instead.
+**Rule for AI agents:** Never read/write `animVal` on `SVGAnimatedRect` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["getNamedItem","item"]; scraper missing: ["getNamedItemNS","removeNamedItem","removeNamedItemNS","setNamedItem","setNamedItemNS"]
+**Why:** scraper missing: ["animVal"].
 
 ---
-### [JS-101] — NodeFilter
+### [JS-101] — SVGAnimatedTransformList
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// acceptNode is a stub on NodeFilter
+instance.animVal; // SVGAnimatedTransformList.animVal is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Use only the standard SVG attributes in markup; the SVG DOM (getBBox, animVal, createSVG*, SVGAnimatedTransformList-specific methods) is partial.
 ```
 
-**Rule for AI agents:** Never assume the full standard surface of `NodeFilter`; multiple methods/properties are stubs or missing per the scraper.
+**Rule for AI agents:** Never read/write `animVal` on `SVGAnimatedTransformList` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["acceptNode"]
+**Why:** scraper missing: ["animVal"].
 
 ---
-### [JS-102] — NodeIterator
+### [JS-102] — SVGElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// nextNode is a stub on NodeIterator
+instance.ownerSVGElement; // SVGElement.ownerSVGElement is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Use only the standard SVG attributes in markup; the SVG DOM (getBBox, animVal, createSVG*, SVGElement-specific methods) is partial.
 ```
 
-**Rule for AI agents:** Never use `NodeIterator`; `nextNode`/`previousNode` are stubs and `createNodeIterator` returns a non-functional traverser.
+**Rule for AI agents:** Never read/write `ownerSVGElement`, `viewportElement`, `attributeStyleMap`, `autofocus`, `dataset`, `nonce`, `tabIndex` on `SVGElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["nextNode","previousNode"]; scraper missing: ["detach"]
+**Why:** scraper missing: ["ownerSVGElement","viewportElement","attributeStyleMap","autofocus","dataset","nonce","tabIndex"].
 
 ---
-### [JS-103] — NodeList
+### [JS-103] — SVGGraphicsElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-nodeList.forEach(fn); // stub iterator
+instance.getBBox; // SVGGraphicsElement.getBBox is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Iterate manually with a for-loop:
-for (let i = 0; i < list.length; i++) { handle(list[i]); }
+// Use only the standard SVG attributes in markup; the SVG DOM (getBBox, animVal, createSVG*, SVGGraphicsElement-specific methods) is partial.
 ```
 
-**Rule for AI agents:** Never call `NodeList.forEach`/`entries`/`keys`/`values` — they are stubs; iterate with a numeric `for` loop using `length`.
+**Rule for AI agents:** Never read/write `getBBox`, `getCTM`, `getScreenCTM`, `requiredExtensions`, `systemLanguage` on `SVGGraphicsElement` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["item","forEach","entries","keys","values"]; only present: ["length"]
+**Why:** scraper missing: ["getBBox","getCTM","getScreenCTM","requiredExtensions","systemLanguage"].
 
 ---
-### [JS-104] — PopStateEvent
+### [JS-104] — SVGLength
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// hasUAVisualTransition is missing on PopStateEvent
+instance.valueAsString; // SVGLength.valueAsString is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Use only the standard SVG attributes in markup; the SVG DOM (getBBox, animVal, createSVG*, SVGLength-specific methods) is partial.
 ```
 
-**Rule for AI agents:** Never `new PopStateEvent(...)`; constructor missing. Receive instances from listeners.
+**Rule for AI agents:** Never read/write `valueAsString`, `valueInSpecifiedUnits`, `convertToSpecifiedUnits`, `newValueSpecifiedUnits`, `SVG_LENGTHTYPE_UNKNOWN`, `SVG_LENGTHTYPE_NUMBER`, `SVG_LENGTHTYPE_PERCENTAGE`, `SVG_LENGTHTYPE_EMS`, `SVG_LENGTHTYPE_EXS`, `SVG_LENGTHTYPE_PX`, …+5 more on `SVGLength` instances; missing in Gameface.
 
-**Why:** scraper missing: ["hasUAVisualTransition","PopStateEvent"]
+**Why:** scraper missing: ["valueAsString","valueInSpecifiedUnits","convertToSpecifiedUnits","newValueSpecifiedUnits","SVG_LENGTHTYPE_UNKNOWN","SVG_LENGTHTYPE_NUMBER","SVG_LENGTHTYPE_PERCENTAGE","SVG_LENGTHTYPE_EMS","SVG_LENGTHTYPE_EXS","SVG_LENGTHTYPE_PX","SVG_LENGTHTYPE_CM","SVG_LENGTHTYPE_MM"] …+3 more.
 
 ---
-### [JS-105] — ProgressEvent
+### [JS-105] — SVGSVGElement
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// ProgressEvent is missing on ProgressEvent
+instance.currentScale; // SVGSVGElement.currentScale is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Use only the standard SVG attributes in markup; the SVG DOM (getBBox, animVal, createSVG*, SVGSVGElement-specific methods) is partial.
 ```
 
-**Rule for AI agents:** Never `new ProgressEvent(...)`; constructor missing. Receive instances from listeners.
+**Rule for AI agents:** Never read/write `currentScale`, `currentTranslate`, `x`, `y`, `animationsPaused`, `checkEnclosure`, `checkIntersection`, `createSVGAngle`, `createSVGLength`, `createSVGMatrix`, …+20 more on `SVGSVGElement` instances; missing in Gameface.
 
-**Why:** scraper missing: ["ProgressEvent"]
+**Why:** scraper missing: ["currentScale","currentTranslate","x","y","animationsPaused","checkEnclosure","checkIntersection","createSVGAngle","createSVGLength","createSVGMatrix","createSVGNumber","createSVGPoint"] …+18 more.
 
 ---
-### [JS-106] — PromiseRejectionEvent
+### [JS-106] — SVGTransform
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// PromiseRejectionEvent is missing on PromiseRejectionEvent
+instance.setMatrix; // SVGTransform.setMatrix is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Use only the standard SVG attributes in markup; the SVG DOM (getBBox, animVal, createSVG*, SVGTransform-specific methods) is partial.
 ```
 
-**Rule for AI agents:** Never `new PromiseRejectionEvent(...)`; constructor missing. Receive instances from listeners.
+**Rule for AI agents:** Never read/write `setMatrix`, `setRotate`, `setScale`, `setSkewX`, `setSkewY`, `setTranslate`, `SVG_TRANSFORM_UNKNOWN`, `SVG_TRANSFORM_MATRIX`, `SVG_TRANSFORM_TRANSLATE`, `SVG_TRANSFORM_SCALE`, …+3 more on `SVGTransform` instances; missing in Gameface.
 
-**Why:** scraper missing: ["PromiseRejectionEvent"]
+**Why:** scraper missing: ["setMatrix","setRotate","setScale","setSkewX","setSkewY","setTranslate","SVG_TRANSFORM_UNKNOWN","SVG_TRANSFORM_MATRIX","SVG_TRANSFORM_TRANSLATE","SVG_TRANSFORM_SCALE","SVG_TRANSFORM_ROTATE","SVG_TRANSFORM_SKEWX"] …+1 more.
 
 ---
-### [JS-107] — ResizeObserverOptions
+### [JS-107] — SVGTransformList
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// box is missing on ResizeObserverOptions
+instance.appendItem; // SVGTransformList.appendItem is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Use only the standard SVG attributes in markup; the SVG DOM (getBBox, animVal, createSVG*, SVGTransformList-specific methods) is partial.
 ```
 
-**Rule for AI agents:** Never set the missing dictionary fields on `ResizeObserverOptions` (per scraper evidence); they are silently ignored.
+**Rule for AI agents:** Never read/write `appendItem`, `clear`, `createSVGTransformFromMatrix`, `getItem`, `initialize`, `insertItemBefore`, `removeItem`, `replaceItem` on `SVGTransformList` instances; missing in Gameface.
 
-**Why:** scraper missing: ["box"]
+**Why:** scraper missing: ["appendItem","clear","createSVGTransformFromMatrix","getItem","initialize","insertItemBefore","removeItem","replaceItem"].
 
 ---
-### [JS-108] — Screen
+### [JS-108] — Text
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// orientation is missing on Screen
+const x = new Text(/* ... */); // TypeError: Text is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// document.createTextNode(...) / createComment(...) work. Avoid `new Text()` — constructor missing.
 ```
 
-**Rule for AI agents:** Never use `screen.orientation`, `availLeft`/`availTop`, `isExtended`, `left`/`top`, `lockOrientation`/`unlockOrientation`, `mozBrightness`/`mozEnabled`; missing.
+**Rule for AI agents:** Never `new Text(...)` (constructor missing) and do not read/write `getBoxQuads` on existing `Text` instances; all missing in Gameface.
 
-**Why:** scraper missing: ["orientation","availLeft","availTop","isExtended","left","lockOrientation","mozBrightness","mozEnabled","top","unlockOrientation"]
+**Why:** scraper missing: ["Text","getBoxQuads"].
 
 ---
-### [JS-109] — ShadowRoot
+### [JS-109] — TextMetrics
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// elementFromPoint is a stub on ShadowRoot
+instance.alphabeticBaseline; // TextMetrics.alphabeticBaseline is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// TextMetrics is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never depend on Shadow DOM (`element.attachShadow` is a stub on Element); `ShadowRoot` exists but `getHTML`/`setHTMLUnsafe`/`adoptedStyleSheets`/`getAnimations`/`getSelection` are missing.
+**Rule for AI agents:** Never read/write `alphabeticBaseline`, `emHeightAscent`, `emHeightDescent`, `fontBoundingBoxAscent`, `fontBoundingBoxDescent`, `hangingBaseline`, `ideographicBaseline` on `TextMetrics` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["elementFromPoint","elementsFromPoint","addEventListener","removeEventListener"]; scraper missing: ["serializable","getHTML","setHTMLUnsafe","adoptedStyleSheets","fullscreenElement","getAnimations","getSelection","pictureInPictureElement","pointerLockElement"]
+**Why:** scraper missing: ["alphabeticBaseline","emHeightAscent","emHeightDescent","fontBoundingBoxAscent","fontBoundingBoxDescent","hangingBaseline","ideographicBaseline"].
 
 ---
-### [JS-110] — StylePropertyMap
+### [JS-110] — Touch
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// clear is a stub on StylePropertyMap
+const x = new Touch(/* ... */); // TypeError: Touch is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Touch is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never use the Typed-CSSOM (StylePropertyMap); `get`/`set`/`has`/`clear`/`delete` are stubs and the constructors are missing.
+**Rule for AI agents:** Never `new Touch(...)` (constructor missing) and do not read/write `force`, `radiusX`, `radiusY`, `rotationAngle`, `altitudeAngle`, `azimuthAngle`, `touchType` on existing `Touch` instances; all missing in Gameface.
 
-**Why:** scraper stubs: ["clear","delete","set"]
+**Why:** scraper missing: ["force","radiusX","radiusY","rotationAngle","Touch","altitudeAngle","azimuthAngle","touchType"].
 
 ---
-### [JS-111] — StylePropertyMapReadOnly
+### [JS-111] — TouchEvent
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// get is a stub on StylePropertyMapReadOnly
+const x = new TouchEvent(/* ... */); // TypeError: TouchEvent is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Never construct TouchEvent; receive instances from listeners only. addEventListener/removeEventListener/dispatchEvent on supported host objects work.
 ```
 
-**Rule for AI agents:** Never use the Typed-CSSOM (StylePropertyMapReadOnly); `get`/`set`/`has`/`clear`/`delete` are stubs and the constructors are missing.
+**Rule for AI agents:** Never `new TouchEvent(...)` (constructor missing) and do not read/write `changedTouches`, `targetTouches` on existing `TouchEvent` instances; all missing in Gameface.
 
-**Why:** scraper stubs: ["get","has"]; scraper missing: ["getAll","forEach","entries","keys","values"]
+**Why:** scraper missing: ["changedTouches","targetTouches","TouchEvent"].
 
 ---
-### [JS-112] — StyleSheet
+### [JS-112] — UIEvent
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// disabled is missing on StyleSheet
+const x = new UIEvent(/* ... */); // TypeError: UIEvent is not a constructor
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// Never construct UIEvent; receive instances from listeners only. addEventListener/removeEventListener/dispatchEvent on supported host objects work.
 ```
 
-**Rule for AI agents:** Never assume the full standard surface of `StyleSheet`; multiple methods/properties are stubs or missing per the scraper.
+**Rule for AI agents:** Never `new UIEvent(...)` (constructor missing) and do not read/write `view`, `which`, `sourceCapabilities` on existing `UIEvent` instances; all missing in Gameface.
 
-**Why:** scraper missing: ["disabled","href","parentStyleSheet","title","type","media"]
+**Why:** scraper missing: ["view","which","UIEvent","sourceCapabilities"].
 
 ---
-### [JS-113] — StyleSheetList
+### [JS-115] — XMLHttpRequestEventTarget
 **Status:** stub
 **Surface:** js-stub
 **Severity:** high
 
 **❌ Never generate:**
 ```js
-// item is a stub on StyleSheetList
+instance.onabort; // XMLHttpRequestEventTarget.onabort is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
 ```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
+// XMLHttpRequestEventTarget is partially implemented. Refer to results/js/partial.json for the exact missing members and stick to the supported subset.
 ```
 
-**Rule for AI agents:** Never call `StyleSheetList.item` or iteration methods; they are stubs. Use `length` + index access only.
+**Rule for AI agents:** Never read/write `onabort`, `onerror`, `onload`, `onloadend`, `onloadstart`, `onprogress`, `ontimeout` on `XMLHttpRequestEventTarget` instances; missing in Gameface.
 
-**Why:** scraper stubs: ["item"]; only present: ["length"]
+**Why:** scraper missing: ["onabort","onerror","onload","onloadend","onloadstart","onprogress","ontimeout"].
 
 ---
-### [JS-114] — SVGAnimatedLength
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// animVal is missing on SVGAnimatedLength
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never use full SVGAnimatedLength interface; many properties are missing (animVal, dataset on SVGElement, ownerSVGElement, getBBox/getCTM, currentScale/Translate, createSVG* factories, animation control). Construct SVG declaratively in the markup and rely only on standard CSS properties for styling.
-
-**Why:** scraper missing: ["animVal"]
-
----
-### [JS-115] — SVGAnimatedRect
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// animVal is missing on SVGAnimatedRect
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never use full SVGAnimatedRect interface; many properties are missing (animVal, dataset on SVGElement, ownerSVGElement, getBBox/getCTM, currentScale/Translate, createSVG* factories, animation control). Construct SVG declaratively in the markup and rely only on standard CSS properties for styling.
-
-**Why:** scraper missing: ["animVal"]
-
----
-### [JS-116] — SVGAnimatedTransformList
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// animVal is missing on SVGAnimatedTransformList
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never use full SVGAnimatedTransformList interface; many properties are missing (animVal, dataset on SVGElement, ownerSVGElement, getBBox/getCTM, currentScale/Translate, createSVG* factories, animation control). Construct SVG declaratively in the markup and rely only on standard CSS properties for styling.
-
-**Why:** scraper missing: ["animVal"]
-
----
-### [JS-117] — SVGElement
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// addEventListener is a stub on SVGElement
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never use full SVGElement interface; many properties are missing (animVal, dataset on SVGElement, ownerSVGElement, getBBox/getCTM, currentScale/Translate, createSVG* factories, animation control). Construct SVG declaratively in the markup and rely only on standard CSS properties for styling.
-
-**Why:** scraper stubs: ["addEventListener","removeEventListener","blur","focus"]; scraper missing: ["ownerSVGElement","viewportElement","attributeStyleMap","autofocus","dataset","nonce","tabIndex"]
-
----
-### [JS-118] — SVGGraphicsElement
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// addEventListener is a stub on SVGGraphicsElement
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never use full SVGGraphicsElement interface; many properties are missing (animVal, dataset on SVGElement, ownerSVGElement, getBBox/getCTM, currentScale/Translate, createSVG* factories, animation control). Construct SVG declaratively in the markup and rely only on standard CSS properties for styling.
-
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]; scraper missing: ["getBBox","getCTM","getScreenCTM","requiredExtensions","systemLanguage"]
-
----
-### [JS-119] — SVGLength
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// valueAsString is missing on SVGLength
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never use full SVGLength interface; many properties are missing (animVal, dataset on SVGElement, ownerSVGElement, getBBox/getCTM, currentScale/Translate, createSVG* factories, animation control). Construct SVG declaratively in the markup and rely only on standard CSS properties for styling.
-
-**Why:** scraper missing: ["valueAsString","valueInSpecifiedUnits","convertToSpecifiedUnits","newValueSpecifiedUnits","SVG_LENGTHTYPE_UNKNOWN","SVG_LENGTHTYPE_NUMBER","SVG_LENGTHTYPE_PERCENTAGE","SVG_LENGTHTYPE_EMS","SVG_LENGTHTYPE_EXS","SVG_LENGTHTYPE_PX","SVG_LENGTHTYPE_CM","SVG_LENGTHTYPE_MM"] …+3 more
-
----
-### [JS-120] — SVGSVGElement
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// addEventListener is a stub on SVGSVGElement
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never use full SVGSVGElement interface; many properties are missing (animVal, dataset on SVGElement, ownerSVGElement, getBBox/getCTM, currentScale/Translate, createSVG* factories, animation control). Construct SVG declaratively in the markup and rely only on standard CSS properties for styling.
-
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]; scraper missing: ["currentScale","currentTranslate","x","y","animationsPaused","checkEnclosure","checkIntersection","createSVGAngle","createSVGLength","createSVGMatrix","createSVGNumber","createSVGPoint"] …+18 more
-
----
-### [JS-121] — SVGTextElement
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// getComputedTextLength is a stub on SVGTextElement
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never use full SVGTextElement interface; many properties are missing (animVal, dataset on SVGElement, ownerSVGElement, getBBox/getCTM, currentScale/Translate, createSVG* factories, animation control). Construct SVG declaratively in the markup and rely only on standard CSS properties for styling.
-
-**Why:** scraper stubs: ["getComputedTextLength","addEventListener","removeEventListener"]
-
----
-### [JS-122] — SVGTransform
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// setMatrix is missing on SVGTransform
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never use full SVGTransform interface; many properties are missing (animVal, dataset on SVGElement, ownerSVGElement, getBBox/getCTM, currentScale/Translate, createSVG* factories, animation control). Construct SVG declaratively in the markup and rely only on standard CSS properties for styling.
-
-**Why:** scraper missing: ["setMatrix","setRotate","setScale","setSkewX","setSkewY","setTranslate","SVG_TRANSFORM_UNKNOWN","SVG_TRANSFORM_MATRIX","SVG_TRANSFORM_TRANSLATE","SVG_TRANSFORM_SCALE","SVG_TRANSFORM_ROTATE","SVG_TRANSFORM_SKEWX"] …+1 more
-
----
-### [JS-123] — SVGTransformList
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// consolidate is a stub on SVGTransformList
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never use full SVGTransformList interface; many properties are missing (animVal, dataset on SVGElement, ownerSVGElement, getBBox/getCTM, currentScale/Translate, createSVG* factories, animation control). Construct SVG declaratively in the markup and rely only on standard CSS properties for styling.
-
-**Why:** scraper stubs: ["consolidate"]; scraper missing: ["appendItem","clear","createSVGTransformFromMatrix","getItem","initialize","insertItemBefore","removeItem","replaceItem"]
-
----
-### [JS-124] — Text
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// splitText is a stub on Text
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never `new Text()`; constructor missing. Create comments/text via `document.createComment`/`document.createTextNode` (stubs).
-
-**Why:** scraper stubs: ["splitText"]; scraper missing: ["Text","getBoxQuads"]
-
----
-### [JS-125] — TextMetrics
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// alphabeticBaseline is missing on TextMetrics
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never use `alphabeticBaseline`, `emHeightAscent`/`emHeightDescent`, `fontBoundingBoxAscent`/`fontBoundingBoxDescent`, `hangingBaseline`, `ideographicBaseline` from `measureText`; missing.
-
-**Why:** scraper missing: ["alphabeticBaseline","emHeightAscent","emHeightDescent","fontBoundingBoxAscent","fontBoundingBoxDescent","hangingBaseline","ideographicBaseline"]
-
----
-### [JS-126] — TimeRanges
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// end is a stub on TimeRanges
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never call `TimeRanges.item` or iteration methods; they are stubs. Use `length` + index access only.
-
-**Why:** scraper stubs: ["end","start"]; only present: ["length"]
-
----
-### [JS-127] — Touch
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// force is missing on Touch
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never `new Touch()`; constructor missing. Touch APIs are partial — see scraper for missing fields.
-
-**Why:** scraper missing: ["force","radiusX","radiusY","rotationAngle","Touch","altitudeAngle","azimuthAngle","touchType"]
-
----
-### [JS-128] — TouchEvent
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// changedTouches is missing on TouchEvent
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never `new TouchEvent()`; constructor missing. Touch APIs are partial — see scraper for missing fields.
-
-**Why:** scraper missing: ["changedTouches","targetTouches","TouchEvent"]
-
----
-### [JS-129] — TouchList
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// item is a stub on TouchList
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never call `TouchList.item` or iteration methods; they are stubs. Use `length` + index access only.
-
-**Why:** scraper stubs: ["item"]; only present: ["length"]
-
----
-### [JS-130] — TransitionEvent
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// TransitionEvent is missing on TransitionEvent
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never `new TransitionEvent(...)`; constructor missing. Receive instances from listeners.
-
-**Why:** scraper missing: ["TransitionEvent"]
-
----
-### [JS-131] — UIEvent
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// initUIEvent is a stub on UIEvent
-```
-
-**✅ Generate instead:**
-```js
-// Don't construct Event subclasses with new. Receive them from listeners; preventDefault/stopPropagation are no-ops.
-```
-
-**Rule for AI agents:** Never construct `new UIEvent(...)`; the constructor is missing. `preventDefault`/`stopPropagation` exist as no-op stubs on incoming events.
-
-**Why:** scraper stubs: ["initUIEvent"]; scraper missing: ["view","which","UIEvent","sourceCapabilities"]
-
----
-### [JS-133] — Window
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// addEventListener is a stub on Window
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never call `alert`/`confirm`/`prompt`, `open`, `postMessage`, `print`, `matchMedia`, `requestIdleCallback`, or `structuredClone`; missing. `addEventListener`/`removeEventListener`/`getComputedStyle`/`getSelection`/`requestAnimationFrame`/`cancelAnimationFrame`/`setTimeout`/`clearTimeout`/`setInterval`/`clearInterval`/`queueMicrotask`/`scrollBy`/`scrollTo` exist as stubs only.
-
-**Why:** scraper stubs: ["addEventListener","cancelAnimationFrame","clearInterval","clearTimeout","dispatchEvent","getComputedStyle","getSelection","queueMicrotask","removeEventListener","requestAnimationFrame","scrollBy","scrollTo"] …; scraper missing: ["console","chrome","clientInformation","closed","cookieStore","event","external","frameElement","frames","length","locationbar","menubar"] …+72 more
-
----
-### [JS-135] — XMLHttpRequestEventTarget
-**Status:** stub
-**Surface:** js-stub
-**Severity:** high
-
-**❌ Never generate:**
-```js
-// addEventListener is a stub on XMLHttpRequestEventTarget
-```
-
-**✅ Generate instead:**
-```js
-// Avoid this API on Gameface; use the engine bridge or the supported subset only.
-```
-
-**Rule for AI agents:** Never expect `XMLHttpRequestEventTarget.onload`/`onerror`/`onabort`/`onloadstart`/`onloadend`/`onprogress`/`ontimeout`; missing.
-
-**Why:** scraper stubs: ["addEventListener","removeEventListener"]; scraper missing: ["onabort","onerror","onload","onloadend","onloadstart","onprogress","ontimeout"]
-
----
-### [JS-132] — WebGL and WebGPU
+### [JS-113] — WebGL and WebGPU
 **Status:** missing
 **Surface:** js-api
 **Severity:** high
@@ -2631,7 +2218,7 @@ GPU; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: GPU, GPUAdapter, GPUAdapterInfo, GPUBindGroup, GPUBindGroupLayout, GPUBuffer, GPUCanvasContext, GPUCommandBuffer, GPUCommandEncoder, GPUCompilationInfo, GPUCompilationMessage, GPUComputePassEncoder, GPUComputePipeline, GPUDevice, GPUDeviceLostInfo, GPUError, GPUExternalTexture, GPUInternalError, GPUOutOfMemoryError, GPUPipelineError, GPUPipelineLayout, GPUQuerySet, GPUQueue, GPURenderBundle, GPURenderBundleEncoder, GPURenderPassEncoder, GPURenderPipeline, GPUSampler, GPUShaderModule, GPUSupportedFeatures, GPUSupportedLimits, GPUTexture, GPUTextureView, GPUUncapturedErrorEvent, GPUValidationError, WebGL2RenderingContext, WebGL2RenderingContextBase, WebGL2RenderingContextOverloads, WebGLActiveInfo, WebGLBuffer, WebGLContextAttributes, WebGLContextEvent, WebGLContextEventInit, WebGLFramebuffer, WebGLObject, WebGLProgram, WebGLQuery, WebGLRenderbuffer, WebGLRenderingContext, WebGLRenderingContextBase, WebGLRenderingContextOverloads, WebGLSampler, WebGLShader, WebGLShaderPrecisionFormat, WebGLSync, WebGLTexture, WebGLTimerQueryEXT, WebGLTransformFeedback, WebGLUniformLocation, WebGLVertexArrayObject, WebGLVertexArrayObjectOES.
 
 ---
-### [JS-096] — Media, WebRTC, Web Audio
+### [JS-086] — Media, WebRTC, Web Audio
 **Status:** missing
 **Surface:** js-api
 **Severity:** high
@@ -2651,7 +2238,7 @@ AnalyserNode; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: AnalyserNode, AudioBuffer, AudioBufferOptions, AudioBufferSourceNode, AudioBufferSourceOptions, AudioContext, AudioContextOptions, AudioDestinationNode, AudioListener, AudioNode, AudioNodeOptions, AudioParam, AudioParamMap, AudioWorklet, AudioWorkletGlobalScope, AudioWorkletNode, AudioWorkletNodeEventMap, AudioWorkletNodeOptions, AudioWorkletProcessor, BiquadFilterNode, ChannelMergerNode, ChannelSplitterNode, ConstantSourceNode, ConvolverNode, DelayNode, DynamicsCompressorNode, GainNode, IIRFilterNode, MediaDevices, MediaDevicesEventMap, MediaElementAudioSourceNode, MediaRecorder, MediaRecorderErrorEvent, MediaRecorderEventMap, MediaRecorderOptions, MediaSession, MediaSessionActionDetails, MediaSessionActionHandler, MediaSource, MediaSourceHandle, MediaStream, MediaStreamAudioDestinationNode, MediaStreamAudioSourceNode, MediaStreamAudioSourceOptions, MediaStreamConstraints, MediaStreamEvent, MediaStreamEventMap, MediaStreamTrack, MediaStreamTrackAudioSourceNode, MediaStreamTrackEvent, MediaStreamTrackEventInit, MediaStreamTrackEventMap, MediaStreamTrackGenerator, MediaStreamTrackProcessor, OfflineAudioContext, OfflineAudioContextEventMap, OfflineAudioContextOptions, OscillatorNode, PannerNode, PeriodicWave, PeriodicWaveConstraints, PeriodicWaveOptions, RTCAnswerOptions, RTCCertificate, RTCCertificateExpiration, RTCConfiguration, RTCDTMFSender, RTCDTMFSenderEventMap, RTCDTMFToneChangeEvent, RTCDTMFToneChangeEventInit, RTCDataChannel, RTCDataChannelEvent, RTCDataChannelEventInit, RTCDataChannelEventMap, RTCDataChannelInit, RTCDtlsFingerprint, RTCDtlsTransport, RTCDtlsTransportEventMap, RTCEncodedAudioFrame, RTCEncodedAudioFrameMetadata, RTCEncodedFrameMetadata, RTCEncodedVideoFrame, RTCEncodedVideoFrameMetadata, RTCError, RTCErrorEvent, RTCErrorEventInit, RTCErrorInit, RTCIceCandidate, RTCIceCandidateInit, RTCIceCandidatePair, RTCIceCandidatePairStats, RTCIceServer, RTCIceTransport, RTCIceTransportEventMap, RTCIdentityAssertion, RTCInboundRtpStreamStats, RTCLocalIceCandidateInit, RTCLocalSessionDescriptionInit, RTCOfferAnswerOptions, RTCOfferOptions, RTCOutboundRtpStreamStats, RTCPeerConnection, RTCPeerConnectionErrorCallback, RTCPeerConnectionEventMap, RTCPeerConnectionIceErrorEvent, RTCPeerConnectionIceErrorEventInit, RTCPeerConnectionIceEvent, RTCPeerConnectionIceEventInit, RTCReceivedRtpStreamStats, RTCRtcpParameters, RTCRtpCapabilities, RTCRtpCodec, RTCRtpCodecParameters, RTCRtpCodingParameters, RTCRtpContributingSource, RTCRtpEncodingParameters, RTCRtpHeaderExtensionCapability, RTCRtpHeaderExtensionParameters, RTCRtpParameters, RTCRtpReceiveParameters, RTCRtpReceiver, RTCRtpScriptTransform, RTCRtpScriptTransformer, RTCRtpSendParameters, RTCRtpSender, RTCRtpStreamStats, RTCRtpSynchronizationSource, RTCRtpTransceiver, RTCRtpTransceiverInit, RTCSctpTransport, RTCSctpTransportEventMap, RTCSentRtpStreamStats, RTCSessionDescription, RTCSessionDescriptionCallback, RTCSessionDescriptionInit, RTCSetParameterOptions, RTCStats, RTCStatsReport, RTCTrackEvent, RTCTrackEventInit, RTCTransformEvent, RTCTransportStats, ScriptProcessorNode, ScriptProcessorNodeEventMap, SpeechGrammar, SpeechGrammarList, SpeechRecognition, SpeechRecognitionAlternative, SpeechRecognitionErrorEvent, SpeechRecognitionEvent, SpeechRecognitionResult, SpeechRecognitionResultList, SpeechSynthesis, SpeechSynthesisErrorEvent, SpeechSynthesisErrorEventInit, SpeechSynthesisEvent, SpeechSynthesisEventInit, SpeechSynthesisEventMap, SpeechSynthesisUtterance, SpeechSynthesisUtteranceEventMap, SpeechSynthesisVoice, StereoPannerNode, WaveShaperNode.
 
 ---
-### [JS-099] — Modern observer APIs
+### [JS-089] — Modern observer APIs
 **Status:** missing
 **Surface:** js-api
 **Severity:** high
@@ -2671,7 +2258,7 @@ FontFace; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: FontFace, FontFaceDescriptors, FontFaceSet, FontFaceSetEventMap, FontFaceSetLoadEvent, FontFaceSetLoadEventInit, FontFaceSource, IntersectionObserver, IntersectionObserverCallback, IntersectionObserverEntry, IntersectionObserverInit, PerformanceObserver, PerformanceObserverCallback, PerformanceObserverEntryList, PerformanceObserverInit, ReportingObserver, ReportingObserverCallback, ReportingObserverOptions, VisualViewport, VisualViewportEventMap.
 
 ---
-### [JS-055] — DOM traversal / Range / Selection helpers
+### [JS-064] — DOM traversal / Range / Selection helpers
 **Status:** missing
 **Surface:** js-api
 **Severity:** high
@@ -2691,7 +2278,7 @@ AbortController; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: AbortController, AbortSignal, AbortSignalEventMap, DOMParser, Highlight, HighlightRegistry, Range, StaticRange, StaticRangeInit, TreeWalker, XPathEvaluator, XPathEvaluatorBase, XPathExpression, XPathResult.
 
 ---
-### [JS-098] — Modern navigation
+### [JS-088] — Modern navigation
 **Status:** missing
 **Surface:** js-api
 **Severity:** high
@@ -2711,7 +2298,7 @@ NavigateEvent; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: NavigateEvent, Navigation, NavigationActivation, NavigationCurrentEntryChangeEvent, NavigationDestination, NavigationHistoryEntry, NavigationHistoryEntryEventMap, NavigationPreloadManager, NavigationPreloadState, NavigationTransition.
 
 ---
-### [JS-134] — Workers, scheduler, idle/animation/microtask
+### [JS-114] — Workers, scheduler, idle/animation/microtask
 **Status:** missing
 **Surface:** js-api
 **Severity:** high
@@ -2735,7 +2322,7 @@ IdleDeadline; // ReferenceError or undefined on window
 ## MEDIUM (6)
 
 ---
-### [JS-136] — Auth / credentials / payment
+### [JS-116] — Auth / credentials / payment
 **Status:** missing
 **Surface:** js-api
 **Severity:** medium
@@ -2755,7 +2342,7 @@ AuthenticatorAssertionResponse; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: AuthenticatorAssertionResponse, AuthenticatorAttestationResponse, AuthenticatorResponse, Credential, CredentialCreationOptions, CredentialPropertiesOutput, CredentialRequestOptions, CredentialsContainer, FederatedCredential, PasswordCredential, PaymentMethodChangeEvent, PaymentMethodChangeEventInit, PaymentRequest, PaymentRequestEvent, PaymentRequestEventMap, PaymentRequestUpdateEvent, PaymentRequestUpdateEventInit, PaymentResponse, PaymentResponseEventMap, PublicKeyCredential, PublicKeyCredentialCreationOptions, PublicKeyCredentialCreationOptionsJSON, PublicKeyCredentialDescriptor, PublicKeyCredentialDescriptorJSON, PublicKeyCredentialEntity, PublicKeyCredentialParameters, PublicKeyCredentialRequestOptions, PublicKeyCredentialRequestOptionsJSON, PublicKeyCredentialRpEntity, PublicKeyCredentialUserEntity, PublicKeyCredentialUserEntityJSON.
 
 ---
-### [JS-140] — Sensors, device APIs
+### [JS-120] — Sensors, device APIs
 **Status:** missing
 **Surface:** js-api
 **Severity:** medium
@@ -2775,7 +2362,7 @@ AbsoluteOrientationSensor; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: AbsoluteOrientationSensor, Accelerometer, AmbientLightSensor, Bluetooth, BluetoothCharacteristicProperties, BluetoothDevice, BluetoothRemoteGATTCharacteristic, BluetoothRemoteGATTDescriptor, BluetoothRemoteGATTServer, BluetoothRemoteGATTService, BluetoothUUID, DeviceMotionEvent, DeviceMotionEventAcceleration, DeviceMotionEventAccelerationInit, DeviceMotionEventInit, DeviceMotionEventRotationRate, DeviceMotionEventRotationRateInit, DeviceOrientationEvent, DeviceOrientationEventInit, Geolocation, GeolocationCoordinates, GeolocationPosition, GeolocationPositionError, GravitySensor, Gyroscope, HID, HIDConnectionEvent, HIDDevice, HIDInputReportEvent, LinearAccelerationSensor, Magnetometer, OrientationSensor, RelativeOrientationSensor, Sensor, SensorErrorEvent, Serial, SerialPort, USB, USBAlternateInterface, USBConfiguration, USBConnectionEvent, USBDevice, USBEndpoint, USBInTransferResult, USBInterface, USBIsochronousInTransferPacket, USBIsochronousInTransferResult, USBIsochronousOutTransferPacket, USBIsochronousOutTransferResult, USBOutTransferResult, VRDisplay, VRDisplayCapabilities, VRDisplayEvent, VREyeParameters, VRFieldOfView, VRFrameData, VRPose, VRStageParameters, WakeLock, WakeLockSentinel, WakeLockSentinelEventMap, XRAnchor, XRAnchorSet, XRBoundedReferenceSpace, XRCPUDepthInformation, XRCamera, XRCompositionLayer, XRCubeLayer, XRCylinderLayer, XRDepthInformation, XREquirectLayer, XRFrame, XRHand, XRHitTestResult, XRHitTestSource, XRInputSource, XRInputSourceArray, XRInputSourceEvent, XRInputSourcesChangeEvent, XRJointPose, XRJointSpace, XRLayer, XRLayerEvent, XRLightEstimate, XRLightProbe, XRMediaBinding, XRPose, XRProjectionLayer, XRQuadLayer, XRRay, XRReferenceSpace, XRReferenceSpaceEvent, XRRenderState, XRRigidTransform, XRSession, XRSessionEvent, XRSpace, XRSubImage, XRSystem, XRTransientInputHitTestResult, XRTransientInputHitTestSource, XRView, XRViewerPose, XRViewport, XRWebGLBinding, XRWebGLDepthInformation, XRWebGLLayer, XRWebGLSubImage.
 
 ---
-### [JS-139] — Permissions / quotas / clipboard
+### [JS-119] — Permissions / quotas / clipboard
 **Status:** missing
 **Surface:** js-api
 **Severity:** medium
@@ -2795,7 +2382,7 @@ Clipboard; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: Clipboard, ClipboardEvent, ClipboardEventInit, ClipboardItem, ClipboardItemOptions, PermissionDescriptor, PermissionStatus, PermissionStatusEventMap, Permissions, StorageAccessHandle.
 
 ---
-### [JS-141] — Streams API
+### [JS-121] — Streams API
 **Status:** missing
 **Surface:** js-api
 **Severity:** medium
@@ -2815,7 +2402,7 @@ ByteLengthQueuingStrategy; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: ByteLengthQueuingStrategy, CompressionStream, CountQueuingStrategy, DecompressionStream, ReadableByteStreamController, ReadableStream, ReadableStreamBYOBReader, ReadableStreamBYOBRequest, ReadableStreamDefaultController, ReadableStreamDefaultReader, ReadableStreamGenericReader, ReadableStreamGetReaderOptions, ReadableStreamIteratorOptions, ReadableStreamReadDoneResult, ReadableStreamReadValueResult, TransformStream, TransformStreamDefaultController, WritableStream, WritableStreamDefaultController, WritableStreamDefaultWriter.
 
 ---
-### [JS-138] — Modern editing / input APIs
+### [JS-118] — Modern editing / input APIs
 **Status:** missing
 **Surface:** js-api
 **Severity:** medium
@@ -2835,7 +2422,7 @@ CompositionEvent; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: CompositionEvent, CompositionEventInit, EditContext, FormDataEvent, FormDataEventInit, HashChangeEvent, HashChangeEventInit, InputDeviceCapabilities, InputDeviceInfo, InputEvent, InputEventInit, SubmitEvent, SubmitEventInit, TextEvent, VirtualKeyboard.
 
 ---
-### [JS-137] — GPU compute / WebCodecs / Web Codec helpers
+### [JS-117] — GPU compute / WebCodecs / Web Codec helpers
 **Status:** missing
 **Surface:** js-api
 **Severity:** medium
@@ -2859,7 +2446,7 @@ AudioData; // ReferenceError or undefined on window
 ## LOW (8)
 
 ---
-### [JS-143] — Geometry / Typed CSSOM extras
+### [JS-123] — Geometry / Typed CSSOM extras
 **Status:** missing
 **Surface:** js-api
 **Severity:** low
@@ -2879,7 +2466,7 @@ CSSConditionRule; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: CSSConditionRule, CSSContainerRule, CSSCounterStyleRule, CSSFontFaceRule, CSSFontFeatureValuesRule, CSSGroupingRule, CSSImageValue, CSSImportRule, CSSKeyframeRule, CSSKeyframesRule, CSSLayerBlockRule, CSSLayerStatementRule, CSSMediaRule, CSSNamespaceRule, CSSPageRule, CSSPositionTryRule, CSSPositionValue, CSSPropertyRule, CSSScopeRule, CSSStartingStyleRule, CSSStyleRule, CSSSupportsRule, DOMMatrixReadOnly, DOMPoint, DOMPointInit, DOMPointReadOnly, DOMQuad, DOMQuadInit.
 
 ---
-### [JS-142] — Concurrency primitives (browser-side)
+### [JS-122] — Concurrency primitives (browser-side)
 **Status:** missing
 **Surface:** js-api
 **Severity:** low
@@ -2899,7 +2486,7 @@ TaskAttributionTiming; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: TaskAttributionTiming.
 
 ---
-### [JS-144] — Misc and vendor-specific globals
+### [JS-124] — Misc and vendor-specific globals
 **Status:** missing
 **Surface:** js-api
 **Severity:** low
@@ -2919,7 +2506,7 @@ Chrome; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: Chrome, ChromeIdentity, ChromeInstanceId, ChromeTabs, Fence, FencedFrameConfig, TrustedHTML, TrustedScript, TrustedScriptURL, TrustedTypePolicy, TrustedTypePolicyFactory, reportError, trustedTypes.
 
 ---
-### [JS-145] — Other missing globals (#1)
+### [JS-125] — Other missing globals (#1)
 **Status:** missing
 **Surface:** js-api
 **Severity:** low
@@ -2939,7 +2526,7 @@ ANGLE_instanced_arrays; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: ANGLE_instanced_arrays, ARIAMixin, AbortPaymentEvent, AbstractRange, AbstractWorker, AbstractWorkerEventMap, AddEventListenerOptions, AddressErrors, AesCbcParams, AesCtrParams, AesDerivedKeyParams, AesGcmParams, AesKeyAlgorithm, AesKeyGenParams, Algorithm, AnalyserOptions, Animatable, AnimationEffect, AnimationEventInit, AnimationEventMap, AnimationFrameProvider, AnimationPlaybackEvent, AnimationPlaybackEventInit, AnimationTimeline, AssignedNodesOptions, AudioConfiguration, AudioProcessingEvent, AudioProcessingEventInit, AudioScheduledSourceNode, AudioScheduledSourceNodeEventMap, AudioSession, AudioSinkInfo, AudioTimestamp, AudioTrack, AudioTrackList, AuthenticationExtensionsClientInputs, AuthenticationExtensionsClientInputsJSON, AuthenticationExtensionsClientOutputs, AuthenticationExtensionsLargeBlobInputs, AuthenticationExtensionsLargeBlobInputsJSON, AuthenticationExtensionsLargeBlobOutputs, AuthenticationExtensionsPRFInputs, AuthenticationExtensionsPRFInputsJSON, AuthenticationExtensionsPRFOutputs, AuthenticationExtensionsPRFValues, AuthenticationExtensionsPRFValuesJSON, AuthenticatorSelectionCriteria, AvcEncoderConfig, BackgroundFetchEvent, BackgroundFetchManager, BackgroundFetchRecord, BackgroundFetchRegistration, BackgroundFetchUpdateUIEvent, BarProp, BarcodeDetector, BaseAudioContext, BaseAudioContextEventMap, BatteryManager, BeforeInstallPromptEvent, BeforeUnloadEvent, BiquadFilterOptions, BlobCallback, BlobEvent, BlobEventInit, Body, BroadcastChannelEventMap, BrowserCaptureMediaStreamTrack, BufferedChangeEvent, CDATASection, CSPViolationReportBody, CSSFontFeatureValuesMap, CSSFontPaletteValuesRule, CSSMarginRule, CSSMathClamp, CSSMathInvert, CSSMathMax, CSSMathMin, CSSMathNegate, CSSMathProduct, CSSMathSum, CSSMathValue, CSSNestedDeclarations, CSSNumericArray, CSSNumericType, CSSPageDescriptors, CSSPerspective, CSSPositionTryDescriptors, CSSPrimitiveValue, CSSPseudoElement, CSSRule, CSSSkew, CSSStyleSheetInit, CSSTransition, CSSUnparsedValue, CSSValue, CSSValueList, CSSVariableReferenceValue, CSSViewTransitionRule, Cache, CacheQueryOptions, CacheStorage, CanMakePaymentEvent, CanvasCaptureMediaStreamTrack, CanvasCompositing, CanvasDrawImage, CanvasDrawPath, CanvasFillStrokeStyles, CanvasFilter, CanvasFilters, CanvasImageData, CanvasImageSmoothing, CanvasPath, CanvasPathDrawingStyles, CanvasRect, CanvasRenderingContext2DSettings, CanvasSettings, CanvasShadowStyles, CanvasState, CanvasText, CanvasTextDrawingStyles, CanvasTransform, CanvasUserInterface, CaptureController, CaretPositionFromPointOptions, ChannelMergerOptions, ChannelSplitterOptions, ChapterInformation, CharacterBoundsUpdateEvent, CheckVisibilityOptions, ChildNode, Client, ClientQueryOptions, ClientRect, Clients, CloseEvent, CloseEventInit, CloseWatcher, CommandEvent, CompileError, ComputedEffectTiming, ComputedKeyframe, ConstantSourceOptions, ConstrainBooleanParameters, ConstrainDOMStringParameters, ConstrainDoubleRange, ConstrainULongRange, ContactAddress, ContactsManager, ContentIndex, ContentIndexEvent, ContentVisibilityAutoStateChangeEvent, ContentVisibilityAutoStateChangeEventInit, ConvolverOptions, CookieChangeEvent, CookieChangeEventInit, CookieInit, CookieListItem, CookieStore, CookieStoreDeleteOptions, CookieStoreEventMap, CookieStoreGetOptions, CookieStoreManager, Counter, CropTarget, Crypto, CryptoKey, CryptoKeyPair, CustomElementConstructor, CustomEventInit, CustomStateSet, DOMError, DOMException, DOMImplementation, DOMMatrix2DInit, DOMMatrixInit, DOMRectInit, DOMStringList, DataCue, DataTransfer, DataTransferItem, DataTransferItemList, DecodeErrorCallback, DecodeSuccessCallback, DedicatedWorkerGlobalScope, DelayOptions, DelegatedInkTrailPresenter, DeprecationReportBody, DevicePosture, Directory, DirectoryEntrySync, DirectoryReaderSync, DisplayMediaStreamOptions, DocumentEventMap, DocumentOrShadowRoot, DocumentPictureInPicture, DocumentPictureInPictureEvent, DocumentTimeline, DocumentTimelineOptions, DoubleRange, DragEvent.
 
 ---
-### [JS-146] — Other missing globals (#2)
+### [JS-126] — Other missing globals (#2)
 **Status:** missing
 **Surface:** js-api
 **Severity:** low
@@ -2959,7 +2546,7 @@ DragEventInit; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: DragEventInit, DynamicsCompressorOptions, EXT_blend_minmax, EXT_color_buffer_float, EXT_color_buffer_half_float, EXT_disjoint_timer_query, EXT_disjoint_timer_query_webgl2, EXT_float_blend, EXT_frag_depth, EXT_sRGB, EXT_shader_texture_lod, EXT_texture_compression_bptc, EXT_texture_compression_rgtc, EXT_texture_filter_anisotropic, EXT_texture_norm16, EcKeyAlgorithm, EcKeyGenParams, EcKeyImportParams, EcdhKeyDeriveParams, EcdsaParams, EffectTiming, ElementCSSInlineStyle, ElementContentEditable, ElementCreationOptions, ElementEventMap, ElementInternals, EntrySync, ErrorCallback, ErrorEventInit, EventCounts, EventInit, EventListenerObject, EventListenerOptions, EventModifierInit, EventSourceEventMap, EventSourceInit, ExtendableCookieChangeEvent, ExtendableEvent, ExtendableMessageEvent, External, EyeDropper, FeaturePolicy, FetchEvent, FetchLaterResult, FocusEventInit, FocusOptions, FontData, FragmentDirective, FrameRequestCallback, FullscreenOptions, FunctionStringCallback, GainOptions, GamepadEffectParameters, GamepadEventInit, GamepadHapticActuator, GenericTransformStream, GestureEvent, GetComposedRangesOptions, GetHTMLOptions, GetNotificationOptions, GetRootNodeOptions, Global, GlobalDescriptor, GlobalEventHandlers, GlobalEventHandlersEventMap, HMDVRDevice, HTMLAllCollection, HTMLAnchorElement, HTMLAreaElement, HTMLAudioElement, HTMLBRElement, HTMLBaseElement, HTMLBodyElementEventMap, HTMLCollectionBase, HTMLCollectionOf, HTMLDListElement, HTMLDataElement, HTMLDataListElement, HTMLDetailsElement, HTMLDialogElement, HTMLDirectoryElement, HTMLElementDeprecatedTagNameMap, HTMLElementEventMap, HTMLElementTagNameMap, HTMLEmbedElement, HTMLFencedFrameElement, HTMLFieldSetElement, HTMLFontElement, HTMLFormControlsCollection, HTMLFormElement, HTMLFrameElement, HTMLFrameSetElement, HTMLFrameSetElementEventMap, HTMLHRElement, HTMLHeadingElement, HTMLHyperlinkElementUtils, HTMLLIElement, HTMLLabelElement, HTMLLegendElement, HTMLMapElement, HTMLMarqueeElement, HTMLMediaElementEventMap, HTMLMenuElement, HTMLMetaElement, HTMLMeterElement, HTMLModElement, HTMLOListElement, HTMLObjectElement, HTMLOptGroupElement, HTMLOptionElement, HTMLOptionsCollection, HTMLOrSVGElement, HTMLOutputElement, HTMLParamElement, HTMLPictureElement, HTMLProgressElement, HTMLQuoteElement, HTMLSelectElement, HTMLTableCaptionElement, HTMLTableCellElement, HTMLTableColElement, HTMLTableDataCellElement, HTMLTableElement, HTMLTableHeaderCellElement, HTMLTableRowElement, HTMLTableSectionElement, HTMLTimeElement, HTMLTrackElement, HTMLUListElement, HTMLVideoElementEventMap, HkdfParams, HmacImportParams, HmacKeyAlgorithm, HmacKeyGenParams, IIRFilterOptions, IdentityCredential, IdentityProvider, IdleDetector, IdleRequestCallback, IdleRequestOptions, ImageCapture, ImageData, ImageDataSettings, ImageDecodeOptions, ImageDecodeResult, ImageEncodeOptions, ImageTrack, ImageTrackList, ImportMeta, ImportNodeOptions, Ink, InstallEvent, Instance, InterventionReportBody, JsonWebKey, KHR_parallel_shader_compile, KeyAlgorithm, KeySystemTrackConfiguration, Keyboard, KeyboardEventInit, KeyboardLayoutMap, Keyframe, KeyframeAnimationOptions, KeyframeEffect, KeyframeEffectOptions, LargestContentfulPaint, LaunchParams, LaunchQueue, LayoutShift, LayoutShiftAttribution, LinkError, LinkStyle, Lock, LockGrantedCallback, LockInfo, LockManager, LockManagerSnapshot, LockOptions, MIDIAccess, MIDIAccessEventMap, MIDIConnectionEvent, MIDIConnectionEventInit, MIDIInput, MIDIInputEventMap, MIDIInputMap, MIDIMessageEvent, MIDIMessageEventInit, MIDIOptions, MIDIOutput, MIDIOutputMap, MIDIPort, MIDIPortEventMap, ML, MLContext, MLGraph, MLGraphBuilder, MLOperand, ManagedMediaSource, ManagedSourceBuffer, MathMLElement.
 
 ---
-### [JS-147] — Other missing globals (#3)
+### [JS-127] — Other missing globals (#3)
 **Status:** missing
 **Surface:** js-api
 **Severity:** low
@@ -2979,7 +2566,7 @@ MathMLElementEventMap; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: MathMLElementEventMap, MathMLElementTagNameMap, MediaCapabilities, MediaCapabilitiesDecodingInfo, MediaCapabilitiesEncodingInfo, MediaCapabilitiesInfo, MediaCapabilitiesKeySystemConfiguration, MediaConfiguration, MediaController, MediaDecodingConfiguration, MediaDeviceInfo, MediaElementAudioSourceOptions, MediaEncodingConfiguration, MediaEncryptedEvent, MediaEncryptedEventInit, MediaImage, MediaKeyMessageEvent, MediaKeyMessageEventInit, MediaKeySession, MediaKeySessionEventMap, MediaKeyStatusMap, MediaKeySystemAccess, MediaKeySystemConfiguration, MediaKeySystemMediaCapability, MediaKeys, MediaKeysPolicy, MediaList, MediaMetadata, MediaMetadataInit, MediaPositionState, MediaQueryList, MediaQueryListEvent, MediaQueryListEventInit, MediaQueryListEventMap, MediaSettingsRange, MediaSourceEventMap, MediaTrackCapabilities, MediaTrackConstraintSet, MediaTrackConstraints, MediaTrackSettings, MediaTrackSupportedConstraints, Memory, MemoryDescriptor, MerchantValidationEvent, MessageEventInit, MessageEventTarget, MessageEventTargetEventMap, MessagePortEventMap, Metadata, MimeType, MimeTypeArray, Module, ModuleExportDescriptor, ModuleImportDescriptor, MouseEventInit, MouseScrollEvent, MultiCacheQueryOptions, MutationCallback, MutationEvent, NDEFMessage, NDEFReader, NDEFReadingEvent, NDEFRecord, NavigatorAutomationInformation, NavigatorBadge, NavigatorConcurrentHardware, NavigatorContentUtils, NavigatorCookies, NavigatorID, NavigatorLanguage, NavigatorLocks, NavigatorLogin, NavigatorManagedData, NavigatorOnLine, NavigatorPlugins, NavigatorStorage, NavigatorUAData, NetworkInformation, NodeListOf, NonDocumentTypeChildNode, NonElementParentNode, NotRestoredReasonDetails, NotRestoredReasons, Notification, NotificationEvent, NotificationEventMap, NotificationOptions, NotificationPermissionCallback, OES_draw_buffers_indexed, OES_element_index_uint, OES_fbo_render_mipmap, OES_standard_derivatives, OES_texture_float, OES_texture_float_linear, OES_texture_half_float, OES_texture_half_float_linear, OES_vertex_array_object, OTPCredential, OVR_multiview2, OfflineAudioCompletionEvent, OfflineAudioCompletionEventInit, OnBeforeUnloadEventHandlerNonNull, OnErrorEventHandlerNonNull, OptionalEffectTiming, OpusEncoderConfig, OscillatorOptions, OverconstrainedError, PageRevealEvent, PageRevealEventInit, PageSwapEvent, PageSwapEventInit, PageTransitionEvent, PageTransitionEventInit, PaintRenderingContext2D, PaintSize, PannerOptions, ParentNode, Path2D, PayerErrors, PaymentAddress, PaymentCurrencyAmount, PaymentDetailsBase, PaymentDetailsInit, PaymentDetailsModifier, PaymentDetailsUpdate, PaymentItem, PaymentManager, PaymentMethodData, PaymentOptions, PaymentShippingOption, PaymentValidationErrors, Pbkdf2Params, PerformanceElementTiming, PerformanceEntry, PerformanceEventMap, PerformanceEventTiming, PerformanceLongAnimationFrameTiming, PerformanceLongTaskTiming, PerformanceMark, PerformanceMarkOptions, PerformanceMeasure, PerformanceMeasureOptions, PerformanceNavigation, PerformanceNavigationTiming, PerformancePaintTiming, PerformanceResourceTiming, PerformanceScriptTiming, PerformanceServerTiming, PerformanceTiming, PeriodicSyncEvent, PeriodicSyncManager, PhotoCapabilities, PhotoSettings, PictureInPictureEvent, PictureInPictureEventInit, PictureInPictureWindow, PictureInPictureWindowEventMap, PlaneLayout, Plugin, PluginArray, PointerEvent, PointerEventInit, PointerLockOptions, PopStateEventInit, PopoverInvokerElement, PositionCallback, PositionErrorCallback, PositionOptions, PositionSensorVRDevice, Presentation, PresentationAvailability, PresentationConnection, PresentationConnectionAvailableEvent, PresentationConnectionCloseEvent, PresentationConnectionList, PresentationReceiver, PresentationRequest, PressureObserver, PressureRecord, ProcessingInstruction, Profiler, ProgressEventInit, PromiseRejectionEventInit, PropertyDefinition, PropertyIndexedKeyframes, ProtectedAudience, PushEvent, PushManager, PushMessageData, PushSubscription, PushSubscriptionChangeEvent, PushSubscriptionJSON, PushSubscriptionOptions, PushSubscriptionOptionsInit, QueuingStrategy, QueuingStrategyInit, QueuingStrategySize, RGBColor, RadioNodeList, ReadableWritablePair.
 
 ---
-### [JS-148] — Other missing globals (#4)
+### [JS-128] — Other missing globals (#4)
 **Status:** missing
 **Surface:** js-api
 **Severity:** low
@@ -2999,7 +2586,7 @@ Rect; // ReferenceError or undefined on window
 **Why:** scraper status: missing-from-window. Members: Rect, RegistrationOptions, RemotePlayback, RemotePlaybackAvailabilityCallback, RemotePlaybackEventMap, Report, ReportBody, RequestInit, ResizeObserverCallback, ResponseInit, RestrictionTarget, RsaHashedImportParams, RsaHashedKeyAlgorithm, RsaHashedKeyGenParams, RsaKeyAlgorithm, RsaKeyGenParams, RsaOaepParams, RsaOtherPrimesInfo, RsaPssParams, RuntimeError, SVGAElement, SVGAngle, SVGAnimateColorElement, SVGAnimateElement, SVGAnimateMotionElement, SVGAnimateTransformElement, SVGAnimatedAngle, SVGAnimatedBoolean, SVGAnimatedEnumeration, SVGAnimatedInteger, SVGAnimatedLengthList, SVGAnimatedNumber, SVGAnimatedNumberList, SVGAnimatedPoints, SVGAnimatedPreserveAspectRatio, SVGAnimatedString, SVGAnimationElement, SVGBoundingBoxOptions, SVGCircleElement, SVGClipPathElement, SVGComponentTransferFunctionElement, SVGCursorElement, SVGDefsElement, SVGDescElement, SVGDiscardElement, SVGElementEventMap, SVGElementTagNameMap, SVGEllipseElement, SVGFEBlendElement, SVGFEColorMatrixElement, SVGFEComponentTransferElement, SVGFECompositeElement, SVGFEConvolveMatrixElement, SVGFEDiffuseLightingElement, SVGFEDisplacementMapElement, SVGFEDistantLightElement, SVGFEDropShadowElement, SVGFEFloodElement, SVGFEFuncAElement, SVGFEFuncBElement, SVGFEFuncGElement, SVGFEFuncRElement, SVGFEGaussianBlurElement, SVGFEImageElement, SVGFEMergeElement, SVGFEMergeNodeElement, SVGFEMorphologyElement, SVGFEOffsetElement, SVGFEPointLightElement, SVGFESpecularLightingElement, SVGFESpotLightElement, SVGFETileElement, SVGFETurbulenceElement, SVGFilterElement, SVGFilterPrimitiveStandardAttributes, SVGFitToViewBox, SVGFontElement, SVGFontFaceElement, SVGFontFaceFormatElement, SVGFontFaceNameElement, SVGFontFaceSrcElement, SVGFontFaceUriElement, SVGForeignObjectElement, SVGGElement, SVGGeometryElement, SVGGlyphElement, SVGGlyphRefElement, SVGGradientElement, SVGHKernElement, SVGImageElement, SVGLengthList, SVGLineElement, SVGLinearGradientElement, SVGMPathElement, SVGMarkerElement, SVGMaskElement, SVGMetadataElement, SVGMissingGlyphElement, SVGNumber, SVGNumberList, SVGPathElement, SVGPatternElement, SVGPoint, SVGPointList, SVGPolygonElement, SVGPolylineElement, SVGPreserveAspectRatio, SVGRadialGradientElement, SVGRectElement, SVGRenderingIntent, SVGSVGElementEventMap, SVGScriptElement, SVGSetElement, SVGStopElement, SVGStringList, SVGStyleElement, SVGSwitchElement, SVGSymbolElement, SVGTRefElement, SVGTSpanElement, SVGTests, SVGTextContentElement, SVGTextPathElement, SVGTextPositioningElement, SVGTitleElement, SVGURIReference, SVGUnitTypes, SVGUseElement, SVGVKernElement, SVGViewElement, Scheduler, Scheduling, ScreenDetailed, ScreenDetails, ScreenOrientation, ScreenOrientationEventMap, ScrollIntoViewOptions, ScrollOptions, ScrollTimeline, ScrollToOptions, SecurityPolicyViolationEvent, SecurityPolicyViolationEventInit, ShadowRootEventMap, ShadowRootInit, ShareData, SharedStorage, SharedStorageAppendMethod, SharedStorageClearMethod, SharedStorageDeleteMethod, SharedStorageModifierMethod, SharedStorageSetMethod, SharedStorageWorklet, SharedStorageWorkletGlobalScope, Slottable, SnapEvent, SourceBuffer, SourceBufferEventMap, SourceBufferList, SourceBufferListEventMap, StartViewTransitionOptions, StereoPannerOptions, StorageBucket, StorageBucketManager, StorageEstimate, StorageEvent, StorageEventInit, StreamPipeOptions, StructuredSerializeOptions, StyleMedia, SyncEvent, SyncManager, Tab, Table, TableDescriptor, TextDecodeOptions, TextDecoderCommon, TextDecoderOptions, TextEncoderCommon, TextEncoderEncodeIntoResult, TextFormat, TextFormatUpdateEvent, TextTrack, TextTrackCue, TextTrackCueEventMap, TextTrackCueList, TextTrackEventMap, TextTrackList, TextTrackListEventMap, TextUpdateEvent, TimeEvent, ToggleEvent, ToggleEventInit, TouchEventInit, TouchInit, TrackEvent, TrackEventInit, Transformer, TransformerFlushCallback, TransformerStartCallback, TransformerTransformCallback.
 
 ---
-### [JS-149] — Other missing globals (#5)
+### [JS-129] — Other missing globals (#5)
 **Status:** missing
 **Surface:** js-api
 **Severity:** low

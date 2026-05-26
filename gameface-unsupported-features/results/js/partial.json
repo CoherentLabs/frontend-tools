@@ -198,8 +198,6 @@
     "name": "CSSStyleDeclaration",
     "evidence": {
       "missing": [
-        "boxSizing",
-        "fontVariantEastAsian",
         "accentColor",
         "alignmentBaseline",
         "animationComposition",

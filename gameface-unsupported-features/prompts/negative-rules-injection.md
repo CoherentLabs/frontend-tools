@@ -1,47 +1,158 @@
 ## GAMEFACE CONSTRAINTS — DO NOT VIOLATE
 
-Gameface (Coherent Labs) is a game-engine HTML/CSS/JS runtime with only a subset of the web platform. Standard-looking code parses, looks correct, and fails silently. Treat any feature not explicitly allowed as missing. Full identifier lists, examples, and evidence in `prompts/negative-rules-{css,html,js}.md` and `negative-rules-index.json`.
+Gameface is a game-UI middleware that ships a subset of web standards. Emit only what the engine actually parses and renders. Lists below come from the feature-detection scraper under `results/`; see `negative-rules-{css,html,js}.md` for per-feature evidence.
 
-### CSS — forbidden patterns
-- Never use any CSS shorthand (`background`, `border*`, `border-radius`, `font`, `flex`, `gap`, `margin`, `padding`, `transition`, `animation`, `mask`, `box-shadow`, `text-decoration`, `text-shadow`, `text-stroke`, `all`); shorthands parse but never propagate to longhands. Always assign each longhand explicitly.
-- Never use CSS Grid (`grid*`); use `display: flex` + flex longhands.
-- Never use logical/writing-mode properties (`*-block-*`, `*-inline-*`, `inset-*`, `block-size`, `inline-size`, `border-start-*`, `border-end-*`, `writing-mode`, `direction`, `unicode-bidi`); use physical-axis properties.
-- Never use container queries, multi-column, anchor positioning, scroll-snap, scroll-driven animations, view transitions, motion-path, modern typography (`font-variant*`, `font-feature-settings`, `font-kerning`, `hyphens`, `text-wrap`, `text-justify`, `text-indent`, `text-align-last`, `text-emphasis*`, `tab-size`, `word-break`, `word-spacing`, `line-break`, `line-clamp`), SVG presentation properties, table-layout properties, `overscroll-behavior*`, `field-sizing`, `content-visibility`, or any `coh-*` property.
-- Never use `float`, `clear`, `clip`, `object-fit`, `object-position`, `zoom`, standalone `translate`/`rotate`/`scale`, `transform-style`, `will-change`, `order`, `place-*`, `justify-items`, `justify-self`, `appearance`, `accent-color`, `caret-color`, `resize`, `outline*`, `touch-action`, `math-*`, `list-style*`.
-- On `background`, only `-color`/`-image`/`-position`/`-repeat`/`-size` honored. On `mask`, only `-image`/`-position`/`-size`/`-repeat`/`-clip`/`-mode` honored.
-- Use only these value sets — anything else is silently rejected: `display`: `block | flex | inline | none`. `position`: `absolute | fixed | relative | static` (never `sticky`). `align-content`/`align-items`/`align-self`: `flex-start | flex-end | center | stretch` (+ `auto` for `align-self`). `justify-content`: `flex-start | flex-end | center | space-between | space-around`. Sizing (`width`/`height`/`min-*`/`max-*`/`flex-basis`): `auto` + length/`%` only. `border-*-style`: `none | solid | dashed | dotted`. `text-align`: `left | right | center | justify`. `pointer-events`: `none | auto | visiblePainted | visibleFill | visibleStroke`.
-- Never percentages on `*-radius`; never `inset` on `box-shadow`; never numeric `font-weight`; never `clip` on `overflow-*`; never `collapse` on `visibility`; never `pre-line`/`break-spaces` on `white-space`; never `wavy`/`double` on `text-decoration-style`; never `plus-darker`/`plus-lighter` on `mix-blend-mode`. Never use the keyword `initial` — the parser rejects it on most properties.
+### Supported (use freely)
+- CSS shorthands propagate (`border`, `background`, `flex`, `font`, `gap`, `margin`, `padding`, `animation`, `transition`, `mask`, `text-decoration`, `text-shadow`, `text-stroke`, `border-radius`, etc.).
+- `var(--name, fallback)`, `calc`, `sign`/`pow`/`sqrt`/`hypot`/`log`/`exp`/`sin`/`cos`/`tan`, `rgb`/`rgba`/`color(srgb …)`, `linear-gradient`/`radial-gradient`/`conic-gradient`, `translate*`/`scale*`/`rotate*`/`matrix`/`matrix3d`/`skewX`/`skewY`, `blur`/`brightness`/`contrast`/`drop-shadow`/`grayscale`/`hue-rotate`/`invert`/`opacity`/`saturate`/`sepia`, `cubic-bezier`/`steps`, `circle`/`ellipse`/`polygon`/`inset`/`path`, `repeat`/`minmax`/`fit-content`.
+- At-rules `@media`/`@supports`/`@layer`/`@container`/`@scope`/`@starting-style`/`@keyframes`; CSS nesting (`& .child`).
+- Selectors: type / `.class` / `#id` / `*` / all `[attr…]` / all combinators / `:hover`/`:focus`/`:active`/`:first-child`/`:last-child`/`:is`/`:not`/`:where`/`:lang`/`:root`/`:scope`/`:link`/`:visited`/`:target`, all form-state and media-state pseudos, `::before`/`::after`/`::placeholder`/`::marker`/`::part`/`::highlight`/`::slotted`/`::view-transition*`.
+- JS: `console.{log,info,warn,error,debug,assert,time,timeEnd}`, `setTimeout`/`setInterval`/`clearTimeout`/`clearInterval`/`queueMicrotask`, `performance.now()`, `Node`/`NodeList`/`NodeFilter`/`HTMLCollection`, `DOMTokenList` (so `element.classList` works), `Storage`, `Location`.
+
+### CSS — forbidden property families
+- Never use the legacy `box-*` flexbox model (`box-align`, `box-flex`, `box-orient`, `box-pack`, …); use the modern flexbox longhands (`align-items`, `flex-grow`, `flex-direction`, `justify-content`).
+- Never use logical / writing-mode-relative properties (`*-block`, `*-inline`, `inset-*`, etc.); they are not implemented. Use the physical-axis properties (`top/right/bottom/left`, `margin-top/right/bottom/left`, etc.).
+- Never use CSS Grid (`grid`, `grid-template-*`, `grid-area`, `grid-auto-*`, `grid-column*`, `grid-row*`, `grid-gap`); Gameface has no grid layout. Use Flexbox (`display: flex` with the supported subset) instead.
+- Never use CSS multi-column layout (`columns`, `column-count`, `column-width`, `column-rule*`, `column-span`, `column-fill`); they are not implemented. Use multiple flex containers if you need column-like layout.
+- Never use container queries (`container`, `container-name`, `container-type`); use static breakpoint logic in JS or fixed sizes.
+- Never use the anchor-positioning module (`anchor-name`, `position-anchor`, `position-area`, `position-try*`); use script-driven positioning instead.
+- Never use scroll-snap, scroll-margin/padding, scrollbar-* customization, scroll-timeline, or overscroll-behavior; none of them are implemented.
+- Never use view transitions, view-timeline, scroll-timeline, animation-timeline, or animation-range; only the classic CSS animation longhands are implemented.
+- Never use modern typography properties (`font-variant-*`, `font-feature-settings`, `hyphens`, `text-wrap`, `text-justify`, `text-indent`, `text-emphasis-*`, `tab-size`, `word-break`, `word-spacing`, `line-clamp`, `text-decoration-skip*`, etc.); use only the supported font/text properties.
+- Never use page-layout / print properties (`page`, `page-break-*`, `break-after/before/inside`, `orphans`, `widows`, `color-scheme`, `print-color-adjust`); not relevant in a game UI runtime.
+- Never use list / table / form-control native styling (`list-style*`, `table-layout`, `caption-side`, `border-collapse`, `border-spacing`, `appearance`, `accent-color`, `resize`, `field-sizing`, `ime-mode`, `interpolate-size`); none are implemented. Build list bullets and tables manually with flex.
+- Never use these SVG presentation properties (`alignment-baseline`, `baseline-shift`, `dominant-baseline`, `color-interpolation*`, `flood-*`, `lighting-color`, `paint-order`, `marker-*`, `vector-effect`, `glyph-orientation-vertical`, `alt`, `speak*`); not implemented.
+- Never use these layout/positioning helpers (`float`, `clear`, `clip`, `object-fit`, `object-position`, `overflow-anchor`, `writing-mode`, `direction`, `zoom`, `translate`/`rotate`/`scale` standalone, `transform-style`, `will-change`, `content-visibility`, `order`, `place-*`, `justify-items/self`, `outline*`, `caret-color`, `tab-size`, `touch-action`, `math-*`); not implemented.
+- Never use ruby/CJK/math properties (`ruby-*`, `math-*`); not implemented.
+- Never use `background-attachment`, `background-blend-mode`, `background-clip`, or `background-origin`; only `background-color`, `background-image: none|url(...)`, `background-position`, `background-repeat`, and `background-size` are honored.
+- Never use `mask-border*`, `mask-composite`, or `mask-origin`; only `mask-image`, `mask-position`, `mask-size`, `mask-repeat`, `mask-clip`, `mask-mode` are honored.
+- Never use the CSS motion-path module (`offset-anchor`, `offset-distance`, `offset-path`, `offset-position`, `offset-rotate`); animate position via @keyframes on `transform`/`top`/`left` instead.
+- Never use CSS counters (`counter-increment`, `counter-reset`, `counter-set`); inject numbering from JS instead.
+- Never use these CSS properties; the engine logs "Unsupported CSS property detected (stylesheet parser)" for each. Members listed in the index JSON.
+
+### CSS — forbidden functions
+- Never use the modern color functions (`hsl`, `hsla`, `hwb`, `lab`, `lch`, `oklab`, `oklch`, `color-mix`); pre-convert to `rgb()`/`rgba()`/`color(srgb …)` (all of which are honored).
+- Never use `counter()` or `counters()` in `content`; the engine does not implement CSS counters. Inject the number from JS or pre-render the text.
+- Never use `repeating-linear-gradient()` or `repeating-radial-gradient()`; emit a `linear-gradient()`/`radial-gradient()` with enough explicit color stops to look identical. `url(...)`, `image-set(...)`, and `cross-fade(...)` are unverified (resolving them at parse time stalls Gameface); use `url()` only with cached engine-side assets and treat `image-set`/`cross-fade` as missing.
+- Treat `url()`, `image-set()`, `cross-fade()` as unverified — the scraper could not safely probe them; do not emit unless an integrator confirms support against the Gameface CSS reference.
+- Never use the missing CSS math functions (`clamp`, `min`, `max`, `mod`, `rem`, `round`, `abs`, `asin`, `acos`, `atan`, `atan2`); precompute the value in JS or use `calc()` with arithmetic that resolves to a constant. `calc`, `sign`, `pow`, `sqrt`, `hypot`, `log`, `exp`, `sin`, `cos`, `tan` are honored.
+- Never use `env()` (no environment variables) or `attr()` (only the most basic spec form is shipped in browsers and Gameface does not parse it); inline the literal value, or write it via element.style/JS. `var(--name, fallback)` is supported.
+- Never use `rect()` or `xywh()` shape functions in `clip-path`; the engine does not parse them. Use `inset()`, `circle()`, `ellipse()`, `polygon()`, or `path()`.
+- Never use the `linear(...)` easing function (the multi-stop variant); use `cubic-bezier(...)` or `steps(...)` instead — both are honored.
+- Never use the missing transform functions (`skew()` combined form, `perspective()`); use `skewX()` + `skewY()` and apply 3D effects via the engine-side camera. `translate*`, `scale*`, `rotate*`, `matrix`, `matrix3d` are honored.
+
+### CSS — partial-value restrictions (only the listed tokens are rejected)
+- `align-content`: never assign `space-between`, `space-around`, `space-evenly`, `start`, `end`, `normal`.
+- `align-items`: never assign `baseline`, `start`, `end`, `normal`.
+- `align-self`: never assign `baseline`, `start`, `end`.
+- `animation-duration`: never assign `auto`.
+- `animation-timing-function`: never assign `jump`.
+- `background-image`: never assign `element`, `gradients`, `image-rect`.
+- `background-repeat`: never assign `space`.
+- `border-bottom-left-radius`: never assign `percentages`.
+- `border-bottom-right-radius`: never assign `percentages`.
+- `border-bottom-style`: never assign `dashed`, `dotted`, `double`, `groove`, `ridge`, `inset`, `outset`.
+- `border-image-repeat`: never assign `space`.
+- `border-left-style`: never assign `dashed`, `dotted`, `double`, `groove`, `ridge`, `inset`, `outset`.
+- `border-right-style`: never assign `dashed`, `dotted`, `double`, `groove`, `ridge`, `inset`, `outset`.
+- `border-style`: never assign `dashed`, `dotted`.
+- `border-top-left-radius`: never assign `percentages`.
+- `border-top-right-radius`: never assign `percentages`.
+- `border-top-style`: never assign `dashed`, `dotted`, `double`, `groove`, `ridge`, `inset`, `outset`.
+- `box-shadow`: never assign `inset`.
+- `clip-path`: never assign `fill-box`, `path`, `stroke-box`, `view-box`.
+- `contain`: never assign `inline-size`.
+- `content`: never assign `gradient`, `url`.
+- `display`: never assign `contents`, `flow-root`, `grid`, `inline-block`, `inline-flex`, `inline-grid`, `inline-table`, `list-item`, `math`, `ruby`, `ruby-base`, `ruby-base-container`, `ruby-text`, `ruby-text-container`, `table`, `table-caption`, `table-cell`, `table-column`, `table-column-group`, `table-footer-group`, `table-header-group`, `table-row`, `table-row-group`.
+- `flex-basis`: never assign `content`, `fit-content`, `max-content`, `min-content`.
+- `font-size`: never assign `math`.
+- `font-style`: never assign `oblique-angle`.
+- `font-weight`: never assign `number`.
+- `height`: never assign `fit-content`, `max-content`, `min-content`, `stretch`.
+- `image-rendering`: never assign `smooth`, `optimizequality`, `optimizespeed`.
+- `justify-content`: never assign `space-evenly`, `start`, `end`, `stretch`, `normal`.
+- `mask-clip`: never assign `border`, `content`, `padding`, `text`.
+- `mask-mode`: never assign `luminance`, `match-source`.
+- `mask-repeat`: never assign `space`.
+- `max-height`: never assign `fit-content`, `max-content`, `min-content`, `none`, `stretch`.
+- `max-width`: never assign `fit-content`, `max-content`, `min-content`, `none`, `stretch`.
+- `min-height`: never assign `fit-content`, `max-content`, `min-content`, `stretch`.
+- `min-width`: never assign `fit-content`, `max-content`, `min-content`, `stretch`.
+- `mix-blend-mode`: never assign `plus-darker`, `plus-lighter`.
+- `opacity`: never assign `percentages`.
+- `overflow-x`: never assign `clip`.
+- `overflow-y`: never assign `clip`.
+- `pointer-events`: never assign `all`, `visible`, `painted`, `fill`, `stroke`, `visiblepainted`, `visiblestroke`, `visiblefill`.
+- `position`: never assign `sticky`.
+- `stroke-dasharray`: never assign `none`.
+- `text-align`: never assign `end`, `match-parent`, `start`.
+- `text-decoration-line`: never assign `blink`, `grammar-error`, `spelling-error`.
+- `text-decoration-style`: never assign `wavy`, `double`, `dotted`, `dashed`.
+- `text-decoration-thickness`: never assign `from-font`, `percentage`.
+- `text-overflow`: never assign `string`.
+- `text-transform`: never assign `full-size-kana`, `full-width`, `math-auto`.
+- `text-underline-offset`: never assign `percentage`.
+- `text-underline-position`: never assign `from-font`, `left`, `right`.
+- `transition-timing-function`: never assign `jump`.
+- `user-select`: never assign `all`, `contain`.
+- `vertical-align`: never assign `bottom`, `sub`, `super`, `top`.
+- `visibility`: never assign `collapse`.
+- `white-space`: never assign `break-spaces`, `pre-line`.
+- `width`: never assign `fit-content`, `max-content`, `min-content`, `stretch`.
 
 ### CSS — selector restrictions
-- Never use these unsupported pseudo-classes: `:checked`, `:closed`, `:any-link`, `:autofill`, `:buffering`, `:active-view-transition`, `:active-view-transition-type(...)`. The parser logs `unsupported pseudo: <name>` and the rule never matches. Toggle classes from JS for state.
-- Never use these unsupported pseudo-elements: `::backdrop`, `::checkmark`, `::cue`. They parse but no styling is applied; render the visual yourself with real elements.
-- On `::selection`, only `color` and `background-color` are honored — never set `text-shadow`, `background-image`, or any other property inside a `::selection` rule.
-- On `:nth-child`/`:nth-last-child`/`:nth-of-type`/`:nth-last-of-type`, use only the `An+B` form (including `odd`/`even`); never use the `[ of <selector-list> ]` extension (CSS Selectors-4) — that syntax parses but is never applied.
-- All other selectors (type, class, id, universal, attribute selectors with all matchers, descendant/child/adjacent-sibling/general-sibling/column combinators, CSS nesting with `&`, and every pseudo-class/element not listed above including `:hover`/`:focus*`/`:active`/`:disabled`/`:enabled`/`:required`/`:valid`/`:invalid`/`:nth-*` (An+B form)/`:first-child`/`:last-child`/`:empty`/`:root`/`:scope`/`:target`/`:is`/`:where`/`:not`/`:has`/`::before`/`::after`/`::placeholder`/`::marker`/`::part`/`::slotted`/`::file-selector-button`/`::view-transition*`/`::picker*`, plus `@media`/`@supports`/`@container`/`@layer`/`@scope`/`@starting-style`) are supported.
-
+- Never use (parses, never matches): `::backdrop`, `::checkmark`, `::cue`, `::details-content`, `::file-selector-button`, `::first-letter`, `::first-line`, `::grammar-error`, `:active-view-transition`, `:active-view-transition-type(fade)`, `:any-link`, `:autofill`, `:buffering`, `:checked`, `:closed`, `:default`, `:defined`, `:dir(ltr)`, `:disabled`, `:empty`, `:enabled`, `:first`, `:first-of-type`, `:focus-visible`, `:focus-within`, `:fullscreen`, `:future`, `:has(.child)`, `:has(> .child)`, `:has-slotted`.
+- Partial — only the simplest forms work, avoid the `An+B` / `of S` variants: `::selection`, `:nth-child(2 of .class)`, `:nth-child(2)`, `:nth-child(2n+1)`, `:nth-child(even)`, `:nth-child(odd)`, `:nth-last-child(2)`, `:nth-last-of-type(2)`, `:nth-of-type(2)`.
 
 ### HTML — forbidden tags and attributes
-- Use only this tag allowlist: `<html>`, `<head>`, `<body>`, `<title>`, `<meta>`, `<base>`, `<style>`, `<link>`, `<script>`, `<template>`, `<slot>`, `<div>`, `<span>`, `<img>`, `<input type="text|password|button">`, `<textarea>`, `<button>`, `<canvas>`, `<video>`, `<svg>` and inner SVG primitives. Every other tag — `<a>`, `<form>`, all form-control/media/embedding/table/list/heading/inline-text/section/legacy tags — parses to a generic `HTMLElement` with no specialized behavior. Replace each with `<div>`/`<span>` + classes + JS.
-- Never use any `<input type>` other than `text`, `password`, `button`. All other types (`checkbox`, `color`, `date`, `email`, `file`, `image`, `number`, `radio`, `range`, `submit`, `tel`, `time`, `url`, `month`, `week`, `search`, `reset`, `datetime-local`, `hidden`) are silently coerced to `text`. Implement the widget yourself.
-- Never use `<dialog>`, `<picture>`, `<source>`, `<search>`, `<selectedcontent>`, `<fencedframe>` — they return `HTMLUnknownElement`.
-- On supported tags, depend only on the documented subset: on `<input>` only `value`, `type`, `focus`, `blur`, `select`, `setRangeText`, `setSelectionRange` work (never `validity`/`pattern`/`required`/`min`/`max`/`step`/`placeholder`/`disabled`/`readOnly`/`name`/`form`/`labels`/`list`/`valueAsNumber`/`Date`/`files`/`checked`/`defaultValue`/`accept`/`autocomplete`/`showPicker`/`stepUp`/`Down`); on `<canvas>` never `toDataURL`/`toBlob`/`captureStream`; on `<img>` never `alt`/`complete`/`naturalWidth`/`naturalHeight`/`srcset`/`sizes`/`crossOrigin`/`decoding`/`loading`; on `<link>` never `sheet`/`relList`/`media`/`as`/`integrity`/`disabled`.
+- `<input type="checkbox|color|date|datetime-local|email|file|hidden|image|month|number|radio|range|reset|search|submit|tel|time|url|week">` is silently coerced to `type="text"` — only `type="text"`, `type="password"`, `type="button"` are honored. Implement other behavior in JS or with custom widgets.
+- `<a href>` has no navigation — replace with `<div role="link">` + JS click handler that calls into the engine.
+- `<datalist>`/`<optgroup>`/`<option>`/`<select>` — no widget behavior. Build custom dropdowns / autocomplete from `<div>` + class toggles.
+- `<fieldset>`/`<form>`/`<label>`/`<legend>`/`<meter>`/`<output>`/`<progress>` — no form lifecycle / validation / labeling. Read input values from JS and POST via the engine bridge.
+- `<area>`/`<audio>`/`<embed>`/`<iframe>`/`<map>`/`<object>`/`<track>` — no media / framing pipeline. Route through the host engine.
+- `<caption>`/`<col>`/`<colgroup>`/`<table>`/`<tbody>`/`<td>`/`<tfoot>`/`<th>`/`<thead>`/`<tr>` — no table layout. Use `display: flex` rows/cells.
+- `<dd>`/`<dl>`/`<dt>`/`<li>`/`<menu>`/`<ol>`/`<ul>` — no list markers/numbering. Render bullets manually with styled `<div>`.
+- Headings + inline-text tags (`<h1..h6>`, `<b>`/`<strong>`/`<i>`/`<em>`/`<u>`/`<s>`/`<mark>`/`<sub>`/`<sup>`/`<abbr>`/`<cite>`/`<code>`/`<kbd>`/`<samp>`/`<var>`/`<time>`/`<data>`/`<q>`/`<dfn>`/`<address>`/`<blockquote>`/`<figure>`/`<figcaption>`/`<pre>`/`<br>`/`<hr>`/`<wbr>`/`<ruby>`/`<bdi>`/`<bdo>`/`<ins>`/`<del>`/legacy presentational) parse but have no default styling — wrap with `<span>`/`<div>` + explicit CSS classes.
+- `<details>`/`<summary>` — no disclosure/modal behavior. Build with class toggling + a `<div class="modal">` overlay.
+- Other tags parsed as generic `HTMLElement` (no specialised behavior): `<acronym>`/`<article>`/`<aside>`/`<base>`/`<dir>`/`<footer>`/`<frame>`/`<frameset>`/`<header>`/`<hgroup>`/`<main>`/`<marquee>`/`<meta>`/`<nav>`/`<nobr>`/`<param>`/`<plaintext>`/`<rb>`/`<rtc>`/`<section>`/`<strike>`/`<xmp>`.
+- `<dialog>`/`<fencedframe>`/`<picture>`/`<search>`/`<selectedcontent>` resolve to `HTMLUnknownElement` — the engine doesn't recognize the tag at all.
+- Partial tags — `<canvas>` is 2D-only, no `toDataURL`/`toBlob`; `<img>` exposes only `src` (no `alt`/`complete`/`naturalWidth/Height`); `<input>` lacks `checked`/`validity`/`files`/`required`/`min`/`max`/`pattern`/`list`/`labels`; `<link>` has no `.sheet`. Full per-tag list in `negative-rules-html.md`.
 
 ### JS — missing or stubbed APIs
-- Never assume DOM observers fire. `MutationObserver`, `ResizeObserver`, `IntersectionObserver`, `PerformanceObserver`, custom-element lifecycle, `FontFace`/`FontFaceSet` — `observe`/`define` exist but callbacks never run. Apply changes synchronously at the call site.
-- Never use the JS animation API or Typed CSSOM (`Element.animate`, `Animation.*`, `Document.getAnimations`, `computedStyleMap`, `CSSStyleValue` and subclasses, `StylePropertyMap*`, `new CSSStyleSheet()`, `insertRule`/`deleteRule`); animate only via CSS `@keyframes` + supported `animation-*` longhands.
-- Never use `CanvasRenderingContext2D` drawing — every drawing method is a no-op and `getImageData`/`putImageData`/`createImageData`/`getTransform`/`getLineDash`/`setLineDash`/`isPointInPath`/`isPointInStroke`/`reset` are missing. Render via DOM or the host engine.
-- Never use the network/IPC stack: `fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource`, `BroadcastChannel`, `MessageChannel`, `Worker`/`SharedWorker`/`ServiceWorker`, `postMessage`, `Request`/`Response`/`Headers`/`FormData`. Communicate only via the Gameface engine bridge (`engine.call`).
-- Never use storage: `localStorage`, `sessionStorage`, `indexedDB`/`IDB*`, `caches`, `cookieStore`, `FileReader`, `File`, `FileList`, `FileSystem*`, `StorageManager`. Persist via the engine bridge.
-- Never use crypto/encoding: `crypto`, `SubtleCrypto`, `TextEncoder`/`Decoder`, `*Stream`, `atob`, `btoa`, `structuredClone`, `new URL(...)`.
-- Never use Web Audio, Media Streams, WebRTC (`RTC*`), Speech, `getUserMedia`, or WebGL/WebGPU contexts; use host audio/video.
-- Never use scheduling beyond `setTimeout`/`setInterval`/`queueMicrotask`/`requestAnimationFrame`. `requestIdleCallback`, `setImmediate`, `scheduler`, `Worklet`, `TaskController` are missing.
-- Never use Range/TreeWalker/parsing: `Range`, `StaticRange`, `TreeWalker`, `createRange`/`createTreeWalker`/`evaluate`, `XPath*`, `Highlight*`, `DOMParser`, `AbortController`/`AbortSignal`.
-- Never construct events with `new` (`new Event`/`CustomEvent`/`KeyboardEvent`/`MouseEvent`/`UIEvent`/`AnimationEvent`/`TransitionEvent`/`MessageEvent`/`ProgressEvent` are missing); receive instances from listeners only. `preventDefault`/`stopPropagation` no-op on incoming events.
-- Never use Element/Node features beyond the documented subset: `attachShadow`, `scrollIntoView`/`scroll*`, `requestFullscreen`, `requestPointerLock`, `getHTML`/`setHTMLUnsafe`, `toggleAttribute`, `aria*Element`/role props, `element.click()`, popover API, `attachInternals`. Never use `HTMLElement` IDL props (`hidden`, `inert`, `innerText`, `outerText`, `title`, `lang`, `dir`, `tabIndex`, `accessKey`, `draggable`, `translate`, `contentEditable`, `enterKeyHint`, `inputMode`, `autocapitalize`, `spellcheck`, `popover`).
-- Never use `classList` methods (`add`/`remove`/`toggle`/`replace`/`contains`) — they are stubs. Set `element.className = '...'` directly.
-- Never use `History.*`, `window.alert`/`confirm`/`prompt`/`open`/`print`/`matchMedia`/`structuredClone`, or any `Navigator` feature beyond UA strings (no `clipboard`, `credentials`, `mediaDevices`, `geolocation`, `permissions`, `serviceWorker`, `storage`, `vibrate`, `share`, `wakeLock`, `bluetooth`, `usb`, `hid`, `serial`, `xr`, `gpu`, `mediaSession`, `getGamepads`).
-- Only `performance.now()` is real — never `mark`/`measure`/`getEntries*`/`clearMarks`/`clearMeasures`. Only `console.log`/`info`/`debug`/`warn`/`error`/`assert`/`time`/`timeEnd` — never `dir`/`group*`/`table`/`count*`/`trace`.
-- Never use SVG DOM beyond declarative markup (`getBBox`, `getCTM`, `createSVG*`, `pauseAnimations`, `SVGTransform.set*`, `SVGLength` mutators).
-- Never use Streams, `OffscreenCanvas`, `createImageBitmap`, WebCodecs, `Notification`, `VisualViewport`, `Sanitizer`, `trustedTypes`, `SharedArrayBuffer`, `Atomics`, `WeakRef`, `FinalizationRegistry`, Credential Management/WebAuthn, Payment Request, or sensors.
-
-If a behavior cannot be achieved with the supported subset, route through the Gameface bridge (`engine.call`, `coh-*` properties); never simulate it with a missing or stubbed standard API.
+- Never use network/IPC APIs (`fetch`, `Request`, `Response`, `Headers`, `FormData`, `EventSource`, `WebSocket` (constructor), `BroadcastChannel`, `MessageChannel`, `Worker`, `SharedWorker`); communicate with the host engine via the Gameface bridge.
+- Never use browser storage APIs (`localStorage`, `sessionStorage`, `indexedDB`, `IDB*`, `FileReader`, `File`, `FileList`, `FileSystem*`, `caches`, `cookieStore`); none are available. Persist via the engine bridge.
+- Never use `crypto`, `SubtleCrypto`, `TextEncoder`/`TextDecoder`/`TextEncoderStream`/`TextDecoderStream`, `atob`/`btoa`, or `structuredClone`; missing. Implement what you need by hand or pull the data through the engine bridge.
+- Never use WebGL / WebGPU directly; rendering happens through the host engine. Don't call `canvas.getContext("webgl"|"webgl2"|"webgpu")`.
+- Never use Web Audio (`AudioContext`, `*Node`, `AudioParam`), Media Streams (`MediaStream*`), Media Recording (`MediaRecorder`), Media Source Extensions, Media Capabilities, WebRTC (`RTC*`), Picture-in-Picture, or Speech APIs; missing. Use host-engine audio/video.
+- Never use `IntersectionObserver`, `PerformanceObserver`, `ReportingObserver`, `VisualViewport`, `FontFace`/`FontFaceSet`; missing. Poll on `requestAnimationFrame` (a Window stub) or compute manually.
+- Never use `Range`, `StaticRange`, `TreeWalker`, `AbortController`/`AbortSignal`, `DOMParser`, `XPath*`, `Highlight*`; missing.
+- Never use the modern Navigation API (`navigation`, `NavigationHistoryEntry`, `NavigateEvent`); missing.
+- Never use Web Authentication / Credential Management / Payment Request APIs; missing.
+- Never use device sensors, geolocation, Bluetooth, USB, HID, Serial, WakeLock, or WebXR; missing.
+- Never use `Permissions`, `Clipboard`, `ClipboardItem`, `StorageAccess` APIs; missing.
+- Never use the Streams API (`ReadableStream`, `WritableStream`, `TransformStream`, `CompressionStream`, etc.); missing.
+- Never use Workers, Worklets, the Prioritized Task Scheduler, `requestIdleCallback`, or `setImmediate`; missing.
+- Never use these geometry / typed-CSSOM rule wrappers (`DOMPoint*`, `DOMQuad`, `DOMMatrixReadOnly`, `CSS*Rule`, `CSSPositionValue`, `CSSImageValue`); missing.
+- Never use modern editing / form-event APIs (`EditContext`, `InputEvent`, `CompositionEvent`, `FormDataEvent`, `SubmitEvent`, `InvalidEvent`, `HashChangeEvent`, etc.); missing or partial.
+- Never use `SharedArrayBuffer`, `Atomics`, `WeakRef`, `FinalizationRegistry`; missing in this Gameface JS host.
+- Never use WebCodecs, OffscreenCanvas, or `createImageBitmap`; missing.
+- Never use vendor-prefixed (`moz*`, `webkit*`, `Chrome*`, `chrome`), Trusted Types (`trustedTypes`, `TrustedHTML`, …), Topics, Fenced Frames, Interest Groups, Sanitizer, or `launchQueue`; missing.
+- 889 other window-scoped globals are absent (vendor-prefixed, experimental, trial APIs). Assume any standard symbol not listed under "Supported" is unavailable.
+- Constructor-only-missing (receive instances from listeners / DOM APIs only, never `new` them): `AnimationEvent`, `CSSKeywordValue`, `CSSMatrixComponent`, `CSSRotate`, `CSSScale`, `CSSSkewX`, `CSSSkewY`, `CSSTransformValue`, `CSSTranslate`, `CSSUnitValue`, `Comment`, `CustomEvent`, `DOMRect`, `ErrorEvent`, `EventTarget`, `FocusEvent`, `GamepadEvent`, `MutationObserver`, `ProgressEvent`, `PromiseRejectionEvent`, `ResizeObserver`, `TransitionEvent`, `WebSocket`.
+- All `HTML*Element` interfaces (22 classes) ship only a small subset of their standard surface — assume `id`/`className`/`classList`/`getAttribute`/`setAttribute`/`addEventListener`/`removeEventListener`/`getBoundingClientRect`/`querySelector`/parent-traversal exist; consult `negative-rules-js.md` before touching tag-specific properties.
+- SVG DOM (9 `SVG*` interfaces) is partial — keep SVG configuration in markup; avoid `getBBox`/`animVal`/`createSVG*`/transform-list mutation.
+- Typed CSSOM (5 `CSS*Value`/`CSS*Component` classes) is not constructible — assemble plain CSS strings instead.
+- `Document` — `new Document()` missing; instances also lack `alinkColor`, `all`, `anchors`, `applets`, `bgColor`, `cookie`, …+94 more (full list in `negative-rules-js.md`).
+- `Element` instances lack `currentCSSZoom`, `onfullscreenchange`, `onfullscreenerror`, `checkVisibility`, `computedStyleMap`, `getHTML`, …+75 more (full list in `negative-rules-js.md`).
+- `Window` instances lack `console`, `chrome`, `clientInformation`, `closed`, `cookieStore`, `event`, …+78 more (full list in `negative-rules-js.md`).
+- `Navigator` instances lack `clipboard`, `credentials`, `doNotTrack`, `geolocation`, `login`, `maxTouchPoints`, …+81 more (full list in `negative-rules-js.md`).
+- `CSSStyleDeclaration` instances lack `boxSizing`, `fontVariantEastAsian`, `accentColor`, `alignmentBaseline`, `animationComposition`, `appearance`, …+344 more (full list in `negative-rules-js.md`).
+- `CSSStyleSheet` — `new CSSStyleSheet()` missing; instances also lack `ownerRule`, `rules`, `addRule`, `removeRule`, `replace`, `replaceSync` (full list in `negative-rules-js.md`).
+- `Console` instances lack `clear`, `count`, `countReset`, `dir`, `dirxml`, `group`, …+6 more (full list in `negative-rules-js.md`).
+- `Performance` instances lack `eventCounts`, `navigation`, `onresourcetimingbufferfull`, `timeOrigin`, `timing`, `clearMarks`, …+11 more (full list in `negative-rules-js.md`).
+- `Selection` instances lack `direction`, `isCollapsed`, `rangeCount`, `type`, `addRange`, `collapse`, …+11 more (full list in `negative-rules-js.md`).
+- `History` instances lack `scrollRestoration` (full list in `negative-rules-js.md`).
+- `CanvasRenderingContext2D` instances lack `createImageData`, `direction`, `ellipse`, `filter`, `fontKerning`, `fontStretch`, …+20 more (full list in `negative-rules-js.md`).
+- `Animation` — `new Animation()` missing; instances also lack `effect`, `finished`, `id`, `oncancel`, `onremove`, `pending`, …+9 more (full list in `negative-rules-js.md`).
+- `CustomElementRegistry` instances lack `get`, `getName`, `upgrade`, `whenDefined` (full list in `negative-rules-js.md`).
+- Other partial classes (34 more — see `negative-rules-js.md`): `Attr`, `Blob`, `CharacterData`, `DocumentFragment`, `DocumentType`, `DOMMatrix`/`DOMRect*`, `Event`/`KeyboardEvent`/`MouseEvent`/`UIEvent`/`MessageEvent`/`PopStateEvent`/`TouchEvent`/`Touch`, `Gamepad`, `NamedNodeMap`, `NodeIterator`, `Screen`, `ShadowRoot`, `StylePropertyMap*`, `StyleSheet`, `Text`, `TextMetrics`, `XMLHttpRequestEventTarget`, etc. — constructors typically missing, only a few properties exposed.
