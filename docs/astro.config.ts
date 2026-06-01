@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function getConfig() {
-  const documentations = ['e2e', 'gameface-vite-plugin', 'vite-solid-style-to-css-plugin', 'vite-gameface-style-transformer', 'interaction-manager', 'data-binding-autocomplete'];
+  const documentations = ['e2e', 'gameface-vite-plugin', 'vite-solid-style-to-css-plugin', 'vite-gameface-style-transformer', 'interaction-manager', 'data-binding-autocomplete', 'eslint-plugin-gameface'];
 
   const sideBarTopics = [
     {
@@ -123,7 +123,28 @@ async function getConfig() {
           label: 'Concepts',
           autogenerate: { directory: 'vite-gameface-style-transformer/concepts' },
         },
-                 generateMultipleDocsChangelog('vite-gameface-style-transformer', path.join(__dirname, `./src/content/docs/vite-gameface-style-transformer/changelog/index.mdx`)),
+        generateMultipleDocsChangelog('vite-gameface-style-transformer', path.join(__dirname, `./src/content/docs/vite-gameface-style-transformer/changelog/index.mdx`)),
+      ],
+    },
+    {
+      link: '/eslint-plugin-gameface/getting-started',
+      label: 'ESLint plugin for Gameface',
+      id: 'eslint-plugin-gameface',
+      icon: 'seti:eslint',
+      items: [
+        await generateVersionWithPackageJSON(
+          '../eslint-gameface/packages/eslint-plugin-gameface/package.json',
+          'https://npmjs.org/eslint-plugin-gameface'
+        ),
+        {
+          label: 'Getting Started',
+          autogenerate: { directory: 'eslint-plugin-gameface/getting-started' },
+        },
+        {
+          label: 'Guides',
+          autogenerate: { directory: 'eslint-plugin-gameface/guides' },
+        },
+        generateMultipleDocsChangelog('eslint-plugin-gameface', path.join(__dirname, `./src/content/docs/eslint-plugin-gameface/changelog/index.mdx`)),
       ],
     },
     {
@@ -152,7 +173,7 @@ async function getConfig() {
     vite: {
       server: {
         fs: {
-          allow: ['.', './src/content/docs/interaction-manager'],
+          allow: ['.', './src/content/docs/interaction-manager', './src/content/docs/eslint-plugin-gameface'],
         },
       },
       resolve: {

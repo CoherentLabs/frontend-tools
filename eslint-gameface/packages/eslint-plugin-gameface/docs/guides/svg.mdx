@@ -1,0 +1,27 @@
+---
+title: SVG in UI
+sidebar:
+  order: 4
+---
+
+SVG inside your **HTML or JSX** is checked against Gameface’s SVG support. Standalone `.svg` files in `assets/` are not linted by this plugin—embed or reference SVG in components and pages you lint.
+
+## Common problems
+
+| Issue | What to do |
+| --- | --- |
+| Unsupported SVG tag or SMIL element | Replace with a supported structure or simplify the graphic |
+| `stroke-dasharray` on `<circle>` / `<rect>` | Use `<path>` for dashed strokes (Gameface engine limit) |
+| Both `mask` and `clip-path` with `url(#id)` | Avoid combining both on the same element; clip-path wins |
+| Keyframes animating `width` without units | Add units (for example `100px`) in `@keyframes` for SVG CSS animation |
+| Animating path `d` with arc commands | Review; elliptical arc animation may warn |
+
+## Where rules run
+
+- **HTML** — attributes and inline `style` on SVG elements, plus CSS in `<style>` blocks
+- **JSX / TSX** — the same for component SVG trees
+- **CSS files** — selectors that target SVG shapes and `@keyframes` used for SVG motion
+
+Optional rule `gameface/html-svg-tspan-ignored` is off by default; enable it if you want a reminder that `<tspan>` styling is merged into the parent `<text>`.
+
+For official support details, see [Gameface SVG Support](https://docs.coherent-labs.com/cpp-gameface/content_development/supported_features_tables/svgsupport/) in the Coherent documentation.

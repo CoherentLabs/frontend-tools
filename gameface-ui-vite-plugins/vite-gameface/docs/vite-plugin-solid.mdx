@@ -21,9 +21,11 @@ import solidPlugin from 'vite-plugin-solid';
 export default defineConfig({
     plugins: [
         solidPlugin({
-            omitNestedClosingTags: false,
-            omitLastClosingTag: false,
-            omitQuotes: false,
+            solid: {
+                omitLastClosingTag: false,
+                omitNestedClosingTags: false,
+                omitQuotes: false,
+            }
         }),
     ],
 });

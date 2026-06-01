@@ -1,0 +1,195 @@
+---
+title: Rules reference
+sidebar:
+  order: 7
+---
+
+Every Gameface rule uses the `gameface/` prefix. Defaults below match the [`flat/recommended`](/eslint-plugin-gameface/getting-started/configuration/) preset.
+
+## Configure rules in `eslint.config.js`
+
+Add a config object **after** you spread the preset so your overrides win.
+
+### Turn a rule off
+
+```js
+export default [
+  ...gameface.configs["flat/recommended"],
+  {
+    rules: {
+      "gameface/html-partial-features": "off",
+    },
+  },
+];
+```
+
+### Severity only: error or warn
+
+```js
+rules: {
+  "gameface/css-partial-selectors": "warn",
+  "gameface/js-partial-member-access": "error",
+},
+```
+
+### Severity plus options
+
+Some rules accept a second argument (options object):
+
+```js
+rules: {
+  "gameface/html-parsed-no-impl": [
+    "error",
+    {
+      scope: "all",
+      ignoreTags: ["meta", "link", "noscript"],
+    },
+  ],
+  "gameface/html-partial-features": [
+    "warn",
+    { mode: "attribute-checks", warnAllowlist: false },
+  ],
+},
+```
+
+### Only for certain files
+
+```js
+export default [
+  ...gameface.configs["flat/recommended"],
+  {
+    files: ["legacy/**/*.html"],
+    rules: {
+      "gameface/html-parsed-no-impl": "off",
+    },
+  },
+];
+```
+
+| Severity | Meaning |
+| --- | --- |
+| `"error"` | Fails ESLint (and usually CI) |
+| `"warn"` | Shows a warning; does not fail unless you use `--max-warnings 0` |
+| `"off"` | Rule is disabled |
+
+---
+
+## Rules
+
+---
+
+### CSS and SCSS files (`.css`, `.scss`)
+
+| Rule id | Default | What it reports |
+| --- | --- | --- |
+| `gameface/css-no-unsupported-properties` | error | A property Gameface does not support (for example from your unsupported CSS list). |
+| `gameface/css-partial-property-values` | error | A **value** on a property that is only partly supported (often a keyword Gameface rejects). |
+| `gameface/css-no-unsupported-functions` | error | A CSS function Gameface marks as missing (for example `clamp()`, `min()`). |
+| `gameface/css-no-unsupported-selectors` | error | A selector or pseudo-class Gameface does not support. |
+| `gameface/css-partial-selectors` | warn | A selector/pseudo that works in browsers but is only partially supported in Gameface. |
+| `gameface/css-no-var-in-keyframes` | error | `var()` used inside `@keyframes` (documented Gameface limit). |
+| `gameface/css-no-calc-in-keyframes` | error | `calc()` used inside `@keyframes`. |
+| `gameface/css-var-no-fallback` | error | `var(--name, fallback)` — second argument (fallback) is not allowed. |
+| `gameface/css-calc-no-mixed-percent-units` | error | `calc()` mixes `%` with px/rem/etc. (for example `calc(50% - 20px)`). |
+| `gameface/css-svg-keyframes-sizing-units` | error | In SVG-related `@keyframes`, `width` / `height` / `font-size` need units (not bare numbers). |
+| `gameface/css-svg-keyframes-path-arc-animation` | warn | `@keyframes` animates SVG path `d` with elliptical arc commands. |
+| `gameface/css-svg-stroke-dash-non-path` | error | `stroke-dasharray` / `stroke-dashoffset` on a non-`<path>` SVG selector. |
+| `gameface/css-svg-keyframes-stroke-dash-path-only` | warn | `@keyframes` animates stroke dash properties (only effective on `<path>` in Gameface). |
+
+---
+
+### HTML — tags and attributes (`.html`)
+
+| Rule id | Default | What it reports |
+| --- | --- | --- |
+| `gameface/html-parsed-no-impl` | error | An HTML tag Gameface parses but does not implement. Default **curated** scope focuses on tags like `<select>`, table model, `<iframe>`; use option `scope: "all"` for every parsed-no-impl tag. |
+| `gameface/html-partial-features` | warn | A tag/attribute combination that is only partly supported (default: attribute-based checks).<br/>**Options**: `mode`, `warnAllowlist`. |
+
+---
+
+### HTML — CSS in `<style>` or `style=""`
+
+| Rule id | Default | What it reports |
+| --- | --- | --- |
+| `gameface/html-embedded-css-no-unsupported-properties` | error | Unsupported property inside a `<style>` block. |
+| `gameface/html-embedded-css-partial-property-values` | error | Unsupported keyword/value on a partial property in `<style>`. |
+| `gameface/html-embedded-css-no-unsupported-functions` | error | Unsupported CSS function in `<style>`. |
+| `gameface/html-embedded-css-no-unsupported-selectors` | error | Unsupported selector/pseudo in `<style>`. |
+| `gameface/html-embedded-css-partial-selectors` | warn | Partially supported selector in `<style>`. |
+| `gameface/html-embedded-css-no-var-in-keyframes` | error | `var()` in `@keyframes` in `<style>`. |
+| `gameface/html-embedded-css-no-calc-in-keyframes` | error | `calc()` in `@keyframes` in `<style>`. |
+| `gameface/html-embedded-css-var-no-fallback` | error | `var()` with fallback in `<style>`. |
+| `gameface/html-embedded-css-calc-no-mixed-percent-units` | error | Mixed `%` in `calc()` in `<style>`. |
+| `gameface/html-embedded-css-svg-keyframes-sizing-units` | error | SVG keyframe sizing units in `<style>`. |
+| `gameface/html-embedded-css-svg-keyframes-path-arc-animation` | warn | SVG path arc animation in `<style>` keyframes. |
+| `gameface/html-embedded-css-svg-stroke-dash-non-path` | error | Stroke dash on non-path in `<style>`. |
+| `gameface/html-embedded-css-svg-keyframes-stroke-dash-path-only` | warn | Stroke dash keyframes in `<style>`. |
+| `gameface/html-inline-css-no-unsupported-properties` | error | Unsupported property in `style="..."`. |
+| `gameface/html-inline-css-partial-property-values` | error | Partial property value in `style="..."`. |
+| `gameface/html-inline-css-no-unsupported-functions` | error | Unsupported function in `style="..."`. |
+| `gameface/html-inline-css-no-var-in-keyframes` | error | `var()` in keyframes inside inline `style` (when parsed as CSS). |
+| `gameface/html-inline-css-no-calc-in-keyframes` | error | `calc()` in keyframes inside inline `style`. |
+| `gameface/html-inline-css-var-no-fallback` | error | `var()` fallback in inline `style`. |
+| `gameface/html-inline-css-calc-no-mixed-percent-units` | error | Mixed `%` in `calc()` in inline `style`. |
+| `gameface/html-inline-css-svg-keyframes-sizing-units` | error | SVG keyframe sizing in inline `style`. |
+| `gameface/html-inline-css-svg-keyframes-path-arc-animation` | warn | SVG path arc keyframes in inline `style`. |
+| `gameface/html-inline-css-svg-keyframes-stroke-dash-path-only` | warn | Stroke dash keyframes in inline `style`. |
+
+---
+
+### JSX / TSX — inline `style`
+
+| Rule id | Default | What it reports |
+| --- | --- | --- |
+| `gameface/jsx-inline-css-no-unsupported-properties` | error | Unsupported CSS **property** in `style` (string or **object** keys). |
+| `gameface/jsx-inline-css-partial-property-values` | error | Unsupported **value** for a partial property (string CSS or object literal values). |
+| `gameface/jsx-inline-css-no-unsupported-functions` | error | Unsupported function in a **string** `style` only. |
+| `gameface/jsx-inline-css-no-var-in-keyframes` | error | `var()` in `@keyframes` inside a **string** `style`. |
+| `gameface/jsx-inline-css-no-calc-in-keyframes` | error | `calc()` in `@keyframes` in a **string** `style`. |
+| `gameface/jsx-inline-css-var-no-fallback` | error | `var()` with fallback in a **string** `style`. |
+| `gameface/jsx-inline-css-calc-no-mixed-percent-units` | error | Mixed `%` in `calc()` in a **string** `style`. |
+| `gameface/jsx-inline-css-svg-keyframes-sizing-units` | error | SVG keyframe sizing units in a **string** `style`. |
+| `gameface/jsx-inline-css-svg-keyframes-path-arc-animation` | warn | SVG path arc keyframes in a **string** `style`. |
+| `gameface/jsx-inline-css-svg-keyframes-stroke-dash-path-only` | warn | Stroke dash keyframes in a **string** `style`. |
+
+---
+
+### Data binding — HTML and JSX
+
+| Rule id | Default | What it reports |
+| --- | --- | --- |
+| `gameface/html-databind-spelling` | error | Unknown or misspelled `data-bind-*` attribute name. |
+| `gameface/html-databind-curly-brackets` | error | Binding value missing `{{` / `}}`. |
+| `gameface/html-databind-property-accessors` | error | Broken model path (for example `{{Model.}}`, split braces). |
+| `gameface/html-databind-bind-for` | error | Invalid `data-bind-for` / iterator syntax. |
+| `gameface/html-databind-class-toggle` | error | Invalid `data-bind-class-toggle` segment (`class:{{condition}}`). |
+| `gameface/html-databind-model-properties` | warn | Model path does not match a field in `settings.gameface.modelsDir` JSON. |
+| `gameface/jsx-databind-spelling` | error | Same as HTML, on JSX attributes. |
+| `gameface/jsx-databind-curly-brackets` | error | Same as HTML, on JSX. |
+| `gameface/jsx-databind-property-accessors` | error | Same as HTML, on JSX. |
+| `gameface/jsx-databind-bind-for` | error | Same as HTML, on JSX. |
+| `gameface/jsx-databind-class-toggle` | error | Same as HTML, on JSX. |
+| `gameface/jsx-databind-model-properties` | warn | Same as HTML, on JSX. |
+
+---
+
+### JavaScript and TypeScript
+
+| Rule id | Default | What it reports |
+| --- | --- | --- |
+| `gameface/js-no-unsupported-globals` | error | Use of a global object/API Gameface does not provide. |
+| `gameface/js-partial-member-access` | warn | Access to `Something.member` where `member` is known to be missing on that type in Gameface. |
+
+---
+
+### SVG in HTML and JSX
+
+| Rule id | Default | What it reports |
+| --- | --- | --- |
+| `gameface/html-svg-no-unsupported-elements` | error | SVG tag or SMIL element not supported inside HTML `<svg>`. |
+| `gameface/jsx-svg-no-unsupported-elements` | error | Same, inside JSX `<svg>`. |
+| `gameface/html-svg-mask-clip-path-conflict` | warn | Both `mask` and `clip-path` use `url(#…)` on the same element. |
+| `gameface/jsx-svg-mask-clip-path-conflict` | warn | Same, in JSX. |
+| `gameface/html-svg-tspan-ignored` | off | Optional: `<tspan>` styling is merged into parent `<text>` (enable with `"warn"` if you want the hint). |
+| `gameface/html-svg-stroke-dash-non-path` | error | `stroke-dasharray` / `stroke-dashoffset` on a shape other than `<path>`. |
+| `gameface/jsx-svg-stroke-dash-non-path` | error | Same, in JSX (attributes or inline style). |

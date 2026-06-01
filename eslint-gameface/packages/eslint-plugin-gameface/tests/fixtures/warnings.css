@@ -1,0 +1,27 @@
+/* Expect: gameface/css-no-unsupported-properties on accent-color; */
+/* gameface/css-partial-property-values on space-between; */
+/* gameface/css-no-unsupported-selectors on :any-link; */
+/* gameface/css-partial-selectors on :nth-child(2 of .class) when formatted exactly. */
+/* gameface/css-no-unsupported-functions on clamp; */
+/* gameface/css-calc-no-mixed-percent-units on calc(12px + 100%); */
+/* gameface/css-var-no-fallback on var(--x, fallback) if added; */
+.bad-prop {
+  accent-color: red;
+}
+
+.bad-partial:not(.test) {
+  align-content: space-between;
+}
+
+.bad-pseudo-unsupported :any-link {
+  color: red;
+}
+
+.bad-pseudo-partial :nth-child(2 of .class) {
+  color: red;
+}
+
+.bad-fn {
+  font-size: clamp(12px, 14px, 16px);
+  font-size: calc(12px + 100%);
+}

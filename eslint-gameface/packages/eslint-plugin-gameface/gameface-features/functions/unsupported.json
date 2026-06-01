@@ -1,0 +1,371 @@
+[
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "clamp",
+    "evidence": {
+      "category": "math",
+      "testProperty": "font-size",
+      "canonicalValue": "clamp(12px, 14px, 16px)",
+      "mixedUnitsValue": "clamp(100px, 20vw, 200px)",
+      "logWarning": "Unable to parse declaration: font-size: clamp(12px, 14px, 16px)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "min",
+    "evidence": {
+      "category": "math",
+      "testProperty": "font-size",
+      "canonicalValue": "min(12px, 16px)",
+      "mixedUnitsValue": "min(12px, 1vw)",
+      "logWarning": "Unable to parse declaration: font-size: min(12px, 16px)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "max",
+    "evidence": {
+      "category": "math",
+      "testProperty": "font-size",
+      "canonicalValue": "max(12px, 16px)",
+      "mixedUnitsValue": "max(12px, 1vw)",
+      "logWarning": "Unable to parse declaration: font-size: max(12px, 16px)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "mod",
+    "evidence": {
+      "category": "math",
+      "testProperty": "font-size",
+      "canonicalValue": "mod(20px, 6px)",
+      "mixedUnitsValue": "mod(20px, 1vw)",
+      "logWarning": "Unable to parse declaration: font-size: mod(20px, 6px)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "rem",
+    "evidence": {
+      "category": "math",
+      "testProperty": "font-size",
+      "canonicalValue": "rem(20px, 6px)",
+      "mixedUnitsValue": "rem(20px, 1vw)",
+      "logWarning": "Unable to parse declaration: font-size: rem(20px, 6px)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "round",
+    "evidence": {
+      "category": "math",
+      "testProperty": "font-size",
+      "canonicalValue": "round(14px, 2px)",
+      "mixedUnitsValue": "round(14px, 1vw)",
+      "logWarning": "Unable to parse declaration: font-size: round(14px, 2px)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "abs",
+    "evidence": {
+      "category": "math",
+      "testProperty": "width",
+      "canonicalValue": "abs(-100px)",
+      "logWarning": "Unable to parse declaration: width: abs(-100px)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "asin",
+    "evidence": {
+      "category": "math",
+      "testProperty": "transform",
+      "canonicalValue": "rotate(asin(1))",
+      "logWarning": "Unable to parse declaration: transform: rotate(asin(1))"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "acos",
+    "evidence": {
+      "category": "math",
+      "testProperty": "transform",
+      "canonicalValue": "rotate(acos(1))",
+      "logWarning": "Unable to parse declaration: transform: rotate(acos(1))"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "atan",
+    "evidence": {
+      "category": "math",
+      "testProperty": "transform",
+      "canonicalValue": "rotate(atan(1))",
+      "logWarning": "Unable to parse declaration: transform: rotate(atan(1))"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "atan2",
+    "evidence": {
+      "category": "math",
+      "testProperty": "transform",
+      "canonicalValue": "rotate(atan2(1, 1))",
+      "logWarning": "Unable to parse declaration: transform: rotate(atan2(1, 1))"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "hsl",
+    "evidence": {
+      "category": "color",
+      "testProperty": "color",
+      "canonicalValue": "hsl(0, 100%, 50%)",
+      "logWarning": "Unable to parse declaration: color: hsl(0, 100%, 50%)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "hsla",
+    "evidence": {
+      "category": "color",
+      "testProperty": "color",
+      "canonicalValue": "hsla(0, 100%, 50%, 0.5)",
+      "logWarning": "Unable to parse declaration: color: hsla(0, 100%, 50%, 0.5)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "hwb",
+    "evidence": {
+      "category": "color",
+      "testProperty": "color",
+      "canonicalValue": "hwb(0 0% 0%)",
+      "logWarning": "Unable to parse declaration: color: hwb(0 0% 0%)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "lab",
+    "evidence": {
+      "category": "color",
+      "testProperty": "color",
+      "canonicalValue": "lab(50% 40 59.5)",
+      "logWarning": "Unable to parse declaration: color: lab(50% 40 59.5)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "lch",
+    "evidence": {
+      "category": "color",
+      "testProperty": "color",
+      "canonicalValue": "lch(50% 70 30)",
+      "logWarning": "Unable to parse declaration: color: lch(50% 70 30)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "oklab",
+    "evidence": {
+      "category": "color",
+      "testProperty": "color",
+      "canonicalValue": "oklab(0.5 0.1 0.1)",
+      "logWarning": "Unable to parse declaration: color: oklab(0.5 0.1 0.1)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "oklch",
+    "evidence": {
+      "category": "color",
+      "testProperty": "color",
+      "canonicalValue": "oklch(0.5 0.1 30)",
+      "logWarning": "Unable to parse declaration: color: oklch(0.5 0.1 30)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "color-mix",
+    "evidence": {
+      "category": "color",
+      "testProperty": "color",
+      "canonicalValue": "color-mix(in srgb, red, blue)",
+      "logWarning": "Unable to parse declaration: color: color-mix(in srgb, red, blue)"
+    }
+  },
+  {
+    "status": "unknown",
+    "surface": "css-function",
+    "name": "url",
+    "evidence": {
+      "category": "image",
+      "testProperty": "background-image",
+      "canonicalValue": "url(\"data:image/svg+xml,%3Csvg/%3E\")",
+      "skipReason": "Gameface starts resolving url(…) at stylesheet-parse time; a hanging fetch can deadlock the next CDP call.  Treat as present (the engine universally supports url() for image and font sources) — manual verification recommended."
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "repeating-linear-gradient",
+    "evidence": {
+      "category": "image",
+      "testProperty": "background-image",
+      "canonicalValue": "repeating-linear-gradient(red 0 10px, blue 10px 20px)",
+      "logWarning": "Unable to parse declaration: background-image: repeating-linear-gradient(red 0 10px, blue 10px 20px)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "repeating-radial-gradient",
+    "evidence": {
+      "category": "image",
+      "testProperty": "background-image",
+      "canonicalValue": "repeating-radial-gradient(red 0 10px, blue 10px 20px)",
+      "logWarning": "Unable to parse declaration: background-image: repeating-radial-gradient(red 0 10px, blue 10px 20px)"
+    }
+  },
+  {
+    "status": "unknown",
+    "surface": "css-function",
+    "name": "image-set",
+    "evidence": {
+      "category": "image",
+      "testProperty": "background-image",
+      "canonicalValue": "image-set(\"img.png\" 1x, \"img2.png\" 2x)",
+      "skipReason": "image-set() requires real image sources; Gameface attempts to resolve them at parse time and stalls the renderer. Verify manually against the Gameface CSS support docs."
+    }
+  },
+  {
+    "status": "unknown",
+    "surface": "css-function",
+    "name": "cross-fade",
+    "evidence": {
+      "category": "image",
+      "testProperty": "background-image",
+      "canonicalValue": "cross-fade(50% url(\"a.png\"), url(\"b.png\"))",
+      "skipReason": "cross-fade() requires real image sources; Gameface attempts to resolve them at parse time and stalls the renderer. Verify manually against the Gameface CSS support docs."
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "skew",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "skew(10deg)",
+      "logWarning": "Unable to parse declaration: transform: skew(10deg)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "perspective",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "perspective(500px)",
+      "logWarning": "Unable to parse declaration: transform: perspective(500px)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "linear",
+    "evidence": {
+      "category": "timing",
+      "testProperty": "transition-timing-function",
+      "canonicalValue": "linear(0, 0.25, 0.5, 0.75, 1)",
+      "logWarning": "Unable to parse declaration: transition-timing-function: linear(0, 0.25, 0.5, 0.75, 1)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "rect",
+    "evidence": {
+      "category": "shape",
+      "testProperty": "clip-path",
+      "canonicalValue": "rect(0 100% 100% 0)",
+      "logWarning": "Unable to parse declaration: clip-path: rect(0 100% 100% 0)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "xywh",
+    "evidence": {
+      "category": "shape",
+      "testProperty": "clip-path",
+      "canonicalValue": "xywh(0 0 100% 100%)",
+      "logWarning": "Unable to parse declaration: clip-path: xywh(0 0 100% 100%)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "counter",
+    "evidence": {
+      "category": "counter",
+      "testProperty": "content",
+      "canonicalValue": "counter(item)",
+      "logWarning": "Unable to parse declaration: content: counter(item)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "counters",
+    "evidence": {
+      "category": "counter",
+      "testProperty": "content",
+      "canonicalValue": "counters(item, \".\")",
+      "logWarning": "Unable to parse declaration: content: counters(item, \".\")"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "env",
+    "evidence": {
+      "category": "reference",
+      "testProperty": "width",
+      "canonicalValue": "env(safe-area-inset-top, 100px)",
+      "logWarning": "Unable to parse declaration: width: env(safe-area-inset-top, 100px)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-function",
+    "name": "attr",
+    "evidence": {
+      "category": "reference",
+      "testProperty": "content",
+      "canonicalValue": "attr(data-gf)",
+      "logWarning": "Unable to parse declaration: content: attr(data-gf)"
+    }
+  }
+]

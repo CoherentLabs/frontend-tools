@@ -1,0 +1,10 @@
+{
+  "supported": 38,
+  "partial": 106,
+  "unsupported": 1527,
+  "byStatus": {
+    "supported": 38,
+    "partial": 106,
+    "missing-from-window": 1527
+  }
+}

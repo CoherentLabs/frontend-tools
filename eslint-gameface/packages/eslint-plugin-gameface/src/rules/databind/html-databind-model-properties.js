@@ -1,0 +1,72 @@
+import { join } from "node:path";
+import {
+  buildModelRelations,
+  findModelPropertyViolation,
+  modelsDirMtime,
+} from "../../utils/html-databind-model-relations.js";
+
+export default {
+  meta: {
+    type: "problem",
+    docs: {
+      description:
+        "Gameface model property paths in markup must exist on JSON models under settings.gameface.modelsDir (HTMLLint model-properties).",
+    },
+    messages: {
+      invalidModelPath:
+        'Property "{{path}}" does not exist on model "{{model}}".',
+    },
+    schema: [],
+  },
+  create(context) {
+    const sc = context.sourceCode || context.getSourceCode?.();
+    const cwd = context.cwd || process.cwd();
+    let cacheKey = "";
+    /** @type {ReturnType<typeof buildModelRelations> | null} */
+    let relations = null;
+
+    function getRelations() {
+      const modelsDir =
+        typeof context.settings?.gameface?.modelsDir === "string"
+          ? context.settings.gameface.modelsDir
+          : "Gameface-models";
+      const root = join(cwd, modelsDir);
+      const mtime = modelsDirMtime(root);
+      const key = `${root}:${mtime === null ? "missing" : mtime}`;
+      if (relations && cacheKey === key) {
+        return relations;
+      }
+      cacheKey = key;
+      relations = buildModelRelations(root);
+      return relations;
+    }
+
+    return {
+      /** @param {import("@html-eslint/types").Tag} node */
+      Tag(node) {
+        const rels = getRelations();
+        if (rels.length === 0) {
+          return;
+        }
+        const raw = sc.text.slice(
+          sc.getIndexFromLoc(node.openStart.loc.start),
+          sc.getIndexFromLoc(node.openEnd.loc.end),
+        );
+        const violation = findModelPropertyViolation(raw, rels);
+        if (violation) {
+          context.report({
+            loc: {
+              start: node.openStart.loc.start,
+              end: node.openEnd.loc.end,
+            },
+            messageId: "invalidModelPath",
+            data: {
+              path: violation.path,
+              model: violation.model,
+            },
+          });
+        }
+      },
+    };
+  },
+};

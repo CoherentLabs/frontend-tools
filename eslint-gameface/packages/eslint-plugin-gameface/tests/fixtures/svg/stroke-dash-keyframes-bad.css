@@ -1,0 +1,12 @@
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1;
+  }
+  100% {
+    stroke-dashoffset: 20;
+  }
+}
+
+.path {
+  animation: dash 1s linear infinite;
+}

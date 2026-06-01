@@ -97,14 +97,16 @@ async function getToolsDirs(root, exclude = []) {
 }
 
 const coherentDocsThemePath = path.join(__dirname, '../docs-theme/packages/coherent-docs-theme');
+const eslintPluginPath = path.join(__dirname, '../eslint-gameface/packages/eslint-plugin-gameface');
 
 /** */
 async function main() {
     try {
         const tools = [
-            ...await getToolsDirs(TOOLS_PATH, ['gameface-ui-vite-plugins', 'language-server', 'gf-figma-exporter']),
+            ...await getToolsDirs(TOOLS_PATH, ['gameface-ui-vite-plugins', 'language-server', 'gf-figma-exporter', 'eslint-gameface']),
             ...await getToolsDirs(VITE_PLUGINS_PATH),
-            coherentDocsThemePath
+            coherentDocsThemePath,
+            eslintPluginPath
         ];
         for (const tool of tools) {
             if (shouldUpdate(tool)) await publish(tool);

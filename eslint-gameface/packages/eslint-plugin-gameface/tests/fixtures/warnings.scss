@@ -1,0 +1,19 @@
+/* Expect: gameface/css-no-unsupported-properties on accent-color; */
+/* gameface/css-partial-property-values on space-between; */
+/* gameface/css-no-unsupported-selectors on :any-link; */
+/* gameface/css-partial-selectors on :nth-child(2 of .class) when formatted exactly. */
+.bad-prop {
+  accent-color: red;
+}
+
+.bad-partial:not(.test) {
+  align-content: space-between;
+}
+
+.bad-pseudo-unsupported :any-link {
+  color: red;
+}
+
+.bad-pseudo-partial :nth-child(2 of .class) {
+  color: red;
+}
