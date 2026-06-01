@@ -1,40 +1,20 @@
 ---
-import getThemeConfig from "../internal/themeConfig";
-import nativeIcon from "../assets/icons/native.png";
-import unrealIcon from "../assets/icons/unreal.png";
-import unityIcon from "../assets/icons/unity.png";
+interface Topic {
+  id: string;
+  label: string;
+  href: string;
+  icon: any;
+}
 
-const product = import.meta.env.DOCS_PRODUCT || "gameface";
-const { topicsConfig, version, currentTopicId } = getThemeConfig();
+interface Props {
+  topics: Topic[];
+  currentTopicId?: string | undefined;
+  version?: string | undefined;
+}
 
-const topics = {
-  native: {
-    label: "Custom Engine",
-    href: `https://docs.coherent-labs.com/cpp-${product}`,
-    icon: nativeIcon,
-    ...(topicsConfig?.native || {}),
-  },
-  unreal: {
-    label: "Unreal Engine",
-    href: `https://docs.coherent-labs.com/unreal-${product}`,
-    icon: unrealIcon,
-    ...(topicsConfig?.unreal || {}),
-  },
-  unity: {
-    label: "Unity 3D",
-    href: `https://docs.coherent-labs.com/unity-${product}`,
-    icon: unityIcon,
-    ...(topicsConfig?.unity || {}),
-  },
-};
-
-const topicsArray = Object.entries(topics).map(([id, data]) => ({
-  id,
-  ...data,
-}));
-
+const { topics, currentTopicId, version } = Astro.props;
 const isCurrent = (id: string) => id === currentTopicId;
-const hasContent = topicsArray.length > 0 || version;
+const hasContent = topics.length > 0 || version;
 ---
 
 {
@@ -48,10 +28,9 @@ const hasContent = topicsArray.length > 0 || version;
       )}
       <div class="topics-wrapper">
         <ul class="starlight-sidebar-topics">
-          {topicsArray.map((topic) => {
+          {topics.map((topic) => {
             const iconUrl =
               typeof topic.icon === "object" ? topic.icon.src : topic.icon;
-
             const isImage =
               iconUrl &&
               (iconUrl.startsWith("/") ||
@@ -89,6 +68,7 @@ const hasContent = topicsArray.length > 0 || version;
     </>
   )
 }
+
 <style>
   .starlight-sidebar-topics {
     list-style: none;
