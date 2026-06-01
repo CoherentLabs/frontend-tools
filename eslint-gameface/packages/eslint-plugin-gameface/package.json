@@ -7,6 +7,9 @@
   "exports": {
     ".": "./src/index.js"
   },
+  "scripts": {
+    "publish:package": "npm i && npm publish"
+  },
   "keywords": [
     "eslint",
     "eslintplugin",
