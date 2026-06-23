@@ -1,0 +1,65 @@
+---
+title: Vue SFC
+sidebar:
+  order: 4
+---
+
+Vue **single-file components** (`.vue`) are linted by the recommended preset. The plugin parses the SFC with `vue-eslint-parser` and runs Gameface checks on each block.
+
+## What is checked per block
+
+| Block | Rules (prefix) | Notes |
+| --- | --- | --- |
+| `<template>` | `vue-*`, `vue-inline-css-*`, `vue-databind-*`, `vue-svg-*` | Same coverage as HTML/JSX for markup, `:style`, `data-bind-*`, and inline SVG |
+| `<script>` / `<script setup>` | `js-*` | Unsupported globals and partial API access (JS or TS via nested parser) |
+| `<style>` / `<style lang="scss">` | `vue-sfc-css-*` | Same CSS checks as `.css` files and HTML `<style>` blocks |
+
+You do **not** need to install `vue-eslint-parser` or `eslint-plugin-vue` separately—they are dependencies of **eslint-plugin-gameface**. The preset registers them for `**/*.vue` files.
+
+## `:style` — object vs string
+
+The linter handles both common Vue forms:
+
+- **Object** — `:style="{ alignContent: 'space-between' }"` or `:style="{ 'align-content': 'space-between' }"`  
+  Property names and partial **values** on keys are checked (`vue-inline-css-*`).
+- **String** — `style="display: flex"` or `:style="'color: red'"`  
+  Full CSS text is parsed, including unsupported **functions**, keyframes limits, and SVG keyframe rules.
+
+Some restrictions (for example `var()` inside `@keyframes` in a style string) apply only to **string** styles, not object literals—same as JSX. See [Rules reference — Vue `:style`](/eslint-plugin-gameface/guides/rules-reference/#vue-style-attributes).
+
+## `data-bind-*` with `v-bind`
+
+Gameface data binding works with plain and bound attributes:
+
+```vue
+<div data-bind-value="{{Model.score}}"></div>
+<div :data-bind-value="'{{Model.score}}'"></div>
+```
+
+All six `vue-databind-*` rules mirror the HTML and JSX counterparts. See [Data binding](/eslint-plugin-gameface/guides/data-binding/).
+
+## Example `eslint.config.js`
+
+```js
+import gameface from "eslint-plugin-gameface";
+
+export default [
+  { ignores: ["**/node_modules/**", "dist/**"] },
+  ...gameface.configs["flat/recommended"],
+  {
+    settings: {
+      gameface: {
+        modelsDir: "Gameface-models",
+      },
+    },
+  },
+];
+```
+
+No extra `.vue` block is required—the preset includes parser, processor (for `eslint-disable` comment directives), and all `vue-*` / `vue-sfc-css-*` rules.
+
+## VS Code
+
+Add `"vue"` to `eslint.validate` so the ESLint extension lints `.vue` files while you edit. See [Installation](/eslint-plugin-gameface/getting-started/installation/).
+
+For every rule id and default severity, see [Rules reference](/eslint-plugin-gameface/guides/rules-reference/).

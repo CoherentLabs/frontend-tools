@@ -1,15 +1,21 @@
 ---
 title: Troubleshooting
 sidebar:
-  order: 6
+  order: 7
 ---
 
 ## No `gameface/` messages after setup
 
 - Confirm `eslint.config.js` spreads `...gameface.configs["flat/recommended"]`.
 - Run ESLint from the project root: `npx eslint path/to/your-file.html`.
-- Check the file extension is covered (`.html`, `.css`, `.scss`, `.js`, `.jsx`, `.ts`, `.tsx`).
+- Check the file extension is covered (`.html`, `.css`, `.scss`, `.js`, `.jsx`, `.ts`, `.tsx`, `.vue`).
 - Ensure the file is not under `ignores` (for example `dist/**`).
+
+## Vue `.vue` files not linted in the editor
+
+- Add `"vue"` to `eslint.validate` in `.vscode/settings.json` (see [Installation](/eslint-plugin-gameface/getting-started/installation/)).
+- Ensure `eslint.config.js` spreads `...gameface.configs["flat/recommended"]`—the preset registers `vue-eslint-parser` for `**/*.vue`.
+- `<style>` blocks are linted via `vue-sfc-css-*` rules on the same `.vue` file (not as separate virtual files).
 
 ## Editor shows “unknown property” but ESLint does not
 
@@ -31,7 +37,7 @@ Relax or disable `gameface/html-partial-features`, or switch its mode in [Config
 
 The previous workflow was to use [HTMLLint](https://docs.coherent-labs.com/cpp-gameface/content_development/htmllint/) and [CSS Linter](https://docs.coherent-labs.com/cpp-gameface/content_development/csslinting/).
 
-Now you can adopt this plugin gradually and stop using previous HTMLLint and CSS Linter. Enable `flat/recommended` for HTML and CSS first, then expand to JSX/TS in your project if needed. Once you adopted `eslint-plugin-gameface` you can safely remove `HTMLLint` and `CSS Linter`.
+Now you can adopt this plugin gradually and stop using previous HTMLLint and CSS Linter. Enable `flat/recommended` for HTML and CSS first, then expand to JSX/TS or Vue in your project if needed. Once you adopted `eslint-plugin-gameface` you can safely remove `HTMLLint` and `CSS Linter`.
 
 ## Still stuck?
 

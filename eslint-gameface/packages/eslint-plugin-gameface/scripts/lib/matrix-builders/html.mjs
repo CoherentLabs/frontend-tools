@@ -1,27 +1,7 @@
 import { seededSample, slugId } from "../catalog-sampler.mjs";
+import CURATED_PARSED_NO_IMPL from "../../../src/utils/curated-parsed-no-impl.js";
 
 /** @typedef {import("../catalog-sampler.mjs").FeatureRow} FeatureRow */
-
-const CURATED_PARSED_NO_IMPL = new Set([
-  "select",
-  "option",
-  "optgroup",
-  "table",
-  "tbody",
-  "thead",
-  "tfoot",
-  "tr",
-  "td",
-  "th",
-  "colgroup",
-  "col",
-  "iframe",
-  "object",
-  "embed",
-  "audio",
-  "map",
-  "area",
-]);
 
 const CHECK_KEY_TO_HTML_ATTR = {
   altProperty: "alt",

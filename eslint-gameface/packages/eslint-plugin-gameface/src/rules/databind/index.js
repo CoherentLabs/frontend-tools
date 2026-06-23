@@ -10,6 +10,12 @@ import jsxDatabindCurlyBrackets from "./jsx-databind-curly-brackets.js";
 import jsxDatabindModelProperties from "./jsx-databind-model-properties.js";
 import jsxDatabindPropertyAccessors from "./jsx-databind-property-accessors.js";
 import jsxDatabindSpelling from "./jsx-databind-spelling.js";
+import vueDatabindBindFor from "./vue-databind-bind-for.js";
+import vueDatabindClassToggle from "./vue-databind-class-toggle.js";
+import vueDatabindCurlyBrackets from "./vue-databind-curly-brackets.js";
+import vueDatabindModelProperties from "./vue-databind-model-properties.js";
+import vueDatabindPropertyAccessors from "./vue-databind-property-accessors.js";
+import vueDatabindSpelling from "./vue-databind-spelling.js";
 
 /** @type {import("eslint").ESLint.Plugin["rules"]} */
 export const rules = {
@@ -25,6 +31,12 @@ export const rules = {
   "jsx-databind-bind-for": jsxDatabindBindFor,
   "jsx-databind-class-toggle": jsxDatabindClassToggle,
   "jsx-databind-model-properties": jsxDatabindModelProperties,
+  "vue-databind-spelling": vueDatabindSpelling,
+  "vue-databind-curly-brackets": vueDatabindCurlyBrackets,
+  "vue-databind-property-accessors": vueDatabindPropertyAccessors,
+  "vue-databind-bind-for": vueDatabindBindFor,
+  "vue-databind-class-toggle": vueDatabindClassToggle,
+  "vue-databind-model-properties": vueDatabindModelProperties,
 };
 
 /** HTMLLint parity; not tied to a single features JSON file. */

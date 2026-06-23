@@ -19,6 +19,16 @@ import cssSvgKeyframesStrokeDashPathOnly from "./css-svg-keyframes-stroke-dash-p
 import htmlEmbeddedCssSvgKeyframesStrokeDashPathOnly from "./html-embedded-css-svg-keyframes-stroke-dash-path-only.js";
 import htmlInlineCssSvgKeyframesStrokeDashPathOnly from "./html-inline-css-svg-keyframes-stroke-dash-path-only.js";
 import jsxInlineCssSvgKeyframesStrokeDashPathOnly from "./jsx-inline-css-svg-keyframes-stroke-dash-path-only.js";
+import vueSvgNoUnsupportedElements from "./vue-svg-no-unsupported-elements.js";
+import vueSvgMaskClipPathConflict from "./vue-svg-mask-clip-path-conflict.js";
+import vueSvgStrokeDashNonPath from "./vue-svg-stroke-dash-non-path.js";
+import vueInlineCssSvgKeyframesSizingUnits from "./vue-inline-css-svg-keyframes-sizing-units.js";
+import vueInlineCssSvgKeyframesPathArcAnimation from "./vue-inline-css-svg-keyframes-path-arc-animation.js";
+import vueInlineCssSvgKeyframesStrokeDashPathOnly from "./vue-inline-css-svg-keyframes-stroke-dash-path-only.js";
+import vueSfcCssSvgKeyframesSizingUnits from "./vue-sfc-css-svg-keyframes-sizing-units.js";
+import vueSfcCssSvgKeyframesPathArcAnimation from "./vue-sfc-css-svg-keyframes-path-arc-animation.js";
+import vueSfcCssSvgStrokeDashNonPath from "./vue-sfc-css-svg-stroke-dash-non-path.js";
+import vueSfcCssSvgKeyframesStrokeDashPathOnly from "./vue-sfc-css-svg-keyframes-stroke-dash-path-only.js";
 
 /** @type {import("eslint").ESLint.Plugin["rules"]} */
 export const rules = {
@@ -46,6 +56,18 @@ export const rules = {
     htmlInlineCssSvgKeyframesStrokeDashPathOnly,
   "jsx-inline-css-svg-keyframes-stroke-dash-path-only":
     jsxInlineCssSvgKeyframesStrokeDashPathOnly,
+  "vue-svg-no-unsupported-elements": vueSvgNoUnsupportedElements,
+  "vue-svg-mask-clip-path-conflict": vueSvgMaskClipPathConflict,
+  "vue-svg-stroke-dash-non-path": vueSvgStrokeDashNonPath,
+  "vue-inline-css-svg-keyframes-sizing-units": vueInlineCssSvgKeyframesSizingUnits,
+  "vue-inline-css-svg-keyframes-path-arc-animation": vueInlineCssSvgKeyframesPathArcAnimation,
+  "vue-inline-css-svg-keyframes-stroke-dash-path-only":
+    vueInlineCssSvgKeyframesStrokeDashPathOnly,
+  "vue-sfc-css-svg-keyframes-sizing-units": vueSfcCssSvgKeyframesSizingUnits,
+  "vue-sfc-css-svg-keyframes-path-arc-animation": vueSfcCssSvgKeyframesPathArcAnimation,
+  "vue-sfc-css-svg-stroke-dash-non-path": vueSfcCssSvgStrokeDashNonPath,
+  "vue-sfc-css-svg-keyframes-stroke-dash-path-only":
+    vueSfcCssSvgKeyframesStrokeDashPathOnly,
 };
 
 export const catalog = "doc-svg-support";
@@ -76,5 +98,15 @@ export function flatRecommendedConfig() {
     "gameface/html-embedded-css-svg-keyframes-stroke-dash-path-only": "warn",
     "gameface/html-inline-css-svg-keyframes-stroke-dash-path-only": "warn",
     "gameface/jsx-inline-css-svg-keyframes-stroke-dash-path-only": "warn",
+    "gameface/vue-svg-no-unsupported-elements": "error",
+    "gameface/vue-svg-mask-clip-path-conflict": "warn",
+    "gameface/vue-inline-css-svg-keyframes-sizing-units": "error",
+    "gameface/vue-inline-css-svg-keyframes-path-arc-animation": "warn",
+    "gameface/vue-svg-stroke-dash-non-path": "error",
+    "gameface/vue-inline-css-svg-keyframes-stroke-dash-path-only": "warn",
+    "gameface/vue-sfc-css-svg-keyframes-sizing-units": "error",
+    "gameface/vue-sfc-css-svg-keyframes-path-arc-animation": "warn",
+    "gameface/vue-sfc-css-svg-stroke-dash-non-path": "error",
+    "gameface/vue-sfc-css-svg-keyframes-stroke-dash-path-only": "warn",
   };
 }

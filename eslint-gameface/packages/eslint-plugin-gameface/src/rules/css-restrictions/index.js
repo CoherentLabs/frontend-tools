@@ -14,6 +14,14 @@ import jsxInlineCssNoVarInKeyframes from "./jsx-inline-css-no-var-in-keyframes.j
 import jsxInlineCssNoCalcInKeyframes from "./jsx-inline-css-no-calc-in-keyframes.js";
 import jsxInlineCssVarNoFallback from "./jsx-inline-css-var-no-fallback.js";
 import jsxInlineCssCalcNoMixedPercentUnits from "./jsx-inline-css-calc-no-mixed-percent-units.js";
+import vueInlineCssNoVarInKeyframes from "./vue-inline-css-no-var-in-keyframes.js";
+import vueInlineCssNoCalcInKeyframes from "./vue-inline-css-no-calc-in-keyframes.js";
+import vueInlineCssVarNoFallback from "./vue-inline-css-var-no-fallback.js";
+import vueInlineCssCalcNoMixedPercentUnits from "./vue-inline-css-calc-no-mixed-percent-units.js";
+import vueSfcCssNoVarInKeyframes from "./vue-sfc-css-no-var-in-keyframes.js";
+import vueSfcCssNoCalcInKeyframes from "./vue-sfc-css-no-calc-in-keyframes.js";
+import vueSfcCssVarNoFallback from "./vue-sfc-css-var-no-fallback.js";
+import vueSfcCssCalcNoMixedPercentUnits from "./vue-sfc-css-calc-no-mixed-percent-units.js";
 
 /** @type {import("eslint").ESLint.Plugin["rules"]} */
 export const rules = {
@@ -33,6 +41,14 @@ export const rules = {
   "jsx-inline-css-no-calc-in-keyframes": jsxInlineCssNoCalcInKeyframes,
   "jsx-inline-css-var-no-fallback": jsxInlineCssVarNoFallback,
   "jsx-inline-css-calc-no-mixed-percent-units": jsxInlineCssCalcNoMixedPercentUnits,
+  "vue-inline-css-no-var-in-keyframes": vueInlineCssNoVarInKeyframes,
+  "vue-inline-css-no-calc-in-keyframes": vueInlineCssNoCalcInKeyframes,
+  "vue-inline-css-var-no-fallback": vueInlineCssVarNoFallback,
+  "vue-inline-css-calc-no-mixed-percent-units": vueInlineCssCalcNoMixedPercentUnits,
+  "vue-sfc-css-no-var-in-keyframes": vueSfcCssNoVarInKeyframes,
+  "vue-sfc-css-no-calc-in-keyframes": vueSfcCssNoCalcInKeyframes,
+  "vue-sfc-css-var-no-fallback": vueSfcCssVarNoFallback,
+  "vue-sfc-css-calc-no-mixed-percent-units": vueSfcCssCalcNoMixedPercentUnits,
 };
 
 /** Gameface documentation constraints (not driven by feature JSON). */

@@ -1,7 +1,7 @@
 ---
 title: Rules reference
 sidebar:
-  order: 7
+  order: 8
 ---
 
 Every Gameface rule uses the `gameface/` prefix. Defaults below match the [`flat/recommended`](/eslint-plugin-gameface/getting-started/configuration/) preset.
@@ -154,6 +154,58 @@ export default [
 
 ---
 
+### Vue SFC — template `:style` \{#vue-style-attributes\}
+
+| Rule id | Default | What it reports |
+| --- | --- | --- |
+| `gameface/vue-inline-css-no-unsupported-properties` | error | Unsupported CSS **property** in `style` / `:style` (string or **object** keys). |
+| `gameface/vue-inline-css-partial-property-values` | error | Unsupported **value** for a partial property (string CSS or object literal values). |
+| `gameface/vue-inline-css-no-unsupported-functions` | error | Unsupported function in a **string** `style` / `:style`. |
+| `gameface/vue-inline-css-no-var-in-keyframes` | error | `var()` in `@keyframes` inside a **string** style. |
+| `gameface/vue-inline-css-no-calc-in-keyframes` | error | `calc()` in `@keyframes` in a **string** style. |
+| `gameface/vue-inline-css-var-no-fallback` | error | `var()` with fallback in a **string** style. |
+| `gameface/vue-inline-css-calc-no-mixed-percent-units` | error | Mixed `%` in `calc()` in a **string** style. |
+| `gameface/vue-inline-css-svg-keyframes-sizing-units` | error | SVG keyframe sizing units in a **string** style. |
+| `gameface/vue-inline-css-svg-keyframes-path-arc-animation` | warn | SVG path arc keyframes in a **string** style. |
+| `gameface/vue-inline-css-svg-keyframes-stroke-dash-path-only` | warn | Stroke dash keyframes in a **string** style. |
+
+---
+
+### Vue SFC — `<style>` blocks
+
+| Rule id | Default | What it reports |
+| --- | --- | --- |
+| `gameface/vue-sfc-css-no-unsupported-properties` | error | Unsupported property inside `<style>`. |
+| `gameface/vue-sfc-css-partial-property-values` | error | Partial property value in `<style>`. |
+| `gameface/vue-sfc-css-no-unsupported-functions` | error | Unsupported CSS function in `<style>`. |
+| `gameface/vue-sfc-css-no-unsupported-selectors` | error | Unsupported selector/pseudo in `<style>`. |
+| `gameface/vue-sfc-css-partial-selectors` | warn | Partially supported selector in `<style>`. |
+| `gameface/vue-sfc-css-no-var-in-keyframes` | error | `var()` in `@keyframes` in `<style>`. |
+| `gameface/vue-sfc-css-no-calc-in-keyframes` | error | `calc()` in `@keyframes` in `<style>`. |
+| `gameface/vue-sfc-css-var-no-fallback` | error | `var()` with fallback in `<style>`. |
+| `gameface/vue-sfc-css-calc-no-mixed-percent-units` | error | Mixed `%` in `calc()` in `<style>`. |
+| `gameface/vue-sfc-css-svg-keyframes-sizing-units` | error | SVG keyframe sizing units in `<style>`. |
+| `gameface/vue-sfc-css-svg-keyframes-path-arc-animation` | warn | SVG path arc animation in `<style>` keyframes. |
+| `gameface/vue-sfc-css-svg-stroke-dash-non-path` | error | Stroke dash on non-path in `<style>`. |
+| `gameface/vue-sfc-css-svg-keyframes-stroke-dash-path-only` | warn | Stroke dash keyframes in `<style>`. |
+
+---
+
+### Vue SFC — template tags and data binding
+
+| Rule id | Default | What it reports |
+| --- | --- | --- |
+| `gameface/vue-parsed-no-impl` | error | Template tag Gameface parses but does not implement (same options as `html-parsed-no-impl`). |
+| `gameface/vue-partial-features` | warn | Partially supported tag/attribute in template. |
+| `gameface/vue-databind-spelling` | error | Unknown or misspelled `data-bind-*` on template elements. |
+| `gameface/vue-databind-curly-brackets` | error | Binding value missing `{{` / `}}`. |
+| `gameface/vue-databind-property-accessors` | error | Broken model path in a binding. |
+| `gameface/vue-databind-bind-for` | error | Invalid `data-bind-for` syntax. |
+| `gameface/vue-databind-class-toggle` | error | Invalid `data-bind-class-toggle` segment. |
+| `gameface/vue-databind-model-properties` | warn | Model path not found under `settings.gameface.modelsDir`. |
+
+---
+
 ### Data binding — HTML and JSX
 
 | Rule id | Default | What it reports |
@@ -193,3 +245,6 @@ export default [
 | `gameface/html-svg-tspan-ignored` | off | Optional: `<tspan>` styling is merged into parent `<text>` (enable with `"warn"` if you want the hint). |
 | `gameface/html-svg-stroke-dash-non-path` | error | `stroke-dasharray` / `stroke-dashoffset` on a shape other than `<path>`. |
 | `gameface/jsx-svg-stroke-dash-non-path` | error | Same, in JSX (attributes or inline style). |
+| `gameface/vue-svg-no-unsupported-elements` | error | Same, inside Vue `<template>` `<svg>`. |
+| `gameface/vue-svg-mask-clip-path-conflict` | warn | Same, in Vue templates. |
+| `gameface/vue-svg-stroke-dash-non-path` | error | Same, in Vue templates. |
