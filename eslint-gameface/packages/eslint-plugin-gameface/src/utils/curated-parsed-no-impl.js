@@ -4,7 +4,7 @@
  * Use `scope: "all"` to report every parsed-no-impl tag (still subject to `ignoreTags`).
  * @type {ReadonlySet<string>}
  */
-export default CURATED_PARSED_NO_IMPL = new Set([
+const CURATED_PARSED_NO_IMPL = new Set([
     "select",
     "option",
     "optgroup",
@@ -24,3 +24,5 @@ export default CURATED_PARSED_NO_IMPL = new Set([
     "map",
     "area",
 ]);
+
+export default CURATED_PARSED_NO_IMPL;

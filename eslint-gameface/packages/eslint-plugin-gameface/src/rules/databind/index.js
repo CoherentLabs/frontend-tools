@@ -16,6 +16,12 @@ import vueDatabindCurlyBrackets from "./vue-databind-curly-brackets.js";
 import vueDatabindModelProperties from "./vue-databind-model-properties.js";
 import vueDatabindPropertyAccessors from "./vue-databind-property-accessors.js";
 import vueDatabindSpelling from "./vue-databind-spelling.js";
+import svelteDatabindBindFor from "./svelte-databind-bind-for.js";
+import svelteDatabindClassToggle from "./svelte-databind-class-toggle.js";
+import svelteDatabindCurlyBrackets from "./svelte-databind-curly-brackets.js";
+import svelteDatabindModelProperties from "./svelte-databind-model-properties.js";
+import svelteDatabindPropertyAccessors from "./svelte-databind-property-accessors.js";
+import svelteDatabindSpelling from "./svelte-databind-spelling.js";
 
 /** @type {import("eslint").ESLint.Plugin["rules"]} */
 export const rules = {
@@ -37,6 +43,12 @@ export const rules = {
   "vue-databind-bind-for": vueDatabindBindFor,
   "vue-databind-class-toggle": vueDatabindClassToggle,
   "vue-databind-model-properties": vueDatabindModelProperties,
+  "svelte-databind-spelling": svelteDatabindSpelling,
+  "svelte-databind-curly-brackets": svelteDatabindCurlyBrackets,
+  "svelte-databind-property-accessors": svelteDatabindPropertyAccessors,
+  "svelte-databind-bind-for": svelteDatabindBindFor,
+  "svelte-databind-class-toggle": svelteDatabindClassToggle,
+  "svelte-databind-model-properties": svelteDatabindModelProperties,
 };
 
 /** HTMLLint parity; not tied to a single features JSON file. */

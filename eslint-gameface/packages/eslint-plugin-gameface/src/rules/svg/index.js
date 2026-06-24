@@ -29,6 +29,16 @@ import vueSfcCssSvgKeyframesSizingUnits from "./vue-sfc-css-svg-keyframes-sizing
 import vueSfcCssSvgKeyframesPathArcAnimation from "./vue-sfc-css-svg-keyframes-path-arc-animation.js";
 import vueSfcCssSvgStrokeDashNonPath from "./vue-sfc-css-svg-stroke-dash-non-path.js";
 import vueSfcCssSvgKeyframesStrokeDashPathOnly from "./vue-sfc-css-svg-keyframes-stroke-dash-path-only.js";
+import svelteSvgNoUnsupportedElements from "./svelte-svg-no-unsupported-elements.js";
+import svelteSvgMaskClipPathConflict from "./svelte-svg-mask-clip-path-conflict.js";
+import svelteSvgStrokeDashNonPath from "./svelte-svg-stroke-dash-non-path.js";
+import svelteInlineCssSvgKeyframesSizingUnits from "./svelte-inline-css-svg-keyframes-sizing-units.js";
+import svelteInlineCssSvgKeyframesPathArcAnimation from "./svelte-inline-css-svg-keyframes-path-arc-animation.js";
+import svelteInlineCssSvgKeyframesStrokeDashPathOnly from "./svelte-inline-css-svg-keyframes-stroke-dash-path-only.js";
+import svelteSfcCssSvgKeyframesSizingUnits from "./svelte-sfc-css-svg-keyframes-sizing-units.js";
+import svelteSfcCssSvgKeyframesPathArcAnimation from "./svelte-sfc-css-svg-keyframes-path-arc-animation.js";
+import svelteSfcCssSvgStrokeDashNonPath from "./svelte-sfc-css-svg-stroke-dash-non-path.js";
+import svelteSfcCssSvgKeyframesStrokeDashPathOnly from "./svelte-sfc-css-svg-keyframes-stroke-dash-path-only.js";
 
 /** @type {import("eslint").ESLint.Plugin["rules"]} */
 export const rules = {
@@ -68,6 +78,18 @@ export const rules = {
   "vue-sfc-css-svg-stroke-dash-non-path": vueSfcCssSvgStrokeDashNonPath,
   "vue-sfc-css-svg-keyframes-stroke-dash-path-only":
     vueSfcCssSvgKeyframesStrokeDashPathOnly,
+  "svelte-svg-no-unsupported-elements": svelteSvgNoUnsupportedElements,
+  "svelte-svg-mask-clip-path-conflict": svelteSvgMaskClipPathConflict,
+  "svelte-svg-stroke-dash-non-path": svelteSvgStrokeDashNonPath,
+  "svelte-inline-css-svg-keyframes-sizing-units": svelteInlineCssSvgKeyframesSizingUnits,
+  "svelte-inline-css-svg-keyframes-path-arc-animation": svelteInlineCssSvgKeyframesPathArcAnimation,
+  "svelte-inline-css-svg-keyframes-stroke-dash-path-only":
+    svelteInlineCssSvgKeyframesStrokeDashPathOnly,
+  "svelte-sfc-css-svg-keyframes-sizing-units": svelteSfcCssSvgKeyframesSizingUnits,
+  "svelte-sfc-css-svg-keyframes-path-arc-animation": svelteSfcCssSvgKeyframesPathArcAnimation,
+  "svelte-sfc-css-svg-stroke-dash-non-path": svelteSfcCssSvgStrokeDashNonPath,
+  "svelte-sfc-css-svg-keyframes-stroke-dash-path-only":
+    svelteSfcCssSvgKeyframesStrokeDashPathOnly,
 };
 
 export const catalog = "doc-svg-support";
@@ -108,5 +130,15 @@ export function flatRecommendedConfig() {
     "gameface/vue-sfc-css-svg-keyframes-path-arc-animation": "warn",
     "gameface/vue-sfc-css-svg-stroke-dash-non-path": "error",
     "gameface/vue-sfc-css-svg-keyframes-stroke-dash-path-only": "warn",
+    "gameface/svelte-svg-no-unsupported-elements": "error",
+    "gameface/svelte-svg-mask-clip-path-conflict": "warn",
+    "gameface/svelte-inline-css-svg-keyframes-sizing-units": "error",
+    "gameface/svelte-inline-css-svg-keyframes-path-arc-animation": "warn",
+    "gameface/svelte-svg-stroke-dash-non-path": "error",
+    "gameface/svelte-inline-css-svg-keyframes-stroke-dash-path-only": "warn",
+    "gameface/svelte-sfc-css-svg-keyframes-sizing-units": "error",
+    "gameface/svelte-sfc-css-svg-keyframes-path-arc-animation": "warn",
+    "gameface/svelte-sfc-css-svg-stroke-dash-non-path": "error",
+    "gameface/svelte-sfc-css-svg-keyframes-stroke-dash-path-only": "warn",
   };
 }

@@ -4,6 +4,8 @@ import htmlInlineCssNoUnsupportedFunctions from "./html-inline-css-no-unsupporte
 import jsxInlineCssNoUnsupportedFunctions from "./jsx-inline-css-no-unsupported-functions.js";
 import vueInlineCssNoUnsupportedFunctions from "./vue-inline-css-no-unsupported-functions.js";
 import vueSfcCssNoUnsupportedFunctions from "./vue-sfc-css-no-unsupported-functions.js";
+import svelteInlineCssNoUnsupportedFunctions from "./svelte-inline-css-no-unsupported-functions.js";
+import svelteSfcCssNoUnsupportedFunctions from "./svelte-sfc-css-no-unsupported-functions.js";
 
 /** @type {import("eslint").ESLint.Plugin["rules"]} */
 export const rules = {
@@ -13,6 +15,8 @@ export const rules = {
   "jsx-inline-css-no-unsupported-functions": jsxInlineCssNoUnsupportedFunctions,
   "vue-inline-css-no-unsupported-functions": vueInlineCssNoUnsupportedFunctions,
   "vue-sfc-css-no-unsupported-functions": vueSfcCssNoUnsupportedFunctions,
+  "svelte-inline-css-no-unsupported-functions": svelteInlineCssNoUnsupportedFunctions,
+  "svelte-sfc-css-no-unsupported-functions": svelteSfcCssNoUnsupportedFunctions,
 };
 
 /** Catalog: gameface-features/functions/unsupported.json (missing rows) */

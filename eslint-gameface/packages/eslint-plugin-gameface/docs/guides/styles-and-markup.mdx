@@ -48,6 +48,17 @@ For `.vue` single-file components, checks mirror JSX and HTML:
 
 See [Vue SFC](/eslint-plugin-gameface/guides/vue/) and [Rules reference — Vue `:style`](/eslint-plugin-gameface/guides/rules-reference/#vue-style-attributes).
 
+## Svelte components
+
+For `.svelte` single-file components, checks mirror JSX and HTML:
+
+- **`style={object}`** — property names and partial values on keys (when an object literal is used)
+- **`style="..."` / `style={\`...\`}`** — full CSS text, including functions and keyframe limits
+- **`data-bind-*`** — plain attributes or expressions in markup (`data-bind-value="{Model.score}"`)
+- **`<style>` blocks** — the same rules as `.css` files (`svelte-sfc-css-*`)
+
+See [Svelte SFC](/eslint-plugin-gameface/guides/svelte/) and [Rules reference — Svelte `style`](/eslint-plugin-gameface/guides/rules-reference/#svelte-style-attributes).
+
 ## Partial support warnings
 
 Some rules default to **warn** instead of **error** (for example partial selectors or partial JS APIs). Treat them as “works in browser, may fail or behave differently in Gameface” and fix or suppress per team policy.

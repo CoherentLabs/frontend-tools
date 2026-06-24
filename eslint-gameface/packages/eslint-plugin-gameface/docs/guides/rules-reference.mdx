@@ -1,7 +1,7 @@
 ---
 title: Rules reference
 sidebar:
-  order: 8
+  order: 9
 ---
 
 Every Gameface rule uses the `gameface/` prefix. Defaults below match the [`flat/recommended`](/eslint-plugin-gameface/getting-started/configuration/) preset.
@@ -206,6 +206,58 @@ export default [
 
 ---
 
+### Svelte SFC — markup `style` \{#svelte-style-attributes\}
+
+| Rule id | Default | What it reports |
+| --- | --- | --- |
+| `gameface/svelte-inline-css-no-unsupported-properties` | error | Unsupported CSS **property** in `style` (string, template literal, or **object** keys). |
+| `gameface/svelte-inline-css-partial-property-values` | error | Unsupported **value** for a partial property (string CSS or object literal values). |
+| `gameface/svelte-inline-css-no-unsupported-functions` | error | Unsupported function in a **string** `style` / template literal. |
+| `gameface/svelte-inline-css-no-var-in-keyframes` | error | `var()` in `@keyframes` inside a **string** style. |
+| `gameface/svelte-inline-css-no-calc-in-keyframes` | error | `calc()` in `@keyframes` in a **string** style. |
+| `gameface/svelte-inline-css-var-no-fallback` | error | `var()` with fallback in a **string** style. |
+| `gameface/svelte-inline-css-calc-no-mixed-percent-units` | error | Mixed `%` in `calc()` in a **string** style. |
+| `gameface/svelte-inline-css-svg-keyframes-sizing-units` | error | SVG keyframe sizing units in a **string** style. |
+| `gameface/svelte-inline-css-svg-keyframes-path-arc-animation` | warn | SVG path arc keyframes in a **string** style. |
+| `gameface/svelte-inline-css-svg-keyframes-stroke-dash-path-only` | warn | Stroke dash keyframes in a **string** style. |
+
+---
+
+### Svelte SFC — `<style>` blocks
+
+| Rule id | Default | What it reports |
+| --- | --- | --- |
+| `gameface/svelte-sfc-css-no-unsupported-properties` | error | Unsupported property inside `<style>`. |
+| `gameface/svelte-sfc-css-partial-property-values` | error | Partial property value in `<style>`. |
+| `gameface/svelte-sfc-css-no-unsupported-functions` | error | Unsupported CSS function in `<style>`. |
+| `gameface/svelte-sfc-css-no-unsupported-selectors` | error | Unsupported selector/pseudo in `<style>`. |
+| `gameface/svelte-sfc-css-partial-selectors` | warn | Partially supported selector in `<style>`. |
+| `gameface/svelte-sfc-css-no-var-in-keyframes` | error | `var()` in `@keyframes` in `<style>`. |
+| `gameface/svelte-sfc-css-no-calc-in-keyframes` | error | `calc()` in `@keyframes` in `<style>`. |
+| `gameface/svelte-sfc-css-var-no-fallback` | error | `var()` with fallback in `<style>`. |
+| `gameface/svelte-sfc-css-calc-no-mixed-percent-units` | error | Mixed `%` in `calc()` in `<style>`. |
+| `gameface/svelte-sfc-css-svg-keyframes-sizing-units` | error | SVG keyframe sizing units in `<style>`. |
+| `gameface/svelte-sfc-css-svg-keyframes-path-arc-animation` | warn | SVG path arc animation in `<style>` keyframes. |
+| `gameface/svelte-sfc-css-svg-stroke-dash-non-path` | error | Stroke dash on non-path in `<style>`. |
+| `gameface/svelte-sfc-css-svg-keyframes-stroke-dash-path-only` | warn | Stroke dash keyframes in `<style>`. |
+
+---
+
+### Svelte SFC — markup tags and data binding
+
+| Rule id | Default | What it reports |
+| --- | --- | --- |
+| `gameface/svelte-parsed-no-impl` | error | Markup tag Gameface parses but does not implement (same options as `html-parsed-no-impl`). |
+| `gameface/svelte-partial-features` | warn | Partially supported tag/attribute in markup. |
+| `gameface/svelte-databind-spelling` | error | Unknown or misspelled `data-bind-*` on markup elements. |
+| `gameface/svelte-databind-curly-brackets` | error | Binding value missing `{{` / `}}`. |
+| `gameface/svelte-databind-property-accessors` | error | Broken model path in a binding. |
+| `gameface/svelte-databind-bind-for` | error | Invalid `data-bind-for` syntax. |
+| `gameface/svelte-databind-class-toggle` | error | Invalid `data-bind-class-toggle` segment. |
+| `gameface/svelte-databind-model-properties` | warn | Model path not found under `settings.gameface.modelsDir`. |
+
+---
+
 ### Data binding — HTML and JSX
 
 | Rule id | Default | What it reports |
@@ -248,3 +300,6 @@ export default [
 | `gameface/vue-svg-no-unsupported-elements` | error | Same, inside Vue `<template>` `<svg>`. |
 | `gameface/vue-svg-mask-clip-path-conflict` | warn | Same, in Vue templates. |
 | `gameface/vue-svg-stroke-dash-non-path` | error | Same, in Vue templates. |
+| `gameface/svelte-svg-no-unsupported-elements` | error | Same, inside Svelte markup `<svg>`. |
+| `gameface/svelte-svg-mask-clip-path-conflict` | warn | Same, in Svelte markup. |
+| `gameface/svelte-svg-stroke-dash-non-path` | error | Same, in Svelte markup. |
