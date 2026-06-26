@@ -1,7 +1,6 @@
-import { Plugin } from 'vite';
+import { Plugin, PluginOption } from 'vite';
 import MagicString from 'magic-string';
 import { presetGameface } from './preset';
-
 export { presetGameface };
 
 let showWarnings = true;
@@ -16,10 +15,41 @@ function warn(message: string) {
 
 export default function gamefaceStyleTransformerPlugin(
     { suppressWarnings, isSolidProject } = { suppressWarnings: false, isSolidProject: false },
-): Plugin {
+): PluginOption[] {
     showWarnings = !suppressWarnings;
 
-    return {
+    /**
+     * Patches the UnoCSS fingerprint rule in the virtual uno.css content.
+     *
+     * UnoCSS always appends  `__uno_hash_<hex>{--:''}`  to its generated CSS.
+     * The selector is used by UnoCSS's HMR client to detect when styles have
+     * changed — it must be preserved.  The declaration `{--:''}` is an empty
+     * custom-property name which is a CSS syntax error; Gameface's parser
+     * rejects it with "syntax error near text: -".
+     *
+     * We replace the body `{--:''}` with `{opacity:0}` — a no-op valid
+     * declaration applied to a non-existent element — so:
+     *   • Gameface's parser accepts the rule.
+     *   • UnoCSS's HMR client can still locate `__uno_hash_<hex>` in the CSS.
+     *
+     * This plugin runs enforce:'pre' so it intercepts the raw CSS string from
+     * UnoCSS's `load` hook before Vite's CSS plugin converts it to JS.
+     */
+    const unoHashFixPlugin: Plugin = {
+        name: 'vite-plugin-gameface-fix-uno-hash',
+        enforce: 'pre',
+        transform(code: string, id: string) {
+            if (!id.includes('uno.css')) return null;
+            // Replace only the invalid declaration body; keep the selector intact.
+            const fixed = code.replace(
+                /(__uno_hash_[a-f0-9]+)\s*\{[^}]*\}/g,
+                '$1{opacity:0}',
+            );
+            return fixed !== code ? { code: fixed, map: null } : null;
+        },
+    };
+
+    const styleTransformerPlugin: Plugin = {
         name: 'vite-plugin-gameface-style-transformer',
         enforce: 'pre',
 
@@ -51,6 +81,40 @@ export default function gamefaceStyleTransformerPlugin(
             return null;
         },
     };
+
+    /**
+     * Ensures `virtual:uno.css` is evaluated after all other entry imports so
+     * gf-prop utilities win the cascade over CSS-module / SCSS rules at equal
+     * specificity — matching the priority of the original inline style.
+     *
+     * 1. Moves `import 'virtual:uno.css'` to the end of the app entry file.
+     * 2. In dev, moves the injected `__uno.css` `<style>` tag to the end of
+     *    `<head>` so it is not overridden by later-injected module styles.
+     */
+    const unoCssLastPlugin: Plugin = {
+        name: 'vite-plugin-gameface-unocss-last',
+        enforce: 'post',
+        transform(code, id) {
+            if (!/[/\\]main\.(t|j)sx?$/.test(id)) return null;
+            if (!/import\s+['"]virtual:uno\.css['"]/.test(code)) return null;
+            const cleaned = code.replace(/import\s+['"]virtual:uno\.css['"];?\s*/g, '');
+            if (cleaned === code) return null;
+            return { code: `${cleaned.trimEnd()}\n\nimport 'virtual:uno.css';\n`, map: null };
+        },
+        transformIndexHtml: {
+            order: 'post',
+            handler(html) {
+                const unoStyleRe = /<style[^>]*data-vite-dev-id="[^"]*__uno\.css"[^>]*>[\s\S]*?<\/style>\s*/i;
+                const match = html.match(unoStyleRe);
+                if (!match) return html;
+                const without = html.replace(unoStyleRe, '');
+                if (without === html) return html;
+                return without.replace('</head>', `${match[0]}</head>`);
+            },
+        },
+    };
+
+    return [unoHashFixPlugin, styleTransformerPlugin, unoCssLastPlugin];
 }
 
 // ──────────────────────────────────────────────────
@@ -161,6 +225,136 @@ function scanOpeningTags(code: string): TagSpan[] {
 
 type SyntaxType = 'jsx' | 'vue' | 'html';
 
+type ResidualStyle = { type: SyntaxType; mod: string; css: string };
+
+type ExistingClass =
+    | { raw: string; attrName: string; kind: 'static'; value: string }
+    | { raw: string; attrName: string; kind: 'expr'; value: string };
+
+/**
+ * Reads a `{…}` expression starting at `openBrace` (which must be `{`).
+ * Respects nested braces and string literals.
+ */
+function readBraceExpression(source: string, openBrace: number): { expr: string; end: number } | null {
+    if (source[openBrace] !== '{') return null;
+    let braces = 1;
+    let i = openBrace + 1;
+    let inStr: '"' | "'" | '`' | null = null;
+    while (i < source.length && braces > 0) {
+        const c = source[i];
+        if (inStr) {
+            if (c === '\\') { i += 2; continue; }
+            if (c === inStr) inStr = null;
+        } else {
+            if (c === '"' || c === "'" || c === '`') inStr = c as '"' | "'" | '`';
+            else if (c === '{') braces++;
+            else if (c === '}') braces--;
+        }
+        i++;
+    }
+    if (braces !== 0) return null;
+    return { expr: source.slice(openBrace + 1, i - 1), end: i };
+}
+
+/**
+ * Extracts an existing class / className / :class attribute from a tag string.
+ * Supports static quoted values and expression bindings (`class={expr}`).
+ */
+function extractExistingClass(work: string, isVue: boolean): ExistingClass | null {
+    // Vue :class="expr" — expression inside double quotes
+    if (isVue) {
+        const vq = work.match(/\s:class="([^"]*)"/);
+        if (vq) {
+            return { raw: vq[0], attrName: ':class', kind: 'expr', value: vq[1] };
+        }
+    }
+
+    // class="static" / className="static"
+    const qs = work.match(/\s(class|className)="([^"]*)"/);
+    if (qs) {
+        return { raw: qs[0], attrName: qs[1], kind: 'static', value: qs[2] };
+    }
+
+    // class={expr} / className={expr}
+    const braceExpr = work.match(/\s(className|class)=\{/);
+    const vueBraceExpr = isVue ? work.match(/\s:class=\{/) : null;
+    const hit = vueBraceExpr ?? braceExpr;
+    if (!hit) return null;
+
+    const eqPos = hit.index! + hit[0].length - 1;
+    const parsed = readBraceExpression(work, eqPos);
+    if (!parsed) return null;
+
+    const attrName = hit[0].trim().replace(/=\{$/, '');
+    return {
+        raw: work.slice(hit.index!, parsed.end),
+        attrName,
+        kind: 'expr',
+        value: parsed.expr,
+    };
+}
+
+/**
+ * Builds a single merged class attribute string from existing classes and
+ * newly generated gf-prop utilities.
+ */
+function buildMergedClassAttribute(
+    existing: ExistingClass | null,
+    newClasses: string[],
+    isVue: boolean,
+    isJsx: boolean,
+    isSolidProject: boolean,
+    isSvelte: boolean,
+): string {
+    const added = newClasses.join(' ');
+    const defaultName = isJsx && !isSolidProject ? 'className' : 'class';
+
+    if (!existing) {
+        return `${defaultName}="${added}"`;
+    }
+
+    const { attrName, kind, value } = existing;
+
+    if (kind === 'static') {
+        const merged = [value, added].filter(Boolean).join(' ');
+        return `${attrName}="${merged}"`;
+    }
+
+    // Expression bindings — merge without duplicating the attribute
+    if (isSvelte) {
+        const name = attrName === ':class' ? 'class' : attrName;
+        return `${name}="{${value}} ${added}"`;
+    }
+
+    if (isVue && attrName === ':class') {
+        return `:class="[${value}, '${added}'].join(' ')"`;
+    }
+
+    // JSX / Solid — template literal: class={`${expr} added`}
+    const jsxName = isJsx && !isSolidProject ? 'className' : 'class';
+    const name = attrName === 'className' || attrName === 'class' ? attrName : jsxName;
+    return `${name}={\`\${${value}} ${added}\`}`;
+}
+
+/**
+ * Applies processObjectStyle output only when at least one static declaration
+ * was converted into a gf-prop class. Style blocks that are entirely dynamic
+ * are left untouched so the framework compiler can handle them at runtime.
+ */
+function applyStyleExtraction(
+    r: { safeClasses: string; remainingStyle: string },
+    newClasses: string[],
+    residual: ResidualStyle[],
+    target: { type: SyntaxType; mod: string },
+): boolean {
+    if (!r.safeClasses) return false;
+    newClasses.push(r.safeClasses);
+    if (r.remainingStyle) {
+        residual.push({ ...target, css: r.remainingStyle });
+    }
+    return true;
+}
+
 function mergeTagStyles(
     tag: TagSpan,
     s: MagicString,
@@ -174,16 +368,13 @@ function mergeTagStyles(
     const loc = `(File: ${fileId})`;
     let work = tag.content;
     const newClasses: string[] = [];
-    const residual: { type: SyntaxType; mod: string; css: string }[] = [];
+    const residual: ResidualStyle[] = [];
+    const isSvelte = fileId.endsWith('.svelte');
 
-    // 1 — existing static class / className
-    const cm = work.match(/\s(class|className)="([^"]*)"/);
-    let existingCls = '';
-    let attrName: string = isJsx && !isSolidProject ? 'className' : 'class';
-    if (cm) {
-        existingCls = cm[2];
-        attrName = cm[1];
-        work = work.replace(cm[0], ' ');
+    // 1 — existing class / className / :class (static or expression binding)
+    const existingClass = extractExistingClass(work, isVue);
+    if (existingClass) {
+        work = work.replace(existingClass.raw, ' ');
     }
 
     // 2 — state styles   style:hover={{…}}
@@ -196,13 +387,15 @@ function mergeTagStyles(
     }
     for (const h of stateHits) {
         const r = processObjectStyle(h.body, loc, h.mod, 'jsx');
-        if (r.safeClasses) newClasses.push(r.safeClasses);
-        if (r.remainingStyle) residual.push({ type: 'jsx', mod: h.mod, css: r.remainingStyle });
-        work = work.replace(h.raw, ' ');
+        if (applyStyleExtraction(r, newClasses, residual, { type: 'jsx', mod: h.mod })) {
+            work = work.replace(h.raw, ' ');
+        }
     }
 
     // 2b — Svelte style directives   style:font-size='1em'  style:color="red"
     //      Only static string values are extracted; dynamic style:prop={expr} is left in place.
+    //      Values containing Svelte/JS interpolation ({…}, ${…}, backticks) are skipped AND
+    //      kept in the working string so Svelte's compiler can handle them at runtime.
     const svelteRe = /\sstyle:([a-zA-Z0-9_-]+)\s*=\s*(["'])(.*?)\2/g;
     const svelteHits: { raw: string; prop: string; val: string }[] = [];
     let svM: RegExpExecArray | null;
@@ -210,19 +403,21 @@ function mergeTagStyles(
         svelteHits.push({ raw: svM[0], prop: svM[1], val: svM[3] });
     }
     for (const h of svelteHits) {
+        if (!isStaticCssValue(h.val)) continue; // leave dynamic directives untouched
         const cssStr = `${toKebabCase(h.prop)}: ${h.val}`;
         const r = processObjectStyle(cssStr, loc, '', 'html');
-        if (r.safeClasses) newClasses.push(r.safeClasses);
-        work = work.replace(h.raw, ' ');
+        if (applyStyleExtraction(r, newClasses, residual, { type: 'html', mod: '' })) {
+            work = work.replace(h.raw, ' ');
+        }
     }
 
     // 3 — JSX   style={{…}}
     const jm = work.match(/\sstyle=\{\{([\s\S]*?)\}\}/);
     if (jm) {
         const r = processObjectStyle(jm[1], loc, '', 'jsx');
-        if (r.safeClasses) newClasses.push(r.safeClasses);
-        if (r.remainingStyle) residual.push({ type: 'jsx', mod: '', css: r.remainingStyle });
-        work = work.replace(jm[0], ' ');
+        if (applyStyleExtraction(r, newClasses, residual, { type: 'jsx', mod: '' })) {
+            work = work.replace(jm[0], ' ');
+        }
     }
 
     // 4 — Vue   :style="{…}"  or  :style={{…}}
@@ -230,16 +425,16 @@ function mergeTagStyles(
         const vm = work.match(/\s:style="\{([\s\S]*?)\}"/);
         if (vm) {
             const r = processObjectStyle(vm[1], loc, '', 'vue');
-            if (r.safeClasses) newClasses.push(r.safeClasses);
-            if (r.remainingStyle) residual.push({ type: 'vue', mod: '', css: r.remainingStyle });
-            work = work.replace(vm[0], ' ');
+            if (applyStyleExtraction(r, newClasses, residual, { type: 'vue', mod: '' })) {
+                work = work.replace(vm[0], ' ');
+            }
         }
         const vjm = work.match(/\s:style=\{\{([\s\S]*?)\}\}/);
         if (vjm) {
             const r = processObjectStyle(vjm[1], loc, '', 'jsx');
-            if (r.safeClasses) newClasses.push(r.safeClasses);
-            if (r.remainingStyle) residual.push({ type: 'jsx', mod: '', css: r.remainingStyle });
-            work = work.replace(vjm[0], ' ');
+            if (applyStyleExtraction(r, newClasses, residual, { type: 'jsx', mod: '' })) {
+                work = work.replace(vjm[0], ' ');
+            }
         }
     }
 
@@ -249,17 +444,17 @@ function mergeTagStyles(
     const hm = work.match(/\sstyle="([^"]+)"/);
     if (hm) {
         const r = processObjectStyle(hm[1], loc, '', 'html');
-        if (r.safeClasses) newClasses.push(r.safeClasses);
-        if (r.remainingStyle) residual.push({ type: 'html', mod: '', css: r.remainingStyle });
-        work = work.replace(hm[0], ' ');
+        if (applyStyleExtraction(r, newClasses, residual, { type: 'html', mod: '' })) {
+            work = work.replace(hm[0], ' ');
+        }
     }
 
     if (newClasses.length === 0) return;
 
     // 6 — merge every generated class with existing ones into ONE attribute
-    const merged = [existingCls, ...newClasses].filter(Boolean).join(' ');
-
-    const parts: string[] = [`${attrName}="${merged}"`];
+    const parts: string[] = [
+        buildMergedClassAttribute(existingClass, newClasses, isVue, isJsx, isSolidProject, isSvelte),
+    ];
     for (const rs of residual) {
         if (rs.mod)                 parts.push(`style:${rs.mod}={{ ${rs.css} }}`);
         else if (rs.type === 'jsx') parts.push(`style={{ ${rs.css} }}`);
@@ -476,25 +671,27 @@ function processObjectStyle(
     const classes: string[] = [];
     let remaining = payload;
 
-    const collect = (raw: string, prop: string, value: string) => {
+    const collect = (raw: string, prop: string, value: string): boolean => {
         const cssProp = toKebabCase(prop);
 
         if (gamefaceRules.unsupportedProps.has(cssProp)) {
             warn(`Gameface does not support the "${cssProp}" property. Element styling will fail. ${loc}`);
-            return;
+            return false;
         }
         if (gamefaceRules.unsupportedValues[cssProp]?.includes(value)) {
             warn(`Gameface does not support "${cssProp}: ${value}". Please use a supported value. ${loc}`);
-            return;
+            return false;
         }
         if (riskyShorthands.has(cssProp) && gamefaceRules.shorthandVariableRegex.test(value)) {
             warn(`Gameface does not support CSS variables in shorthand properties like "${cssProp}". Use the full form. ${loc}`);
-            return;
+            return false;
         }
+        if (!isStaticCssValue(value)) return false;
 
         const safeVal = sanitizeValue(value);
         const pre = modifier ? `__${modifier}__` : '';
         classes.push(`${pre}gf-prop--${cssProp}--${safeVal}`);
+        return true;
     };
 
     if (syntax === 'html') {
@@ -503,16 +700,18 @@ function processObjectStyle(
             ? /([a-zA-Z0-9_-]+)\s*:\s*([^,]+?)(?:,|$)/g
             : /([a-zA-Z0-9_-]+)\s*:\s*([^;]+?)(?:;|$)/g;
         for (const m of payload.matchAll(htmlRe)) {
-            collect(m[0], m[1], m[2].trim());
-            remaining = remaining.replace(m[0], '').trim();
+            if (collect(m[0], m[1], m[2].trim())) {
+                remaining = remaining.replace(m[0], '').trim();
+            }
         }
     } else {
         // Quoted-key string entries first:  'font-size': '1em'  or  "font-size": "1em"
         const qStrRe = /(["'])([a-zA-Z0-9_-]+)\1\s*:\s*(["'])(.*?)\3/g;
         for (const m of payload.matchAll(qStrRe)) {
             if (isDynamicEntry(payload, m.index!, m[0].length)) continue;
-            collect(m[0], m[2], m[4]);
-            remaining = remaining.replace(m[0], '').replace(/,\s*,/g, ',').trim();
+            if (collect(m[0], m[2], m[4])) {
+                remaining = remaining.replace(m[0], '').replace(/,\s*,/g, ',').trim();
+            }
         }
 
         // Unquoted-key string entries:  fontSize: '1em'
@@ -521,18 +720,30 @@ function processObjectStyle(
         const strRe = /([a-zA-Z0-9_]+)\s*:\s*(["'])(.*?)\2/g;
         for (const m of afterQuoted.matchAll(strRe)) {
             if (isDynamicEntry(afterQuoted, m.index!, m[0].length)) continue;
-            collect(m[0], m[1], m[3]);
-            remaining = remaining.replace(m[0], '').replace(/,\s*,/g, ',').trim();
+            if (collect(m[0], m[1], m[3])) {
+                remaining = remaining.replace(m[0], '').replace(/,\s*,/g, ',').trim();
+            }
+        }
+
+        // Template-literal values:  width: `100%`  (skipped when value contains ${…})
+        const afterStrs = remaining;
+        const tlRe = /([a-zA-Z0-9_]+)\s*:\s*`([^`]*)`/g;
+        for (const m of afterStrs.matchAll(tlRe)) {
+            if (isDynamicEntry(afterStrs, m.index!, m[0].length)) continue;
+            if (collect(m[0], m[1], m[2])) {
+                remaining = remaining.replace(m[0], '').replace(/,\s*,/g, ',').trim();
+            }
         }
 
         // Numeric values on remaining to avoid re-matching inside quoted strings.
         // Quoted-key numerics:  'opacity': 0.5
-        const afterStrs = remaining;
+        const afterTls = remaining;
         const qNumRe = /(["'])([a-zA-Z0-9_-]+)\1\s*:\s*([0-9]+(?:\.[0-9]+)?)/g;
-        for (const m of afterStrs.matchAll(qNumRe)) {
-            if (isDynamicEntry(afterStrs, m.index!, m[0].length)) continue;
-            collect(m[0], m[2], m[3]);
-            remaining = remaining.replace(m[0], '').replace(/,\s*,/g, ',').trim();
+        for (const m of afterTls.matchAll(qNumRe)) {
+            if (isDynamicEntry(afterTls, m.index!, m[0].length)) continue;
+            if (collect(m[0], m[2], m[3])) {
+                remaining = remaining.replace(m[0], '').replace(/,\s*,/g, ',').trim();
+            }
         }
 
         // Unquoted-key numerics:  opacity: 0.5
@@ -540,8 +751,9 @@ function processObjectStyle(
         const numRe = /([a-zA-Z0-9_]+)\s*:\s*([0-9]+(?:\.[0-9]+)?)/g;
         for (const m of afterQNums.matchAll(numRe)) {
             if (isDynamicEntry(afterQNums, m.index!, m[0].length)) continue;
-            collect(m[0], m[1], m[2]);
-            remaining = remaining.replace(m[0], '').replace(/,\s*,/g, ',').trim();
+            if (collect(m[0], m[1], m[2])) {
+                remaining = remaining.replace(m[0], '').replace(/,\s*,/g, ',').trim();
+            }
         }
 
         remaining = remaining.replace(/^,|,$/g, '').trim();
@@ -555,16 +767,32 @@ function processObjectStyle(
 // ──────────────────────────────────────────────────
 
 /**
+ * Returns false when a CSS value string contains characters that indicate it
+ * is a JS/Svelte dynamic expression rather than a static CSS literal.
+ * Such values must never be encoded into a gf-prop-- class name.
+ *
+ * Blocked characters:
+ *   {  }  — Svelte interpolation  {expr}  or JS object syntax
+ *   $     — JS template literal  ${expr}
+ *   `     — JS template literal delimiter
+ *   \     — escape sequences
+ */
+function isStaticCssValue(value: string): boolean {
+    return !/[{}`$\\]/.test(value);
+}
+
+/**
  * Returns true when the regex match sits inside a comma-delimited entry
- * that contains a ternary (`?`), logical AND (`&&`), or logical OR (`||`).
- * These operators signal a dynamic JS expression — the entry must be left
- * untouched so it stays in the runtime style object.
+ * that contains a ternary (`?`), logical AND (`&&`), logical OR (`||`),
+ * or JS/Svelte interpolation characters (`{`, `}`, `$`, backticks).
+ * These signal a dynamic JS expression — the entry must be left untouched
+ * so it stays in the runtime style object.
  */
 function isDynamicEntry(source: string, matchStart: number, matchLen: number): boolean {
     const prevComma = source.lastIndexOf(',', matchStart - 1);
     const nextComma = source.indexOf(',', matchStart + matchLen);
     const entry = source.slice(prevComma + 1, nextComma === -1 ? source.length : nextComma);
-    return /\?|&&|\|\|/.test(entry);
+    return /\?|&&|\|\||[{}`$\\]/.test(entry);
 }
 
 function toKebabCase(str: string): string {
