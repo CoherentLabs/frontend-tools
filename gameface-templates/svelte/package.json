@@ -1,0 +1,27 @@
+{
+  "name": "gameface-svelte-typescript",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "svelte-check --tsconfig ./tsconfig.app.json && vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "svelte": "^5.19.0"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^4.0.4",
+    "@tsconfig/svelte": "^5.0.4",
+    "eslint": "^9.39.1",
+    "sass": "^1.89.2",
+    "eslint-plugin-gameface": "file:../../eslint-gameface/packages/eslint-plugin-gameface",
+    "svelte-check": "^4.1.4",
+    "typescript": "~5.8.2",
+    "unocss": "^0.65.4",
+    "vite": "^5.4.21",
+    "vite-plugin-gameface-styles": "^2.0.0"
+  }
+}
