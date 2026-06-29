@@ -1,6 +1,10 @@
 import html from "@html-eslint/eslint-plugin";
 import css from "@eslint/css";
 import tsParser from "@typescript-eslint/parser";
+import vueParser from "vue-eslint-parser";
+import vuePlugin from "eslint-plugin-vue";
+import svelteParser from "svelte-eslint-parser";
+import sveltePlugin from "eslint-plugin-svelte";
 import { cssRestrictionsFlatRecommended, svgFlatRecommended } from "../rules/index.js";
 
 const jsApiRules = {
@@ -10,6 +14,104 @@ const jsApiRules = {
 
 const cssRestrictionRules = cssRestrictionsFlatRecommended();
 const svgRules = svgFlatRecommended();
+
+const vueInlineCssRestrictionRules = Object.fromEntries(
+  Object.entries(cssRestrictionRules).filter(([id]) => id.includes("vue-inline-css")),
+);
+
+const svelteInlineCssRestrictionRules = Object.fromEntries(
+  Object.entries(cssRestrictionRules).filter(([id]) => id.includes("svelte-inline-css")),
+);
+
+const vueSfcCssRules = {
+  "gameface/vue-sfc-css-no-unsupported-properties": "error",
+  "gameface/vue-sfc-css-no-unsupported-functions": "error",
+  "gameface/vue-sfc-css-no-var-in-keyframes": "error",
+  "gameface/vue-sfc-css-no-calc-in-keyframes": "error",
+  "gameface/vue-sfc-css-var-no-fallback": "error",
+  "gameface/vue-sfc-css-calc-no-mixed-percent-units": "error",
+  "gameface/vue-sfc-css-partial-property-values": "error",
+  "gameface/vue-sfc-css-no-unsupported-selectors": "error",
+  "gameface/vue-sfc-css-partial-selectors": "warn",
+  "gameface/vue-sfc-css-svg-keyframes-sizing-units": "error",
+  "gameface/vue-sfc-css-svg-keyframes-path-arc-animation": "warn",
+  "gameface/vue-sfc-css-svg-stroke-dash-non-path": "error",
+  "gameface/vue-sfc-css-svg-keyframes-stroke-dash-path-only": "warn",
+};
+
+const svelteSfcCssRules = {
+  "gameface/svelte-sfc-css-no-unsupported-properties": "error",
+  "gameface/svelte-sfc-css-no-unsupported-functions": "error",
+  "gameface/svelte-sfc-css-no-var-in-keyframes": "error",
+  "gameface/svelte-sfc-css-no-calc-in-keyframes": "error",
+  "gameface/svelte-sfc-css-var-no-fallback": "error",
+  "gameface/svelte-sfc-css-calc-no-mixed-percent-units": "error",
+  "gameface/svelte-sfc-css-partial-property-values": "error",
+  "gameface/svelte-sfc-css-no-unsupported-selectors": "error",
+  "gameface/svelte-sfc-css-partial-selectors": "warn",
+  "gameface/svelte-sfc-css-svg-keyframes-sizing-units": "error",
+  "gameface/svelte-sfc-css-svg-keyframes-path-arc-animation": "warn",
+  "gameface/svelte-sfc-css-svg-stroke-dash-non-path": "error",
+  "gameface/svelte-sfc-css-svg-keyframes-stroke-dash-path-only": "warn",
+};
+
+const vueTemplateRules = {
+  "gameface/vue-parsed-no-impl": [
+    "error",
+    { scope: "curated", ignoreTags: ["meta", "link", "base", "br", "hr", "noscript"] },
+  ],
+  "gameface/vue-partial-features": [
+    "warn",
+    { mode: "attribute-checks", warnAllowlist: false },
+  ],
+  "gameface/vue-inline-css-no-unsupported-properties": "error",
+  "gameface/vue-inline-css-no-unsupported-functions": "error",
+  ...vueInlineCssRestrictionRules,
+  "gameface/vue-inline-css-partial-property-values": "error",
+  "gameface/vue-databind-spelling": "error",
+  "gameface/vue-databind-curly-brackets": "error",
+  "gameface/vue-databind-property-accessors": "error",
+  "gameface/vue-databind-bind-for": "error",
+  "gameface/vue-databind-class-toggle": "error",
+  "gameface/vue-databind-model-properties": "warn",
+  ...jsApiRules,
+  "gameface/vue-svg-no-unsupported-elements": "error",
+  "gameface/vue-svg-mask-clip-path-conflict": "warn",
+  "gameface/vue-inline-css-svg-keyframes-sizing-units": "error",
+  "gameface/vue-inline-css-svg-keyframes-path-arc-animation": "warn",
+  "gameface/vue-svg-stroke-dash-non-path": "error",
+  "gameface/vue-inline-css-svg-keyframes-stroke-dash-path-only": "warn",
+  ...vueSfcCssRules,
+};
+
+const svelteTemplateRules = {
+  "gameface/svelte-parsed-no-impl": [
+    "error",
+    { scope: "curated", ignoreTags: ["meta", "link", "base", "br", "hr", "noscript"] },
+  ],
+  "gameface/svelte-partial-features": [
+    "warn",
+    { mode: "attribute-checks", warnAllowlist: false },
+  ],
+  "gameface/svelte-inline-css-no-unsupported-properties": "error",
+  "gameface/svelte-inline-css-no-unsupported-functions": "error",
+  ...svelteInlineCssRestrictionRules,
+  "gameface/svelte-inline-css-partial-property-values": "error",
+  "gameface/svelte-databind-spelling": "error",
+  "gameface/svelte-databind-curly-brackets": "error",
+  "gameface/svelte-databind-property-accessors": "error",
+  "gameface/svelte-databind-bind-for": "error",
+  "gameface/svelte-databind-class-toggle": "error",
+  "gameface/svelte-databind-model-properties": "warn",
+  ...jsApiRules,
+  "gameface/svelte-svg-no-unsupported-elements": "error",
+  "gameface/svelte-svg-mask-clip-path-conflict": "warn",
+  "gameface/svelte-inline-css-svg-keyframes-sizing-units": "error",
+  "gameface/svelte-inline-css-svg-keyframes-path-arc-animation": "warn",
+  "gameface/svelte-svg-stroke-dash-non-path": "error",
+  "gameface/svelte-inline-css-svg-keyframes-stroke-dash-path-only": "warn",
+  ...svelteSfcCssRules,
+};
 
 /**
  * Flat config blocks: HTML via @html-eslint, CSS via @eslint/css, JSX inline styles, plus gameface rules.
@@ -175,6 +277,54 @@ export function createFlatRecommended(gamefacePlugin) {
         "gameface/jsx-inline-css-svg-keyframes-path-arc-animation": "warn",
         "gameface/jsx-svg-stroke-dash-non-path": "error",
         "gameface/jsx-inline-css-svg-keyframes-stroke-dash-path-only": "warn",
+      },
+    },
+    {
+      files: ["**/*.vue"],
+      languageOptions: {
+        parser: vueParser,
+        parserOptions: {
+          parser: {
+            js: "espree",
+            ts: tsParser,
+            jsx: "espree",
+          },
+          ecmaFeatures: { jsx: true },
+        },
+      },
+      plugins: {
+        vue: vuePlugin,
+        gameface: gamefacePlugin,
+      },
+      processor: vuePlugin.processors?.vue,
+      rules: vueTemplateRules,
+      settings: {
+        gameface: {
+          modelsDir: "Gameface-models",
+        },
+      },
+    },
+    {
+      files: ["**/*.svelte"],
+      languageOptions: {
+        parser: svelteParser,
+        parserOptions: {
+          parser: {
+            js: "espree",
+            ts: tsParser,
+          },
+        },
+      },
+      plugins: {
+        svelte: sveltePlugin,
+        gameface: gamefacePlugin,
+      },
+      processor: sveltePlugin.processors?.svelte,
+      rules: svelteTemplateRules,
+      settings: {
+        gameface: {
+          modelsDir: "Gameface-models",
+        },
       },
     },
   ];

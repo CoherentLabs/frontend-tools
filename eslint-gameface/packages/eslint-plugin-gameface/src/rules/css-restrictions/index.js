@@ -14,6 +14,22 @@ import jsxInlineCssNoVarInKeyframes from "./jsx-inline-css-no-var-in-keyframes.j
 import jsxInlineCssNoCalcInKeyframes from "./jsx-inline-css-no-calc-in-keyframes.js";
 import jsxInlineCssVarNoFallback from "./jsx-inline-css-var-no-fallback.js";
 import jsxInlineCssCalcNoMixedPercentUnits from "./jsx-inline-css-calc-no-mixed-percent-units.js";
+import vueInlineCssNoVarInKeyframes from "./vue-inline-css-no-var-in-keyframes.js";
+import vueInlineCssNoCalcInKeyframes from "./vue-inline-css-no-calc-in-keyframes.js";
+import vueInlineCssVarNoFallback from "./vue-inline-css-var-no-fallback.js";
+import vueInlineCssCalcNoMixedPercentUnits from "./vue-inline-css-calc-no-mixed-percent-units.js";
+import vueSfcCssNoVarInKeyframes from "./vue-sfc-css-no-var-in-keyframes.js";
+import vueSfcCssNoCalcInKeyframes from "./vue-sfc-css-no-calc-in-keyframes.js";
+import vueSfcCssVarNoFallback from "./vue-sfc-css-var-no-fallback.js";
+import vueSfcCssCalcNoMixedPercentUnits from "./vue-sfc-css-calc-no-mixed-percent-units.js";
+import svelteInlineCssNoVarInKeyframes from "./svelte-inline-css-no-var-in-keyframes.js";
+import svelteInlineCssNoCalcInKeyframes from "./svelte-inline-css-no-calc-in-keyframes.js";
+import svelteInlineCssVarNoFallback from "./svelte-inline-css-var-no-fallback.js";
+import svelteInlineCssCalcNoMixedPercentUnits from "./svelte-inline-css-calc-no-mixed-percent-units.js";
+import svelteSfcCssNoVarInKeyframes from "./svelte-sfc-css-no-var-in-keyframes.js";
+import svelteSfcCssNoCalcInKeyframes from "./svelte-sfc-css-no-calc-in-keyframes.js";
+import svelteSfcCssVarNoFallback from "./svelte-sfc-css-var-no-fallback.js";
+import svelteSfcCssCalcNoMixedPercentUnits from "./svelte-sfc-css-calc-no-mixed-percent-units.js";
 
 /** @type {import("eslint").ESLint.Plugin["rules"]} */
 export const rules = {
@@ -33,6 +49,22 @@ export const rules = {
   "jsx-inline-css-no-calc-in-keyframes": jsxInlineCssNoCalcInKeyframes,
   "jsx-inline-css-var-no-fallback": jsxInlineCssVarNoFallback,
   "jsx-inline-css-calc-no-mixed-percent-units": jsxInlineCssCalcNoMixedPercentUnits,
+  "vue-inline-css-no-var-in-keyframes": vueInlineCssNoVarInKeyframes,
+  "vue-inline-css-no-calc-in-keyframes": vueInlineCssNoCalcInKeyframes,
+  "vue-inline-css-var-no-fallback": vueInlineCssVarNoFallback,
+  "vue-inline-css-calc-no-mixed-percent-units": vueInlineCssCalcNoMixedPercentUnits,
+  "vue-sfc-css-no-var-in-keyframes": vueSfcCssNoVarInKeyframes,
+  "vue-sfc-css-no-calc-in-keyframes": vueSfcCssNoCalcInKeyframes,
+  "vue-sfc-css-var-no-fallback": vueSfcCssVarNoFallback,
+  "vue-sfc-css-calc-no-mixed-percent-units": vueSfcCssCalcNoMixedPercentUnits,
+  "svelte-inline-css-no-var-in-keyframes": svelteInlineCssNoVarInKeyframes,
+  "svelte-inline-css-no-calc-in-keyframes": svelteInlineCssNoCalcInKeyframes,
+  "svelte-inline-css-var-no-fallback": svelteInlineCssVarNoFallback,
+  "svelte-inline-css-calc-no-mixed-percent-units": svelteInlineCssCalcNoMixedPercentUnits,
+  "svelte-sfc-css-no-var-in-keyframes": svelteSfcCssNoVarInKeyframes,
+  "svelte-sfc-css-no-calc-in-keyframes": svelteSfcCssNoCalcInKeyframes,
+  "svelte-sfc-css-var-no-fallback": svelteSfcCssVarNoFallback,
+  "svelte-sfc-css-calc-no-mixed-percent-units": svelteSfcCssCalcNoMixedPercentUnits,
 };
 
 /** Gameface documentation constraints (not driven by feature JSON). */

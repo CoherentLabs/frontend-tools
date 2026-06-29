@@ -1,0 +1,63 @@
+---
+title: Svelte SFC
+sidebar:
+  order: 5
+---
+
+Svelte **single-file components** (`.svelte`) are linted by the recommended preset. The plugin parses the SFC with `svelte-eslint-parser` and runs Gameface checks on each block.
+
+## What is checked per block
+
+| Block | Rules (prefix) | Notes |
+| --- | --- | --- |
+| Markup | `svelte-*`, `svelte-inline-css-*`, `svelte-databind-*`, `svelte-svg-*` | Same coverage as HTML/JSX for tags, `style`, `data-bind-*`, and inline SVG |
+| `<script>` / `<script lang="ts">` | `js-*` | Unsupported globals and partial API access (JS or TS via nested parser) |
+| `<style>` / `<style lang="scss">` | `svelte-sfc-css-*` | Same CSS checks as `.css` files and HTML `<style>` blocks |
+
+You do **not** need to install `svelte-eslint-parser` or `eslint-plugin-svelte` separately—they are dependencies of **eslint-plugin-gameface**. The preset registers them for `**/*.svelte` files.
+
+## `style` — expression vs string
+
+The linter handles common Svelte forms:
+
+- **String** — `style="display: flex"` or `style={`color: red;`}` (template literal). Full CSS text is parsed, including unsupported **functions**, keyframe limits, and SVG keyframe rules.
+- **Expression** — `style={expr}` where `expr` is a string literal, template literal, or object literal (when used). Property names and partial **values** on object keys are checked (`svelte-inline-css-*`).
+
+Some restrictions (for example `var()` inside `@keyframes` in a style string) apply only to **string** styles, not object literals—same as JSX. See [Rules reference — Svelte `style`](/eslint-plugin-gameface/guides/rules-reference/#svelte-style-attributes).
+
+## `data-bind-*` in markup
+
+Gameface data binding works with plain attributes and Svelte expressions:
+
+```svelte
+<div data-bind-value="{Model.score}"></div>
+<div data-bind-value={`{Model.score}`}></div>
+```
+
+Svelte uses `{expression}` in attribute values. All six `svelte-databind-*` rules mirror the HTML and JSX counterparts. See [Data binding](/eslint-plugin-gameface/guides/data-binding/).
+
+## Example `eslint.config.js`
+
+```js
+import gameface from "eslint-plugin-gameface";
+
+export default [
+  { ignores: ["**/node_modules/**", "dist/**"] },
+  ...gameface.configs["flat/recommended"],
+  {
+    settings: {
+      gameface: {
+        modelsDir: "Gameface-models",
+      },
+    },
+  },
+];
+```
+
+No extra `.svelte` block is required—the preset includes parser, processor (for `eslint-disable` comment directives), and all `svelte-*` / `svelte-sfc-css-*` rules.
+
+## VS Code
+
+Add `"svelte"` to `eslint.validate` so the ESLint extension lints `.svelte` files while you edit. See [Installation](/eslint-plugin-gameface/getting-started/installation/).
+
+For every rule id and default severity, see [Rules reference](/eslint-plugin-gameface/guides/rules-reference/).

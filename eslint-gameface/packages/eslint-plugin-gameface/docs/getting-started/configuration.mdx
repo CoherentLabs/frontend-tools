@@ -25,6 +25,10 @@ That preset turns on Gameface checks for:
 | `*.css`, `*.scss` | Unsupported properties, selectors, functions |
 | `*.js`, `*.jsx` | Unsupported globals; JSX adds data binding and inline styles |
 | `*.ts`, `*.tsx` | Same as JS/JSX |
+| `*.vue` | Template tags, `data-bind-*`, `:style`, SVG; `<script>` JS/TS APIs; `<style>` CSS |
+| `*.svelte` | Markup tags, `data-bind-*`, `style`, SVG; `<script>` JS/TS APIs; `<style>` CSS |
+
+The preset bundles `vue-eslint-parser` and `eslint-plugin-vue` for `.vue` files, and `svelte-eslint-parser` and `eslint-plugin-svelte` for `.svelte` files—you do not add separate Vue or Svelte ESLint configs.
 
 Adjust `ignores` to match your build output folders.
 

@@ -35,6 +35,22 @@ SCSS files are parsed in a tolerant mode so Sass variables and nesting do not bl
 
 See [Rules reference — JSX `style` props](/eslint-plugin-gameface/guides/rules-reference/#jsx-style-props) for which rules apply to object vs string styles.
 
+## Vue SFC (`.vue`)
+
+- **`<template>`** — unsupported/partial tags (`vue-parsed-no-impl`, `vue-partial-features`), `data-bind-*` (`vue-databind-*`), `:style` / `style=""` (`vue-inline-css-*`), and SVG (`vue-svg-*`)
+- **`<script>` / `<script setup>`** — `js-*` rules on the script block (JavaScript or TypeScript)
+- **`<style>`** — `vue-sfc-css-*` rules (same coverage as `.css` and HTML embedded styles), including `lang="scss"` blocks
+
+See [Vue SFC](/eslint-plugin-gameface/guides/vue/) for block-by-block detail.
+
+## Svelte SFC (`.svelte`)
+
+- **Markup** — unsupported/partial tags (`svelte-parsed-no-impl`, `svelte-partial-features`), `data-bind-*` (`svelte-databind-*`), `style` / `style={expr}` (`svelte-inline-css-*`), and SVG (`svelte-svg-*`)
+- **`<script>` / `<script lang="ts">`** — `js-*` rules on the script block (JavaScript or TypeScript)
+- **`<style>`** — `svelte-sfc-css-*` rules (same coverage as `.css` and HTML embedded styles), including `lang="scss"` blocks
+
+See [Svelte SFC](/eslint-plugin-gameface/guides/svelte/) for block-by-block detail.
+
 ## JavaScript and TypeScript (`.js`, `.jsx`, `.ts`, `.tsx`)
 
 - References to **globals** Gameface does not provide (for example some browser APIs)
@@ -44,7 +60,7 @@ Checks are static: dynamic property access and patterns ESLint cannot see withou
 
 ## What is not checked (today)
 
-- Standalone `.svg` asset files (only SVG inside HTML/JSX)
+- Standalone `.svg` asset files (only SVG inside HTML/JSX/Vue/Svelte templates)
 - Every browser CSS feature—only what Gameface documents as unsupported or partial
 - Runtime binding errors—only syntax and known unsupported features
 
