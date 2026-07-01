@@ -18,7 +18,7 @@ const __dirname = path.dirname(__filename);
 const defaultHeaderLinks = [
   { href: 'https://docs.coherent-labs.com/cpp-gameface', label: 'Gameface', subDocumentations: ['Custom Engine', 'Unreal', 'Unity'] },
   { href: 'https://docs.coherent-labs.com/cpp-prysm', label: 'Prysm', subDocumentations: ['Custom Engine', 'Unreal', 'Unity'] },
-  { href: 'https://starter.coherent-labs.com/', label: 'UI Starter Guide' },
+  { href: 'https://guide.coherent-labs.com/', label: 'UI Workflow Guide' },
   { href: 'https://frontend-tools.coherent-labs.com', label: 'UI Tools' },
   { href: 'https://gameface-ui.coherent-labs.com', label: 'Gameface UI' },
 ];
