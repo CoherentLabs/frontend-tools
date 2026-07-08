@@ -9,14 +9,23 @@ interface Props {
 const { type = "header" } = Astro.props;
 const { navLinks, documentationSearchTag } = getThemeConfig();
 
-const isLinkActive = (href: string, label: string, subDocumentations?: string[]) => {
+const isLinkActive = (
+    href: string,
+    label: string,
+    subDocumentations?: string[],
+) => {
     try {
-        if (documentationSearchTag) {
-            if (documentationSearchTag === label) return true;
+        const lowerLabel = label.toLocaleLowerCase();
+        const searchTag = documentationSearchTag?.toLocaleLowerCase();
+
+        if (searchTag) {
+            if (searchTag === lowerLabel) return true;
 
             if (subDocumentations && subDocumentations.length > 0) {
-                const possibleTags = subDocumentations.map(sub => `${label} ${sub}`);
-                if (possibleTags.includes(documentationSearchTag)) {
+                const possibleTags = subDocumentations.map(
+                    (sub) => `${lowerLabel} ${sub.toLocaleLowerCase()}`,
+                );
+                if (possibleTags.includes(searchTag)) {
                     return true;
                 }
             }
@@ -32,7 +41,7 @@ const isLinkActive = (href: string, label: string, subDocumentations?: string[])
         const currentPath = normalize(currentUrl.pathname);
         const linkPath = normalize(linkUrl.pathname);
 
-        if (isLocal) return label === documentationSearchTag;
+        if (isLocal) return lowerLabel === searchTag;
         if (linkUrl.origin !== currentUrl.origin) return false;
         if (linkPath === "/") return true;
 
