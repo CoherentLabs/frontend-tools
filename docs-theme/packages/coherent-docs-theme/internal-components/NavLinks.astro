@@ -252,6 +252,8 @@ const activeLabel = activeLinkObj ? activeLinkObj.label : "Documentations";
         fullList: HTMLElement;
         collapsedMenu: HTMLElement;
         fullListWidth: number;
+        resizeObserver: ResizeObserver;
+        handleResize: () => void;
 
         constructor(navElement: HTMLElement) {
             this.container = navElement;
@@ -271,12 +273,21 @@ const activeLabel = activeLinkObj ? activeLinkObj.label : "Documentations";
                 this.collapsedMenu.classList.add("has-active");
             }
 
+            this.handleResize = () => {
+                requestAnimationFrame(() => this.check());
+            };
+
             this.check();
 
-            const observer = new ResizeObserver(() => {
-                requestAnimationFrame(() => this.check());
-            });
-            observer.observe(this.container);
+            this.resizeObserver = new ResizeObserver(this.handleResize);
+            this.resizeObserver.observe(this.container);
+
+            const header = this.container.closest(".header");
+            if (header) {
+                this.resizeObserver.observe(header);
+            }
+
+            window.addEventListener("resize", this.handleResize);
         }
 
         calculateRequiredWidth() {
@@ -295,14 +306,26 @@ const activeLabel = activeLinkObj ? activeLinkObj.label : "Documentations";
         }
 
         check() {
+            const header = this.container.closest(".header");
+
+            if (header) {
+                header.classList.remove("nav-collapsed");
+            }
+
             const availableWidth = this.container.getBoundingClientRect().width;
 
             if (availableWidth === 0) return;
 
-            if (availableWidth < this.fullListWidth) {
+            const isCollapsed = availableWidth < this.fullListWidth;
+
+            if (header) {
+                header.classList.toggle("nav-collapsed", isCollapsed);
+            }
+
+            if (isCollapsed) {
                 if (this.verticalSeparator)
                     this.verticalSeparator.style.display = "none";
-                this.container.style.flexDirection = "row-reverse";
+                this.container.style.flexDirection = "row";
                 this.fullList.style.display = "none";
                 this.collapsedMenu.style.display = "block";
             } else {

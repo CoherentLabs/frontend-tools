@@ -53,7 +53,7 @@ const shouldRenderSearch =
         display: flex;
         align-items: center;
         gap: 1.5rem;
-        flex: 1;
+        flex: 1 1 auto;
         min-width: 0;
     }
 
@@ -74,11 +74,55 @@ const shouldRenderSearch =
         display: flex;
         align-items: center;
         gap: 1rem;
-        flex-shrink: 0;
+        flex: 0 0 auto;
         margin-left: auto;
+        min-width: 0;
+    }
+
+    .search-container {
+        flex: 0 1 auto;
+        min-width: 0;
+    }
+    .search-container :global(site-search),
+    .search-container :global(site-search > button) {
+        min-width: 24rem;
+    }
+
+    @media (max-width: 50rem) {
+        .search-container :global(site-search),
+        .search-container :global(site-search > button) {
+            min-width: 0rem;
+        }
+    }
+
+    @media (min-width: 50rem) {
+        .header.nav-collapsed .left-group {
+            flex: 0 0 auto;
+        }
+
+        .header.nav-collapsed .nav-wrapper {
+            flex: 0 0 auto;
+        }
+
+        .header.nav-collapsed .right-group {
+            flex: 1 1 auto;
+        }
+
+        .header.nav-collapsed .search-container {
+            flex: 1 1 auto;
+            max-width: none;
+        }
+
+        .header.nav-collapsed .search-container :global(site-search),
+        .header.nav-collapsed .search-container :global(site-search > button) {
+            width: 100%;
+            min-width: 0;
+            max-width: none;
+        }
     }
 
     .actions-wrapper {
+        flex-shrink: 0;
         align-items: center;
         gap: 1rem;
     }

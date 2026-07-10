@@ -23,6 +23,7 @@ export default defineConfig({
         ...getCoherentReleases(),
       ],
       social: [
+        { href: 'https://github.com/CoherentLabs/frontend-tools/docs-theme/packages/coherent-docs-theme', icon: 'laptop', label: 'GitHub' },
         { href: 'https://github.com/CoherentLabs/frontend-tools/docs-theme/packages/coherent-docs-theme', icon: 'github', label: 'GitHub' },
       ],
       title: 'Coherent-theme',
