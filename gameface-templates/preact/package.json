@@ -1,0 +1,25 @@
+{
+  "name": "gameface-preact-typescript",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "preact": "^10.29.0"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.2",
+    "eslint": "^9.39.1",
+    "sass": "^1.89.2",
+    "eslint-plugin-gameface": "^1.0.0",
+    "typescript": "~5.8.2",
+    "unocss": "^0.65.4",
+    "vite": "^5.4.21",
+    "vite-plugin-gameface-styles": "^2.0.0"
+  }
+}

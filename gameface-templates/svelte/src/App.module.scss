@@ -1,0 +1,188 @@
+.app {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background-color: #000000;
+  z-index: 3;
+
+  &__background {
+    overflow: hidden;
+    background: url('./assets/backgrounds/space.png') repeat top center;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: center center;
+    opacity: 0;
+    animation: app-zoom-stars 15s linear infinite;
+
+    &::after {
+      content: "";
+      position: absolute;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: transparent url('./assets/backgrounds/cloud.png') repeat top center;
+      animation: app-move-twink-back 300s linear infinite;
+      pointer-events: none;
+    }
+
+    &--secondary {
+      animation-delay: 7.5s;
+
+      &::after {
+        animation: app-move-twink-back 300s linear infinite reverse;
+      }
+    }
+  }
+
+  &__nebula {
+    position: absolute;
+    width: 100%;
+    height: 20%;
+    mix-blend-mode: color-dodge;
+    opacity: 1;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transform-origin: center center;
+    pointer-events: none;
+    z-index: 2;
+    filter: blur(20px);
+    background:
+      radial-gradient(circle at 20% 50%, rgba(0, 251, 255, 0.4) 0%, transparent 50%),
+      radial-gradient(circle at 75% 60%, rgba(166, 0, 255, 0.2) 0%, transparent 50%);
+  }
+
+  &__content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    z-index: 2;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 2rem 0;
+    gap: 0.25rem;
+  }
+
+  &__title {
+    color: #80d0ff;
+    font-size: 1.75rem;
+    font-weight: bold;
+    letter-spacing: 0.125rem;
+  }
+
+  &__framework {
+    color: #3ecf6e;
+    font-size: 0.875rem;
+    font-weight: bold;
+    letter-spacing: 0.0625rem;
+  }
+
+  &__main-row {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 1.5rem 2rem;
+    gap: 1rem;
+  }
+
+  &__spacer {
+    flex: 1;
+  }
+
+  &__action-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0.2rem 2rem 0.65rem;
+  }
+
+  &__start-button {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18.5rem;
+    height: 3.95rem;
+    padding: 0;
+    border: none;
+    background-image: url('./assets/backgrounds/start-game-btn-bg.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    background-color: transparent;
+    color: #e9f9ff;
+    font-size: 0.88rem;
+    font-weight: bold;
+    letter-spacing: 0.12rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.18s ease, background-image 0.18s ease;
+
+    &:hover {
+      background-image: url('./assets/backgrounds/start-game-btn-bg-hover.svg');
+      transform: translateY(-0.08rem);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &__footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 2rem 1.25rem;
+  }
+
+  &__stat {
+    color: rgba(200, 220, 240, 0.9);
+    font-size: 0.75rem;
+  }
+}
+
+@keyframes app-move-twink-back {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: -10000px 5000px;
+  }
+}
+
+@keyframes app-zoom-stars {
+  from {
+    transform: scale(1) rotate(0deg);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(1.5) rotate(10deg);
+    opacity: 0;
+  }
+}
