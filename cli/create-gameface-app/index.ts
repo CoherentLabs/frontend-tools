@@ -1,14 +1,16 @@
 #!/usr/bin/env node
-import { cancel, text, select, confirm, isCancel, spinner } from '@clack/prompts';
+import { cancel, text, select, confirm, isCancel, spinner, note, outro } from '@clack/prompts';
 import { rmSync, existsSync, readdirSync, PathLike } from 'node:fs'
 import { join } from 'node:path'
 import tiged from 'tiged'
+import { rm } from 'node:fs/promises'
+import { spawn } from 'node:child_process'
 import TEMPLATES, { TemplateKey } from './config.js';
 
 function bail(value: string | symbol | boolean) {
   if (isCancel(value) || value === false) {
     cancel('Operation cancelled')
-    process.exit(1)
+    process.exit(0)
   }
   return value as string
 }
@@ -24,8 +26,36 @@ async function handleExistingDirectory(dest: PathLike) {
     }))
 
     if (choice === 'cancel') { cancel('Operation cancelled'); process.exit(0) }
-    if (choice === 'remove') rmSync(dest, { recursive: true, force: true })
+    if (choice === 'remove') {
+      const s = spinner()
+      s.start(`Removing ${dest}`)
+      await rm(dest, { recursive: true, force: true });
+      s.stop(`Removed ${dest}`)
+    }
   }
+}
+
+function getPackageManager(): string {
+  const userAgent = process.env.npm_config_user_agent
+  if (!userAgent) return 'npm'
+  const name = userAgent.split('/')[0]
+  return ['npm', 'yarn', 'pnpm'].includes(name) ? name : 'npm'
+}
+
+function install(pm: string, cwd: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const child = spawn(`${pm} install`, {
+      cwd,
+      stdio: ['ignore', 'ignore', 'pipe'],
+      shell: true,
+    })
+    let stderr = ''
+    child.stderr?.on('data', d => { stderr += d })
+    child.on('error', reject)
+    child.on('close', code =>
+      code === 0 ? resolve() : reject(new Error(stderr.trim() || `${pm} install exited with code ${code}`))
+    )
+  })
 }
 
 async function main() {
@@ -44,7 +74,6 @@ async function main() {
     options: Object.entries(TEMPLATES).map(([value, template]) => ({
       value,
       label: template.label,
-      hint: template.hint,
     })),
   })) as TemplateKey;
 
@@ -83,6 +112,37 @@ async function main() {
     if (error instanceof Error) cancel(error.message)
     process.exit(1)
   }
+
+  const pm = getPackageManager()
+  const shouldInstall = await confirm({ message: `Install dependencies with ${pm}?` })
+
+  if (isCancel(shouldInstall)) {
+    cancel('Operation cancelled')
+    process.exit(0)
+  }
+
+  let depsInstalled = false
+
+  if (shouldInstall) {
+    s.start(`Installing dependencies with ${pm}`)
+    try {
+      await install(pm, dest)
+      s.stop('Dependencies installed')
+      depsInstalled = true;
+    } catch (error) {
+      s.stop('Could not install dependencies')
+      if (error instanceof Error) note(error.message, 'Install failed')
+    }
+  }
+
+  const steps = [
+    `cd ${projectName}`,
+    ...(depsInstalled ? [] : [`${pm} install`]),
+    `${pm}${pm === 'npm' ? ' run' : ''} dev`,
+  ].join('\n')
+
+  note(steps, 'To start the development server, run the following commands:')
+  outro('Your Gameface project is ready!');
 }
 
 await main();
