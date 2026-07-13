@@ -198,14 +198,14 @@ function scanOpeningTags(code: string): TagSpan[] {
 
         while (i < len) {
             const c = code[i];
-            if (sq)        { if (c === '\\') i++; else if (c === "'")  sq = false; }
-            else if (dq)   { if (c === '\\') i++; else if (c === '"')  dq = false; }
-            else if (tl)   { if (c === '\\') i++; else if (c === '`')  tl = false; }
-            else if (c === "'")  sq = true;
-            else if (c === '"')  dq = true;
-            else if (c === '`')  tl = true;
-            else if (c === '{')  braces++;
-            else if (c === '}')  braces = Math.max(0, braces - 1);
+            if (sq) { if (c === '\\') i++; else if (c === "'") sq = false; }
+            else if (dq) { if (c === '\\') i++; else if (c === '"') dq = false; }
+            else if (tl) { if (c === '\\') i++; else if (c === '`') tl = false; }
+            else if (c === "'") sq = true;
+            else if (c === '"') dq = true;
+            else if (c === '`') tl = true;
+            else if (c === '{') braces++;
+            else if (c === '}') braces = Math.max(0, braces - 1);
             else if (braces === 0 && c === '>') {
                 i++;
                 out.push({ start, end: i, content: code.slice(start, i) });
@@ -327,13 +327,13 @@ function buildMergedClassAttribute(
     }
 
     if (isVue && attrName === ':class') {
-        return `:class="[${value}, '${added}'].join(' ')"`;
+        return `:class="[${value}, '${added}']"`;
     }
 
     // JSX / Solid — template literal: class={`${expr} added`}
     const jsxName = isJsx && !isSolidProject ? 'className' : 'class';
     const name = attrName === 'className' || attrName === 'class' ? attrName : jsxName;
-    return `${name}={\`\${${value}} ${added}\`}`;
+    return `${name}={[${value}, '${added}'].filter(Boolean).join(' ')}`;
 }
 
 /**
@@ -456,10 +456,10 @@ function mergeTagStyles(
         buildMergedClassAttribute(existingClass, newClasses, isVue, isJsx, isSolidProject, isSvelte),
     ];
     for (const rs of residual) {
-        if (rs.mod)                 parts.push(`style:${rs.mod}={{ ${rs.css} }}`);
+        if (rs.mod) parts.push(`style:${rs.mod}={{ ${rs.css} }}`);
         else if (rs.type === 'jsx') parts.push(`style={{ ${rs.css} }}`);
         else if (rs.type === 'vue') parts.push(`:style="{ ${rs.css} }"`);
-        else                        parts.push(`style="${rs.css}"`);
+        else parts.push(`style="${rs.css}"`);
     }
 
     // 7 — rebuild:  <TagName  <injected attrs>  …remaining attrs…  >
