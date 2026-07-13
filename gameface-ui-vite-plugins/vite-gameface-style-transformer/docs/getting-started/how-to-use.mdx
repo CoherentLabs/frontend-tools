@@ -15,7 +15,7 @@ import gamefaceStyleTransformerPlugin from 'vite-plugin-gameface-styles';
 
 export default defineConfig({
   plugins: [
-    gamefaceStyleTransformerPlugin({ //Make sure to set the plugin before the framework plugin
+    ...gamefaceStyleTransformerPlugin({ //Make sure to set the plugin before the framework plugin
         suppressWarnings: false, // Set to true to hide Gameface CSS constraint warnings
         isSolidProject: true     // Set to true if using SolidJS (handles class vs className)
     }),

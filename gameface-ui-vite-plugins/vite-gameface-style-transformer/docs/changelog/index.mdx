@@ -4,6 +4,27 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
+## 2.0.0 :badge[Latest]{variant="note"}
+
+<Badge text="Breaking change" variant="note" size="small" /> `gamefaceStyleTransformerPlugin` usage has been updated to use the spread operator (`...`) when adding the plugin to your Vite config. Internally the function now returns an array of plugins that apply different transformations and fixes that are described below.
+
+For example, instead of:
+```ts
+gamefaceStyleTransformerPlugin({ suppressWarnings: false, isSolidProject: false }),
+```
+
+```ts
+...gamefaceStyleTransformerPlugin({ suppressWarnings: false, isSolidProject: false }),
+```
+
+<Badge text="Fix" variant="danger" size="small" /> Plugin now set bigger specificity for generated `gf-prop--` classes to ensure they override other styles when necessary.
+
+<Badge text="Fix" variant="danger" size="small" /> Static CSS validation now applies consistently across all frameworks (JSX, Vue, HTML, and Svelte). Dynamic style values are no longer stripped from the source when extraction is skipped; style attributes are only rewritten when at least one static declaration is converted to a `gf-prop--` class.
+
+<Badge text="Fix" variant="danger" size="small" /> JSX/Vue object-style parsing skips entries containing template literals (`${…}`), Svelte interpolation (`{…}`), and other dynamic markers. Partially static style objects keep dynamic entries in the residual inline style.
+
+<Badge text="Fix" variant="danger" size="small" /> UnoCSS fingerprint rules (`__uno_hash_*{--:''}`) are patched to use a valid no-op declaration so Gameface's CSS parser accepts the stylesheet without warnings while UnoCSS HMR can still locate the hash selector.
+
 ## 1.0.0
 
 <Badge text="Feature" variant="success" size="small" /> Plugin adds option to create custom states like `style:error={{'background-color': 'red'}}`.
