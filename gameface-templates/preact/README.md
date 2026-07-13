@@ -73,4 +73,3 @@ Preact uses the same JSX patterns as the React template (`className`, hooks). `u
 ## Docs
 
 - [Preact Support (legacy preact-cli)](https://docs.coherent-labs.com/cpp-gameface/content_development/preactsupport/) — prefer this Vite template for new projects
-- [Gameface UI](https://gameface-ui.coherent-labs.com/)

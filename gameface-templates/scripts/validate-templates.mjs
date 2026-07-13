@@ -6,8 +6,8 @@ import { fileURLToPath } from 'node:url';
 const templatesRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 
 const templates = readdirSync(templatesRoot)
-  .filter((name) => name.endsWith('-typescript') || name.endsWith('-javascript'))
   .filter((name) => statSync(join(templatesRoot, name)).isDirectory())
+  .filter((name) => name !== 'scripts')
   .sort();
 
 function run(command, args, cwd) {

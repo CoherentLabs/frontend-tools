@@ -17,7 +17,7 @@
     "@tsconfig/svelte": "^5.0.4",
     "eslint": "^9.39.1",
     "sass": "^1.89.2",
-    "eslint-plugin-gameface": "file:../../eslint-gameface/packages/eslint-plugin-gameface",
+    "eslint-plugin-gameface": "^1.0.0",
     "svelte-check": "^4.1.4",
     "typescript": "~5.8.2",
     "unocss": "^0.65.4",

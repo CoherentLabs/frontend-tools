@@ -72,4 +72,3 @@ Load `dist/index.html` in the Gameface Player.
 ## Docs
 
 - [React Support (legacy Webpack)](https://docs.coherent-labs.com/cpp-gameface/content_development/reactsupport/) — prefer this Vite template for new projects
-- [Gameface UI](https://gameface-ui.coherent-labs.com/) — full component library when you outgrow the starter

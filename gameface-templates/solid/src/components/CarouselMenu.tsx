@@ -24,13 +24,12 @@ function CarouselCard(props: CarouselCardProps) {
     >
       <div
         class={styles['carousel-card__masked-bg']}
-        aria-hidden="true"
         style={backgroundStyle()}
       >
         {!props.isSelected && <div class={styles['carousel-card__shade']} />}
       </div>
 
-      {props.isSelected && <div class={styles['carousel-card__pulsing-border']} aria-hidden="true" />}
+      {props.isSelected && <div class={styles['carousel-card__pulsing-border']} />}
 
       <div class={styles['carousel-card__caption']}>
         <span

@@ -21,13 +21,12 @@ function CarouselCard({ item, isSelected, onSelect }: CarouselCardProps) {
     >
       <div
         className={styles['carousel-card__masked-bg']}
-        aria-hidden="true"
         style={backgroundStyle}
       >
         {!isSelected && <div className={styles['carousel-card__shade']} />}
       </div>
 
-      {isSelected && <div className={styles['carousel-card__pulsing-border']} aria-hidden="true" />}
+      {isSelected && <div className={styles['carousel-card__pulsing-border']} />}
 
       <div className={styles['carousel-card__caption']}>
         <span

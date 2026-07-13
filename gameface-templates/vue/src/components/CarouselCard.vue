@@ -28,13 +28,18 @@ const backgroundStyle = computed<CSSProperties | undefined>(() => (
   >
     <div
       :class="styles['carousel-card__masked-bg']"
-      aria-hidden="true"
       :style="backgroundStyle"
     >
-      <div v-if="!isSelected" :class="styles['carousel-card__shade']" />
+      <div
+        v-if="!isSelected"
+        :class="styles['carousel-card__shade']"
+      />
     </div>
 
-    <div v-if="isSelected" :class="styles['carousel-card__pulsing-border']" aria-hidden="true" />
+    <div
+      v-if="isSelected"
+      :class="styles['carousel-card__pulsing-border']"
+    />
 
     <div :class="styles['carousel-card__caption']">
       <span :class="[styles['carousel-card__title'], isSelected ? styles['carousel-card__title--selected'] : '']">

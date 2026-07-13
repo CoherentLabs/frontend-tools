@@ -73,8 +73,3 @@ Load `dist/index.html` in the Gameface Player.
 Root mount target is `#app` in `index.html`. The style transformer understands Svelte `style:prop` directives and merges generated `gf-prop` classes with existing `class` attributes.
 
 Dynamic `style:prop` values (containing `{…}` interpolation) are left untouched so UnoCSS and Gameface never see invalid class names.
-
-## Docs
-
-- Svelte is supported via `vite-plugin-gameface-styles` (no dedicated Gameface framework page yet)
-- [Gameface UI](https://gameface-ui.coherent-labs.com/)

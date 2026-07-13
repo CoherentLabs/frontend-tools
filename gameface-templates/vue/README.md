@@ -71,7 +71,3 @@ Load `dist/index.html` in the Gameface Player.
 Root mount target is `#app` in `index.html`. Responsive font scaling runs in `onMounted` via the `useResponsiveRootFontSize` composable — typically early enough for Gameface's first layout pass.
 
 For `style:` bindings, only use dynamic values where the property must change at runtime; let the style transformer handle static declarations.
-
-## Docs
-
-- [Gameface UI](https://gameface-ui.coherent-labs.com/)

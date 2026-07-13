@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { GameMode } from '../data/types';
-  import styles from './CarouselMenu.module.scss';
+  import type { GameMode } from "../data/types";
+  import styles from "./CarouselMenu.module.scss";
 
   let {
     item,
@@ -15,25 +15,32 @@
 
 <button
   type="button"
-  class="{styles['carousel-card']}{isSelected ? ` ${styles['carousel-card--selected']}` : ''}"
+  class="{styles['carousel-card']}{isSelected
+    ? ` ${styles['carousel-card--selected']}`
+    : ''}"
   onclickcapture={() => onSelect(item.id)}
 >
   <div
-    class={styles['carousel-card__masked-bg']}
-    aria-hidden="true"
-    style={item.imageUrl ? `background-image: url('${item.imageUrl}')` : undefined}
+    class={styles["carousel-card__masked-bg"]}
+    style={item.imageUrl
+      ? `background-image: url('${item.imageUrl}')`
+      : undefined}
   >
     {#if !isSelected}
-      <div class={styles['carousel-card__shade']}></div>
+      <div class={styles["carousel-card__shade"]}></div>
     {/if}
   </div>
 
   {#if isSelected}
-    <div class={styles['carousel-card__pulsing-border']} aria-hidden="true"></div>
+    <div class={styles["carousel-card__pulsing-border"]}></div>
   {/if}
 
-  <div class={styles['carousel-card__caption']}>
-    <span class="{styles['carousel-card__title']}{isSelected ? ` ${styles['carousel-card__title--selected']}` : ''}">
+  <div class={styles["carousel-card__caption"]}>
+    <span
+      class="{styles['carousel-card__title']}{isSelected
+        ? ` ${styles['carousel-card__title--selected']}`
+        : ''}"
+    >
       {@html item.title}
     </span>
   </div>
