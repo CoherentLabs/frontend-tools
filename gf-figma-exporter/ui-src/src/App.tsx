@@ -61,18 +61,22 @@ const App: Component = () => {
         const input = document.querySelector('input[type="file"]') as HTMLInputElement;
         const files = input.files;
 
-        if (!files || files.length === 0) {
+        const selectValues = [...selects].map((select) => (select as HTMLSelectElement).value);
+
+        if (selectValues.some((value) => value === '')) {
+            toast.error('Please map all missing fonts before continuing.', { duration: 4000 });
+            return;
+        }
+
+        const needsUploadedFile = selectValues.some((value) => value !== 'noto');
+        if (needsUploadedFile && (!files || files.length === 0)) {
             toast.error('Please upload font files before continuing.', { duration: 4000 });
             return;
         }
 
-        readFilesAsArrayBuffer(files).then(() => {
-            const unmapped = [...selects].filter((select) => (select as HTMLSelectElement).value === '');
-            if (unmapped.length > 0) {
-                toast.error('Please map all missing fonts before continuing.', { duration: 4000 });
-                return;
-            }
+        const readFiles = files && files.length > 0 ? readFilesAsArrayBuffer(files) : Promise.resolve();
 
+        readFiles.then(() => {
             selects.forEach((select) => {
                 const [family, weight, style, subset] = select.name.split('_');
                 const fileName = select.value === 'noto' ? null : select.value;

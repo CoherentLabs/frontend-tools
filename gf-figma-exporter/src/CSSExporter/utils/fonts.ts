@@ -26,13 +26,13 @@ export function getLetterSpacing(textSegment: TextSegment): string {
     const { letterSpacing } = textSegment;
 
     if (letterSpacing.unit === 'PERCENT') {
-        return `${letterSpacing.value / 100}em`;
+        return `${(letterSpacing.value / 100).toFixed(2)}em`;
     }
 
     const letterSpacingInVH = convertPXtoVH(letterSpacing.value as number);
     const letterSpacingInPercent = getPercentage(letterSpacingInVH, parseFloat(getFontSize(textSegment)));
 
-    return `${letterSpacingInPercent / 100}em`;
+    return `${(letterSpacingInPercent / 100).toFixed(2)}em`;
 }
 
 export function getLineHeight(textSegment: TextSegment): string {
@@ -42,12 +42,12 @@ export function getLineHeight(textSegment: TextSegment): string {
     }
 
     if (lineHeight.unit === 'PERCENT') {
-        return `${lineHeight.value / 100}`;
+        return `${(lineHeight.value / 100).toFixed(2)}`;
     }
 
     const lineHeightInVH = convertPXtoVH(lineHeight.value as number);
     const lineHeightInPercent = getPercentage(lineHeightInVH, parseFloat(getFontSize(textSegment)));
-    return `${lineHeightInPercent / 100}`;
+    return `${(lineHeightInPercent / 100).toFixed(2)}`;
 }
 
 export function getTextCase(textSegment: TextSegment): string {
@@ -126,7 +126,7 @@ function getTextDecorationThickness(textSegment: TextSegment): string {
     const thicknessInVH = convertPXtoVH(textDecorationThickness.value as number);
     const thicknessInPercent = getPercentage(thicknessInVH, parseFloat(getFontSize(textSegment)));
 
-    return `${thicknessInPercent}%`;
+    return `${thicknessInPercent.toFixed(2)}%`;
 }
 
 function getTextDecorationOffset(textSegment: TextSegment): string {
@@ -140,7 +140,7 @@ function getTextDecorationOffset(textSegment: TextSegment): string {
 
     const offsetInVH = convertPXtoVH(textDecorationOffset.value as number);
     const offsetInPercent = getPercentage(offsetInVH, parseFloat(getFontSize(textSegment))) ;
-    return `${offsetInPercent}%`;
+    return `${offsetInPercent.toFixed(2)}%`;
 }
 
 export function getFontName(textSegment: TextSegment): string {

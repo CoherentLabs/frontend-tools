@@ -4,10 +4,11 @@ import sanitizeNames from './sanitizeNames';
 export default function generateImageName(
     name: string,
     id: string,
-    type: 'background' | 'border' | 'full'
+    type: 'background' | 'border' | 'full',
+    extension: 'png' | 'svg' = 'png'
 ): string {
     const prefix = setPrefix(type);
-    return `images/${prefix}${sanitizeNames(name)}_${sanitizeNames(id)}.png`;
+    return `images/${prefix}${sanitizeNames(name)}_${sanitizeNames(id)}.${extension}`;
 }
 
 function setPrefix(type: 'background' | 'border' | 'full'): string {

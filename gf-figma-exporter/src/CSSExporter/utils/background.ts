@@ -6,6 +6,7 @@ import {
     angularGradientHandle,
     radialGradientHandle,
     diamondGradientHandle,
+    getFadeToTransparentIndex,
 } from '../../utils/gradientUtils';
 import hasImage from '../../utils/hasImage';
 import getPathBBox from '../../utils/getPathBBox';
@@ -65,9 +66,9 @@ export function generateBackground(node: NodesWithFillsAndStrokes): string {
 
             case 'GRADIENT_RADIAL': {
                 if (node.type === 'FRAME') break;
-                const { r, g, b, a } = fill.gradientStops[fill.gradientStops.length - 1].color;
-                const lastColor = createRGBAColor(r, g, b, a);
-                backgroundArrays.push(lastColor);
+                const { r, g, b, a } = fill.gradientStops[getFadeToTransparentIndex(fill.gradientStops)].color;
+                const backdropColor = createRGBAColor(r, g, b, a);
+                backgroundArrays.push(backdropColor);
                 break;
             }
 
@@ -79,9 +80,9 @@ export function generateBackground(node: NodesWithFillsAndStrokes): string {
 
             case 'GRADIENT_DIAMOND': {
                 if (node.type === 'FRAME') break;
-                const { r, g, b, a } = fill.gradientStops[fill.gradientStops.length - 1].color;
-                const lastColor = createRGBAColor(r, g, b, a);
-                backgroundArrays.push(lastColor);
+                const { r, g, b, a } = fill.gradientStops[getFadeToTransparentIndex(fill.gradientStops)].color;
+                const backdropColor = createRGBAColor(r, g, b, a);
+                backgroundArrays.push(backdropColor);
                 break;
             }
 
@@ -172,8 +173,8 @@ export async function generateBackgroundRect(
         return { x, y, width, height };
     }
 
-    x = getPercentage(bbox.x, node.width);
-    y = getPercentage(bbox.y, node.height);
+    x = Number(getPercentage(bbox.x, node.width).toFixed(2));
+    y = Number(getPercentage(bbox.y, node.height).toFixed(2));
     width = convertPXtoVH(bbox.width).toFixed(2);
     height = convertPXtoVH(bbox.height).toFixed(2);
 

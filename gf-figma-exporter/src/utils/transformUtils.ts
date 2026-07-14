@@ -100,7 +100,7 @@ export function getRelativeCssTransform(childNode: AvailableNode, parentNode: Av
     }
 
     return {
-        x: x, 
+        x: x,
         y: y,
         rotation: rotationDeg,
         scaleX: scaleX, // You can use this for transform: scale(...)

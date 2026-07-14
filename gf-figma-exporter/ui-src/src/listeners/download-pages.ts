@@ -1,6 +1,7 @@
 import JSZip from 'jszip';
 import { ComponentExportResult, ExportMode, GFFont } from '../commonTypes';
 import MessageBus from '../MessageBus/MessageBus';
+import { base64toUint8Array } from '../utils/base64toUint8Array';
 
 type PageExporterResult = {
     [pageName: string]: {
@@ -17,7 +18,12 @@ function addFontsToZip(jszip: JSZip, fonts: GFFont, folder: string): void {
             for (const [style, styleData] of Object.entries(weightStyles)) {
                 for (const [subset, data] of Object.entries(styleData.subsets)) {
                     if (data) {
-                        jszip.file(`${folder}${font}-${style}_${weight}_${subset}.ttf`, data);
+                        // Font-server data arrives as a base64 string (see SubsetData in commonTypes.ts)
+                        // and must be decoded to real bytes before JSZip writes it out — otherwise it
+                        // writes the base64 text itself as the .ttf's contents. A user-uploaded font is
+                        // already a real Uint8Array and needs no conversion.
+                        const fontBytes = typeof data === 'string' ? base64toUint8Array(data) : data;
+                        jszip.file(`${folder}${font}-${style}_${weight}_${subset}.ttf`, fontBytes);
                     }
                 }
             }
