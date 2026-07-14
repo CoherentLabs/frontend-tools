@@ -5,7 +5,9 @@ import { join } from 'node:path'
 import tiged from 'tiged'
 import { rm } from 'node:fs/promises'
 import { spawn } from 'node:child_process'
+import { parseArgs } from 'node:util'
 import TEMPLATES, { TemplateKey } from './config.js';
+import { printHelp } from './help.js';
 
 function bail(value: string | symbol | boolean) {
   if (isCancel(value) || value === false) {
@@ -59,33 +61,62 @@ function install(pm: string, cwd: string): Promise<void> {
 }
 
 async function main() {
-  const projectName = bail(await text({
+  const { values, positionals } = parseArgs({
+    allowPositionals: true,
+    options: {
+      template: { type: 'string', short: 't' },
+      yes:      { type: 'boolean', short: 'y' },
+      help:     { type: 'boolean', short: 'h' },
+    },
+  })
+
+  if (values.help) {
+    printHelp();
+    process.exit(0);
+  }
+
+  const nameArg = positionals[0]
+  const templateArg = values.template;
+
+  let framework: TemplateKey | undefined = undefined;
+  
+  if (templateArg) {
+    if (!(templateArg in TEMPLATES)) {
+      cancel(`Unknown template "${templateArg}". Valid: ${Object.keys(TEMPLATES).join(', ')}`)
+      process.exit(1)
+    }
+    framework = templateArg as TemplateKey;
+  }
+
+  const projectName = nameArg ?? bail(await text({
     message: 'Project name?',
     placeholder: 'gameface app',
     defaultValue: 'gameface-app',
   }));
 
   const dest = join(process.cwd(), projectName);
-  await handleExistingDirectory(dest);
 
   // Get user's preferred framework
-  const framework = bail(await select({
+  !framework && (framework = bail(await select({
     message: 'Choose a template:',
     options: Object.entries(TEMPLATES).map(([value, template]) => ({
       value,
       label: template.label,
     })),
-  })) as TemplateKey;
+  })) as TemplateKey)
 
   // Confirm the selection
-  bail(await confirm({
-    message: `Create a ${framework} starter project in /${projectName}?`,
-  }));
+  if (!values.yes) {
+    bail(await confirm({
+      message: `Create a ${framework} starter project in /${projectName}?`,
+    }));
+  }
   
+  await handleExistingDirectory(dest);
   const emitter = tiged(TEMPLATES[framework].path, { disableCache: true, force: true })
 
   const s = spinner()
-  s.start('Scaffolding project')
+  s.start(`Scaffolding project in ${dest}`)
 
   try {
     await emitter.clone(dest)
@@ -104,7 +135,7 @@ async function main() {
       )
     }
 
-    s.stop(`Operation completed! Your project is ready at ${dest}`)
+    s.stop(`Created ${projectName} with the ${framework} template!`);
   } catch (error) {
     s.cancel('Scaffolding failed')
     rmSync(dest, { recursive: true, force: true })
@@ -114,7 +145,9 @@ async function main() {
   }
 
   const pm = getPackageManager()
-  const shouldInstall = await confirm({ message: `Install dependencies with ${pm}?` })
+
+  let shouldInstall: boolean | symbol = values.yes ?? false;
+  if (!shouldInstall) shouldInstall = await confirm({ message: `Install dependencies with ${pm}?` })
 
   if (isCancel(shouldInstall)) {
     cancel('Operation cancelled')
