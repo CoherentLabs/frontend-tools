@@ -2,15 +2,6 @@
 
 Minimal **TypeScript + Vite** starter for building Gameface UIs with **SolidJS**.
 
-Part of [gameface-templates](../README.md). Copy this folder or use [degit](https://github.com/Rich-Harris/degit):
-
-```bash
-npx degit coherentlabs/frontend-tools/gameface-templates/solid my-ui
-cd my-ui
-npm install
-npm run dev
-```
-
 For a full component library (HUD, menus, routing), see [Gameface UI](https://gameface-ui.coherent-labs.com/):
 
 ```bash
@@ -19,12 +10,15 @@ npx degit CoherentLabs/Gameface-UI my-gameface-ui
 
 ## Quick start
 
+To install the template run
+
 ```bash
-npm install
+npm create gameface-app my-ui -- -t solid -y
+cd my-ui
 npm run dev
 ```
 
-Open `http://localhost:3000/` in the Gameface Player.
+After the installation is complete, open `http://localhost:3000/` in the Gameface Player.
 
 ## What's included
 

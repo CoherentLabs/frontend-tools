@@ -3,6 +3,7 @@ const fsPromises = require('fs/promises');
 const fs = require('fs');
 const { execSync } = require('child_process');
 const VITE_PLUGINS_PATH = path.join(__dirname, '../gameface-ui-vite-plugins');
+const CLI_PATH = path.join(__dirname, '../cli');
 const TOOLS_PATH = path.join(__dirname, '..');
 
 /**
@@ -103,8 +104,9 @@ const eslintPluginPath = path.join(__dirname, '../eslint-gameface/packages/eslin
 async function main() {
     try {
         const tools = [
-            ...await getToolsDirs(TOOLS_PATH, ['gameface-ui-vite-plugins', 'language-server', 'gf-figma-exporter', 'eslint-gameface', 'google-fonts-server', 'gameface-templates']),
+            ...await getToolsDirs(TOOLS_PATH, ['gameface-ui-vite-plugins', 'cli', 'language-server', 'gf-figma-exporter', 'eslint-gameface', 'google-fonts-server', 'gameface-templates']),
             ...await getToolsDirs(VITE_PLUGINS_PATH),
+            ...await getToolsDirs(CLI_PATH),
             coherentDocsThemePath,
             eslintPluginPath
         ];

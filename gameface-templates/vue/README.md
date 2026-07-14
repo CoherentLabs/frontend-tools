@@ -2,23 +2,17 @@
 
 Minimal **TypeScript + Vite** starter for building Gameface UIs with **Vue 3**.
 
-Part of [gameface-templates](../README.md). Copy this folder or use [degit](https://github.com/Rich-Harris/degit):
-
-```bash
-npx degit coherentlabs/frontend-tools/gameface-templates/vue my-ui
-cd my-ui
-npm install
-npm run dev
-```
-
 ## Quick start
 
+To install the template run
+
 ```bash
-npm install
+npm create gameface-app my-ui -- -t vue -y
+cd my-ui
 npm run dev
 ```
 
-Open `http://localhost:3000/` in the Gameface Player.
+After the installation is complete, open `http://localhost:3000/` in the Gameface Player.
 
 ## What's included
 
