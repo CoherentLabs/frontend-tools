@@ -75,7 +75,7 @@ async function main() {
     process.exit(0);
   }
 
-  const nameArg = positionals[0]
+  const nameArg = positionals[0]?.trim() || undefined;
   const templateArg = values.template;
 
   let framework: TemplateKey | undefined = undefined;
