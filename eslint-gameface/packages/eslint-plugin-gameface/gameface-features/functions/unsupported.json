@@ -226,28 +226,6 @@
     }
   },
   {
-    "status": "missing",
-    "surface": "css-function",
-    "name": "repeating-linear-gradient",
-    "evidence": {
-      "category": "image",
-      "testProperty": "background-image",
-      "canonicalValue": "repeating-linear-gradient(red 0 10px, blue 10px 20px)",
-      "logWarning": "Unable to parse declaration: background-image: repeating-linear-gradient(red 0 10px, blue 10px 20px)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-function",
-    "name": "repeating-radial-gradient",
-    "evidence": {
-      "category": "image",
-      "testProperty": "background-image",
-      "canonicalValue": "repeating-radial-gradient(red 0 10px, blue 10px 20px)",
-      "logWarning": "Unable to parse declaration: background-image: repeating-radial-gradient(red 0 10px, blue 10px 20px)"
-    }
-  },
-  {
     "status": "unknown",
     "surface": "css-function",
     "name": "image-set",
