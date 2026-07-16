@@ -164,6 +164,26 @@
   {
     "status": "supported",
     "surface": "css-function",
+    "name": "repeating-linear-gradient",
+    "evidence": {
+      "category": "image",
+      "testProperty": "background-image",
+      "canonicalValue": "repeating-linear-gradient(red 0, red 10px, blue 10px, blue 20px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "repeating-radial-gradient",
+    "evidence": {
+      "category": "image",
+      "testProperty": "background-image",
+      "canonicalValue": "repeating-radial-gradient(red 0, red 10px, blue 10px, blue 20px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
     "name": "translate",
     "evidence": {
       "category": "transform",
