@@ -38,14 +38,14 @@ export function generateEffectStyles(node: SVGNodes | NodesWithFillsAndStrokes):
             case 'LAYER_BLUR': {
                 if (effect.blurType === 'PROGRESSIVE') break;
 
-                filters.push(`blur(${convertPXtoVH(effect.radius)}em)`);
+                filters.push(`blur(${convertPXtoVH(effect.radius).toFixed(2)}em)`);
                 break;
             }
 
             case 'BACKGROUND_BLUR': {
                 if (effect.blurType === 'PROGRESSIVE') break;
 
-                backDropFilters.push(`blur(${convertPXtoVH(effect.radius)}em)`);
+                backDropFilters.push(`blur(${convertPXtoVH(effect.radius).toFixed(2)}em)`);
                 break;
             }
 
@@ -66,8 +66,8 @@ export function generateEffectStyles(node: SVGNodes | NodesWithFillsAndStrokes):
 }
 
 function buildShadow(effect: DropShadowEffect | InnerShadowEffect): string {
-    return `${convertPXtoVH(effect.offset.x)}em ${convertPXtoVH(effect.offset.y)}em ${convertPXtoVH(effect.radius)}em ${
-        effect.spread ? convertPXtoVH(effect.spread) + 'em' : ''
+    return `${convertPXtoVH(effect.offset.x).toFixed(2)}em ${convertPXtoVH(effect.offset.y).toFixed(2)}em ${convertPXtoVH(effect.radius).toFixed(2)}em ${
+        effect.spread ? convertPXtoVH(effect.spread).toFixed(2) + 'em' : ''
     } ${createRGBAColor(effect.color.r, effect.color.g, effect.color.b, effect.color.a)}`;
 }
 // export as images innerShadow for SVG, progressive blur

@@ -28,10 +28,10 @@ export function generateBorderRadius(node: PrimitiveNodes | TextNode): {
     const { topLeftRadius, topRightRadius, bottomRightRadius, bottomLeftRadius } = node as RectangleNode | FrameNode;
 
     return {
-        topLeftRadius: `${convertPXtoVH(topLeftRadius)}vh`,
-        bottomLeftRadius: `${convertPXtoVH(bottomLeftRadius)}vh`,
-        bottomRightRadius: `${convertPXtoVH(bottomRightRadius)}vh`,
-        topRightRadius: `${convertPXtoVH(topRightRadius)}vh`,
+        topLeftRadius: `${convertPXtoVH(topLeftRadius).toFixed(2)}vh`,
+        bottomLeftRadius: `${convertPXtoVH(bottomLeftRadius).toFixed(2)}vh`,
+        bottomRightRadius: `${convertPXtoVH(bottomRightRadius).toFixed(2)}vh`,
+        topRightRadius: `${convertPXtoVH(topRightRadius).toFixed(2)}vh`,
     };
 }
 

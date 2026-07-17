@@ -14,7 +14,16 @@ import { additionalBackgroundStyles, generateBackground, generateBackgroundRect 
 import { generateBlendMode } from './utils/blendMode';
 import { generateBorderRadius, generateBorders } from './utils/border';
 import { generateEffectStyles } from './utils/effects';
-import { calculateGap, generateFlexContainerStyles, generateFlexItemStyles } from './utils/flex';
+import {
+    calculateCounterAxisGap,
+    calculateGap,
+    clampNegativeGap,
+    generateFlexContainerStyles,
+    generateFlexItemStyles,
+    getMinChildSizeVh,
+    isFirstFlexChild,
+    isNegativeGap,
+} from './utils/flex';
 import {
     getFontName,
     getFontSize,
@@ -90,7 +99,13 @@ class CSSExporter {
 
         if (transform && !this.node.isMask && !isComponentRoot) {
             this.style.add('transform', transform);
-            this.style.add('transform-origin', 'top left');
+            // Flex items lose their top/left (setFlexElementStyle strips them so flexbox controls
+            // position instead) — top/left is exactly what a top-left pivot relies on to cancel a
+            // flip's shift-by-own-dimension effect, so a flex item's flip would render shifted outside
+            // its flexbox-assigned box. Pivoting at center avoids needing that compensation at all,
+            // since a centered flip/rotation stays within the box regardless of its position. Non-flex
+            // elements keep top-left, matching their already-correct absolute-position compensation.
+            this.style.add('transform-origin', isFlexItem(this.node as AvailableNode) ? 'center' : 'top left');
         }
 
         this.setFlexElementStyle();
@@ -120,19 +135,12 @@ class CSSExporter {
         this.flexContainerStyles.add('justify-content', justifyContent);
         this.flexContainerStyles.add('align-items', alignItems);
         this.flexContainerStyles.add('align-content', alignContent);
-        if (gap !== '0') {
-            if (direction === 'column') {
-                this.flexContainerStyles.add('margin-top', `-${gap}`);
-            } else {
-                this.flexContainerStyles.add('margin-left', `-${gap}`);
-            }
-            if (wrap !== 'nowrap') {
-                if (direction === 'column') {
-                    this.flexContainerStyles.add('margin-left', `-${gap}`);
-                } else {
-                    this.flexContainerStyles.add('margin-top', `-${gap}`);
-                }
-            }
+
+        // Negative gaps can't use native CSS gap (Gameface doesn't support it) — those are instead
+        // simulated per-item in setFlexElementStyle (clamped to each item's own size, matching how
+        // Figma itself clamps an overlap), so the container itself needs nothing extra for them.
+        if (gap !== '0' && !isNegativeGap(gap)) {
+            this.flexContainerStyles.add('gap', gap);
         }
 
         return this.flexContainerStyles.getCSS();
@@ -141,40 +149,57 @@ class CSSExporter {
     private setFlexElementStyle() {
         if (!isFlexItem(this.node as AvailableNode)) return;
 
-        const { alignSelf, gap, flex } = generateFlexItemStyles(this.node as AvailableNode);
-        const { wrap, direction } = generateFlexContainerStyles(
-            (this.node as AvailableNode).parent as FrameNode | ComponentNode | InstanceNode
-        );
+        const node = this.node as AvailableNode;
+        const { alignSelf, flex } = generateFlexItemStyles(node);
+        const gap = calculateGap(node);
+        const counterAxisGap = calculateCounterAxisGap(node);
+        const parent = node.parent as FrameNode | ComponentNode | InstanceNode;
+        const { wrap, direction } = generateFlexContainerStyles(parent);
+
         this.style.add('position', 'relative'); // Flex items should not have absolute positioning
         this.style.add('flex', flex);
         this.style.add('align-self', alignSelf);
         this.style.remove('top');
         this.style.remove('left');
-        if (gap !== '0') {
+
+        // The first child has no previous item to overlap, so it keeps its natural position — only
+        // items after it get a margin, clamped to the smallest child in the whole container (mirroring
+        // Figma's own clamp on an extreme negative gap: everything overlaps onto the smallest sibling,
+        // never further).
+        if (isFirstFlexChild(node)) return;
+
+        if (gap !== '0' && isNegativeGap(gap)) {
+            const minMainAxisSizeVh = getMinChildSizeVh(parent, direction === 'column' ? 'height' : 'width');
+            const clampedGap = clampNegativeGap(gap, minMainAxisSizeVh);
+
             if (direction === 'column') {
-                this.style.add('margin-top', gap);
+                this.style.add('margin-top', clampedGap);
             } else {
-                this.style.add('margin-left', gap);
+                this.style.add('margin-left', clampedGap);
             }
-            if (wrap !== 'nowrap') {
-                if (direction === 'column') {
-                    this.style.add('margin-left', gap);
-                } else {
-                    this.style.add('margin-top', gap);
-                }
+        }
+
+        if (wrap !== 'nowrap' && counterAxisGap !== '0' && isNegativeGap(counterAxisGap)) {
+            const minCrossAxisSizeVh = getMinChildSizeVh(parent, direction === 'column' ? 'width' : 'height');
+            const clampedCounterGap = clampNegativeGap(counterAxisGap, minCrossAxisSizeVh);
+
+            if (direction === 'column') {
+                this.style.add('margin-left', clampedCounterGap);
+            } else {
+                this.style.add('margin-top', clampedCounterGap);
             }
         }
     }
 
     private setPaddings() {
-        if (this.node.type !== 'FRAME' && this.node.type !== 'COMPONENT') return;
+        if (this.node.type !== 'FRAME' && this.node.type !== 'INSTANCE' && this.node.type !== 'COMPONENT') return;
 
         const { paddingTop, paddingRight, paddingBottom, paddingLeft } = generatePaddings(this.node as FrameNode);
 
-        this.style.add('padding-top', `${paddingTop}vh`);
-        this.style.add('padding-right', `${paddingRight}vh`);
-        this.style.add('padding-bottom', `${paddingBottom}vh`);
-        this.style.add('padding-left', `${paddingLeft}vh`);
+        this.style.add('padding-top', `${paddingTop.toFixed(2)}vh`);
+        this.style.add('padding-right', `${paddingRight.toFixed(2)}vh`);
+        this.style.add('padding-bottom', `${paddingBottom.toFixed(2)}vh`);
+        this.style.add('padding-left', `${paddingLeft.toFixed(2)}vh`);
     }
 
     async generateBackgroundElementStyle() {

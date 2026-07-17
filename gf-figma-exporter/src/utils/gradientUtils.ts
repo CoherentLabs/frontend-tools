@@ -3,6 +3,16 @@ import createRGBAColor from './createRGBAColor';
 import extractRadialOrDiamondGradientParams from './extractRadialOrDiamondGradientParams';
 import mixRgbaColors from './mixRGBAColors';
 
+// Whichever end of the gradient is already more transparent is the intended "fade to nothing" side;
+// forcing it fully transparent avoids a hard edge where CSS would otherwise paint that stop's color
+// solid beyond the gradient's mapped ellipse/diamond. Ties default to the last stop (prior behavior).
+export function getFadeToTransparentIndex(stops: readonly ColorStop[]): number {
+    const firstAlpha = stops[0].color.a;
+    const lastAlpha = stops[stops.length - 1].color.a;
+
+    return firstAlpha < lastAlpha ? 0 : stops.length - 1;
+}
+
 export function linearGradientHandle(
     paint: GradientPaint,
     shapeWidth: number,
@@ -92,14 +102,14 @@ export function radialGradientHandle(
     const size = `height: ${(radius[0] * 200).toFixed(2)}%;\n width: ${(radius[1] * 200).toFixed(2)}%;`;
     const position = `left: ${(center[0] * 100).toFixed(2)}%;\ntop: ${(center[1] * 100).toFixed(2)}%;`;
 
+    const transparentIndex = getFadeToTransparentIndex(paint.gradientStops);
+
     const stops = paint.gradientStops
-        .map((stop, index, self) => {
+        .map((stop, index) => {
             const { r, g, b } = stop.color;
-            let a = stop.color.a;
+            const a = index === transparentIndex ? 0 : stop.color.a;
 
-            if (index === self.length - 1) a = 0; // Make last stop transparent to avoid hard edge
-
-            return `${createRGBAColor(r, g, b, a)} ${stop.position * 100}%`;
+            return `${createRGBAColor(r, g, b, a)} ${(stop.position * 100).toFixed(2)}%`;
         })
         .join(', ');
 
@@ -130,7 +140,7 @@ export function angularGradientHandle(
         .map((stop, index, self) => {
             const { r, g, b, a } = stop.color;
             if (index === 0 || index === self.length - 1) {
-                return `${createRGBAColor(r, g, b, a)} ${stop.position * 100}%`;
+                return `${createRGBAColor(r, g, b, a)} ${(stop.position * 100).toFixed(2)}%`;
             }
 
             // Mixing colors to simulate changing radius in conic gradient
@@ -138,16 +148,16 @@ export function angularGradientHandle(
             const nextAddedStop = mixRgbaColors(stop.color, self[index + 1].color);
 
             return `${createRGBAColor(...prevAddedStop)} ${
-                Math.abs(100 - stop.position * 100) - radiusScale * GRADIENT_STOP_LIMIT - 1
-            }%, ${createRGBAColor(r, g, b, a)} ${stop.position * 100}%, ${createRGBAColor(...nextAddedStop)} ${
-                stop.position * 100 + radiusScale * GRADIENT_STOP_LIMIT + 1
+                (Math.abs(100 - stop.position * 100) - radiusScale * GRADIENT_STOP_LIMIT - 1).toFixed(2)
+            }%, ${createRGBAColor(r, g, b, a)} ${(stop.position * 100).toFixed(2)}%, ${createRGBAColor(...nextAddedStop)} ${
+                (stop.position * 100 + radiusScale * GRADIENT_STOP_LIMIT + 1).toFixed(2)
             }%`;
         })
         .join(', ');
 
     return {
-        gradient: `conic-gradient(from ${(rotation + 90).toFixed(2)}deg at ${center[0] * 100}% ${
-            center[1] * 100
+        gradient: `conic-gradient(from ${(rotation + 90).toFixed(2)}deg at ${(center[0] * 100).toFixed(2)}% ${
+            (center[1] * 100).toFixed(2)
         }%, ${stops})`,
     };
 }
@@ -169,14 +179,13 @@ export function diamondGradientHandle(
 
     const gradientDirections = ['top left', 'top right', 'bottom right', 'bottom left'];
     const gradients = [];
+    const transparentIndex = getFadeToTransparentIndex(paint.gradientStops);
 
     for (const direction of gradientDirections) {
         const stops = paint.gradientStops
-            .map((stop, index, self) => {
+            .map((stop, index) => {
                 const { r, g, b } = stop.color;
-                let a = stop.color.a;
-
-                if (index === self.length - 1) a = 0; // Make last stop transparent to avoid hard edge
+                const a = index === transparentIndex ? 0 : stop.color.a;
 
                 const color = createRGBAColor(r, g, b, a);
 

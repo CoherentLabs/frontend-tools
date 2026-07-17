@@ -25,12 +25,25 @@ class GFFrame extends GFBaseNode {
             }
         });
 
-        const maskIndexes = getMaskIndexes(this.node.children as ExportableNodes[]);
+        // A mask must be the back-most (first-painted) layer among the siblings it masks — it masks
+        // whatever paints in front of it. Default Canvas stacking paints low array index first (furthest
+        // back), so masking propagates toward higher indices, matching plain array order below. Reversed
+        // Canvas stacking (itemReverseZIndex) flips which end paints first (and correspondingly flips the
+        // layers panel display), so the propagation direction must flip too — run the same algorithm on
+        // a reversed copy of the children, then reverse the result back so the exported DOM order still
+        // matches the live Figma array (z-index, not DOM order, is what establishes final visual
+        // stacking — see getSiblingStackingBump in CSSExporter/utils/zIndex.ts).
+        const isReversedStacking = 'itemReverseZIndex' in this.node && this.node.itemReverseZIndex;
+        const orderedChildren = isReversedStacking
+            ? [...(this.node.children as ExportableNodes[])].reverse()
+            : (this.node.children as ExportableNodes[]);
+
+        const maskIndexes = getMaskIndexes(orderedChildren);
         if (maskIndexes.length === 0) return;
 
         let currentIndex = -1;
 
-        this.modifiedChildren = (this.node.children as ExportableNodes[]).reduce(
+        const modifiedChildren = orderedChildren.reduce(
             (nodes: ExportableNodes[], child: ExportableNodes, index: number) => {
                 if (index < maskIndexes[0]) {
                     nodes.push(child);
@@ -65,6 +78,8 @@ class GFFrame extends GFBaseNode {
             },
             [] as ExportableNodes[]
         );
+
+        this.modifiedChildren = isReversedStacking ? modifiedChildren.reverse() : modifiedChildren;
     }
 
     async init() {

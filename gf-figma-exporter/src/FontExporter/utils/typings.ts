@@ -57,6 +57,12 @@ export type FontMapEntryData = {
   fontName: string;
 }
 
+// Two different origins produce two different runtime shapes here: a font fetched from the font server
+// (google-fonts-server's getFontData does Buffer.from(arrayBuffer).toString('base64')) stays a base64
+// string all the way through the plugin sandbox and is only decoded to real bytes at the point of use
+// (ui-src/src/listeners/download-pages.ts's addFontsToZip). A user-uploaded font (App.tsx's
+// readFilesAsArrayBuffer, new Uint8Array(arrayBuffer)) is already real bytes by the time it reaches this
+// map, and survives the postMessage round-trip as an actual Uint8Array (structured clone, not JSON).
 export type SubsetData = {
-  [subset: string]: Uint8Array | null;
+  [subset: string]: string | Uint8Array | null;
 }

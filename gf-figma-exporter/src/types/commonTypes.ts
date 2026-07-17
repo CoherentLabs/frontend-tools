@@ -76,7 +76,6 @@ export interface FlexContainerStyles {
 export interface FlexItemStyles {
     flex: string;
     alignSelf: string;
-    gap: string;
 }
 
 export interface Paddings {

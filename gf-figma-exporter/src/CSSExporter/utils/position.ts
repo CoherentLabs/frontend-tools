@@ -1,6 +1,6 @@
 import { AvailableNode, PrimitiveNodes } from '../../types/commonTypes';
 import { getPercentage } from '../../utils/convertUnits';
-import getMaskBoundingBox from '../../utils/getMaskBoundingBox';
+import { getMaskBleedBoundingBox } from '../../utils/getMaskBoundingBox';
 import getMaskedBy from '../../utils/getMaskedBy';
 import getParentSize from '../../utils/parentSize';
 import { getRelativeCssTransform } from '../../utils/transformUtils';
@@ -60,7 +60,7 @@ async function getMaskOffset(node: PrimitiveNodes): Promise<{ x: number; y: numb
         return null;
     }
 
-    const maskBoundingBox = getMaskBoundingBox(maskedBy as AvailableNode);
+    const maskBoundingBox = getMaskBleedBoundingBox(maskedBy as AvailableNode);
 
     if (!maskBoundingBox) {
         return null;
@@ -83,7 +83,7 @@ async function getEffectiveDimensions(
 
 
     if (maskedBy && node.getPluginData('masked-by') !== '') {
-        const maskBoundingBox = getMaskBoundingBox(maskedBy as AvailableNode);
+        const maskBoundingBox = getMaskBleedBoundingBox(maskedBy as AvailableNode);
 
         if (!maskBoundingBox) {
             return { width, height };

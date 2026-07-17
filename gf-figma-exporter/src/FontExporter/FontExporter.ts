@@ -65,13 +65,12 @@ class FontExporter {
             return;
         }
 
-        console.log('Google Fonts:', this.googleFonts);
-
         const usedFontsInPage = this.clearFontData();
         try {
             this.backupFonts = (await fetchDataFromFontServer('set-backup-fonts', {
                 usedFontsInPage,
             })) as FontMapData;
+            console.log('Backup fonts fetched successfully:', this.backupFonts);
         } catch (error) {
             MessageBus.postMessage('ERROR', { message: 'Failed to fetch backup fonts from the font server.' });
             console.error('Failed to fetch backup fonts from the font server:', error);
