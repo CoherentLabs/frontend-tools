@@ -1,0 +1,269 @@
+[
+  {
+    "status": "partial",
+    "surface": "html",
+    "name": "canvas",
+    "evidence": {
+      "constructorName": "HTMLCanvasElement",
+      "checks": {
+        "widthAssignable": true,
+        "heightAssignable": true,
+        "getContext2d": true,
+        "toDataURL": false,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "html",
+    "name": "img",
+    "evidence": {
+      "constructorName": "HTMLImageElement",
+      "checks": {
+        "srcProperty": true,
+        "altProperty": false,
+        "completeProperty": false,
+        "naturalWidthProperty": false,
+        "naturalHeightProperty": false,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "html",
+    "name": "input",
+    "evidence": {
+      "constructorName": "HTMLInputElement",
+      "checks": {
+        "valueAssignable": true,
+        "typeAssignable": true,
+        "nameAssignable": true,
+        "placeholderAssignable": true,
+        "focusMethod": true,
+        "blurMethod": true,
+        "selectMethod": true,
+        "checkValidity": false,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "html",
+    "name": "link",
+    "evidence": {
+      "constructorName": "HTMLLinkElement",
+      "checks": {
+        "relProperty": true,
+        "hrefProperty": true,
+        "sheetProperty": false,
+        "classListSupport": true,
+        "datasetSupport": true,
+        "attributeRoundTrip": true,
+        "idAssignable": true,
+        "addEventListener": true,
+        "querySelector": true,
+        "getBoundingClientRect": true,
+        "cloneNode": true,
+        "closest": true
+      }
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"checkbox\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"color\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"date\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"datetime-local\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"email\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"file\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"hidden\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"image\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"month\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"number\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"radio\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"range\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"reset\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"search\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"submit\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"tel\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"time\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"url\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  },
+  {
+    "status": "silently-coerced",
+    "surface": "input-type",
+    "name": "input[type=\"week\"]",
+    "evidence": {
+      "roundTripType": "text",
+      "apiChecks": {}
+    }
+  }
+]

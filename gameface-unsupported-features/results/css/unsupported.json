@@ -1,0 +1,2738 @@
+[
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "accent-color",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "alignment-baseline",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "alt",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "anchor-name",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "anchor-scope",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "animation-composition",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "animation-range",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "animation-range-end",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "animation-range-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "animation-timeline",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "appearance",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "background-attachment",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "background-blend-mode",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "background-clip",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "background-origin",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "baseline-shift",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "baseline-source",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "block-size",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-color",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-end",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-end-color",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-end-style",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-end-width",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-start-color",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-start-style",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-start-width",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-style",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-block-width",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-collapse",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-end-end-radius",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-end-start-radius",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-color",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-end",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-end-color",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-end-style",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-end-width",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-start-color",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-start-style",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-start-width",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-style",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-inline-width",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-spacing",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-start-end-radius",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "border-start-start-radius",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-align",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-decoration-break",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-direction",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-flex",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-flex-group",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-lines",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-ordinal-group",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-orient",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "box-pack",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "break-after",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "break-before",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "break-inside",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "caption-side",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "clear",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "clip",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "color-adjust",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "color-interpolation",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "color-interpolation-filters",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "color-scheme",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-count",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-fill",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-rule",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-rule-color",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-rule-style",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-rule-width",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-span",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "column-width",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "columns",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "contain-intrinsic-block-size",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "contain-intrinsic-height",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "contain-intrinsic-inline-size",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "contain-intrinsic-size",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "contain-intrinsic-width",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "container",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "container-name",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "container-type",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "content-visibility",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "counter-increment",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "counter-reset",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "counter-set",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "custom-property",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "direction",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "dominant-baseline",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "dynamic-range-limit",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "empty-cells",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "field-sizing",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "flex-flow",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "float",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "flood-color",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "flood-opacity",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-feature-settings",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-kerning",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-language-override",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-optical-sizing",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-palette",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-size-adjust",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-smooth",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-stretch",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-synthesis",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-synthesis-position",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-synthesis-small-caps",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-synthesis-style",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-synthesis-weight",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-variant",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-variant-alternates",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-variant-caps",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-variant-emoji",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-variant-ligatures",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-variant-numeric",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-variant-position",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-variation-settings",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "font-width",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "forced-color-adjust",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "glyph-orientation-vertical",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-area",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-auto-columns",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-auto-flow",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-auto-rows",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-column",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-column-end",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-column-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-row",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-row-end",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-row-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-template",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-template-areas",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-template-columns",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-template-rows",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "hanging-punctuation",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "hyphenate-character",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "hyphenate-limit-chars",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "hyphens",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "image-orientation",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "ime-mode",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "initial-letter",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "inline-size",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "inset",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "inset-block",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "inset-block-end",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "inset-block-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "inset-inline",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "inset-inline-end",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "inset-inline-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "interactivity",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "interpolate-size",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "justify-items",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "justify-self",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "lighting-color",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "line-break",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "line-clamp",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "line-height-step",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "list-style",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "list-style-image",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "list-style-position",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "list-style-type",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "margin-block",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "margin-block-end",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "margin-block-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "margin-inline",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "margin-inline-end",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "margin-inline-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "margin-trim",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "marker",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "marker-end",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "marker-mid",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "marker-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-border",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-border-outset",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-border-repeat",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-border-slice",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-border-source",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-border-width",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-composite",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "mask-origin",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "math-depth",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "math-shift",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "math-style",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "max-block-size",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "max-inline-size",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "min-block-size",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "min-inline-size",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "object-fit",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "object-position",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "object-view-box",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "offset-anchor",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "offset-distance",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "offset-path",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "offset-position",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "offset-rotate",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "order",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "orphans",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "outline",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "outline-color",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "outline-offset",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "outline-style",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "outline-width",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overflow-anchor",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overflow-block",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overflow-clip-margin",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overflow-inline",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overlay",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overscroll-behavior",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overscroll-behavior-block",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overscroll-behavior-inline",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overscroll-behavior-x",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "overscroll-behavior-y",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "padding-block",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "padding-block-end",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "padding-block-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "padding-inline",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "padding-inline-end",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "padding-inline-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "page",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "page-break-after",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "page-break-before",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "page-break-inside",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "paint-order",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "place-content",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "place-items",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "place-self",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "position-anchor",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "position-area",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "position-try",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "position-try-fallbacks",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "position-try-order",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "position-visibility",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "print-color-adjust",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "quotes",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "reading-flow",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "resize",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "rotate",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "ruby-align",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "ruby-overhang",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "ruby-position",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scale",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-behavior",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-initial-target",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-block",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-block-end",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-block-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-bottom",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-inline",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-inline-end",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-inline-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-left",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-right",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-margin-top",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-marker-group",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-block",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-block-end",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-block-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-bottom",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-inline",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-inline-end",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-inline-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-left",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-right",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-padding-top",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-snap-align",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-snap-stop",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-snap-type",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-timeline",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-timeline-axis",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scroll-timeline-name",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scrollbar-color",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scrollbar-gutter",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "scrollbar-width",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "shape-image-threshold",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "shape-margin",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "shape-outside",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "speak",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "speak-as",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "stroke-color",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "tab-size",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "table-layout",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-align-last",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-autospace",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-box",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-box-edge",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-box-trim",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-combine-upright",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-decoration-skip",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-decoration-skip-ink",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-emphasis",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-emphasis-color",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-emphasis-position",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-emphasis-style",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-indent",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-justify",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-orientation",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-size-adjust",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-spacing-trim",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-wrap",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-wrap-mode",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "text-wrap-style",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "timeline-scope",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "touch-action",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "transform-box",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "translate",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "unicode-bidi",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "user-modify",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "vector-effect",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "view-timeline",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "view-timeline-axis",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "view-timeline-inset",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "view-timeline-name",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "view-transition-class",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "view-transition-name",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "white-space-collapse",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "widows",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "will-change",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "word-break",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "word-spacing",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "writing-mode",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "zoom",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-sdf",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param1",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param2",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param3",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param4",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param5",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param6",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param7",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param8",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param9",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param10",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param11",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param12",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-string-param1",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-string-param2",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-gap",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  }
+]

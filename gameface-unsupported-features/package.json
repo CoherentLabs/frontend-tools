@@ -1,0 +1,20 @@
+{
+  "name": "gameface-unsupported-features",
+  "version": "1.0.0",
+  "description": "Generates a structured JSON inventory of CSS, HTML, and JS features supported by the Gameface renderer.",
+  "scripts": {
+    "build": "tsc",
+    "probe": "tsc && DEBUG=oclif:gameface-e2e* gameface-e2e --config=gameface-e2e-config-selectors.js && DEBUG=oclif:gameface-e2e* gameface-e2e && DEBUG=oclif:gameface-e2e* gameface-e2e --config=gameface-e2e-config-functions.js",
+    "probe:clean": "rimraf dist results && npm run probe"
+  },
+  "dependencies": {
+    "@mdn/browser-compat-data": "^5.7.6",
+    "gameface-e2e": "^2.3.0",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^22.0.0"
+  }
+}

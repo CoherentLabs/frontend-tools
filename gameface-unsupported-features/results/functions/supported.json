@@ -1,0 +1,568 @@
+[
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "calc",
+    "evidence": {
+      "category": "math",
+      "testProperty": "font-size",
+      "canonicalValue": "calc(12px + 4px)",
+      "mixedUnitsValue": "calc(12px + 1vw)",
+      "mixedUnitsRejected": false
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "sign",
+    "evidence": {
+      "category": "math",
+      "testProperty": "width",
+      "canonicalValue": "calc(sign(-1) * -100px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "pow",
+    "evidence": {
+      "category": "math",
+      "testProperty": "width",
+      "canonicalValue": "calc(pow(2, 5) * 1px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "sqrt",
+    "evidence": {
+      "category": "math",
+      "testProperty": "width",
+      "canonicalValue": "calc(sqrt(100) * 1px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "hypot",
+    "evidence": {
+      "category": "math",
+      "testProperty": "width",
+      "canonicalValue": "calc(hypot(3, 4) * 1px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "log",
+    "evidence": {
+      "category": "math",
+      "testProperty": "width",
+      "canonicalValue": "calc(log(100) * 1px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "exp",
+    "evidence": {
+      "category": "math",
+      "testProperty": "width",
+      "canonicalValue": "calc(exp(1) * 1px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "sin",
+    "evidence": {
+      "category": "math",
+      "testProperty": "width",
+      "canonicalValue": "calc(sin(0) * 100px + 100px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "cos",
+    "evidence": {
+      "category": "math",
+      "testProperty": "width",
+      "canonicalValue": "calc(cos(0) * 100px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "tan",
+    "evidence": {
+      "category": "math",
+      "testProperty": "width",
+      "canonicalValue": "calc(tan(0) * 100px + 100px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "rgb",
+    "evidence": {
+      "category": "color",
+      "testProperty": "color",
+      "canonicalValue": "rgb(255, 0, 0)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "rgba",
+    "evidence": {
+      "category": "color",
+      "testProperty": "color",
+      "canonicalValue": "rgba(255, 0, 0, 0.5)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "color",
+    "evidence": {
+      "category": "color",
+      "testProperty": "color",
+      "canonicalValue": "color(srgb 1 0 0)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "linear-gradient",
+    "evidence": {
+      "category": "image",
+      "testProperty": "background-image",
+      "canonicalValue": "linear-gradient(red, blue)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "radial-gradient",
+    "evidence": {
+      "category": "image",
+      "testProperty": "background-image",
+      "canonicalValue": "radial-gradient(red, blue)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "conic-gradient",
+    "evidence": {
+      "category": "image",
+      "testProperty": "background-image",
+      "canonicalValue": "conic-gradient(red, blue)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "translate",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "translate(10px, 20px)",
+      "mixedUnitsValue": "translate(10px, 5%)",
+      "mixedUnitsRejected": false
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "translateX",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "translateX(10px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "translateY",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "translateY(10px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "translateZ",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "translateZ(10px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "translate3d",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "translate3d(10px, 20px, 30px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "rotate",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "rotate(45deg)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "rotateX",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "rotateX(45deg)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "rotateY",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "rotateY(45deg)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "rotateZ",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "rotateZ(45deg)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "rotate3d",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "rotate3d(1, 1, 1, 45deg)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "scale",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "scale(2)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "scaleX",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "scaleX(2)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "scaleY",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "scaleY(2)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "scaleZ",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "scaleZ(2)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "scale3d",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "scale3d(2, 2, 2)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "skewX",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "skewX(10deg)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "skewY",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "skewY(10deg)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "matrix",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "matrix(1, 0, 0, 1, 10, 20)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "matrix3d",
+    "evidence": {
+      "category": "transform",
+      "testProperty": "transform",
+      "canonicalValue": "matrix3d(1,0,0,0, 0,1,0,0, 0,0,1,0, 10,20,30,1)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "blur",
+    "evidence": {
+      "category": "filter",
+      "testProperty": "filter",
+      "canonicalValue": "blur(5px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "brightness",
+    "evidence": {
+      "category": "filter",
+      "testProperty": "filter",
+      "canonicalValue": "brightness(0.5)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "contrast",
+    "evidence": {
+      "category": "filter",
+      "testProperty": "filter",
+      "canonicalValue": "contrast(2)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "drop-shadow",
+    "evidence": {
+      "category": "filter",
+      "testProperty": "filter",
+      "canonicalValue": "drop-shadow(2px 4px 6px black)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "grayscale",
+    "evidence": {
+      "category": "filter",
+      "testProperty": "filter",
+      "canonicalValue": "grayscale(1)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "hue-rotate",
+    "evidence": {
+      "category": "filter",
+      "testProperty": "filter",
+      "canonicalValue": "hue-rotate(45deg)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "invert",
+    "evidence": {
+      "category": "filter",
+      "testProperty": "filter",
+      "canonicalValue": "invert(1)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "opacity",
+    "evidence": {
+      "category": "filter",
+      "testProperty": "filter",
+      "canonicalValue": "opacity(0.5)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "saturate",
+    "evidence": {
+      "category": "filter",
+      "testProperty": "filter",
+      "canonicalValue": "saturate(2)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "sepia",
+    "evidence": {
+      "category": "filter",
+      "testProperty": "filter",
+      "canonicalValue": "sepia(1)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "cubic-bezier",
+    "evidence": {
+      "category": "timing",
+      "testProperty": "transition-timing-function",
+      "canonicalValue": "cubic-bezier(0.25, 0.1, 0.25, 1)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "steps",
+    "evidence": {
+      "category": "timing",
+      "testProperty": "transition-timing-function",
+      "canonicalValue": "steps(4, end)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "circle",
+    "evidence": {
+      "category": "shape",
+      "testProperty": "clip-path",
+      "canonicalValue": "circle(50%)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "ellipse",
+    "evidence": {
+      "category": "shape",
+      "testProperty": "clip-path",
+      "canonicalValue": "ellipse(40% 30%)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "polygon",
+    "evidence": {
+      "category": "shape",
+      "testProperty": "clip-path",
+      "canonicalValue": "polygon(0 0, 100% 0, 50% 100%)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "inset",
+    "evidence": {
+      "category": "shape",
+      "testProperty": "clip-path",
+      "canonicalValue": "inset(10px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "path",
+    "evidence": {
+      "category": "shape",
+      "testProperty": "clip-path",
+      "canonicalValue": "path(\"M 0 0 L 10 0 L 10 10 Z\")"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "repeat",
+    "evidence": {
+      "category": "grid",
+      "testProperty": "grid-template-columns",
+      "canonicalValue": "repeat(3, 1fr)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "minmax",
+    "evidence": {
+      "category": "grid",
+      "testProperty": "grid-template-columns",
+      "canonicalValue": "minmax(100px, 1fr)",
+      "mixedUnitsValue": "minmax(10%, 1fr)",
+      "mixedUnitsRejected": false
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "fit-content",
+    "evidence": {
+      "category": "grid",
+      "testProperty": "grid-template-columns",
+      "canonicalValue": "fit-content(200px)"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-function",
+    "name": "var",
+    "evidence": {
+      "category": "reference",
+      "testProperty": "width",
+      "canonicalValue": "var(--gf-test-x, 100px)"
+    }
+  }
+]

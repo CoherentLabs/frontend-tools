@@ -1,0 +1,110 @@
+[
+  {
+    "status": "partial",
+    "surface": "css-selector",
+    "name": ":nth-child(2)",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "partialSpec": ":nth-child(an+b)",
+      "note": "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4)."
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-selector",
+    "name": ":nth-last-child(2)",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "partialSpec": ":nth-child(an+b)",
+      "note": "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4)."
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-selector",
+    "name": ":nth-last-of-type(2)",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "partialSpec": ":nth-child(an+b)",
+      "note": "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4)."
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-selector",
+    "name": ":nth-of-type(2)",
+    "evidence": {
+      "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "partialSpec": ":nth-child(an+b)",
+      "note": "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4)."
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-selector",
+    "name": "::selection",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "partialSpec": "::selection",
+      "note": "only the `color` and `background-color` properties are honoured; other declarations are ignored."
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-selector",
+    "name": ":nth-child(2n+1)",
+    "evidence": {
+      "group": "pseudo-structural-complex",
+      "probeA": false,
+      "probeB": false,
+      "partialSpec": ":nth-child(an+b)",
+      "note": "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4)."
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-selector",
+    "name": ":nth-child(odd)",
+    "evidence": {
+      "group": "pseudo-structural-complex",
+      "probeA": false,
+      "probeB": false,
+      "partialSpec": ":nth-child(an+b)",
+      "note": "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4)."
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-selector",
+    "name": ":nth-child(even)",
+    "evidence": {
+      "group": "pseudo-structural-complex",
+      "probeA": false,
+      "probeB": false,
+      "partialSpec": ":nth-child(an+b)",
+      "note": "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4)."
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-selector",
+    "name": ":nth-child(2 of .class)",
+    "evidence": {
+      "group": "pseudo-structural-of",
+      "probeA": false,
+      "probeB": false,
+      "partialSpec": ":nth-child(an+b)",
+      "note": "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4)."
+    }
+  }
+]

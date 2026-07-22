@@ -1,0 +1,1005 @@
+[
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "a",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "abbr",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "acronym",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "address",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "area",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "article",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "aside",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "audio",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "b",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "base",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "bdi",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "bdo",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "big",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "blockquote",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "br",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "caption",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "center",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "cite",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "code",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "col",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "colgroup",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "data",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "datalist",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "dd",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "del",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "details",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "dfn",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "unknown",
+    "surface": "html",
+    "name": "dialog",
+    "evidence": {
+      "constructorName": "HTMLUnknownElement"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "dir",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "dl",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "dt",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "em",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "embed",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "unknown",
+    "surface": "html",
+    "name": "fencedframe",
+    "evidence": {
+      "constructorName": "HTMLUnknownElement"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "fieldset",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "figcaption",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "figure",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "font",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "footer",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "form",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "frame",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "frameset",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "h1",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "h2",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "h3",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "h4",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "h5",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "h6",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "header",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "hgroup",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "hr",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "i",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "iframe",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "ins",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "kbd",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "label",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "legend",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "li",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "main",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "map",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "mark",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "marquee",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "menu",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "meta",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "meter",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "nav",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "nobr",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "noembed",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "noframes",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "noscript",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "object",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "ol",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "optgroup",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "option",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "output",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "param",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "unknown",
+    "surface": "html",
+    "name": "picture",
+    "evidence": {
+      "constructorName": "HTMLUnknownElement"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "plaintext",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "progress",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "q",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "rb",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "rp",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "rt",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "rtc",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "ruby",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "s",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "samp",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "unknown",
+    "surface": "html",
+    "name": "search",
+    "evidence": {
+      "constructorName": "HTMLUnknownElement"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "section",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "select",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "unknown",
+    "surface": "html",
+    "name": "selectedcontent",
+    "evidence": {
+      "constructorName": "HTMLUnknownElement"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "small",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "strike",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "strong",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "sub",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "summary",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "sup",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "table",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "tbody",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "td",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "tfoot",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "th",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "thead",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "time",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "tr",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "track",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "tt",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "u",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "ul",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "var",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "wbr",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  },
+  {
+    "status": "parsed-no-impl",
+    "surface": "html",
+    "name": "xmp",
+    "evidence": {
+      "constructorName": "HTMLElement",
+      "note": "no specialised JS constructor — Gameface returns a generic HTMLElement framework-compat shim. Use <div> or <span> with styling instead"
+    }
+  }
+]
