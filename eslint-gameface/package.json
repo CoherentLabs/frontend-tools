@@ -1,6 +1,6 @@
 {
   "name": "eslint-gameface",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "description": "Unified ESLint setup for Gameface HTML/CSS (workspace demo + eslint-plugin-gameface).",
