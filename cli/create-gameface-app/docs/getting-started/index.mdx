@@ -1,0 +1,117 @@
+---
+title: Overview
+sidebar:
+    order: 1
+---
+
+import { Tabs, TabItem, Steps } from '@astrojs/starlight/components'
+
+`create-gameface-app` is a command-line tool that scaffolds a new Gameface project from a starter template. It downloads the template of your choice, optionally installs its dependencies, and leaves you with a project that is ready to run.
+
+## Quick start
+
+Run the initializer with your package manager of choice and follow the prompts:
+
+<Tabs syncKey="pkg">
+  <TabItem label="npm">
+    ```bash
+    npm create gameface-app
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm create gameface-app
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```bash
+    yarn create gameface-app
+    ```
+  </TabItem>
+  <TabItem label="npx">
+    ```bash
+    npx create-gameface-app
+    ```
+  </TabItem>
+</Tabs>
+
+With no arguments the CLI is fully interactive and walks you through every step:
+
+<Steps>
+
+1. **Project name** - the folder to create the project in.
+2. **Template** - the framework starter to use.
+3. **Confirmation** - confirm before the files are written.
+4. **Install dependencies** - optionally install dependencies right away.
+
+</Steps>
+
+When it finishes, it prints the commands needed to start the development server.
+
+## Non-interactive usage
+
+Every prompt can be answered up front with an argument, so you can skip the wizard entirely. The project name is a positional argument - everything else is a flag.
+
+<Tabs syncKey="pkg">
+  <TabItem label="npm">
+    ```bash
+    npm create gameface-app my-app -- --template react --yes
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm create gameface-app my-app --template react --yes
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```bash
+    yarn create gameface-app my-app --template react --yes
+    ```
+  </TabItem>
+  <TabItem label="npx">
+    ```bash
+    npx create-gameface-app my-app --template react --yes
+    ```
+  </TabItem>
+</Tabs>
+
+:::note[Why the `--` with npm?]
+`npm create` consumes flags for itself, so any option meant for the CLI must come after a `--` separator. This only applies to **flags** - the project name positional works without it. `npx`, `pnpm`, and `yarn` forward flags directly, so they don't need the `--`.
+:::
+
+Any argument you omit falls back to its interactive prompt, so you can mix and match - for example, provide the template but let the CLI ask for the name:
+
+```bash
+npx create-gameface-app --template react
+```
+
+### Options
+
+| Flag | Alias | Description |
+| --- | --- | --- |
+| `--template <name>` | `-t` | Template to scaffold. Skips the template prompt. |
+| `--yes` | `-y` | Accept the confirmation and install prompts automatically. |
+| `--help` | `-h` | Print usage information and exit. |
+
+## Available templates
+
+Pass any of the following to `--template`, or pick one from the interactive menu:
+
+| Template | Framework |
+| --- | --- |
+| `gameface-ui` | [Gameface UI](https://gameface-ui.coherent-labs.com/) (recommended) |
+| `solid` | SolidJS |
+| `react` | React |
+| `preact` | Preact |
+| `vue` | Vue |
+| `svelte` | Svelte |
+
+## Next steps
+
+After scaffolding, move into your project and start the dev server:
+
+```bash
+cd my-app
+npm install   # skip if dependencies were installed for you
+npm run dev
+```
