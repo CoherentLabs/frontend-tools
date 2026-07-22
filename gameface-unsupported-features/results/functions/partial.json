@@ -1,1 +1,58 @@
-[]
+[
+  {
+    "status": "partial",
+    "surface": "css-function",
+    "name": "linear-gradient",
+    "evidence": {
+      "category": "image",
+      "testProperty": "background-image",
+      "canonicalValue": "linear-gradient(red, blue)",
+      "note": "Two-position (\"double stop\") color-stop shorthand inside gradient stop lists (e.g. `red 0 10px, blue 10px 20px`) is not supported by Gameface — write each stop with a single position instead (e.g. `red 0, red 10px, blue 10px, blue 20px`).",
+      "mixedUnitsValue": "linear-gradient(90deg, red 0 10px, blue 10px 20px)",
+      "mixedUnitsRejected": true,
+      "logWarning": "Unable to parse declaration: background-image: linear-gradient(90deg, red 0 10px, blue 10px 20px)"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-function",
+    "name": "radial-gradient",
+    "evidence": {
+      "category": "image",
+      "testProperty": "background-image",
+      "canonicalValue": "radial-gradient(red, blue)",
+      "note": "Two-position (\"double stop\") color-stop shorthand inside gradient stop lists (e.g. `red 0 10px, blue 10px 20px`) is not supported by Gameface — write each stop with a single position instead (e.g. `red 0, red 10px, blue 10px, blue 20px`).",
+      "mixedUnitsValue": "radial-gradient(red 0 10px, blue 10px 20px)",
+      "mixedUnitsRejected": true,
+      "logWarning": "Unable to parse declaration: background-image: radial-gradient(red 0 10px, blue 10px 20px)"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-function",
+    "name": "repeating-linear-gradient",
+    "evidence": {
+      "category": "image",
+      "testProperty": "background-image",
+      "canonicalValue": "repeating-linear-gradient(45deg, red 0, red 10px, blue 10px, blue 20px)",
+      "note": "Two-position (\"double stop\") color-stop shorthand inside gradient stop lists (e.g. `red 0 10px, blue 10px 20px`) is not supported by Gameface — write each stop with a single position instead (e.g. `red 0, red 10px, blue 10px, blue 20px`).",
+      "mixedUnitsValue": "repeating-linear-gradient(red 0 10px, blue 10px 20px)",
+      "mixedUnitsRejected": true,
+      "logWarning": "Unable to parse declaration: background-image: repeating-linear-gradient(red 0 10px, blue 10px 20px)"
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-function",
+    "name": "repeating-radial-gradient",
+    "evidence": {
+      "category": "image",
+      "testProperty": "background-image",
+      "canonicalValue": "repeating-radial-gradient(red 0, red 10px, blue 10px, blue 20px)",
+      "note": "Two-position (\"double stop\") color-stop shorthand inside gradient stop lists (e.g. `red 0 10px, blue 10px 20px`) is not supported by Gameface — write each stop with a single position instead (e.g. `red 0, red 10px, blue 10px, blue 20px`).",
+      "mixedUnitsValue": "repeating-radial-gradient(red 0 10px, blue 10px 20px)",
+      "mixedUnitsRejected": true,
+      "logWarning": "Unable to parse declaration: background-image: repeating-radial-gradient(red 0 10px, blue 10px 20px)"
+    }
+  }
+]

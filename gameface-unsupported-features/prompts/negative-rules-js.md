@@ -138,7 +138,7 @@ instance.deg; // CSS.deg is undefined / not implemented in Gameface
 
 **❌ Never generate:**
 ```js
-instance.boxSizing; // CSSStyleDeclaration.boxSizing is undefined / not implemented in Gameface
+instance.accentColor; // CSSStyleDeclaration.accentColor is undefined / not implemented in Gameface
 ```
 
 **✅ Generate instead:**
@@ -146,9 +146,9 @@ instance.boxSizing; // CSSStyleDeclaration.boxSizing is undefined / not implemen
 // Use el.style.<longhand> for the supported longhands only (see results/css/{supported,partial}.json). Avoid setProperty for custom CSS vars (var() is supported, but the CSSOM setter has 350 missing members).
 ```
 
-**Rule for AI agents:** Never read/write `boxSizing`, `fontVariantEastAsian`, `accentColor`, `alignmentBaseline`, `animationComposition`, `appearance`, `backgroundAttachment`, `backgroundBlendMode`, `backgroundClip`, `backgroundOrigin`, …+340 more on `CSSStyleDeclaration` instances; missing in Gameface.
+**Rule for AI agents:** Never read/write `accentColor`, `alignmentBaseline`, `animationComposition`, `appearance`, `backgroundAttachment`, `backgroundBlendMode`, `backgroundClip`, `backgroundOrigin`, `baselineShift`, `baselineSource`, …+338 more on `CSSStyleDeclaration` instances; missing in Gameface.
 
-**Why:** scraper missing: ["boxSizing","fontVariantEastAsian","accentColor","alignmentBaseline","animationComposition","appearance","backgroundAttachment","backgroundBlendMode","backgroundClip","backgroundOrigin","baselineShift","baselineSource"] …+338 more.
+**Why:** scraper missing: ["accentColor","alignmentBaseline","animationComposition","appearance","backgroundAttachment","backgroundBlendMode","backgroundClip","backgroundOrigin","baselineShift","baselineSource","blockSize","borderBlock"] …+336 more.
 
 ---
 ### [JS-009] — CSSStyleSheet

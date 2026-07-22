@@ -697,14 +697,17 @@ function findLogSelectorMatch(
  * functions can share the same test property without their evidence
  * leaking into each other.
  *
- * Status mapping:
+ * Status mapping (the secondary value is named `mixedUnitsValue` but, per
+ * its doc comment, probes any known "canonical works, this variant doesn't"
+ * gap — unit mixing for math functions, two-position color stops for
+ * gradients, etc.):
  *   canonical rejected         → 'missing'   (function is not implemented)
  *   canonical accepted,
- *     mixed-units rejected     → 'partial'   (function works, mixing units doesn't)
+ *     secondary value rejected → 'partial'   (function works, this form doesn't)
  *   canonical accepted,
- *     mixed-units accepted     → 'supported' (Gameface lifted the limitation)
+ *     secondary value accepted → 'supported' (Gameface lifted the limitation)
  *   canonical accepted,
- *     no mixed-units variant   → 'supported'
+ *     no secondary variant     → 'supported'
  *
  * The reconciler unions both `logResults` and `cssSheetLogResults` for the
  * lookup so the function probe page's warnings are picked up regardless of
