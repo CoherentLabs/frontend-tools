@@ -33,16 +33,16 @@ Gameface is a game-UI middleware that ships a subset of web standards. Emit only
 ### CSS — forbidden functions
 - Never use the modern color functions (`hsl`, `hsla`, `hwb`, `lab`, `lch`, `oklab`, `oklch`, `color-mix`); pre-convert to `rgb()`/`rgba()`/`color(srgb …)` (all of which are honored).
 - Never use `counter()` or `counters()` in `content`; the engine does not implement CSS counters. Inject the number from JS or pre-render the text.
-- Never use `repeating-linear-gradient()` or `repeating-radial-gradient()`; emit a `linear-gradient()`/`radial-gradient()` with enough explicit color stops to look identical. `url(...)`, `image-set(...)`, and `cross-fade(...)` are unverified (resolving them at parse time stalls Gameface); use `url()` only with cached engine-side assets and treat `image-set`/`cross-fade` as missing.
 - Treat `url()`, `image-set()`, `cross-fade()` as unverified — the scraper could not safely probe them; do not emit unless an integrator confirms support against the Gameface CSS reference.
 - Never use the missing CSS math functions (`clamp`, `min`, `max`, `mod`, `rem`, `round`, `abs`, `asin`, `acos`, `atan`, `atan2`); precompute the value in JS or use `calc()` with arithmetic that resolves to a constant. `calc`, `sign`, `pow`, `sqrt`, `hypot`, `log`, `exp`, `sin`, `cos`, `tan` are honored.
 - Never use `env()` (no environment variables) or `attr()` (only the most basic spec form is shipped in browsers and Gameface does not parse it); inline the literal value, or write it via element.style/JS. `var(--name, fallback)` is supported.
 - Never use `rect()` or `xywh()` shape functions in `clip-path`; the engine does not parse them. Use `inset()`, `circle()`, `ellipse()`, `polygon()`, or `path()`.
 - Never use the `linear(...)` easing function (the multi-stop variant); use `cubic-bezier(...)` or `steps(...)` instead — both are honored.
 - Never use the missing transform functions (`skew()` combined form, `perspective()`); use `skewX()` + `skewY()` and apply 3D effects via the engine-side camera. `translate*`, `scale*`, `rotate*`, `matrix`, `matrix3d` are honored.
+- Two-position ("double stop") color-stop shorthand inside gradient stop lists (e.g. `red 0 10px, blue 10px 20px`) is not supported by Gameface — write each stop with a single position instead (e.g. `red 0, red 10px, blue 10px, blue 20px`). Not independently verified in-engine for: radial-gradient, conic-gradient — assumed by analogy with the confirmed members.
 
 ### CSS — partial-value restrictions (only the listed tokens are rejected)
-- `align-content`: never assign `space-between`, `space-around`, `space-evenly`, `start`, `end`, `normal`.
+- `align-content`: never assign `space-between`, `space-around`, `start`, `end`, `normal`.
 - `align-items`: never assign `baseline`, `start`, `end`, `normal`.
 - `align-self`: never assign `baseline`, `start`, `end`.
 - `animation-duration`: never assign `auto`.
@@ -67,10 +67,11 @@ Gameface is a game-UI middleware that ships a subset of web standards. Emit only
 - `flex-basis`: never assign `content`, `fit-content`, `max-content`, `min-content`.
 - `font-size`: never assign `math`.
 - `font-style`: never assign `oblique-angle`.
+- `font-variant-east-asian`: never assign `full-width`, `jis04`, `jis78`, `jis83`, `jis90`, `ruby`, `simplified`, `traditional`.
 - `font-weight`: never assign `number`.
 - `height`: never assign `fit-content`, `max-content`, `min-content`, `stretch`.
 - `image-rendering`: never assign `smooth`, `optimizequality`, `optimizespeed`.
-- `justify-content`: never assign `space-evenly`, `start`, `end`, `stretch`, `normal`.
+- `justify-content`: never assign `start`, `end`, `stretch`, `normal`.
 - `mask-clip`: never assign `border`, `content`, `padding`, `text`.
 - `mask-mode`: never assign `luminance`, `match-source`.
 - `mask-repeat`: never assign `space`.
@@ -101,7 +102,7 @@ Gameface is a game-UI middleware that ships a subset of web standards. Emit only
 - `width`: never assign `fit-content`, `max-content`, `min-content`, `stretch`.
 
 ### CSS — selector restrictions
-- Never use (parses, never matches): `::backdrop`, `::checkmark`, `::cue`, `::details-content`, `::file-selector-button`, `::first-letter`, `::first-line`, `::grammar-error`, `:active-view-transition`, `:active-view-transition-type(fade)`, `:any-link`, `:autofill`, `:buffering`, `:checked`, `:closed`, `:default`, `:defined`, `:dir(ltr)`, `:disabled`, `:empty`, `:enabled`, `:first`, `:first-of-type`, `:focus-visible`, `:focus-within`, `:fullscreen`, `:future`, `:has(.child)`, `:has(> .child)`, `:has-slotted`.
+- Never use (parses, never matches): `::backdrop`, `::checkmark`, `::cue`, `::details-content`, `::file-selector-button`, `::first-letter`, `::first-line`, `::grammar-error`, `::highlight(custom)`, `::marker`, `::picker(select)`, `::picker-icon`, `::placeholder`, `::scroll-button(down)`, `::scroll-marker`, `::scroll-marker-group`, `::spelling-error`, `::target-text`, `::view-transition`, `::view-transition-group(*)`, `::view-transition-image-pair(*)`, `::view-transition-new(*)`, `::view-transition-old(*)`, `:active-view-transition`, `:active-view-transition-type(fade)`, `:any-link`, `:autofill`, `:buffering`, `:checked`, `:closed`, `:default`, `:defined`, `:dir(ltr)`, `:disabled`, `:empty`, `:enabled`, `:first`, `:first-of-type`, `:focus-visible`, `:focus-within`, `:fullscreen`, `:future`, `:has(.child)`, `:has(> .child)`, `:has-slotted`, `:host-context`, `:host-context(.foo)`, `:in-range`, `:indeterminate`, `:invalid`, `:is(.foo)`, `:is(:hover)`, `:lang(en)`, `:last-of-type`, `:left`, `:link`, `:modal`, `:muted`, `:not(.foo)`, `:only-of-type`, `:open`, `:optional`, `:out-of-range`, `:past`, `:paused`, `:picture-in-picture`, `:placeholder-shown`, `:playing`, `:popover-open`, `:read-only`, `:read-write`, `:required`, `:right`, `:scope`, `:seeking`, `:stalled`, `:state(custom-state)`, `:target`, `:target-current`, `:user-invalid`, `:user-valid`, `:valid`, `:visited`, `:volume-locked`, `:where(.foo)`, `:xr-overlay`.
 - Partial — only the simplest forms work, avoid the `An+B` / `of S` variants: `::selection`, `:nth-child(2 of .class)`, `:nth-child(2)`, `:nth-child(2n+1)`, `:nth-child(even)`, `:nth-child(odd)`, `:nth-last-child(2)`, `:nth-last-of-type(2)`, `:nth-of-type(2)`.
 
 ### HTML — forbidden tags and attributes
@@ -146,7 +147,7 @@ Gameface is a game-UI middleware that ships a subset of web standards. Emit only
 - `Element` instances lack `currentCSSZoom`, `onfullscreenchange`, `onfullscreenerror`, `checkVisibility`, `computedStyleMap`, `getHTML`, …+75 more (full list in `negative-rules-js.md`).
 - `Window` instances lack `console`, `chrome`, `clientInformation`, `closed`, `cookieStore`, `event`, …+78 more (full list in `negative-rules-js.md`).
 - `Navigator` instances lack `clipboard`, `credentials`, `doNotTrack`, `geolocation`, `login`, `maxTouchPoints`, …+81 more (full list in `negative-rules-js.md`).
-- `CSSStyleDeclaration` instances lack `boxSizing`, `fontVariantEastAsian`, `accentColor`, `alignmentBaseline`, `animationComposition`, `appearance`, …+344 more (full list in `negative-rules-js.md`).
+- `CSSStyleDeclaration` instances lack `accentColor`, `alignmentBaseline`, `animationComposition`, `appearance`, `backgroundAttachment`, `backgroundBlendMode`, …+342 more (full list in `negative-rules-js.md`).
 - `CSSStyleSheet` — `new CSSStyleSheet()` missing; instances also lack `ownerRule`, `rules`, `addRule`, `removeRule`, `replace`, `replaceSync` (full list in `negative-rules-js.md`).
 - `Console` instances lack `clear`, `count`, `countReset`, `dir`, `dirxml`, `group`, …+6 more (full list in `negative-rules-js.md`).
 - `Performance` instances lack `eventCounts`, `navigation`, `onresourcetimingbufferfull`, `timeOrigin`, `timing`, `clearMarks`, …+11 more (full list in `negative-rules-js.md`).

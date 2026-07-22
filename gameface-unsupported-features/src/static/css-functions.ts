@@ -6,11 +6,15 @@
  *   - a `canonicalValue` that is syntactically valid AND only uses a single
  *     unit type within the function (the form Gameface is expected to
  *     accept when the function is implemented at all), and
- *   - an optional `mixedUnitsValue` that intentionally mixes unit types
- *     inside the function arguments — Gameface's documented limitation is
- *     "no mixing units in math/sizing functions", so a function that
- *     supports its canonical form but rejects the mixed-units form lands
- *     in `partial` with that limitation noted as evidence.
+ *   - an optional `mixedUnitsValue` — despite the name, a general-purpose
+ *     secondary "should fail" probe, not limited to unit mixing.  For
+ *     math/sizing functions it intentionally mixes unit types (Gameface's
+ *     documented "no mixing units in math/sizing functions" limitation);
+ *     for gradients it exercises the two-position color-stop shorthand
+ *     (`red 0 10px`), which Gameface's parser rejects even though the
+ *     canonical single-position form works.  Either way, a function that
+ *     supports its canonical form but rejects the secondary form lands in
+ *     `partial` with that limitation noted as evidence.
  *
  * The reconciler matches probe outcomes by **exact value string**, not by
  * function name, so canonical and mixed-units forms are unambiguously
@@ -62,11 +66,13 @@ export interface CssFunctionEntry {
      */
     canonicalValue: string;
     /**
-     * Optional "should fail" form that mixes unit types inside the function
-     * arguments.  Present only on math/sizing functions where mixing units
-     * is meaningful (calc, clamp, min, max, …); omitted for functions whose
-     * arguments are not numeric or whose grammar forbids mixing in the
-     * first place (rgb, translate, blur, …).
+     * Optional secondary "should fail" form used to probe a known partial-
+     * support gap once the canonical form is confirmed working.  Originally
+     * modeled the "no mixing units" limitation (calc, clamp, min, max, …),
+     * but is reused for any function whose canonical form Gameface accepts
+     * while a specific syntax variant is rejected — e.g. gradients' two-
+     * position color-stop shorthand (`red 0 10px`).  Omitted when there is
+     * no known secondary gap to probe.
      */
     mixedUnitsValue?: string;
     /**
@@ -100,6 +106,18 @@ export interface CssFunctionEntry {
  */
 export const MIXED_UNITS_NOTE =
     'Mixing units inside the function arguments (e.g. `clamp(100px, 20vw, 200px)`) is not supported by Gameface — use a single unit type per argument.';
+
+/**
+ * Shared note pinned onto gradient functions where the canonical
+ * single-position color-stop form is accepted but the two-position
+ * ("double stop") shorthand — a stop written as `<color> <pos1> <pos2>`,
+ * shorthand for two stops of the same color at each position — is rejected
+ * by Gameface's gradient parser.  Confirmed on `linear-gradient` and
+ * `repeating-linear-gradient`; applied to the other gradient functions on
+ * the assumption that they share the same stop-list grammar.
+ */
+export const TWO_POSITION_COLOR_STOP_NOTE =
+    'Two-position ("double stop") color-stop shorthand inside gradient stop lists (e.g. `red 0 10px, blue 10px 20px`) is not supported by Gameface — write each stop with a single position instead (e.g. `red 0, red 10px, blue 10px, blue 20px`).';
 
 /**
  * Each math/sizing function is tested in two forms: a uniform-units
@@ -336,30 +354,52 @@ export const CSS_FUNCTIONS: readonly CssFunctionEntry[] = [
         category: 'image',
         testProperty: 'background-image',
         canonicalValue: 'linear-gradient(red, blue)',
+        // Two-position color-stop shorthand — confirmed rejected while the
+        // canonical single-position form renders.
+        mixedUnitsValue: 'linear-gradient(90deg, red 0 10px, blue 10px 20px)',
+        note: TWO_POSITION_COLOR_STOP_NOTE,
     },
     {
         name: 'radial-gradient',
         category: 'image',
         testProperty: 'background-image',
         canonicalValue: 'radial-gradient(red, blue)',
+        // Not independently confirmed — assumed to share linear-gradient's
+        // stop-list grammar and therefore the same two-position gap.
+        mixedUnitsValue: 'radial-gradient(red 0 10px, blue 10px 20px)',
+        note: TWO_POSITION_COLOR_STOP_NOTE,
     },
     {
         name: 'conic-gradient',
         category: 'image',
         testProperty: 'background-image',
         canonicalValue: 'conic-gradient(red, blue)',
+        // Not independently confirmed — assumed to share the same stop-list
+        // grammar gap; conic stops use angles rather than lengths.
+        mixedUnitsValue: 'conic-gradient(red 0deg 90deg, blue 90deg 180deg)',
+        note: TWO_POSITION_COLOR_STOP_NOTE,
     },
     {
         name: 'repeating-linear-gradient',
         category: 'image',
         testProperty: 'background-image',
-        canonicalValue: 'repeating-linear-gradient(red 0 10px, blue 10px 20px)',
+        // Rewritten to single-position stops: the previous canonicalValue
+        // used the two-position shorthand, which the parser rejects
+        // regardless of repeating-linear-gradient support — that false
+        // negative is what prompted this fix.
+        canonicalValue: 'repeating-linear-gradient(45deg, red 0, red 10px, blue 10px, blue 20px)',
+        mixedUnitsValue: 'repeating-linear-gradient(red 0 10px, blue 10px 20px)',
+        note: TWO_POSITION_COLOR_STOP_NOTE,
     },
     {
         name: 'repeating-radial-gradient',
         category: 'image',
         testProperty: 'background-image',
-        canonicalValue: 'repeating-radial-gradient(red 0 10px, blue 10px 20px)',
+        // Same rewrite as repeating-linear-gradient above, by analogy
+        // (not independently confirmed).
+        canonicalValue: 'repeating-radial-gradient(red 0, red 10px, blue 10px, blue 20px)',
+        mixedUnitsValue: 'repeating-radial-gradient(red 0 10px, blue 10px 20px)',
+        note: TWO_POSITION_COLOR_STOP_NOTE,
     },
     {
         name: 'image-set',

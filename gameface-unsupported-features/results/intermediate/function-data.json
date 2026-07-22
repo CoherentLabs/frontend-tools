@@ -32,6 +32,12 @@
       "skew(10deg)",
       "rotate(atan2(1,1))"
     ],
+    "background-image": [
+      "radial-gradient(red 0 10px,blue 10px 20px)",
+      "linear-gradient(90deg,red 0 10px,blue 10px 20px)",
+      "repeating-linear-gradient(red 0 10px,blue 10px 20px)",
+      "repeating-radial-gradient(red 0 10px,blue 10px 20px)"
+    ],
     "content": [
       "counters(item,\".\")",
       "attr(data-gf)",
@@ -40,10 +46,6 @@
     "width": [
       "abs(-100px)",
       "env(safe-area-inset-top,100px)"
-    ],
-    "background-image": [
-      "repeating-linear-gradient(red 0 10px,blue 10px 20px)",
-      "repeating-radial-gradient(red 0 10px,blue 10px 20px)"
     ],
     "clip-path": [
       "rect(0 100% 100% 0)",

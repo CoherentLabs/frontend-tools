@@ -2,12 +2,12 @@
 
 Generated from `results/css/{partial,unsupported}.json` and `results/selectors/{partial,unsupported}.json`. Each rule maps to the cited scraper file via `source_path` in `negative-rules-index.json`. Examples and "why" fields are derived directly from the scraper evidence.
 
-Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
+Total rules in this file: **233** (critical: 18, high: 107, medium: 102, low: 6).
 
-## CRITICAL (16)
+## CRITICAL (18)
 
 ---
-### [CSS-007] — align-content
+### [CSS-009] — align-content
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** critical
@@ -22,12 +22,12 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 .foo { align-content: center; }
 ```
 
-**Rule for AI agents:** Never assign `space-between, space-around, space-evenly, start, end, normal` to `align-content`; only the documented Gameface subset is honored.
+**Rule for AI agents:** Never assign `space-between, space-around, start, end, normal` to `align-content`; only the documented Gameface subset is honored.
 
-**Why:** scraper logRejectedValues: ["space-evenly","space-around","space-between","end","start","normal"]; the renderer rejects these tokens.
+**Why:** scraper logRejectedValues: ["space-around","space-between","end","start","normal"]; the renderer rejects these tokens.
 
 ---
-### [CSS-008] — align-items
+### [CSS-010] — align-items
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** critical
@@ -44,10 +44,10 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 
 **Rule for AI agents:** Never assign `anchor-center, baseline, start, end, normal` to `align-items`; only the documented Gameface subset is honored.
 
-**Why:** scraper logRejectedValues: ["start","anchor-center","normal","baseline","end"]; the renderer rejects these tokens.
+**Why:** scraper logRejectedValues: ["start","anchor-center","normal","end","baseline"]; the renderer rejects these tokens.
 
 ---
-### [CSS-009] — align-self
+### [CSS-011] — align-self
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** critical
@@ -67,7 +67,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["baseline","start","anchor-center","end"]; the renderer rejects these tokens.
 
 ---
-### [CSS-013] — display
+### [CSS-015] — display
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** critical
@@ -84,10 +84,10 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 
 **Rule for AI agents:** Never assign `contents, flow-root, grid, inline-block, inline-flex, inline-grid` to `display`; only the documented Gameface subset is honored.
 
-**Why:** scraper logRejectedValues: ["flow-root","inline-flex","table-cell","table-column-group","table-row-group","inline-table","contents","inline-grid","table-footer-group","table-caption","ruby-base-container","ruby-text-container","grid","inline-block","list-item","math","ruby","ruby-base","ruby-text","table","table-column","table-header-group","table-row"]; the renderer rejects these tokens.
+**Why:** scraper logRejectedValues: ["flow-root","inline-flex","table-cell","table-column-group","table-row-group","inline-table","contents","inline-grid","table-footer-group","table-caption","ruby-base-container","ruby-text-container","grid","list-item","table","ruby","table-row","math","table-header-group","inline-block","ruby-base","ruby-text","table-column"]; the renderer rejects these tokens.
 
 ---
-### [CSS-014] — flex-basis
+### [CSS-016] — flex-basis
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** critical
@@ -107,14 +107,14 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["min-content","content","max-content","fit-content"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-015] — justify-content
+### [CSS-017] — justify-content
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** critical
 
 **❌ Never generate:**
 ```css
-.foo { justify-content: space-evenly; }
+.foo { justify-content: start; }
 ```
 
 **✅ Generate instead:**
@@ -122,12 +122,12 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 .foo { justify-content: space-between; }
 ```
 
-**Rule for AI agents:** Never assign `space-evenly, start, end, stretch, normal` to `justify-content`; only the documented Gameface subset is honored.
+**Rule for AI agents:** Never assign `start, end, stretch, normal` to `justify-content`; only the documented Gameface subset is honored.
 
-**Why:** scraper logRejectedValues: ["start","stretch","space-evenly","normal","end"]; the renderer rejects these tokens.
+**Why:** scraper logRejectedValues: ["start","stretch","normal","end"]; the renderer rejects these tokens.
 
 ---
-### [CSS-016] — position
+### [CSS-018] — position
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** critical
@@ -147,7 +147,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["sticky"]; the renderer rejects these tokens.
 
 ---
-### [CSS-010] — CSS Grid layout
+### [CSS-012] — CSS Grid layout
 **Status:** missing
 **Surface:** css-property
 **Severity:** critical
@@ -288,7 +288,47 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :focus-within".
 
 ---
-### [CSS-011] — CSS modern color functions
+### [CSS-007] — :last-of-type
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** critical
+
+**❌ Never generate:**
+```css
+:last-of-type { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:last-of-type` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :last-of-type".
+
+---
+### [CSS-008] — :not(.foo)
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** critical
+
+**❌ Never generate:**
+```css
+:not(.foo) { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:not(.foo)` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :not".
+
+---
+### [CSS-013] — CSS modern color functions
 **Status:** missing
 **Surface:** css-function
 **Severity:** critical
@@ -308,7 +348,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** Scraper logged "Unable to parse declaration: …" for every member. Missing functions: hsl(), hsla(), hwb(), lab(), lch(), oklab(), oklch(), color-mix().
 
 ---
-### [CSS-012] — CSS modern math functions
+### [CSS-014] — CSS modern math functions
 **Status:** missing
 **Surface:** css-function
 **Severity:** critical
@@ -329,10 +369,30 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 
 ---
 
-## HIGH (56)
+## HIGH (107)
 
 ---
-### [CSS-039] — background-image
+### [CSS-091] — all
+**Status:** partial-shorthand
+**Surface:** css-shorthand
+**Severity:** high
+
+**❌ Never generate:**
+```css
+.foo { all: unset; }
+```
+
+**✅ Generate instead:**
+```css
+// No direct Gameface equivalent — implement via supported longhands or omit.
+```
+
+**Rule for AI agents:** Never use the `all` shorthand; assign the longhands explicitly.
+
+**Why:** scraper logWarning: "shorthand has known limitations"; shorthand parses but does not propagate to longhands.
+
+---
+### [CSS-092] — background-image
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -347,12 +407,12 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 .foo { background-image: none; }
 ```
 
-**Rule for AI agents:** Never assign `element, gradients, image-rect, image-set, repeating-linear-gradient(red 0 10px,blue 10px 20px), repeating-radial-gradient(red 0 10px,blue 10px 20px)` to `background-image`; only the documented Gameface subset is honored.
+**Rule for AI agents:** Never assign `element, gradients, image-rect, image-set` to `background-image`; only the documented Gameface subset is honored.
 
-**Why:** scraper logRejectedValues: ["gradients","image-set","image-rect","element","repeating-linear-gradient(red 0 10px,blue 10px 20px)","repeating-radial-gradient(red 0 10px,blue 10px 20px)"]; the renderer rejects these tokens.
+**Why:** scraper logRejectedValues: ["gradients","image-set","image-rect","element"]; the renderer rejects these tokens.
 
 ---
-### [CSS-040] — background-repeat
+### [CSS-093] — background-repeat
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -372,7 +432,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["space"]; the renderer rejects these tokens.
 
 ---
-### [CSS-041] — border-bottom-style
+### [CSS-094] — border-bottom-style
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -392,7 +452,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["double","ridge","outset","inset","groove","dashed","dotted"]; the renderer rejects these tokens.
 
 ---
-### [CSS-042] — border-image-repeat
+### [CSS-095] — border-image-repeat
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -412,7 +472,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["space"]; the renderer rejects these tokens.
 
 ---
-### [CSS-043] — border-left-style
+### [CSS-096] — border-left-style
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -432,7 +492,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["double","groove","outset","inset","ridge","dashed","dotted"]; the renderer rejects these tokens.
 
 ---
-### [CSS-044] — border-right-style
+### [CSS-097] — border-right-style
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -452,7 +512,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["double","ridge","inset","outset","groove","dashed","dotted"]; the renderer rejects these tokens.
 
 ---
-### [CSS-045] — border-style
+### [CSS-098] — border-style
 **Status:** partial-values
 **Surface:** css-shorthand
 **Severity:** high
@@ -472,7 +532,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["dashed","dotted"]; the renderer rejects these tokens.
 
 ---
-### [CSS-046] — border-top-style
+### [CSS-099] — border-top-style
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -492,7 +552,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["outset","double","groove","ridge","inset","dashed","dotted"]; the renderer rejects these tokens.
 
 ---
-### [CSS-050] — font-size
+### [CSS-102] — font-size
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -507,12 +567,12 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 .foo { font-size: 16px; }
 ```
 
-**Rule for AI agents:** Never assign `math, round(14px,2px), min(12px,16px), max(12px,16px), mod(20px,6px), mod(20px,1vw)` to `font-size`; only the documented Gameface subset is honored.
+**Rule for AI agents:** Never assign `math` to `font-size`; only the documented Gameface subset is honored.
 
-**Why:** scraper logRejectedValues: ["math","round(14px,2px)","min(12px,16px)","max(12px,16px)","mod(20px,6px)","mod(20px,1vw)","min(12px,1vw)","rem(20px,6px)","rem(20px,1vw)","clamp(100px,20vw,200px)","clamp(12px,14px,16px)","max(12px,1vw)","round(14px,1vw)"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
+**Why:** scraper logRejectedValues: ["math"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-051] — font-style
+### [CSS-103] — font-style
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -532,7 +592,27 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["oblique-angle"]; the renderer rejects these tokens.
 
 ---
-### [CSS-052] — font-weight
+### [CSS-104] — font-variant-east-asian
+**Status:** partial-values
+**Surface:** css-value
+**Severity:** high
+
+**❌ Never generate:**
+```css
+.foo { font-variant-east-asian: full-width; }
+```
+
+**✅ Generate instead:**
+```css
+.foo { font-variant-east-asian: normal; }
+```
+
+**Rule for AI agents:** Never assign `full-width, jis04, jis78, jis83, jis90, ruby` to `font-variant-east-asian`; only the documented Gameface subset is honored.
+
+**Why:** scraper logRejectedValues: ["jis04","jis83","ruby","simplified","jis90","traditional","full-width","jis78"]; the renderer rejects these tokens.
+
+---
+### [CSS-105] — font-weight
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -552,7 +632,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["number"]; the renderer rejects these tokens.
 
 ---
-### [CSS-053] — image-rendering
+### [CSS-106] — image-rendering
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -572,7 +652,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["optimizequality","smooth","optimizespeed"]; the renderer rejects these tokens.
 
 ---
-### [CSS-056] — mask-clip
+### [CSS-109] — mask-clip
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -592,7 +672,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["text","border","content","padding"]; the renderer rejects these tokens.
 
 ---
-### [CSS-057] — mask-mode
+### [CSS-110] — mask-mode
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -612,7 +692,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["luminance","match-source"]; the renderer rejects these tokens.
 
 ---
-### [CSS-059] — mix-blend-mode
+### [CSS-112] — mix-blend-mode
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -632,7 +712,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["plus-darker","plus-lighter"]; the renderer rejects these tokens.
 
 ---
-### [CSS-060] — overflow-x
+### [CSS-113] — overflow-x
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -652,7 +732,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["clip"]; the renderer rejects these tokens.
 
 ---
-### [CSS-061] — overflow-y
+### [CSS-114] — overflow-y
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -672,7 +752,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["clip"]; the renderer rejects these tokens.
 
 ---
-### [CSS-062] — pointer-events
+### [CSS-115] — pointer-events
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -692,7 +772,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["visiblepainted","visible","painted","visiblestroke","stroke","visiblefill","all","fill"]; the renderer rejects these tokens.
 
 ---
-### [CSS-063] — text-align
+### [CSS-116] — text-align
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -712,7 +792,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["match-parent","end","start"]; the renderer rejects these tokens.
 
 ---
-### [CSS-064] — text-decoration-line
+### [CSS-117] — text-decoration-line
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -732,7 +812,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["spelling-error","blink","grammar-error"]; the renderer rejects these tokens.
 
 ---
-### [CSS-065] — text-decoration-style
+### [CSS-118] — text-decoration-style
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -752,7 +832,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["double","wavy","dashed","dotted"]; the renderer rejects these tokens.
 
 ---
-### [CSS-066] — text-decoration-thickness
+### [CSS-119] — text-decoration-thickness
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -772,7 +852,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["from-font","percentage"]; the renderer rejects these tokens.
 
 ---
-### [CSS-067] — text-overflow
+### [CSS-120] — text-overflow
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -792,7 +872,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["string"]; the renderer rejects these tokens.
 
 ---
-### [CSS-068] — text-transform
+### [CSS-121] — text-transform
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -812,7 +892,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["full-width","math-auto","full-size-kana"]; the renderer rejects these tokens.
 
 ---
-### [CSS-069] — text-underline-offset
+### [CSS-122] — text-underline-offset
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -832,7 +912,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["percentage"]; the renderer rejects these tokens.
 
 ---
-### [CSS-070] — text-underline-position
+### [CSS-123] — text-underline-position
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -852,7 +932,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["right","from-font","left"]; the renderer rejects these tokens.
 
 ---
-### [CSS-071] — visibility
+### [CSS-124] — visibility
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -872,7 +952,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["collapse"]; the renderer rejects these tokens.
 
 ---
-### [CSS-072] — white-space
+### [CSS-125] — white-space
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** high
@@ -892,7 +972,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** scraper logRejectedValues: ["break-spaces","pre-line"]; the renderer rejects these tokens.
 
 ---
-### [CSS-055] — Logical and physical-mapped CSS properties
+### [CSS-108] — Logical and physical-mapped CSS properties
 **Status:** missing
 **Surface:** css-property
 **Severity:** high
@@ -912,7 +992,7 @@ Total rules in this file: **175** (critical: 16, high: 56, medium: 97, low: 6).
 **Why:** Scraper marked every logical-property as `missing`; Gameface only implements the physical-axis equivalents. Members: block-size, border-block, border-block-color, border-block-end, border-block-end-color, border-block-end-style, border-block-end-width, border-block-start, border-block-start-color, border-block-start-style, border-block-start-width, border-block-style, border-block-width, border-end-end-radius, border-end-start-radius, border-inline, border-inline-color, border-inline-end, border-inline-end-color, border-inline-end-style, border-inline-end-width, border-inline-start, border-inline-start-color, border-inline-start-style, border-inline-start-width, border-inline-style, border-inline-width, border-start-end-radius, border-start-start-radius, inline-size, inset, inset-block, inset-block-end, inset-block-start, inset-inline, inset-inline-end, inset-inline-start, margin-block, margin-block-end, margin-block-start, margin-inline, margin-inline-end, margin-inline-start, max-block-size, max-inline-size, min-block-size, min-inline-size, padding-block, padding-block-end, padding-block-start, padding-inline, padding-inline-end, padding-inline-start, scroll-margin-block, scroll-margin-block-end, scroll-margin-block-start, scroll-margin-inline, scroll-margin-inline-end, scroll-margin-inline-start, scroll-padding-block, scroll-padding-block-end, scroll-padding-block-start, scroll-padding-inline, scroll-padding-inline-end, scroll-padding-inline-start.
 
 ---
-### [CSS-054] — List, table, form-control native styling
+### [CSS-107] — List, table, form-control native styling
 **Status:** missing
 **Surface:** css-property
 **Severity:** high
@@ -933,7 +1013,7 @@ table { border-collapse: collapse; }
 **Why:** Scraper marked every list-style-*, table-layout, caption-side, border-collapse/spacing, appearance, accent-color, resize, field-sizing as `missing`. Members: accent-color, appearance, border-collapse, border-spacing, caption-side, empty-cells, field-sizing, ime-mode, interactivity, interpolate-size, list-style, list-style-image, list-style-position, list-style-type, reading-flow, resize, table-layout, user-modify.
 
 ---
-### [CSS-058] — Misc modern positioning / sizing helpers
+### [CSS-111] — Misc modern positioning / sizing helpers
 **Status:** missing
 **Surface:** css-property
 **Severity:** high
@@ -953,7 +1033,7 @@ table { border-collapse: collapse; }
 **Why:** Scraper marked these layout/positioning helpers as `missing`. For 3D-style transforms keep using the 2D-only `transform` property. Members: clear, clip, contain-intrinsic-block-size, contain-intrinsic-height, contain-intrinsic-inline-size, contain-intrinsic-size, contain-intrinsic-width, content-visibility, direction, float, justify-items, justify-self, math-depth, math-shift, math-style, object-fit, object-position, object-view-box, order, outline, outline-color, outline-offset, outline-style, outline-width, overflow-anchor, overflow-block, overflow-clip-margin, overflow-inline, overlay, place-content, place-items, place-self, rotate, scale, touch-action, transform-box, translate, unicode-bidi, will-change, writing-mode, zoom.
 
 ---
-### [CSS-017] — ::backdrop
+### [CSS-019] — ::backdrop
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -973,7 +1053,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: ::backdrop".
 
 ---
-### [CSS-018] — ::checkmark
+### [CSS-020] — ::checkmark
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -993,7 +1073,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: ::checkmark".
 
 ---
-### [CSS-019] — ::cue
+### [CSS-021] — ::cue
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1013,7 +1093,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: ::cue".
 
 ---
-### [CSS-020] — ::details-content
+### [CSS-022] — ::details-content
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1033,7 +1113,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: ::details-content".
 
 ---
-### [CSS-021] — ::file-selector-button
+### [CSS-023] — ::file-selector-button
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1053,7 +1133,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: ::file-selector-button".
 
 ---
-### [CSS-022] — ::first-letter
+### [CSS-024] — ::first-letter
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1073,7 +1153,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: ::first-letter".
 
 ---
-### [CSS-023] — ::first-line
+### [CSS-025] — ::first-line
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1093,7 +1173,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: ::first-line".
 
 ---
-### [CSS-024] — ::grammar-error
+### [CSS-026] — ::grammar-error
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1113,7 +1193,307 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: ::grammar-error".
 
 ---
-### [CSS-025] — :active-view-transition
+### [CSS-027] — ::highlight(custom)
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+::highlight(custom) { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `::highlight(custom)` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :highlight".
+
+---
+### [CSS-028] — ::marker
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+::marker { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `::marker` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: ::marker".
+
+---
+### [CSS-029] — ::picker-icon
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+::picker-icon { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `::picker-icon` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: ::picker-icon".
+
+---
+### [CSS-030] — ::picker(select)
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+::picker(select) { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `::picker(select)` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :picker".
+
+---
+### [CSS-031] — ::placeholder
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+::placeholder { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `::placeholder` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: ::placeholder".
+
+---
+### [CSS-032] — ::scroll-button(down)
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+::scroll-button(down) { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `::scroll-button(down)` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :scroll-button".
+
+---
+### [CSS-033] — ::scroll-marker
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+::scroll-marker { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `::scroll-marker` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: ::scroll-marker".
+
+---
+### [CSS-034] — ::scroll-marker-group
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+::scroll-marker-group { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `::scroll-marker-group` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: ::scroll-marker-group".
+
+---
+### [CSS-035] — ::spelling-error
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+::spelling-error { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `::spelling-error` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: ::spelling-error".
+
+---
+### [CSS-036] — ::target-text
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+::target-text { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `::target-text` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: ::target-text".
+
+---
+### [CSS-037] — ::view-transition
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+::view-transition { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `::view-transition` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: ::view-transition".
+
+---
+### [CSS-038] — ::view-transition-group(*)
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+::view-transition-group(*) { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `::view-transition-group(*)` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :view-transition-group".
+
+---
+### [CSS-039] — ::view-transition-image-pair(*)
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+::view-transition-image-pair(*) { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `::view-transition-image-pair(*)` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :view-transition-image-pair".
+
+---
+### [CSS-040] — ::view-transition-new(*)
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+::view-transition-new(*) { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `::view-transition-new(*)` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :view-transition-new".
+
+---
+### [CSS-041] — ::view-transition-old(*)
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+::view-transition-old(*) { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `::view-transition-old(*)` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :view-transition-old".
+
+---
+### [CSS-042] — :active-view-transition
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1133,7 +1513,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :active-view-transition".
 
 ---
-### [CSS-026] — :active-view-transition-type(fade)
+### [CSS-043] — :active-view-transition-type(fade)
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1153,7 +1533,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :active-view-transition-type".
 
 ---
-### [CSS-027] — :any-link
+### [CSS-044] — :any-link
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1173,7 +1553,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :any-link".
 
 ---
-### [CSS-028] — :autofill
+### [CSS-045] — :autofill
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1193,7 +1573,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :autofill".
 
 ---
-### [CSS-029] — :buffering
+### [CSS-046] — :buffering
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1213,7 +1593,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :buffering".
 
 ---
-### [CSS-030] — :closed
+### [CSS-047] — :closed
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1233,7 +1613,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :closed".
 
 ---
-### [CSS-031] — :default
+### [CSS-048] — :default
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1253,7 +1633,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :default".
 
 ---
-### [CSS-032] — :defined
+### [CSS-049] — :defined
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1273,7 +1653,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :defined".
 
 ---
-### [CSS-033] — :dir(ltr)
+### [CSS-050] — :dir(ltr)
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1293,7 +1673,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :dir".
 
 ---
-### [CSS-034] — :empty
+### [CSS-051] — :empty
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1313,7 +1693,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :empty".
 
 ---
-### [CSS-035] — :fullscreen
+### [CSS-052] — :fullscreen
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1333,7 +1713,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :fullscreen".
 
 ---
-### [CSS-036] — :future
+### [CSS-053] — :future
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1353,7 +1733,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :future".
 
 ---
-### [CSS-037] — :has-slotted
+### [CSS-054] — :has-slotted
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1373,7 +1753,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :has-slotted".
 
 ---
-### [CSS-038] — :has(.child)
+### [CSS-055] — :has(.child)
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** high
@@ -1393,27 +1773,707 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :has".
 
 ---
-### [CSS-047] — CSS image functions
-**Status:** missing
-**Surface:** css-function
+### [CSS-056] — :host-context
+**Status:** parser-only
+**Surface:** css-selector
 **Severity:** high
 
 **❌ Never generate:**
 ```css
-.foo { background-image: repeating-linear-gradient(red 0 10px, blue 10px 20px); }
+:host-context { color: red; }
 ```
 
 **✅ Generate instead:**
 ```css
-.foo { background-image: linear-gradient(red 0 10px, blue 10px 20px, red 20px 30px, blue 30px 40px); }
+// Toggle classes from JS based on application state.
 ```
 
-**Rule for AI agents:** Never use `repeating-linear-gradient()` or `repeating-radial-gradient()`; emit a `linear-gradient()`/`radial-gradient()` with enough explicit color stops to look identical. `url(...)`, `image-set(...)`, and `cross-fade(...)` are unverified (resolving them at parse time stalls Gameface); use `url()` only with cached engine-side assets and treat `image-set`/`cross-fade` as missing.
+**Rule for AI agents:** Never use the `:host-context` selector; the renderer parses it but does not apply matching rules.
 
-**Why:** Scraper logged "Unable to parse declaration: …" for every member. Missing functions: repeating-linear-gradient(), repeating-radial-gradient().
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :host-context".
 
 ---
-### [CSS-048] — CSS reference functions
+### [CSS-057] — :in-range
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:in-range { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:in-range` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :in-range".
+
+---
+### [CSS-058] — :indeterminate
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:indeterminate { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:indeterminate` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :indeterminate".
+
+---
+### [CSS-059] — :invalid
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:invalid { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:invalid` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :invalid".
+
+---
+### [CSS-060] — :is(.foo)
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:is(.foo) { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:is(.foo)` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :is".
+
+---
+### [CSS-061] — :lang(en)
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:lang(en) { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:lang(en)` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :lang".
+
+---
+### [CSS-062] — :link
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:link { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:link` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :link".
+
+---
+### [CSS-063] — :modal
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:modal { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:modal` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :modal".
+
+---
+### [CSS-064] — :muted
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:muted { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:muted` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :muted".
+
+---
+### [CSS-065] — :only-of-type
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:only-of-type { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:only-of-type` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :only-of-type".
+
+---
+### [CSS-066] — :open
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:open { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:open` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :open".
+
+---
+### [CSS-067] — :optional
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:optional { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:optional` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :optional".
+
+---
+### [CSS-068] — :out-of-range
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:out-of-range { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:out-of-range` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :out-of-range".
+
+---
+### [CSS-069] — :past
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:past { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:past` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :past".
+
+---
+### [CSS-070] — :paused
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:paused { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:paused` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :paused".
+
+---
+### [CSS-071] — :picture-in-picture
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:picture-in-picture { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:picture-in-picture` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :picture-in-picture".
+
+---
+### [CSS-072] — :placeholder-shown
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:placeholder-shown { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:placeholder-shown` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :placeholder-shown".
+
+---
+### [CSS-073] — :playing
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:playing { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:playing` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :playing".
+
+---
+### [CSS-074] — :popover-open
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:popover-open { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:popover-open` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :popover-open".
+
+---
+### [CSS-075] — :read-only
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:read-only { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:read-only` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :read-only".
+
+---
+### [CSS-076] — :read-write
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:read-write { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:read-write` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :read-write".
+
+---
+### [CSS-077] — :required
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:required { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:required` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :required".
+
+---
+### [CSS-078] — :scope
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:scope { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:scope` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :scope".
+
+---
+### [CSS-079] — :seeking
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:seeking { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:seeking` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :seeking".
+
+---
+### [CSS-080] — :stalled
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:stalled { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:stalled` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :stalled".
+
+---
+### [CSS-081] — :state(custom-state)
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:state(custom-state) { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:state(custom-state)` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :state".
+
+---
+### [CSS-082] — :target
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:target { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:target` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :target".
+
+---
+### [CSS-083] — :target-current
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:target-current { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:target-current` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :target-current".
+
+---
+### [CSS-084] — :user-invalid
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:user-invalid { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:user-invalid` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :user-invalid".
+
+---
+### [CSS-085] — :user-valid
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:user-valid { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:user-valid` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :user-valid".
+
+---
+### [CSS-086] — :valid
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:valid { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:valid` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :valid".
+
+---
+### [CSS-087] — :visited
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:visited { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:visited` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :visited".
+
+---
+### [CSS-088] — :volume-locked
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:volume-locked { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:volume-locked` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :volume-locked".
+
+---
+### [CSS-089] — :where(.foo)
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:where(.foo) { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:where(.foo)` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :where".
+
+---
+### [CSS-090] — :xr-overlay
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** high
+
+**❌ Never generate:**
+```css
+:xr-overlay { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:xr-overlay` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :xr-overlay".
+
+---
+### [CSS-100] — CSS reference functions
 **Status:** missing
 **Surface:** css-function
 **Severity:** high
@@ -1433,7 +2493,7 @@ table { border-collapse: collapse; }
 **Why:** Scraper logged "Unable to parse declaration: …" for every member. Missing functions: env(), attr().
 
 ---
-### [CSS-049] — CSS transform functions
+### [CSS-101] — CSS transform functions
 **Status:** missing
 **Surface:** css-function
 **Severity:** high
@@ -1454,10 +2514,10 @@ table { border-collapse: collapse; }
 
 ---
 
-## MEDIUM (97)
+## MEDIUM (102)
 
 ---
-### [CSS-085] — animation-delay
+### [CSS-142] — animation-delay
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1477,7 +2537,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens. Supported units: ms, s.
 
 ---
-### [CSS-086] — animation-duration
+### [CSS-143] — animation-duration
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1497,7 +2557,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["auto"]; the renderer rejects these tokens. Supported units: ms, s.
 
 ---
-### [CSS-087] — animation-timing-function
+### [CSS-144] — animation-timing-function
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1517,7 +2577,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["jump"]; the renderer rejects these tokens.
 
 ---
-### [CSS-088] — backdrop-filter
+### [CSS-145] — backdrop-filter
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1537,7 +2597,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-089] — background-color
+### [CSS-146] — background-color
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1557,7 +2617,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-090] — border-bottom-left-radius
+### [CSS-147] — border-bottom-left-radius
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1577,7 +2637,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["percentages"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-091] — border-bottom-right-radius
+### [CSS-148] — border-bottom-right-radius
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1597,7 +2657,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["percentages"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-092] — border-image-outset
+### [CSS-149] — border-image-outset
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1617,7 +2677,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, <number>.
 
 ---
-### [CSS-093] — border-image-slice
+### [CSS-150] — border-image-slice
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1637,7 +2697,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-094] — border-top-left-radius
+### [CSS-151] — border-top-left-radius
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1657,7 +2717,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["percentages"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-095] — border-top-right-radius
+### [CSS-152] — border-top-right-radius
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1677,7 +2737,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["percentages"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-096] — bottom
+### [CSS-153] — bottom
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1697,7 +2757,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["anchor-size","anchor"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-097] — box-shadow
+### [CSS-154] — box-shadow
 **Status:** partial-values
 **Surface:** css-shorthand
 **Severity:** medium
@@ -1717,7 +2777,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["inset"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax.
 
 ---
-### [CSS-098] — caret-color
+### [CSS-155] — caret-color
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1737,7 +2797,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-099] — clip-path
+### [CSS-156] — clip-path
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1752,12 +2812,12 @@ table { border-collapse: collapse; }
 .foo { clip-path: inset(10px); }
 ```
 
-**Rule for AI agents:** Never assign `fill-box, path, stroke-box, view-box, rect(0 100% 100% 0), xywh(0 0 100% 100%)` to `clip-path`; only the documented Gameface subset is honored.
+**Rule for AI agents:** Never assign `fill-box, path, stroke-box, view-box` to `clip-path`; only the documented Gameface subset is honored.
 
-**Why:** scraper logRejectedValues: ["fill-box","path","stroke-box","view-box","rect(0 100% 100% 0)","xywh(0 0 100% 100%)"]; the renderer rejects these tokens.
+**Why:** scraper logRejectedValues: ["fill-box","path","stroke-box","view-box"]; the renderer rejects these tokens.
 
 ---
-### [CSS-100] — coh-partitioned
+### [CSS-157] — coh-partitioned
 **Status:** parser-only
 **Surface:** css-property
 **Severity:** medium
@@ -1777,7 +2837,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["1"].
 
 ---
-### [CSS-101] — coh-rendering-option
+### [CSS-158] — coh-rendering-option
 **Status:** parser-only
 **Surface:** css-property
 **Severity:** medium
@@ -1797,7 +2857,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["0"].
 
 ---
-### [CSS-102] — coh-simple-opacity
+### [CSS-159] — coh-simple-opacity
 **Status:** parser-only
 **Surface:** css-property
 **Severity:** medium
@@ -1817,7 +2877,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["1"].
 
 ---
-### [CSS-103] — color
+### [CSS-160] — color
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1832,12 +2892,12 @@ table { border-collapse: collapse; }
 .foo { color: auto; }
 ```
 
-**Rule for AI agents:** Never assign `initial, oklab(0.5 0.1 0.1), lch(50% 70 30), color-mix(in srgb,red,blue), hsla(0,100%,50%,0.5), hsl(0,100%,50%)` to `color`; only the documented Gameface subset is honored.
+**Rule for AI agents:** Never assign `initial` to `color`; only the documented Gameface subset is honored.
 
-**Why:** scraper logRejectedValues: ["initial","oklab(0.5 0.1 0.1)","lch(50% 70 30)","color-mix(in srgb,red,blue)","hsla(0,100%,50%,0.5)","hsl(0,100%,50%)","lab(50% 40 59.5)","hwb(0 0% 0%)","oklch(0.5 0.1 30)"]; the renderer rejects these tokens.
+**Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-104] — contain
+### [CSS-161] — contain
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1857,7 +2917,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["inline-size"]; the renderer rejects these tokens.
 
 ---
-### [CSS-106] — content
+### [CSS-163] — content
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1872,12 +2932,12 @@ table { border-collapse: collapse; }
 .foo { content: normal; }
 ```
 
-**Rule for AI agents:** Never assign `gradient, image-set, url, counters(item,"."), attr(data-gf), counter(item)` to `content`; only the documented Gameface subset is honored.
+**Rule for AI agents:** Never assign `gradient, image-set, url` to `content`; only the documented Gameface subset is honored.
 
-**Why:** scraper logRejectedValues: ["url","gradient","image-set","counters(item,\".\")","attr(data-gf)","counter(item)"]; the renderer rejects these tokens.
+**Why:** scraper logRejectedValues: ["url","gradient","image-set"]; the renderer rejects these tokens.
 
 ---
-### [CSS-111] — cx
+### [CSS-169] — cx
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1897,7 +2957,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-112] — cy
+### [CSS-170] — cy
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1917,7 +2977,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-113] — d
+### [CSS-171] — d
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1937,7 +2997,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-114] — fill
+### [CSS-172] — fill
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1957,7 +3017,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-115] — fill-opacity
+### [CSS-173] — fill-opacity
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1977,7 +3037,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens. Supported units: <number>.
 
 ---
-### [CSS-116] — filter
+### [CSS-174] — filter
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -1997,7 +3057,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-117] — flex-grow
+### [CSS-175] — flex-grow
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2017,7 +3077,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens. Supported units: <number>.
 
 ---
-### [CSS-118] — flex-shrink
+### [CSS-176] — flex-shrink
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2037,7 +3097,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens. Supported units: <number>.
 
 ---
-### [CSS-119] — height
+### [CSS-177] — height
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2057,7 +3117,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["min-content","fit-content","anchor-size","stretch","max-content"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-120] — left
+### [CSS-178] — left
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2077,7 +3137,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["anchor-size","anchor"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-121] — margin-bottom
+### [CSS-179] — margin-bottom
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2097,7 +3157,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["anchor-size"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-122] — margin-left
+### [CSS-180] — margin-left
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2117,7 +3177,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["anchor-size"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-123] — margin-right
+### [CSS-181] — margin-right
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2137,7 +3197,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["anchor-size"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-124] — margin-top
+### [CSS-182] — margin-top
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2157,7 +3217,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["anchor-size"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-125] — mask-repeat
+### [CSS-183] — mask-repeat
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2177,7 +3237,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["space","initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-126] — max-height
+### [CSS-184] — max-height
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2197,7 +3257,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["max-content","min-content","fit-content","none","stretch","anchor-size"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-127] — max-width
+### [CSS-185] — max-width
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2217,7 +3277,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["fit-content","min-content","max-content","none","stretch","anchor-size"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-128] — min-height
+### [CSS-186] — min-height
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2237,7 +3297,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["fit-content","max-content","anchor-size","min-content","stretch"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-129] — min-width
+### [CSS-187] — min-width
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2257,7 +3317,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["anchor-size","fit-content","stretch","max-content","min-content"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-134] — offset
+### [CSS-192] — offset
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2277,7 +3337,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-135] — opacity
+### [CSS-193] — opacity
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2297,7 +3357,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["percentages"]; the renderer rejects these tokens. Supported units: <number>.
 
 ---
-### [CSS-136] — padding-bottom
+### [CSS-194] — padding-bottom
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2317,7 +3377,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-137] — padding-left
+### [CSS-195] — padding-left
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2337,7 +3397,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-138] — padding-right
+### [CSS-196] — padding-right
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2357,7 +3417,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-139] — padding-top
+### [CSS-197] — padding-top
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2377,7 +3437,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-140] — r
+### [CSS-198] — r
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2397,7 +3457,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-141] — right
+### [CSS-199] — right
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2417,7 +3477,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["anchor-size","anchor"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-142] — rx
+### [CSS-200] — rx
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2437,7 +3497,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-143] — ry
+### [CSS-201] — ry
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2457,7 +3517,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-145] — shape-rendering
+### [CSS-203] — shape-rendering
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2477,7 +3537,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-146] — stop-color
+### [CSS-204] — stop-color
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2497,7 +3557,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-147] — stop-opacity
+### [CSS-205] — stop-opacity
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2517,7 +3577,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens. Supported units: <number>.
 
 ---
-### [CSS-148] — stroke
+### [CSS-206] — stroke
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2537,7 +3597,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-149] — stroke-dasharray
+### [CSS-207] — stroke-dasharray
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2557,7 +3617,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["none"]; the renderer rejects these tokens.
 
 ---
-### [CSS-150] — stroke-dashoffset
+### [CSS-208] — stroke-dashoffset
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2577,7 +3637,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-151] — stroke-miterlimit
+### [CSS-209] — stroke-miterlimit
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2597,7 +3657,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-152] — stroke-opacity
+### [CSS-210] — stroke-opacity
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2617,7 +3677,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens. Supported units: <number>.
 
 ---
-### [CSS-153] — stroke-width
+### [CSS-211] — stroke-width
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2637,7 +3697,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %, <number>.
 
 ---
-### [CSS-155] — text-anchor
+### [CSS-213] — text-anchor
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2657,7 +3717,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-156] — text-decoration-color
+### [CSS-214] — text-decoration-color
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2677,7 +3737,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-157] — text-stroke-color
+### [CSS-215] — text-stroke-color
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2697,7 +3757,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-158] — text-stroke-width
+### [CSS-216] — text-stroke-width
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2717,7 +3777,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-159] — top
+### [CSS-217] — top
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2737,7 +3797,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["anchor-size","anchor"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-160] — transform
+### [CSS-218] — transform
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2752,12 +3812,12 @@ table { border-collapse: collapse; }
 .foo { transform: auto; }
 ```
 
-**Rule for AI agents:** Never assign `initial, rotate(acos(1)), perspective(500px), rotate(asin(1)), rotate(atan(1)), skew(10deg)` to `transform`; only the documented Gameface subset is honored.
+**Rule for AI agents:** Never assign `initial` to `transform`; only the documented Gameface subset is honored.
 
-**Why:** scraper logRejectedValues: ["initial","rotate(acos(1))","perspective(500px)","rotate(asin(1))","rotate(atan(1))","skew(10deg)","rotate(atan2(1,1))"]; the renderer rejects these tokens.
+**Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-161] — transition-delay
+### [CSS-219] — transition-delay
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2777,7 +3837,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens. Supported units: ms, s.
 
 ---
-### [CSS-162] — transition-duration
+### [CSS-220] — transition-duration
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2797,7 +3857,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens. Supported units: ms, s.
 
 ---
-### [CSS-163] — transition-timing-function
+### [CSS-221] — transition-timing-function
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2812,12 +3872,12 @@ table { border-collapse: collapse; }
 .foo { transition-timing-function: ease-in-out; }
 ```
 
-**Rule for AI agents:** Never assign `jump, linear(0,0.25,0.5,0.75,1)` to `transition-timing-function`; only the documented Gameface subset is honored.
+**Rule for AI agents:** Never assign `jump` to `transition-timing-function`; only the documented Gameface subset is honored.
 
-**Why:** scraper logRejectedValues: ["jump","linear(0,0.25,0.5,0.75,1)"]; the renderer rejects these tokens.
+**Why:** scraper logRejectedValues: ["jump"]; the renderer rejects these tokens.
 
 ---
-### [CSS-164] — user-select
+### [CSS-222] — user-select
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2837,7 +3897,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["contain","all"]; the renderer rejects these tokens.
 
 ---
-### [CSS-165] — vertical-align
+### [CSS-223] — vertical-align
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2857,7 +3917,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["super","bottom","sub","top"]; the renderer rejects these tokens.
 
 ---
-### [CSS-167] — width
+### [CSS-225] — width
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2872,12 +3932,12 @@ table { border-collapse: collapse; }
 .foo { width: auto; }
 ```
 
-**Rule for AI agents:** Never assign `anchor-size, fit-content, max-content, min-content, stretch, abs(-100px)` to `width`; only the documented Gameface subset is honored.
+**Rule for AI agents:** Never assign `anchor-size, fit-content, max-content, min-content, stretch` to `width`; only the documented Gameface subset is honored.
 
-**Why:** scraper logRejectedValues: ["anchor-size","stretch","fit-content","max-content","min-content","abs(-100px)","env(safe-area-inset-top,100px)"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
+**Why:** scraper logRejectedValues: ["anchor-size","stretch","fit-content","max-content","min-content"]; the renderer rejects these tokens. Supported units: px, em, rem, in, pt, vh, vw, vmin, vmax, %.
 
 ---
-### [CSS-168] — x
+### [CSS-226] — x
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2897,7 +3957,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-169] — y
+### [CSS-227] — y
 **Status:** partial-values
 **Surface:** css-value
 **Severity:** medium
@@ -2917,7 +3977,7 @@ table { border-collapse: collapse; }
 **Why:** scraper logRejectedValues: ["initial"]; the renderer rejects these tokens.
 
 ---
-### [CSS-133] — Multi-column layout
+### [CSS-191] — Multi-column layout
 **Status:** missing
 **Surface:** css-property
 **Severity:** medium
@@ -2938,7 +3998,7 @@ table { border-collapse: collapse; }
 **Why:** Scraper marked every multi-column property as `missing`. Members: column-count, column-fill, column-rule, column-rule-color, column-rule-style, column-rule-width, column-span, column-width, columns.
 
 ---
-### [CSS-105] — Container queries
+### [CSS-162] — Container queries
 **Status:** missing
 **Surface:** css-property
 **Severity:** medium
@@ -2959,7 +4019,7 @@ table { border-collapse: collapse; }
 **Why:** Scraper marked every container-query property as `missing`. Members: container, container-name, container-type.
 
 ---
-### [CSS-084] — Anchor positioning
+### [CSS-141] — Anchor positioning
 **Status:** missing
 **Surface:** css-property
 **Severity:** medium
@@ -2979,7 +4039,7 @@ table { border-collapse: collapse; }
 **Why:** Scraper marked every anchor-* and position-* (modern) property as `missing`. Members: anchor-name, anchor-scope, position-anchor, position-area, position-try, position-try-fallbacks, position-try-order, position-visibility.
 
 ---
-### [CSS-144] — Scroll snap, scroll margin / padding, scrollbar customization
+### [CSS-202] — Scroll snap, scroll margin / padding, scrollbar customization
 **Status:** missing
 **Surface:** css-property
 **Severity:** medium
@@ -2999,7 +4059,7 @@ table { border-collapse: collapse; }
 **Why:** Scraper marked every scroll-* / overscroll-* / scrollbar-* property as `missing`. Members: overscroll-behavior, overscroll-behavior-block, overscroll-behavior-inline, overscroll-behavior-x, overscroll-behavior-y, scroll-behavior, scroll-initial-target, scroll-margin, scroll-margin-bottom, scroll-margin-left, scroll-margin-right, scroll-margin-top, scroll-marker-group, scroll-padding, scroll-padding-bottom, scroll-padding-left, scroll-padding-right, scroll-padding-top, scroll-snap-align, scroll-snap-stop, scroll-snap-type, scroll-timeline, scroll-timeline-axis, scroll-timeline-name, scrollbar-color, scrollbar-gutter, scrollbar-width.
 
 ---
-### [CSS-166] — View transitions, animation timeline, scroll timeline
+### [CSS-224] — View transitions, animation timeline, scroll timeline
 **Status:** missing
 **Surface:** css-property
 **Severity:** medium
@@ -3019,7 +4079,7 @@ table { border-collapse: collapse; }
 **Why:** Scraper marked every view-transition-* / view-timeline-* / animation-timeline / animation-range / animation-composition / timeline-scope property as `missing`. Members: animation-composition, animation-range, animation-range-end, animation-range-start, animation-timeline, timeline-scope, view-timeline, view-timeline-axis, view-timeline-inset, view-timeline-name, view-transition-class, view-transition-name.
 
 ---
-### [CSS-132] — Modern typography (font-variant, hyphens, text-wrap, font-feature-settings, etc.)
+### [CSS-190] — Modern typography (font-variant, hyphens, text-wrap, font-feature-settings, etc.)
 **Status:** missing
 **Surface:** css-property
 **Severity:** medium
@@ -3036,10 +4096,10 @@ table { border-collapse: collapse; }
 
 **Rule for AI agents:** Never use modern typography properties (`font-variant-*`, `font-feature-settings`, `hyphens`, `text-wrap`, `text-justify`, `text-indent`, `text-emphasis-*`, `tab-size`, `word-break`, `word-spacing`, `line-clamp`, `text-decoration-skip*`, etc.); use only the supported font/text properties.
 
-**Why:** Scraper marked every modern typography property as `missing`. Supported text-related properties: see partial entries for `font-size`, `font-style`, `font-weight`, `line-height`, `text-align`, `text-overflow`, `text-transform`, `text-decoration-*`, `text-underline-position`, `text-underline-offset`, `text-shadow`, `text-stroke-*`, `letter-spacing`, `vertical-align`, `white-space`. Members: font-feature-settings, font-kerning, font-language-override, font-optical-sizing, font-palette, font-size-adjust, font-smooth, font-stretch, font-synthesis, font-synthesis-position, font-synthesis-small-caps, font-synthesis-style, font-synthesis-weight, font-variant, font-variant-alternates, font-variant-caps, font-variant-east-asian, font-variant-emoji, font-variant-ligatures, font-variant-numeric, font-variant-position, font-variation-settings, font-width, hanging-punctuation, hyphenate-character, hyphenate-limit-chars, hyphens, initial-letter, line-break, line-clamp, line-height-step, tab-size, text-align-last, text-autospace, text-box, text-box-edge, text-box-trim, text-combine-upright, text-decoration-skip, text-decoration-skip-ink, text-emphasis, text-emphasis-color, text-emphasis-position, text-emphasis-style, text-indent, text-justify, text-orientation, text-size-adjust, text-spacing-trim, text-wrap, text-wrap-mode, text-wrap-style, white-space-collapse, word-break, word-spacing.
+**Why:** Scraper marked every modern typography property as `missing`. Supported text-related properties: see partial entries for `font-size`, `font-style`, `font-weight`, `line-height`, `text-align`, `text-overflow`, `text-transform`, `text-decoration-*`, `text-underline-position`, `text-underline-offset`, `text-shadow`, `text-stroke-*`, `letter-spacing`, `vertical-align`, `white-space`. Members: font-feature-settings, font-kerning, font-language-override, font-optical-sizing, font-palette, font-size-adjust, font-smooth, font-stretch, font-synthesis, font-synthesis-position, font-synthesis-small-caps, font-synthesis-style, font-synthesis-weight, font-variant, font-variant-alternates, font-variant-caps, font-variant-emoji, font-variant-ligatures, font-variant-numeric, font-variant-position, font-variation-settings, font-width, hanging-punctuation, hyphenate-character, hyphenate-limit-chars, hyphens, initial-letter, line-break, line-clamp, line-height-step, tab-size, text-align-last, text-autospace, text-box, text-box-edge, text-box-trim, text-combine-upright, text-decoration-skip, text-decoration-skip-ink, text-emphasis, text-emphasis-color, text-emphasis-position, text-emphasis-style, text-indent, text-justify, text-orientation, text-size-adjust, text-spacing-trim, text-wrap, text-wrap-mode, text-wrap-style, white-space-collapse, word-break, word-spacing.
 
 ---
-### [CSS-154] — SVG-only presentation properties
+### [CSS-212] — SVG-only presentation properties
 **Status:** missing
 **Surface:** css-property
 **Severity:** medium
@@ -3059,7 +4119,7 @@ table { border-collapse: collapse; }
 **Why:** Scraper marked these SVG presentation properties as `missing`. Members: alignment-baseline, alt, baseline-shift, baseline-source, dominant-baseline, flood-color, flood-opacity, glyph-orientation-vertical, lighting-color, marker, marker-end, marker-mid, marker-start, paint-order, speak, speak-as, stroke-color, vector-effect.
 
 ---
-### [CSS-130] — Modern background properties
+### [CSS-188] — Modern background properties
 **Status:** missing
 **Surface:** css-property
 **Severity:** medium
@@ -3079,7 +4139,7 @@ table { border-collapse: collapse; }
 **Why:** Scraper marked these background longhands as `missing`. Members: background-attachment, background-blend-mode, background-clip, background-origin.
 
 ---
-### [CSS-131] — Modern mask longhands
+### [CSS-189] — Modern mask longhands
 **Status:** missing
 **Surface:** css-property
 **Severity:** medium
@@ -3099,7 +4159,7 @@ table { border-collapse: collapse; }
 **Why:** Scraper marked these mask longhands as `missing`. Members: mask-border, mask-border-outset, mask-border-repeat, mask-border-slice, mask-border-source, mask-border-width, mask-composite, mask-origin.
 
 ---
-### [CSS-108] — CSS Motion-path / offset-*
+### [CSS-166] — CSS Motion-path / offset-*
 **Status:** missing
 **Surface:** css-property
 **Severity:** medium
@@ -3120,7 +4180,7 @@ table { border-collapse: collapse; }
 **Why:** Scraper marked offset-* (modern) properties as `missing`. Members: offset-anchor, offset-distance, offset-path, offset-position, offset-rotate.
 
 ---
-### [CSS-073] — ::selection
+### [CSS-126] — ::selection
 **Status:** partial-values
 **Surface:** css-selector
 **Severity:** medium
@@ -3140,7 +4200,7 @@ table { border-collapse: collapse; }
 **Why:** scraper note: "only the `color` and `background-color` properties are honoured; other declarations are ignored.". Group: pseudo-element.
 
 ---
-### [CSS-076] — :nth-child(2 of .class)
+### [CSS-132] — :nth-child(2 of .class)
 **Status:** partial-values
 **Surface:** css-selector
 **Severity:** medium
@@ -3160,7 +4220,7 @@ table { border-collapse: collapse; }
 **Why:** scraper note: "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).". Group: pseudo-structural-of.
 
 ---
-### [CSS-077] — :nth-child(2)
+### [CSS-133] — :nth-child(2)
 **Status:** partial-values
 **Surface:** css-selector
 **Severity:** medium
@@ -3180,7 +4240,7 @@ table { border-collapse: collapse; }
 **Why:** scraper note: "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).". Group: pseudo-class.
 
 ---
-### [CSS-078] — :nth-child(2n+1)
+### [CSS-134] — :nth-child(2n+1)
 **Status:** partial-values
 **Surface:** css-selector
 **Severity:** medium
@@ -3200,7 +4260,7 @@ table { border-collapse: collapse; }
 **Why:** scraper note: "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).". Group: pseudo-structural-complex.
 
 ---
-### [CSS-079] — :nth-child(even)
+### [CSS-135] — :nth-child(even)
 **Status:** partial-values
 **Surface:** css-selector
 **Severity:** medium
@@ -3220,7 +4280,7 @@ table { border-collapse: collapse; }
 **Why:** scraper note: "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).". Group: pseudo-structural-complex.
 
 ---
-### [CSS-080] — :nth-child(odd)
+### [CSS-136] — :nth-child(odd)
 **Status:** partial-values
 **Surface:** css-selector
 **Severity:** medium
@@ -3240,7 +4300,7 @@ table { border-collapse: collapse; }
 **Why:** scraper note: "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).". Group: pseudo-structural-complex.
 
 ---
-### [CSS-081] — :nth-last-child(2)
+### [CSS-137] — :nth-last-child(2)
 **Status:** partial-values
 **Surface:** css-selector
 **Severity:** medium
@@ -3260,7 +4320,7 @@ table { border-collapse: collapse; }
 **Why:** scraper note: "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).". Group: pseudo-class.
 
 ---
-### [CSS-082] — :nth-last-of-type(2)
+### [CSS-138] — :nth-last-of-type(2)
 **Status:** partial-values
 **Surface:** css-selector
 **Severity:** medium
@@ -3280,7 +4340,7 @@ table { border-collapse: collapse; }
 **Why:** scraper note: "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).". Group: pseudo-class.
 
 ---
-### [CSS-083] — :nth-of-type(2)
+### [CSS-139] — :nth-of-type(2)
 **Status:** partial-values
 **Surface:** css-selector
 **Severity:** medium
@@ -3300,7 +4360,7 @@ table { border-collapse: collapse; }
 **Why:** scraper note: "no support for the `[ of <complex-selector-list> ]` syntax (CSS Selectors-4).". Group: pseudo-class.
 
 ---
-### [CSS-074] — :first
+### [CSS-127] — :first
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** medium
@@ -3320,7 +4380,7 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :first".
 
 ---
-### [CSS-075] — :has(> .child)
+### [CSS-128] — :has(> .child)
 **Status:** parser-only
 **Surface:** css-selector
 **Severity:** medium
@@ -3340,7 +4400,87 @@ table { border-collapse: collapse; }
 **Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :has".
 
 ---
-### [CSS-107] — CSS image functions — unverified (NEEDS REVIEW)
+### [CSS-129] — :host-context(.foo)
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** medium
+
+**❌ Never generate:**
+```css
+:host-context(.foo) { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:host-context(.foo)` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :host-context".
+
+---
+### [CSS-130] — :is(:hover)
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** medium
+
+**❌ Never generate:**
+```css
+:is(:hover) { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:is(:hover)` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :is".
+
+---
+### [CSS-131] — :left
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** medium
+
+**❌ Never generate:**
+```css
+:left { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:left` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :left".
+
+---
+### [CSS-140] — :right
+**Status:** parser-only
+**Surface:** css-selector
+**Severity:** medium
+
+**❌ Never generate:**
+```css
+:right { color: red; }
+```
+
+**✅ Generate instead:**
+```css
+// Toggle classes from JS based on application state.
+```
+
+**Rule for AI agents:** Never use the `:right` selector; the renderer parses it but does not apply matching rules.
+
+**Why:** scraper probeA=false, probeB=false; logWarning: "unsupported pseudo: :right".
+
+---
+### [CSS-165] — CSS image functions — unverified (NEEDS REVIEW)
 **Status:** unknown
 **Surface:** css-function
 **Severity:** medium
@@ -3360,7 +4500,7 @@ table { border-collapse: collapse; }
 **Why:** Scraper skipReason: "Gameface starts resolving url(…) at stylesheet-parse time; a hanging fetch can deadlock the next CDP call.  Treat as present (the engine universally supports url() for image and font sources) — manual verification recommended.".
 
 ---
-### [CSS-109] — CSS shape functions
+### [CSS-167] — CSS shape functions
 **Status:** missing
 **Surface:** css-function
 **Severity:** medium
@@ -3380,7 +4520,7 @@ table { border-collapse: collapse; }
 **Why:** Scraper logged "Unable to parse declaration: …" for every member. Missing functions: rect(), xywh().
 
 ---
-### [CSS-110] — CSS timing functions
+### [CSS-168] — CSS timing functions
 **Status:** missing
 **Surface:** css-function
 **Severity:** medium
@@ -3400,11 +4540,31 @@ table { border-collapse: collapse; }
 **Why:** Scraper logged "Unable to parse declaration: …" for every member. Missing functions: linear().
 
 ---
+### [CSS-164] — CSS image functions — partial support
+**Status:** partial
+**Surface:** css-function
+**Severity:** medium
+
+**❌ Never generate:**
+```css
+.foo { background-image: linear-gradient(90deg, red 0 10px, blue 10px 20px); }
+```
+
+**✅ Generate instead:**
+```css
+.foo { background-image: linear-gradient(red, blue); }
+```
+
+**Rule for AI agents:** Two-position ("double stop") color-stop shorthand inside gradient stop lists (e.g. `red 0 10px, blue 10px 20px`) is not supported by Gameface — write each stop with a single position instead (e.g. `red 0, red 10px, blue 10px, blue 20px`). Not independently verified in-engine for: radial-gradient, conic-gradient — assumed by analogy with the confirmed members.
+
+**Why:** Scraper logged "Unable to parse declaration: background-image: linear-gradient(90deg, red 0 10px, blue 10px 20px)" for the secondary form while the canonical form (`linear-gradient(red, blue)`) rendered cleanly. Affected functions: linear-gradient(), radial-gradient(), conic-gradient(), repeating-linear-gradient(), repeating-radial-gradient().
+
+---
 
 ## LOW (6)
 
 ---
-### [CSS-172] — Legacy `box-*` flexbox model
+### [CSS-230] — Legacy `box-*` flexbox model
 **Status:** missing
 **Surface:** css-property
 **Severity:** low
@@ -3424,7 +4584,7 @@ table { border-collapse: collapse; }
 **Why:** Scraper logWarning: "Unsupported CSS property detected (stylesheet parser)" for every legacy `box-*` property. Members: box-align, box-decoration-break, box-direction, box-flex, box-flex-group, box-lines, box-ordinal-group, box-orient, box-pack.
 
 ---
-### [CSS-174] — Page / print layout
+### [CSS-232] — Page / print layout
 **Status:** missing
 **Surface:** css-property
 **Severity:** low
@@ -3444,7 +4604,7 @@ table { border-collapse: collapse; }
 **Why:** Scraper marked every page/print/color-scheme property as `missing`. Members: break-after, break-before, break-inside, color-adjust, color-interpolation, color-interpolation-filters, color-scheme, dynamic-range-limit, forced-color-adjust, orphans, page, page-break-after, page-break-before, page-break-inside, print-color-adjust, widows.
 
 ---
-### [CSS-175] — Ruby, BIDI, CJK, math, hanja
+### [CSS-233] — Ruby, BIDI, CJK, math, hanja
 **Status:** missing
 **Surface:** css-property
 **Severity:** low
@@ -3464,7 +4624,7 @@ rt { ruby-position: under; }
 **Why:** Scraper marked ruby/math properties as `missing`. Members: ruby-align, ruby-overhang, ruby-position.
 
 ---
-### [CSS-171] — CSS counters
+### [CSS-229] — CSS counters
 **Status:** missing
 **Surface:** css-property
 **Severity:** low
@@ -3484,7 +4644,7 @@ ol { counter-reset: section; }
 **Why:** Scraper marked all counter-* properties as `missing`. Members: counter-increment, counter-reset, counter-set.
 
 ---
-### [CSS-173] — Other unsupported CSS properties
+### [CSS-231] — Other unsupported CSS properties
 **Status:** missing
 **Surface:** css-property
 **Severity:** low
@@ -3501,10 +4661,10 @@ ol { counter-reset: section; }
 
 **Rule for AI agents:** Never use these CSS properties; the engine logs "Unsupported CSS property detected (stylesheet parser)" for each. Members listed in the index JSON.
 
-**Why:** Scraper logWarning: "Unsupported CSS property detected (stylesheet parser)" for every member. Members: box-sizing, coh-custom-effect-float-param1, coh-custom-effect-float-param10, coh-custom-effect-float-param11, coh-custom-effect-float-param12, coh-custom-effect-float-param2, coh-custom-effect-float-param3, coh-custom-effect-float-param4, coh-custom-effect-float-param5, coh-custom-effect-float-param6, coh-custom-effect-float-param7, coh-custom-effect-float-param8, coh-custom-effect-float-param9, coh-custom-effect-string-param1, coh-custom-effect-string-param2, coh-sdf, custom-property, flex-flow, image-orientation, margin-trim, quotes, shape-image-threshold, shape-margin, shape-outside.
+**Why:** Scraper logWarning: "Unsupported CSS property detected (stylesheet parser)" for every member. Members: coh-custom-effect-float-param1, coh-custom-effect-float-param10, coh-custom-effect-float-param11, coh-custom-effect-float-param12, coh-custom-effect-float-param2, coh-custom-effect-float-param3, coh-custom-effect-float-param4, coh-custom-effect-float-param5, coh-custom-effect-float-param6, coh-custom-effect-float-param7, coh-custom-effect-float-param8, coh-custom-effect-float-param9, coh-custom-effect-string-param1, coh-custom-effect-string-param2, coh-sdf, custom-property, flex-flow, image-orientation, margin-trim, quotes, shape-image-threshold, shape-margin, shape-outside.
 
 ---
-### [CSS-170] — CSS counter functions
+### [CSS-228] — CSS counter functions
 **Status:** missing
 **Surface:** css-function
 **Severity:** low

@@ -704,8 +704,8 @@ const funcCategories = {
   image: {
     label: 'CSS image functions',
     severity: 'high',
-    rule: 'Never use `repeating-linear-gradient()` or `repeating-radial-gradient()`; emit a `linear-gradient()`/`radial-gradient()` with enough explicit color stops to look identical. `url(...)`, `image-set(...)`, and `cross-fade(...)` are unverified (resolving them at parse time stalls Gameface); use `url()` only with cached engine-side assets and treat `image-set`/`cross-fade` as missing.',
-    safe: 'linear-gradient(red 0 10px, blue 10px 20px, red 20px 30px, blue 30px 40px)',
+    rule: '`url(...)`, `image-set(...)`, and `cross-fade(...)` are unverified (resolving them at parse time stalls Gameface); use `url()` only with cached engine-side assets and treat `image-set`/`cross-fade` as missing. `linear-gradient()`, `radial-gradient()`, `conic-gradient()`, `repeating-linear-gradient()`, and `repeating-radial-gradient()` are all honored — see the partial-support rule for their two-position color-stop limitation.',
+    safe: 'linear-gradient(red, blue)',
   },
   transform: {
     label: 'CSS transform functions',
@@ -796,6 +796,54 @@ for (const cat of Object.keys(funcByCategory).sort()) {
       members: unknown.map(u => u.name),
     });
   }
+}
+
+// ----- CSS functions: partial (canonical form honored, a known secondary
+// form is rejected — e.g. gradients' two-position color-stop shorthand). -----
+function downgradeSeverity(sev) {
+  if (sev === 'critical') return 'high';
+  if (sev === 'high') return 'medium';
+  return 'low';
+}
+
+const funcPartialByCategory = {};
+for (const f of funcs.partial) {
+  const cat = (f.evidence && f.evidence.category) || 'other';
+  if (!funcPartialByCategory[cat]) funcPartialByCategory[cat] = [];
+  funcPartialByCategory[cat].push(f);
+}
+
+for (const cat of Object.keys(funcPartialByCategory).sort()) {
+  const meta = funcCategories[cat] || { label: `CSS ${cat} functions` };
+  const members = funcPartialByCategory[cat];
+  const sample = members[0];
+  const ev = sample.evidence || {};
+  const note = ev.note || `${sample.name}() is honored in its canonical form but rejects at least one known variant.`;
+  const unverifiedMembers = members.filter(m => m.evidence && m.evidence.verified === false).map(m => m.name);
+  const unverifiedNote = unverifiedMembers.length
+    ? ` Not independently verified in-engine for: ${unverifiedMembers.join(', ')} — assumed by analogy with the confirmed members.`
+    : '';
+
+  pushRule({
+    id: nextCssId(),
+    surface: 'css-function',
+    status: 'partial',
+    severity: downgradeSeverity(meta.severity || 'medium'),
+    name: `${meta.label} — partial support`,
+    summary: `${members.length} CSS function(s) in this category work in their canonical form but reject a known variant`,
+    badExample: ev.mixedUnitsValue
+      ? `.foo { ${ev.testProperty || 'background-image'}: ${ev.mixedUnitsValue}; }`
+      : `.foo { ${ev.testProperty || 'background-image'}: /* known-rejected variant */; }`,
+    badLang: 'css',
+    goodExample: `.foo { ${ev.testProperty || 'background-image'}: ${ev.canonicalValue || sample.name + '(...)'}; }`,
+    goodLang: 'css',
+    ruleSentence: `${note}${unverifiedNote}`,
+    why: `Scraper logged "${ev.logWarning || 'Unable to parse declaration'}" for the secondary form while the canonical form (\`${ev.canonicalValue}\`) rendered cleanly. Affected functions: ${members.map(m => m.name + '()').join(', ')}.`,
+    sourceFile: 'results/functions/partial.json',
+    sourcePath: `$[?(@.evidence.category=="${cat}" && @.status=="partial")]`,
+    bucket: 'css',
+    members: members.map(m => m.name),
+  });
 }
 
 // ----- HTML rules -----

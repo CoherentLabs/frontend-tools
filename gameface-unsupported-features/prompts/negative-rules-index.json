@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-20T14:41:11.035Z",
+  "generatedAt": "2026-07-22T12:37:10.752Z",
   "generator": "gen-rules.js",
   "surfaces": [
     "css-property",
@@ -27,10 +27,10 @@
     "CSS partial → partial-shorthand": "shorthand property with probe=value-accepted-but-not-computed",
     "CSS partial → partial-values": "property whose evidence lists explicit supportedValues / unsupportedValues / logRejectedValues",
     "CSS partial → parser-only": "non-shorthand whose evidence is only probe=value-accepted-but-not-computed",
-    "CSS missing": "344 unsupported properties, each with logWarning \"Unsupported CSS property detected (stylesheet parser)\"",
-    "CSS-function missing": "30 functions that fail to parse with \"Unable to parse declaration: …\"",
+    "CSS missing": "342 unsupported properties, each with logWarning \"Unsupported CSS property detected (stylesheet parser)\"",
+    "CSS-function missing": "28 functions that fail to parse with \"Unable to parse declaration: …\"",
     "CSS-function unknown": "3 functions the scraper skipped because they stall the renderer at parse time (NEEDS REVIEW)",
-    "Selector parser-only": "30 pseudo-class/element/at-rule names the engine logs as \"unsupported pseudo: …\"",
+    "Selector parser-only": "89 pseudo-class/element/at-rule names the engine logs as \"unsupported pseudo: …\"",
     "Selector partial": "9 structural pseudos that match only the simplest form",
     "HTML partial → silently-coerced (input-type)": "19 input types reset to \"text\" after assignment",
     "HTML partial → partial-values (tag)": "4 tags (canvas/img/input/link) where the constructor exists but a documented subset of properties is missing",
@@ -39,23 +39,27 @@
     "JS partial → stub": "106 window-visible classes whose constructor and/or a subset of members are absent",
     "JS missing-from-window → missing": "1527 window-scoped globals not defined"
   },
-  "skippedBasicSelectors": [],
+  "skippedBasicSelectors": [
+    "@container (min-width: 300px)",
+    "@scope (.foo)",
+    "@supports (display: flex)"
+  ],
   "needsReview": [
     "CSS functions in category \"image\" with status=unknown: url(), image-set(), cross-fade() — scraper skipped them (would stall the renderer at parse time). Verify support against Gameface docs and update prompts accordingly."
   ],
   "rules": [
     {
-      "id": "CSS-007",
+      "id": "CSS-009",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "critical",
-      "summary": "align-content rejects values: space-between, space-around, space-evenly, start, end",
+      "summary": "align-content rejects values: space-between, space-around, start, end, normal",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"align-content\")]",
       "name": "align-content"
     },
     {
-      "id": "CSS-008",
+      "id": "CSS-010",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "critical",
@@ -65,7 +69,7 @@
       "name": "align-items"
     },
     {
-      "id": "CSS-009",
+      "id": "CSS-011",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "critical",
@@ -75,7 +79,17 @@
       "name": "align-self"
     },
     {
-      "id": "CSS-085",
+      "id": "CSS-091",
+      "surface": "css-shorthand",
+      "status": "partial-shorthand",
+      "severity": "high",
+      "summary": "all shorthand parses but does not propagate to longhands",
+      "source_file": "results/css/partial.json",
+      "source_path": "$[?(@.name==\"all\")]",
+      "name": "all"
+    },
+    {
+      "id": "CSS-142",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -85,7 +99,7 @@
       "name": "animation-delay"
     },
     {
-      "id": "CSS-086",
+      "id": "CSS-143",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -95,7 +109,7 @@
       "name": "animation-duration"
     },
     {
-      "id": "CSS-087",
+      "id": "CSS-144",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -105,7 +119,7 @@
       "name": "animation-timing-function"
     },
     {
-      "id": "CSS-088",
+      "id": "CSS-145",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -115,7 +129,7 @@
       "name": "backdrop-filter"
     },
     {
-      "id": "CSS-089",
+      "id": "CSS-146",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -125,17 +139,17 @@
       "name": "background-color"
     },
     {
-      "id": "CSS-039",
+      "id": "CSS-092",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
-      "summary": "background-image rejects values: element, gradients, image-rect, image-set, repeating-linear-gradient(red 0 10px,blue 10px 20px)",
+      "summary": "background-image rejects values: element, gradients, image-rect, image-set",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"background-image\")]",
       "name": "background-image"
     },
     {
-      "id": "CSS-040",
+      "id": "CSS-093",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -145,7 +159,7 @@
       "name": "background-repeat"
     },
     {
-      "id": "CSS-090",
+      "id": "CSS-147",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -155,7 +169,7 @@
       "name": "border-bottom-left-radius"
     },
     {
-      "id": "CSS-091",
+      "id": "CSS-148",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -165,7 +179,7 @@
       "name": "border-bottom-right-radius"
     },
     {
-      "id": "CSS-041",
+      "id": "CSS-094",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -175,7 +189,7 @@
       "name": "border-bottom-style"
     },
     {
-      "id": "CSS-092",
+      "id": "CSS-149",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -185,7 +199,7 @@
       "name": "border-image-outset"
     },
     {
-      "id": "CSS-042",
+      "id": "CSS-095",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -195,7 +209,7 @@
       "name": "border-image-repeat"
     },
     {
-      "id": "CSS-093",
+      "id": "CSS-150",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -205,7 +219,7 @@
       "name": "border-image-slice"
     },
     {
-      "id": "CSS-043",
+      "id": "CSS-096",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -215,7 +229,7 @@
       "name": "border-left-style"
     },
     {
-      "id": "CSS-044",
+      "id": "CSS-097",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -225,7 +239,7 @@
       "name": "border-right-style"
     },
     {
-      "id": "CSS-045",
+      "id": "CSS-098",
       "surface": "css-shorthand",
       "status": "partial-values",
       "severity": "high",
@@ -235,7 +249,7 @@
       "name": "border-style"
     },
     {
-      "id": "CSS-094",
+      "id": "CSS-151",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -245,7 +259,7 @@
       "name": "border-top-left-radius"
     },
     {
-      "id": "CSS-095",
+      "id": "CSS-152",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -255,7 +269,7 @@
       "name": "border-top-right-radius"
     },
     {
-      "id": "CSS-046",
+      "id": "CSS-099",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -265,7 +279,7 @@
       "name": "border-top-style"
     },
     {
-      "id": "CSS-096",
+      "id": "CSS-153",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -275,7 +289,7 @@
       "name": "bottom"
     },
     {
-      "id": "CSS-097",
+      "id": "CSS-154",
       "surface": "css-shorthand",
       "status": "partial-values",
       "severity": "medium",
@@ -285,7 +299,7 @@
       "name": "box-shadow"
     },
     {
-      "id": "CSS-098",
+      "id": "CSS-155",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -295,17 +309,17 @@
       "name": "caret-color"
     },
     {
-      "id": "CSS-099",
+      "id": "CSS-156",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
-      "summary": "clip-path rejects values: fill-box, path, stroke-box, view-box, rect(0 100% 100% 0)",
+      "summary": "clip-path rejects values: fill-box, path, stroke-box, view-box",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"clip-path\")]",
       "name": "clip-path"
     },
     {
-      "id": "CSS-100",
+      "id": "CSS-157",
       "surface": "css-property",
       "status": "parser-only",
       "severity": "medium",
@@ -315,7 +329,7 @@
       "name": "coh-partitioned"
     },
     {
-      "id": "CSS-101",
+      "id": "CSS-158",
       "surface": "css-property",
       "status": "parser-only",
       "severity": "medium",
@@ -325,7 +339,7 @@
       "name": "coh-rendering-option"
     },
     {
-      "id": "CSS-102",
+      "id": "CSS-159",
       "surface": "css-property",
       "status": "parser-only",
       "severity": "medium",
@@ -335,17 +349,17 @@
       "name": "coh-simple-opacity"
     },
     {
-      "id": "CSS-103",
+      "id": "CSS-160",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
-      "summary": "color rejects values: initial, oklab(0.5 0.1 0.1), lch(50% 70 30), color-mix(in srgb,red,blue), hsla(0,100%,50%,0.5)",
+      "summary": "color rejects values: initial",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"color\")]",
       "name": "color"
     },
     {
-      "id": "CSS-104",
+      "id": "CSS-161",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -355,17 +369,17 @@
       "name": "contain"
     },
     {
-      "id": "CSS-106",
+      "id": "CSS-163",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
-      "summary": "content rejects values: gradient, image-set, url, counters(item,\".\"), attr(data-gf)",
+      "summary": "content rejects values: gradient, image-set, url",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"content\")]",
       "name": "content"
     },
     {
-      "id": "CSS-111",
+      "id": "CSS-169",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -375,7 +389,7 @@
       "name": "cx"
     },
     {
-      "id": "CSS-112",
+      "id": "CSS-170",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -385,7 +399,7 @@
       "name": "cy"
     },
     {
-      "id": "CSS-113",
+      "id": "CSS-171",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -395,7 +409,7 @@
       "name": "d"
     },
     {
-      "id": "CSS-013",
+      "id": "CSS-015",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "critical",
@@ -405,7 +419,7 @@
       "name": "display"
     },
     {
-      "id": "CSS-114",
+      "id": "CSS-172",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -415,7 +429,7 @@
       "name": "fill"
     },
     {
-      "id": "CSS-115",
+      "id": "CSS-173",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -425,7 +439,7 @@
       "name": "fill-opacity"
     },
     {
-      "id": "CSS-116",
+      "id": "CSS-174",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -435,7 +449,7 @@
       "name": "filter"
     },
     {
-      "id": "CSS-014",
+      "id": "CSS-016",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "critical",
@@ -445,7 +459,7 @@
       "name": "flex-basis"
     },
     {
-      "id": "CSS-117",
+      "id": "CSS-175",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -455,7 +469,7 @@
       "name": "flex-grow"
     },
     {
-      "id": "CSS-118",
+      "id": "CSS-176",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -465,17 +479,17 @@
       "name": "flex-shrink"
     },
     {
-      "id": "CSS-050",
+      "id": "CSS-102",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
-      "summary": "font-size rejects values: math, round(14px,2px), min(12px,16px), max(12px,16px), mod(20px,6px)",
+      "summary": "font-size rejects values: math",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"font-size\")]",
       "name": "font-size"
     },
     {
-      "id": "CSS-051",
+      "id": "CSS-103",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -485,7 +499,17 @@
       "name": "font-style"
     },
     {
-      "id": "CSS-052",
+      "id": "CSS-104",
+      "surface": "css-value",
+      "status": "partial-values",
+      "severity": "high",
+      "summary": "font-variant-east-asian rejects values: full-width, jis04, jis78, jis83, jis90",
+      "source_file": "results/css/partial.json",
+      "source_path": "$[?(@.name==\"font-variant-east-asian\")]",
+      "name": "font-variant-east-asian"
+    },
+    {
+      "id": "CSS-105",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -495,7 +519,7 @@
       "name": "font-weight"
     },
     {
-      "id": "CSS-119",
+      "id": "CSS-177",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -505,7 +529,7 @@
       "name": "height"
     },
     {
-      "id": "CSS-053",
+      "id": "CSS-106",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -515,17 +539,17 @@
       "name": "image-rendering"
     },
     {
-      "id": "CSS-015",
+      "id": "CSS-017",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "critical",
-      "summary": "justify-content rejects values: space-evenly, start, end, stretch, normal",
+      "summary": "justify-content rejects values: start, end, stretch, normal",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"justify-content\")]",
       "name": "justify-content"
     },
     {
-      "id": "CSS-120",
+      "id": "CSS-178",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -535,7 +559,7 @@
       "name": "left"
     },
     {
-      "id": "CSS-121",
+      "id": "CSS-179",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -545,7 +569,7 @@
       "name": "margin-bottom"
     },
     {
-      "id": "CSS-122",
+      "id": "CSS-180",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -555,7 +579,7 @@
       "name": "margin-left"
     },
     {
-      "id": "CSS-123",
+      "id": "CSS-181",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -565,7 +589,7 @@
       "name": "margin-right"
     },
     {
-      "id": "CSS-124",
+      "id": "CSS-182",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -575,7 +599,7 @@
       "name": "margin-top"
     },
     {
-      "id": "CSS-056",
+      "id": "CSS-109",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -585,7 +609,7 @@
       "name": "mask-clip"
     },
     {
-      "id": "CSS-057",
+      "id": "CSS-110",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -595,7 +619,7 @@
       "name": "mask-mode"
     },
     {
-      "id": "CSS-125",
+      "id": "CSS-183",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -605,7 +629,7 @@
       "name": "mask-repeat"
     },
     {
-      "id": "CSS-126",
+      "id": "CSS-184",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -615,7 +639,7 @@
       "name": "max-height"
     },
     {
-      "id": "CSS-127",
+      "id": "CSS-185",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -625,7 +649,7 @@
       "name": "max-width"
     },
     {
-      "id": "CSS-128",
+      "id": "CSS-186",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -635,7 +659,7 @@
       "name": "min-height"
     },
     {
-      "id": "CSS-129",
+      "id": "CSS-187",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -645,7 +669,7 @@
       "name": "min-width"
     },
     {
-      "id": "CSS-059",
+      "id": "CSS-112",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -655,7 +679,7 @@
       "name": "mix-blend-mode"
     },
     {
-      "id": "CSS-134",
+      "id": "CSS-192",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -665,7 +689,7 @@
       "name": "offset"
     },
     {
-      "id": "CSS-135",
+      "id": "CSS-193",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -675,7 +699,7 @@
       "name": "opacity"
     },
     {
-      "id": "CSS-060",
+      "id": "CSS-113",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -685,7 +709,7 @@
       "name": "overflow-x"
     },
     {
-      "id": "CSS-061",
+      "id": "CSS-114",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -695,7 +719,7 @@
       "name": "overflow-y"
     },
     {
-      "id": "CSS-136",
+      "id": "CSS-194",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -705,7 +729,7 @@
       "name": "padding-bottom"
     },
     {
-      "id": "CSS-137",
+      "id": "CSS-195",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -715,7 +739,7 @@
       "name": "padding-left"
     },
     {
-      "id": "CSS-138",
+      "id": "CSS-196",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -725,7 +749,7 @@
       "name": "padding-right"
     },
     {
-      "id": "CSS-139",
+      "id": "CSS-197",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -735,7 +759,7 @@
       "name": "padding-top"
     },
     {
-      "id": "CSS-062",
+      "id": "CSS-115",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -745,7 +769,7 @@
       "name": "pointer-events"
     },
     {
-      "id": "CSS-016",
+      "id": "CSS-018",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "critical",
@@ -755,7 +779,7 @@
       "name": "position"
     },
     {
-      "id": "CSS-140",
+      "id": "CSS-198",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -765,7 +789,7 @@
       "name": "r"
     },
     {
-      "id": "CSS-141",
+      "id": "CSS-199",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -775,7 +799,7 @@
       "name": "right"
     },
     {
-      "id": "CSS-142",
+      "id": "CSS-200",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -785,7 +809,7 @@
       "name": "rx"
     },
     {
-      "id": "CSS-143",
+      "id": "CSS-201",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -795,7 +819,7 @@
       "name": "ry"
     },
     {
-      "id": "CSS-145",
+      "id": "CSS-203",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -805,7 +829,7 @@
       "name": "shape-rendering"
     },
     {
-      "id": "CSS-146",
+      "id": "CSS-204",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -815,7 +839,7 @@
       "name": "stop-color"
     },
     {
-      "id": "CSS-147",
+      "id": "CSS-205",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -825,7 +849,7 @@
       "name": "stop-opacity"
     },
     {
-      "id": "CSS-148",
+      "id": "CSS-206",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -835,7 +859,7 @@
       "name": "stroke"
     },
     {
-      "id": "CSS-149",
+      "id": "CSS-207",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -845,7 +869,7 @@
       "name": "stroke-dasharray"
     },
     {
-      "id": "CSS-150",
+      "id": "CSS-208",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -855,7 +879,7 @@
       "name": "stroke-dashoffset"
     },
     {
-      "id": "CSS-151",
+      "id": "CSS-209",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -865,7 +889,7 @@
       "name": "stroke-miterlimit"
     },
     {
-      "id": "CSS-152",
+      "id": "CSS-210",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -875,7 +899,7 @@
       "name": "stroke-opacity"
     },
     {
-      "id": "CSS-153",
+      "id": "CSS-211",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -885,7 +909,7 @@
       "name": "stroke-width"
     },
     {
-      "id": "CSS-063",
+      "id": "CSS-116",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -895,7 +919,7 @@
       "name": "text-align"
     },
     {
-      "id": "CSS-155",
+      "id": "CSS-213",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -905,7 +929,7 @@
       "name": "text-anchor"
     },
     {
-      "id": "CSS-156",
+      "id": "CSS-214",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -915,7 +939,7 @@
       "name": "text-decoration-color"
     },
     {
-      "id": "CSS-064",
+      "id": "CSS-117",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -925,7 +949,7 @@
       "name": "text-decoration-line"
     },
     {
-      "id": "CSS-065",
+      "id": "CSS-118",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -935,7 +959,7 @@
       "name": "text-decoration-style"
     },
     {
-      "id": "CSS-066",
+      "id": "CSS-119",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -945,7 +969,7 @@
       "name": "text-decoration-thickness"
     },
     {
-      "id": "CSS-067",
+      "id": "CSS-120",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -955,7 +979,7 @@
       "name": "text-overflow"
     },
     {
-      "id": "CSS-157",
+      "id": "CSS-215",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -965,7 +989,7 @@
       "name": "text-stroke-color"
     },
     {
-      "id": "CSS-158",
+      "id": "CSS-216",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -975,7 +999,7 @@
       "name": "text-stroke-width"
     },
     {
-      "id": "CSS-068",
+      "id": "CSS-121",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -985,7 +1009,7 @@
       "name": "text-transform"
     },
     {
-      "id": "CSS-069",
+      "id": "CSS-122",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -995,7 +1019,7 @@
       "name": "text-underline-offset"
     },
     {
-      "id": "CSS-070",
+      "id": "CSS-123",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1005,7 +1029,7 @@
       "name": "text-underline-position"
     },
     {
-      "id": "CSS-159",
+      "id": "CSS-217",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1015,17 +1039,17 @@
       "name": "top"
     },
     {
-      "id": "CSS-160",
+      "id": "CSS-218",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
-      "summary": "transform rejects values: initial, rotate(acos(1)), perspective(500px), rotate(asin(1)), rotate(atan(1))",
+      "summary": "transform rejects values: initial",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"transform\")]",
       "name": "transform"
     },
     {
-      "id": "CSS-161",
+      "id": "CSS-219",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1035,7 +1059,7 @@
       "name": "transition-delay"
     },
     {
-      "id": "CSS-162",
+      "id": "CSS-220",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1045,17 +1069,17 @@
       "name": "transition-duration"
     },
     {
-      "id": "CSS-163",
+      "id": "CSS-221",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
-      "summary": "transition-timing-function rejects values: jump, linear(0,0.25,0.5,0.75,1)",
+      "summary": "transition-timing-function rejects values: jump",
       "source_file": "results/css/partial.json",
       "source_path": "$[?(@.name==\"transition-timing-function\")]",
       "name": "transition-timing-function"
     },
     {
-      "id": "CSS-164",
+      "id": "CSS-222",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1065,7 +1089,7 @@
       "name": "user-select"
     },
     {
-      "id": "CSS-165",
+      "id": "CSS-223",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1075,7 +1099,7 @@
       "name": "vertical-align"
     },
     {
-      "id": "CSS-071",
+      "id": "CSS-124",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1085,7 +1109,7 @@
       "name": "visibility"
     },
     {
-      "id": "CSS-072",
+      "id": "CSS-125",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "high",
@@ -1095,7 +1119,7 @@
       "name": "white-space"
     },
     {
-      "id": "CSS-167",
+      "id": "CSS-225",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1105,7 +1129,7 @@
       "name": "width"
     },
     {
-      "id": "CSS-168",
+      "id": "CSS-226",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1115,7 +1139,7 @@
       "name": "x"
     },
     {
-      "id": "CSS-169",
+      "id": "CSS-227",
       "surface": "css-value",
       "status": "partial-values",
       "severity": "medium",
@@ -1125,7 +1149,7 @@
       "name": "y"
     },
     {
-      "id": "CSS-172",
+      "id": "CSS-230",
       "surface": "css-property",
       "status": "missing",
       "severity": "low",
@@ -1146,7 +1170,7 @@
       "name": "Legacy `box-*` flexbox model"
     },
     {
-      "id": "CSS-055",
+      "id": "CSS-108",
       "surface": "css-property",
       "status": "missing",
       "severity": "high",
@@ -1223,7 +1247,7 @@
       "name": "Logical and physical-mapped CSS properties"
     },
     {
-      "id": "CSS-010",
+      "id": "CSS-012",
       "surface": "css-property",
       "status": "missing",
       "severity": "critical",
@@ -1251,7 +1275,7 @@
       "name": "CSS Grid layout"
     },
     {
-      "id": "CSS-133",
+      "id": "CSS-191",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -1272,7 +1296,7 @@
       "name": "Multi-column layout"
     },
     {
-      "id": "CSS-105",
+      "id": "CSS-162",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -1287,7 +1311,7 @@
       "name": "Container queries"
     },
     {
-      "id": "CSS-084",
+      "id": "CSS-141",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -1307,7 +1331,7 @@
       "name": "Anchor positioning"
     },
     {
-      "id": "CSS-144",
+      "id": "CSS-202",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -1346,7 +1370,7 @@
       "name": "Scroll snap, scroll margin / padding, scrollbar customization"
     },
     {
-      "id": "CSS-166",
+      "id": "CSS-224",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -1370,11 +1394,11 @@
       "name": "View transitions, animation timeline, scroll timeline"
     },
     {
-      "id": "CSS-132",
+      "id": "CSS-190",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
-      "summary": "55 CSS properties in this family are not implemented",
+      "summary": "54 CSS properties in this family are not implemented",
       "source_file": "results/css/unsupported.json",
       "source_path": "$[?(family==\"modern-typography\")]",
       "members": [
@@ -1394,7 +1418,6 @@
         "font-variant",
         "font-variant-alternates",
         "font-variant-caps",
-        "font-variant-east-asian",
         "font-variant-emoji",
         "font-variant-ligatures",
         "font-variant-numeric",
@@ -1437,7 +1460,7 @@
       "name": "Modern typography (font-variant, hyphens, text-wrap, font-feature-settings, etc.)"
     },
     {
-      "id": "CSS-174",
+      "id": "CSS-232",
       "surface": "css-property",
       "status": "missing",
       "severity": "low",
@@ -1465,7 +1488,7 @@
       "name": "Page / print layout"
     },
     {
-      "id": "CSS-054",
+      "id": "CSS-107",
       "surface": "css-property",
       "status": "missing",
       "severity": "high",
@@ -1495,7 +1518,7 @@
       "name": "List, table, form-control native styling"
     },
     {
-      "id": "CSS-154",
+      "id": "CSS-212",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -1525,7 +1548,7 @@
       "name": "SVG-only presentation properties"
     },
     {
-      "id": "CSS-058",
+      "id": "CSS-111",
       "surface": "css-property",
       "status": "missing",
       "severity": "high",
@@ -1578,7 +1601,7 @@
       "name": "Misc modern positioning / sizing helpers"
     },
     {
-      "id": "CSS-175",
+      "id": "CSS-233",
       "surface": "css-property",
       "status": "missing",
       "severity": "low",
@@ -1593,7 +1616,7 @@
       "name": "Ruby, BIDI, CJK, math, hanja"
     },
     {
-      "id": "CSS-130",
+      "id": "CSS-188",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -1609,7 +1632,7 @@
       "name": "Modern background properties"
     },
     {
-      "id": "CSS-131",
+      "id": "CSS-189",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -1629,7 +1652,7 @@
       "name": "Modern mask longhands"
     },
     {
-      "id": "CSS-108",
+      "id": "CSS-166",
       "surface": "css-property",
       "status": "missing",
       "severity": "medium",
@@ -1646,7 +1669,7 @@
       "name": "CSS Motion-path / offset-*"
     },
     {
-      "id": "CSS-171",
+      "id": "CSS-229",
       "surface": "css-property",
       "status": "missing",
       "severity": "low",
@@ -1661,15 +1684,14 @@
       "name": "CSS counters"
     },
     {
-      "id": "CSS-173",
+      "id": "CSS-231",
       "surface": "css-property",
       "status": "missing",
       "severity": "low",
-      "summary": "24 CSS properties in this family are not implemented",
+      "summary": "23 CSS properties in this family are not implemented",
       "source_file": "results/css/unsupported.json",
       "source_path": "$[?(family==\"misc-cosmetic\")]",
       "members": [
-        "box-sizing",
         "coh-custom-effect-float-param1",
         "coh-custom-effect-float-param10",
         "coh-custom-effect-float-param11",
@@ -1697,7 +1719,7 @@
       "name": "Other unsupported CSS properties"
     },
     {
-      "id": "CSS-073",
+      "id": "CSS-126",
       "surface": "css-selector",
       "status": "partial-values",
       "severity": "medium",
@@ -1707,7 +1729,7 @@
       "name": "::selection"
     },
     {
-      "id": "CSS-076",
+      "id": "CSS-132",
       "surface": "css-selector",
       "status": "partial-values",
       "severity": "medium",
@@ -1717,7 +1739,7 @@
       "name": ":nth-child(2 of .class)"
     },
     {
-      "id": "CSS-077",
+      "id": "CSS-133",
       "surface": "css-selector",
       "status": "partial-values",
       "severity": "medium",
@@ -1727,7 +1749,7 @@
       "name": ":nth-child(2)"
     },
     {
-      "id": "CSS-078",
+      "id": "CSS-134",
       "surface": "css-selector",
       "status": "partial-values",
       "severity": "medium",
@@ -1737,7 +1759,7 @@
       "name": ":nth-child(2n+1)"
     },
     {
-      "id": "CSS-079",
+      "id": "CSS-135",
       "surface": "css-selector",
       "status": "partial-values",
       "severity": "medium",
@@ -1747,7 +1769,7 @@
       "name": ":nth-child(even)"
     },
     {
-      "id": "CSS-080",
+      "id": "CSS-136",
       "surface": "css-selector",
       "status": "partial-values",
       "severity": "medium",
@@ -1757,7 +1779,7 @@
       "name": ":nth-child(odd)"
     },
     {
-      "id": "CSS-081",
+      "id": "CSS-137",
       "surface": "css-selector",
       "status": "partial-values",
       "severity": "medium",
@@ -1767,7 +1789,7 @@
       "name": ":nth-last-child(2)"
     },
     {
-      "id": "CSS-082",
+      "id": "CSS-138",
       "surface": "css-selector",
       "status": "partial-values",
       "severity": "medium",
@@ -1777,7 +1799,7 @@
       "name": ":nth-last-of-type(2)"
     },
     {
-      "id": "CSS-083",
+      "id": "CSS-139",
       "surface": "css-selector",
       "status": "partial-values",
       "severity": "medium",
@@ -1787,7 +1809,7 @@
       "name": ":nth-of-type(2)"
     },
     {
-      "id": "CSS-017",
+      "id": "CSS-019",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1797,7 +1819,7 @@
       "name": "::backdrop"
     },
     {
-      "id": "CSS-018",
+      "id": "CSS-020",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1807,7 +1829,7 @@
       "name": "::checkmark"
     },
     {
-      "id": "CSS-019",
+      "id": "CSS-021",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1817,7 +1839,7 @@
       "name": "::cue"
     },
     {
-      "id": "CSS-020",
+      "id": "CSS-022",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1827,7 +1849,7 @@
       "name": "::details-content"
     },
     {
-      "id": "CSS-021",
+      "id": "CSS-023",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1837,7 +1859,7 @@
       "name": "::file-selector-button"
     },
     {
-      "id": "CSS-022",
+      "id": "CSS-024",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1847,7 +1869,7 @@
       "name": "::first-letter"
     },
     {
-      "id": "CSS-023",
+      "id": "CSS-025",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1857,7 +1879,7 @@
       "name": "::first-line"
     },
     {
-      "id": "CSS-024",
+      "id": "CSS-026",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1867,7 +1889,157 @@
       "name": "::grammar-error"
     },
     {
-      "id": "CSS-025",
+      "id": "CSS-027",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::highlight(custom) (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::highlight(custom)\")]",
+      "name": "::highlight(custom)"
+    },
+    {
+      "id": "CSS-028",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::marker (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::marker\")]",
+      "name": "::marker"
+    },
+    {
+      "id": "CSS-029",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::picker-icon (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::picker-icon\")]",
+      "name": "::picker-icon"
+    },
+    {
+      "id": "CSS-030",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::picker(select) (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::picker(select)\")]",
+      "name": "::picker(select)"
+    },
+    {
+      "id": "CSS-031",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::placeholder (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::placeholder\")]",
+      "name": "::placeholder"
+    },
+    {
+      "id": "CSS-032",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::scroll-button(down) (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::scroll-button(down)\")]",
+      "name": "::scroll-button(down)"
+    },
+    {
+      "id": "CSS-033",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::scroll-marker (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::scroll-marker\")]",
+      "name": "::scroll-marker"
+    },
+    {
+      "id": "CSS-034",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::scroll-marker-group (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::scroll-marker-group\")]",
+      "name": "::scroll-marker-group"
+    },
+    {
+      "id": "CSS-035",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::spelling-error (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::spelling-error\")]",
+      "name": "::spelling-error"
+    },
+    {
+      "id": "CSS-036",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::target-text (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::target-text\")]",
+      "name": "::target-text"
+    },
+    {
+      "id": "CSS-037",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::view-transition (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::view-transition\")]",
+      "name": "::view-transition"
+    },
+    {
+      "id": "CSS-038",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::view-transition-group(*) (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::view-transition-group(*)\")]",
+      "name": "::view-transition-group(*)"
+    },
+    {
+      "id": "CSS-039",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::view-transition-image-pair(*) (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::view-transition-image-pair(*)\")]",
+      "name": "::view-transition-image-pair(*)"
+    },
+    {
+      "id": "CSS-040",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::view-transition-new(*) (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::view-transition-new(*)\")]",
+      "name": "::view-transition-new(*)"
+    },
+    {
+      "id": "CSS-041",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": "::view-transition-old(*) (pseudo-element) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\"::view-transition-old(*)\")]",
+      "name": "::view-transition-old(*)"
+    },
+    {
+      "id": "CSS-042",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1877,7 +2049,7 @@
       "name": ":active-view-transition"
     },
     {
-      "id": "CSS-026",
+      "id": "CSS-043",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1887,7 +2059,7 @@
       "name": ":active-view-transition-type(fade)"
     },
     {
-      "id": "CSS-027",
+      "id": "CSS-044",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1897,7 +2069,7 @@
       "name": ":any-link"
     },
     {
-      "id": "CSS-028",
+      "id": "CSS-045",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1907,7 +2079,7 @@
       "name": ":autofill"
     },
     {
-      "id": "CSS-029",
+      "id": "CSS-046",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1927,7 +2099,7 @@
       "name": ":checked"
     },
     {
-      "id": "CSS-030",
+      "id": "CSS-047",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1937,7 +2109,7 @@
       "name": ":closed"
     },
     {
-      "id": "CSS-031",
+      "id": "CSS-048",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1947,7 +2119,7 @@
       "name": ":default"
     },
     {
-      "id": "CSS-032",
+      "id": "CSS-049",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1957,7 +2129,7 @@
       "name": ":defined"
     },
     {
-      "id": "CSS-033",
+      "id": "CSS-050",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1977,7 +2149,7 @@
       "name": ":disabled"
     },
     {
-      "id": "CSS-034",
+      "id": "CSS-051",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -1997,7 +2169,7 @@
       "name": ":enabled"
     },
     {
-      "id": "CSS-074",
+      "id": "CSS-127",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "medium",
@@ -2037,7 +2209,7 @@
       "name": ":focus-within"
     },
     {
-      "id": "CSS-035",
+      "id": "CSS-052",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -2047,7 +2219,7 @@
       "name": ":fullscreen"
     },
     {
-      "id": "CSS-036",
+      "id": "CSS-053",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -2057,7 +2229,7 @@
       "name": ":future"
     },
     {
-      "id": "CSS-037",
+      "id": "CSS-054",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -2067,7 +2239,7 @@
       "name": ":has-slotted"
     },
     {
-      "id": "CSS-038",
+      "id": "CSS-055",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "high",
@@ -2077,7 +2249,7 @@
       "name": ":has(.child)"
     },
     {
-      "id": "CSS-075",
+      "id": "CSS-128",
       "surface": "css-selector",
       "status": "parser-only",
       "severity": "medium",
@@ -2087,7 +2259,417 @@
       "name": ":has(> .child)"
     },
     {
-      "id": "CSS-011",
+      "id": "CSS-056",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":host-context (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":host-context\")]",
+      "name": ":host-context"
+    },
+    {
+      "id": "CSS-129",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "medium",
+      "summary": ":host-context(.foo) (pseudo-shadow) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":host-context(.foo)\")]",
+      "name": ":host-context(.foo)"
+    },
+    {
+      "id": "CSS-057",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":in-range (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":in-range\")]",
+      "name": ":in-range"
+    },
+    {
+      "id": "CSS-058",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":indeterminate (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":indeterminate\")]",
+      "name": ":indeterminate"
+    },
+    {
+      "id": "CSS-059",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":invalid (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":invalid\")]",
+      "name": ":invalid"
+    },
+    {
+      "id": "CSS-130",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "medium",
+      "summary": ":is(:hover) (pseudo-logical-compound) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":is(:hover)\")]",
+      "name": ":is(:hover)"
+    },
+    {
+      "id": "CSS-060",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":is(.foo) (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":is(.foo)\")]",
+      "name": ":is(.foo)"
+    },
+    {
+      "id": "CSS-061",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":lang(en) (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":lang(en)\")]",
+      "name": ":lang(en)"
+    },
+    {
+      "id": "CSS-007",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "critical",
+      "summary": ":last-of-type (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":last-of-type\")]",
+      "name": ":last-of-type"
+    },
+    {
+      "id": "CSS-131",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "medium",
+      "summary": ":left (page-pseudo) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":left\")]",
+      "name": ":left"
+    },
+    {
+      "id": "CSS-062",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":link (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":link\")]",
+      "name": ":link"
+    },
+    {
+      "id": "CSS-063",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":modal (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":modal\")]",
+      "name": ":modal"
+    },
+    {
+      "id": "CSS-064",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":muted (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":muted\")]",
+      "name": ":muted"
+    },
+    {
+      "id": "CSS-008",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "critical",
+      "summary": ":not(.foo) (pseudo-logical-forgiving) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":not(.foo)\")]",
+      "name": ":not(.foo)"
+    },
+    {
+      "id": "CSS-065",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":only-of-type (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":only-of-type\")]",
+      "name": ":only-of-type"
+    },
+    {
+      "id": "CSS-066",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":open (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":open\")]",
+      "name": ":open"
+    },
+    {
+      "id": "CSS-067",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":optional (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":optional\")]",
+      "name": ":optional"
+    },
+    {
+      "id": "CSS-068",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":out-of-range (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":out-of-range\")]",
+      "name": ":out-of-range"
+    },
+    {
+      "id": "CSS-069",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":past (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":past\")]",
+      "name": ":past"
+    },
+    {
+      "id": "CSS-070",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":paused (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":paused\")]",
+      "name": ":paused"
+    },
+    {
+      "id": "CSS-071",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":picture-in-picture (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":picture-in-picture\")]",
+      "name": ":picture-in-picture"
+    },
+    {
+      "id": "CSS-072",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":placeholder-shown (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":placeholder-shown\")]",
+      "name": ":placeholder-shown"
+    },
+    {
+      "id": "CSS-073",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":playing (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":playing\")]",
+      "name": ":playing"
+    },
+    {
+      "id": "CSS-074",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":popover-open (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":popover-open\")]",
+      "name": ":popover-open"
+    },
+    {
+      "id": "CSS-075",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":read-only (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":read-only\")]",
+      "name": ":read-only"
+    },
+    {
+      "id": "CSS-076",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":read-write (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":read-write\")]",
+      "name": ":read-write"
+    },
+    {
+      "id": "CSS-077",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":required (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":required\")]",
+      "name": ":required"
+    },
+    {
+      "id": "CSS-140",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "medium",
+      "summary": ":right (page-pseudo) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":right\")]",
+      "name": ":right"
+    },
+    {
+      "id": "CSS-078",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":scope (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":scope\")]",
+      "name": ":scope"
+    },
+    {
+      "id": "CSS-079",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":seeking (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":seeking\")]",
+      "name": ":seeking"
+    },
+    {
+      "id": "CSS-080",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":stalled (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":stalled\")]",
+      "name": ":stalled"
+    },
+    {
+      "id": "CSS-081",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":state(custom-state) (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":state(custom-state)\")]",
+      "name": ":state(custom-state)"
+    },
+    {
+      "id": "CSS-082",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":target (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":target\")]",
+      "name": ":target"
+    },
+    {
+      "id": "CSS-083",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":target-current (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":target-current\")]",
+      "name": ":target-current"
+    },
+    {
+      "id": "CSS-084",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":user-invalid (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":user-invalid\")]",
+      "name": ":user-invalid"
+    },
+    {
+      "id": "CSS-085",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":user-valid (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":user-valid\")]",
+      "name": ":user-valid"
+    },
+    {
+      "id": "CSS-086",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":valid (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":valid\")]",
+      "name": ":valid"
+    },
+    {
+      "id": "CSS-087",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":visited (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":visited\")]",
+      "name": ":visited"
+    },
+    {
+      "id": "CSS-088",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":volume-locked (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":volume-locked\")]",
+      "name": ":volume-locked"
+    },
+    {
+      "id": "CSS-089",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":where(.foo) (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":where(.foo)\")]",
+      "name": ":where(.foo)"
+    },
+    {
+      "id": "CSS-090",
+      "surface": "css-selector",
+      "status": "parser-only",
+      "severity": "high",
+      "summary": ":xr-overlay (pseudo-class) parses but is not honored",
+      "source_file": "results/selectors/unsupported.json",
+      "source_path": "$[?(@.name==\":xr-overlay\")]",
+      "name": ":xr-overlay"
+    },
+    {
+      "id": "CSS-013",
       "surface": "css-function",
       "status": "missing",
       "severity": "critical",
@@ -2107,7 +2689,7 @@
       "name": "CSS modern color functions"
     },
     {
-      "id": "CSS-170",
+      "id": "CSS-228",
       "surface": "css-function",
       "status": "missing",
       "severity": "low",
@@ -2121,21 +2703,7 @@
       "name": "CSS counter functions"
     },
     {
-      "id": "CSS-047",
-      "surface": "css-function",
-      "status": "missing",
-      "severity": "high",
-      "summary": "2 CSS function(s) in this category are not parsed by Gameface",
-      "source_file": "results/functions/unsupported.json",
-      "source_path": "$[?(@.evidence.category==\"image\" && @.status==\"missing\")]",
-      "members": [
-        "repeating-linear-gradient",
-        "repeating-radial-gradient"
-      ],
-      "name": "CSS image functions"
-    },
-    {
-      "id": "CSS-107",
+      "id": "CSS-165",
       "surface": "css-function",
       "status": "unknown",
       "severity": "medium",
@@ -2150,7 +2718,7 @@
       "name": "CSS image functions — unverified (NEEDS REVIEW)"
     },
     {
-      "id": "CSS-012",
+      "id": "CSS-014",
       "surface": "css-function",
       "status": "missing",
       "severity": "critical",
@@ -2173,7 +2741,7 @@
       "name": "CSS modern math functions"
     },
     {
-      "id": "CSS-048",
+      "id": "CSS-100",
       "surface": "css-function",
       "status": "missing",
       "severity": "high",
@@ -2187,7 +2755,7 @@
       "name": "CSS reference functions"
     },
     {
-      "id": "CSS-109",
+      "id": "CSS-167",
       "surface": "css-function",
       "status": "missing",
       "severity": "medium",
@@ -2201,7 +2769,7 @@
       "name": "CSS shape functions"
     },
     {
-      "id": "CSS-110",
+      "id": "CSS-168",
       "surface": "css-function",
       "status": "missing",
       "severity": "medium",
@@ -2214,7 +2782,7 @@
       "name": "CSS timing functions"
     },
     {
-      "id": "CSS-049",
+      "id": "CSS-101",
       "surface": "css-function",
       "status": "missing",
       "severity": "high",
@@ -2226,6 +2794,23 @@
         "perspective"
       ],
       "name": "CSS transform functions"
+    },
+    {
+      "id": "CSS-164",
+      "surface": "css-function",
+      "status": "partial",
+      "severity": "medium",
+      "summary": "5 CSS function(s) in this category work in their canonical form but reject a known variant",
+      "source_file": "results/functions/partial.json",
+      "source_path": "$[?(@.evidence.category==\"image\" && @.status==\"partial\")]",
+      "members": [
+        "linear-gradient",
+        "radial-gradient",
+        "conic-gradient",
+        "repeating-linear-gradient",
+        "repeating-radial-gradient"
+      ],
+      "name": "CSS image functions — partial support"
     },
     {
       "id": "HTML-046",
@@ -3792,7 +4377,7 @@
       "surface": "js-stub",
       "status": "stub",
       "severity": "critical",
-      "summary": "CSSStyleDeclaration: 350 member(s) missing",
+      "summary": "CSSStyleDeclaration: 348 member(s) missing",
       "source_file": "results/js/partial.json",
       "source_path": "$[?(@.name==\"CSSStyleDeclaration\")]",
       "name": "CSSStyleDeclaration"

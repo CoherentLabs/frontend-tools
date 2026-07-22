@@ -134,31 +134,14 @@
   {
     "status": "supported",
     "surface": "css-function",
-    "name": "linear-gradient",
-    "evidence": {
-      "category": "image",
-      "testProperty": "background-image",
-      "canonicalValue": "linear-gradient(red, blue)"
-    }
-  },
-  {
-    "status": "supported",
-    "surface": "css-function",
-    "name": "radial-gradient",
-    "evidence": {
-      "category": "image",
-      "testProperty": "background-image",
-      "canonicalValue": "radial-gradient(red, blue)"
-    }
-  },
-  {
-    "status": "supported",
-    "surface": "css-function",
     "name": "conic-gradient",
     "evidence": {
       "category": "image",
       "testProperty": "background-image",
-      "canonicalValue": "conic-gradient(red, blue)"
+      "canonicalValue": "conic-gradient(red, blue)",
+      "note": "Two-position (\"double stop\") color-stop shorthand inside gradient stop lists (e.g. `red 0 10px, blue 10px 20px`) is not supported by Gameface — write each stop with a single position instead (e.g. `red 0, red 10px, blue 10px, blue 20px`).",
+      "mixedUnitsValue": "conic-gradient(red 0deg 90deg, blue 90deg 180deg)",
+      "mixedUnitsRejected": false
     }
   },
   {

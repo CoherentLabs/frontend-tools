@@ -80,10 +80,11 @@ function generateCssFunctionProbePage(): string {
   <meta charset="UTF-8">
   <title>Gameface CSS Function Probe Page</title>
   <!--
-    Mixed-units negative tests are INTENTIONAL: Gameface's documented
-    limitation is "no mixing units inside math/sizing functions", and the
-    reconciler relies on those rules failing to mark a function as
-    'partial'.  Do not consolidate them away.
+    "-mixed" rules are INTENTIONAL negative tests: each one probes a known
+    "canonical form works, this variant doesn't" gap (unit mixing inside
+    math/sizing functions, two-position color-stop shorthand inside
+    gradients, …), and the reconciler relies on those rules failing to mark
+    a function as 'partial'.  Do not consolidate them away.
 
     Resource-fetching functions (url, image-set, cross-fade) are
     deliberately skipped — see CssFunctionEntry.skipProbe.
