@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-gameface",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Gameface-specific ESLint rules (HTML data binding, CSS) — stubs for incremental port from HTMLHint and Stylelint.",
   "type": "module",
   "main": "src/index.js",
