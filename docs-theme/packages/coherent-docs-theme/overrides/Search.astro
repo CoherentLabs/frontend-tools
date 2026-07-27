@@ -7,21 +7,7 @@ const isDev = import.meta.env.DEV;
 const baseUrl = import.meta.env.BASE_URL === '/' ? '' : import.meta.env.BASE_URL;
 
 const defaultMergeIndex = [
-  {
-    bundlePath: "https://gameface-ui.coherent-labs.com/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "Gameface UI" }
-  },
-  {
-    bundlePath: "https://frontend-tools.coherent-labs.com/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "UI Tools" }
-  },
-  {
-    bundlePath: "https://guide.coherent-labs.com/pagefind",
-    indexWeight: 0.5,
-    mergeFilter: { resource: "UI Workflow Guide" }
-  },
+
   {
     bundlePath: "https://docs.coherent-labs.com/cpp-gameface/pagefind",
     indexWeight: 0.5,
@@ -51,7 +37,22 @@ const defaultMergeIndex = [
     bundlePath: "https://docs.coherent-labs.com/unity-prysm/pagefind",
     indexWeight: 0.5,
     mergeFilter: { resource: "Prysm Unity" }
-  }
+  },
+  {
+    bundlePath: "https://guide.coherent-labs.com/pagefind",
+    indexWeight: 0.5,
+    mergeFilter: { resource: "UI Workflow Guide" }
+  },
+  {
+    bundlePath: "https://gameface-ui.coherent-labs.com/pagefind",
+    indexWeight: 0.5,
+    mergeFilter: { resource: "Gameface UI" }
+  },
+  {
+    bundlePath: "https://frontend-tools.coherent-labs.com/pagefind",
+    indexWeight: 0.5,
+    mergeFilter: { resource: "UI Tools" }
+  },
 ];
 
 const externalIndexes = defaultMergeIndex.filter(m => m.mergeFilter.resource !== documentationSearchTag);
@@ -150,6 +151,8 @@ const externalIndexes = defaultMergeIndex.filter(m => m.mergeFilter.resource !==
         "frontend-tools.coherent-labs.com/interaction-manager": { text: "UI Tools | Interaction Manager", color: "#007abb" },
         "frontend-tools.coherent-labs.com/gameface-vite-plugin": { text: "UI Tools | Gameface Vite Plugin", color: "#007acc" },
         "frontend-tools.coherent-labs.com/vite-solid-style-to-css-plugin": { text: "UI Tools | Solid Style to CSS Plugin", color: "#007add" },
+        "frontend-tools.coherent-labs.com/vite-gameface-style-transformer": { text: "UI Tools | Vite Style Transformer", color: "#007add" },
+        "frontend-tools.coherent-labs.com/eslint-plugin-gameface": { text: "UI Tools | ESLint Plugin", color: "#007add" },
         "frontend-tools.coherent-labs.com/data-binding-autocomplete": { text: "UI Tools | Data Binding Autocomplete", color: "#007aee" },
         "frontend-tools.coherent-labs.com": { text: "UI Tools", color: "#007aff" },
         "gameface-ui.coherent-labs.com": { text: "Gameface UI", color: "#e24a4a" },
@@ -174,7 +177,6 @@ const externalIndexes = defaultMergeIndex.filter(m => m.mergeFilter.resource !==
             }
             const search = await pagefind.search(term);
             window.__pagefindTrueCounts = search.filters?.resource || {};
-            searchInput.dataset.forceUpdate = Date.now();
         });
     }
 
@@ -224,9 +226,10 @@ const externalIndexes = defaultMergeIndex.filter(m => m.mergeFilter.resource !==
                 cb.dataset.radioFixed = "true";
                 cb.addEventListener("change", (e) => {
                     if (e.target.checked) {
-                        checkboxes.forEach((other) => {
+                        const currentCheckboxes = searchContainer.querySelectorAll(".pagefind-ui__filter-checkbox");
+                        currentCheckboxes.forEach((other) => {
                             if (other !== e.target && other.checked) {
-                                other.checked = false; 
+                                other.checked = false;
                                 other.dispatchEvent(new Event("change", { bubbles: true }));
                             }
                         });
@@ -276,19 +279,23 @@ const externalIndexes = defaultMergeIndex.filter(m => m.mergeFilter.resource !==
         }
     }
 
-    function mergeSearchIndexes(pagefind) {
+    async function mergeSearchIndexes(pagefind) {
         const siteSearch = document.querySelector('site-search');
 
         if (siteSearch && externalIndexes && externalIndexes.length > 0) {
-            setTimeout(async () => {
-                const validIndexes = [];
-                await Promise.all(externalIndexes.map(async (index) => {
+                const results = await Promise.all(externalIndexes.map(async (index) => {
                     try {
                         const url = `${index.bundlePath.replace(/\/$/, '')}/pagefind-entry.json`;
                         const res = await fetch(url, { method: 'HEAD' });
-                        if (res.ok) validIndexes.push(index);
-                    } catch (e) {}
+                        return res.ok;
+                    } catch (e) {
+                        return false;
+                    }
                 }));
+
+                // Preserve the order of externalIndexes regardless of fetch resolution order,
+                // so the filter buttons stay in a stable, predictable order.
+                const validIndexes = externalIndexes.filter((_, i) => results[i]);
 
                 if (validIndexes.length > 0) {
                     try {
@@ -303,14 +310,13 @@ const externalIndexes = defaultMergeIndex.filter(m => m.mergeFilter.resource !==
 
                     try {
                         await pagefind.init();
-                        for (const idx of validIndexes) {
-                            await pagefind.mergeIndex(idx.bundlePath, { mergeFilter: idx.mergeFilter, indexWeight: idx.indexWeight });
-                        }
+                        await Promise.all(validIndexes.map((idx) =>
+                            pagefind.mergeIndex(idx.bundlePath, { mergeFilter: idx.mergeFilter, indexWeight: idx.indexWeight})
+                        ));
                     } catch(err) {
                         console.error("Failed to merge index in raw Pagefind API", err);
                     }
                 }
-            }, 100);
         }
     }
 
@@ -324,7 +330,9 @@ const externalIndexes = defaultMergeIndex.filter(m => m.mergeFilter.resource !==
             const pagefind = await import(`${baseUrl}/pagefind/pagefind.js`);
             window.__pagefindTrueCounts = {};
 
-            mergeSearchIndexes(pagefind);
+            mergeSearchIndexes(pagefind).catch((err) => {
+                console.warn("Failed to merge external Pagefind indexes", err);
+            });
 
             let frameRequested = false;
 

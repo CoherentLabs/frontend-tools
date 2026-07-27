@@ -25,3 +25,4 @@ export { default as Summary } from './Summary.astro';
 export { default as Typeref } from './Typeref.astro';
 export { default as Table } from './Table.astro';
 export { default as Video } from './Video.astro';
+export { default as FolderLinksPage } from './FolderLinksPage.astro';
