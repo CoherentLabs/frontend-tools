@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function getConfig() {
-  const documentations = ['e2e', 'gameface-vite-plugin', 'vite-solid-style-to-css-plugin', 'vite-gameface-style-transformer', 'interaction-manager', 'data-binding-autocomplete', 'eslint-plugin-gameface'];
+  const documentations = ['e2e', 'gameface-vite-plugin', 'vite-solid-style-to-css-plugin', 'vite-gameface-style-transformer', 'interaction-manager', 'data-binding-autocomplete', 'eslint-plugin-gameface', 'create-gameface-app'];
 
   const sideBarTopics = [
     {
@@ -165,6 +165,23 @@ async function getConfig() {
           label: 'Downloads',
           link: 'data-binding-autocomplete/downloads'
         },
+      ],
+    },
+    {
+      link: '/create-gameface-app/getting-started',
+      label: 'Create Gameface App',
+      id: 'create-gameface-app',
+      icon: 'seti:powershell',
+      items: [
+        await generateVersionWithPackageJSON(
+          '../cli/create-gameface-app/package.json',
+          'https://npmjs.org/create-gameface-app'
+        ),
+        {
+          label: 'Getting Started',
+          autogenerate: { directory: 'create-gameface-app/getting-started' },
+        },
+        generateMultipleDocsChangelog('create-gameface-app', path.join(__dirname, `./src/content/docs/create-gameface-app/changelog/index.mdx`)),
       ],
     },
   ];
