@@ -12,7 +12,7 @@
     "forceConsistentCasingInFileNames": true,
     "useUnknownInCatchVariables": true, 
     "declaration": false,
-    "sourceMap": false,
+    "sourceMap": false
   },
   "include": ["*.ts"],
   "exclude": ["node_modules", "dist"]

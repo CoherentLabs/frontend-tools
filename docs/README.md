@@ -83,7 +83,10 @@ const sideBarTopics = [
         autogenerate: { directory: 'vite-gameface-style-transformer/concepts' },
       },
       // 3. Auto-generate Changelog
-      generateMultipleDocsChangelog('vite-gameface-style-transformer'),
+      generateMultipleDocsChangelog(
+        'vite-gameface-style-transformer',
+        path.join(__dirname, `./src/content/docs/vite-gameface-style-transformer/changelog/index.mdx`)
+       ),
     ],
   },
 ];

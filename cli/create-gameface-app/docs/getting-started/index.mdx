@@ -55,29 +55,25 @@ Every prompt can be answered up front with an argument, so you can skip the wiza
 <Tabs syncKey="pkg">
   <TabItem label="npm">
     ```bash
-    npm create gameface-app my-app -- --template react --yes
+    npm create gameface-app my-app -- --template react --default
     ```
   </TabItem>
   <TabItem label="pnpm">
     ```bash
-    pnpm create gameface-app my-app --template react --yes
+    pnpm create gameface-app my-app --template react --default
     ```
   </TabItem>
   <TabItem label="yarn">
     ```bash
-    yarn create gameface-app my-app --template react --yes
+    yarn create gameface-app my-app --template react --default
     ```
   </TabItem>
   <TabItem label="npx">
     ```bash
-    npx create-gameface-app my-app --template react --yes
+    npx create-gameface-app my-app --template react --default
     ```
   </TabItem>
 </Tabs>
-
-:::note[Why the `--` with npm?]
-`npm create` consumes flags for itself, so any option meant for the CLI must come after a `--` separator. This only applies to **flags** - the project name positional works without it. `npx`, `pnpm`, and `yarn` forward flags directly, so they don't need the `--`.
-:::
 
 Any argument you omit falls back to its interactive prompt, so you can mix and match - for example, provide the template but let the CLI ask for the name:
 
@@ -90,7 +86,7 @@ npx create-gameface-app --template react
 | Flag | Alias | Description |
 | --- | --- | --- |
 | `--template <name>` | `-t` | Template to scaffold. Skips the template prompt. |
-| `--yes` | `-y` | Accept the confirmation and install prompts automatically. |
+| `--default` | `-d` | Accept the confirmation and install prompts automatically. |
 | `--help` | `-h` | Print usage information and exit. |
 
 ## Available templates

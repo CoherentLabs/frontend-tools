@@ -65,7 +65,7 @@ async function main() {
     allowPositionals: true,
     options: {
       template: { type: 'string', short: 't' },
-      yes:      { type: 'boolean', short: 'y' },
+      default:  { type: 'boolean', short: 'd' },
       help:     { type: 'boolean', short: 'h' },
     },
   })
@@ -94,6 +94,11 @@ async function main() {
     defaultValue: 'gameface-app',
   }));
 
+  if (!projectName.trim() || projectName === '.' || projectName === '..' || /[\\/]/.test(projectName)) {
+    cancel('Project name must be a single directory name (not a path).')
+    process.exit(1)
+  }
+  
   const dest = join(process.cwd(), projectName);
 
   // Get user's preferred framework
@@ -106,7 +111,7 @@ async function main() {
   })) as TemplateKey)
 
   // Confirm the selection
-  if (!values.yes) {
+  if (!values.default) {
     bail(await confirm({
       message: `Create a ${framework} starter project in /${projectName}?`,
     }));
@@ -131,7 +136,7 @@ async function main() {
       throw new Error(
         `\nScaffolding failed - the template appears to be empty.\n` +
         `This is likely a problem on our end. Please report it:\n` +
-        `https://github.com/CoherentLabs/Gameface-UI/issues`
+        `https://github.com/CoherentLabs/frontend-tools/issues`
       )
     }
 
@@ -146,7 +151,7 @@ async function main() {
 
   const pm = getPackageManager()
 
-  let shouldInstall: boolean | symbol = values.yes ?? false;
+  let shouldInstall: boolean | symbol = values.default ?? false;
   if (!shouldInstall) shouldInstall = await confirm({ message: `Install dependencies with ${pm}?` })
 
   if (isCancel(shouldInstall)) {
