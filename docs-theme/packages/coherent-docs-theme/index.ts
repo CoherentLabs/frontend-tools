@@ -12,16 +12,17 @@ import { getSortedCoherentReleases } from './utils/coherentReleases';
 import { version } from './package.json';
 import { remarkFixAbsoluteLinks } from './remark-directives/fixAbsoluteLinks';
 import remarkCustomHeaderId from 'remark-custom-header-id';
+import { getNavLinks } from './internal/siteRegistry';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export default function coherentThemePlugin(options: CoherentThemeOptions = { documentationSearchTag: '' }): StarlightPlugin[] {
-  if (!options?.documentationSearchTag) {
-    throw new Error('Coherent docs theme plugin requires "documentationSearchTag"!')
+export default function coherentThemePlugin(options: CoherentThemeOptions = { documentation: '' }): StarlightPlugin[] {
+  if (!options?.documentation) {
+    throw new Error('Coherent docs theme plugin requires "documentation"!')
   }
 
-  let navLinks = defaultHeaderLinks;
+  let navLinks = [...getNavLinks()];
   for (const link of options.navLinks ?? []) {
     navLinks.push(link)
   }
@@ -37,6 +38,7 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
       async 'config:setup'({ config, astroConfig, logger, updateConfig, addIntegration, command }) {
         logger.info(`Initializing Coherent Theme v${version}...`);
 
+
         addIntegration({
           name: 'coherent-docs-theme-integration',
           hooks: {
@@ -45,7 +47,11 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
                 markdown: {
                   remarkPlugins: [...directives, remarkCustomHeaderId, [remarkFixAbsoluteLinks, { basePath: astroConfig.base }]],
                 },
+                trailingSlash: 'always',
                 vite: {
+                  worker: {
+                    format: 'es',
+                  },
                   plugins: [
                     {
                       name: 'starlight-release-snippet-hmr',
@@ -75,14 +81,15 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
                   ]
                 },
               });
-            }
+            },
           }
         });
 
         process.env.COHERENT_THEME_CONFIG = JSON.stringify({
           showPageProgress,
           navLinks,
-          documentationSearchTag: options.documentationSearchTag,
+          documentation: options.documentation,
+          engine: options.engine,
           tagManagerId: options.tagManagerId,
           breadcrumbs: options.breadcrumbs,
           topicsConfig: options.topicsConfig,
@@ -111,10 +118,20 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
         configUpdates.head.push({
           tag: 'meta',
           attrs: {
-            'data-pagefind-filter': 'resource[content]',
-            content: options.documentationSearchTag
+            'data-pagefind-filter': 'documentation[content]',
+            content: options.documentation
           }
         });
+
+        if (options.engine) {
+          configUpdates.head.push({
+            tag: 'meta',
+            attrs: {
+              'data-pagefind-filter': 'engine[content]',
+              content: options.engine
+            }
+          });
+        }
 
         if (command === 'build') {
           configUpdates.pagefind = {

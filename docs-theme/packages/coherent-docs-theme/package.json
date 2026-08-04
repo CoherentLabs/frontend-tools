@@ -1,6 +1,6 @@
 {
   "name": "coherent-docs-theme",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "license": "MIT",
   "description": "Theme for all the coherent documentations",
   "author": "CoherentLabs",
@@ -25,11 +25,14 @@
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
+    "hast-util-from-html": "^2.0.1",
+    "hast-util-to-html": "^9.0.0",
     "reading-time": "^1.5.0",
     "remark-custom-header-id": "^1.0.0",
     "starlight-heading-badges": "0.6.1",
     "starlight-sidebar-topics": "0.6.2",
     "starlight-sidebar-topics-dropdown": "0.5.2",
+    "unist-util-visit": "^5.0.0",
     "vanilla-cookieconsent": "^3.1.0"
   },
   "peerDependencies": {

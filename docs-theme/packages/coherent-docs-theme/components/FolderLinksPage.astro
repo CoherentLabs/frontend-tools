@@ -6,7 +6,12 @@ interface Props {
     directory: string;
 }
 
-const  directory = Astro.url.pathname;
+const baseUrl =
+    import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL;
+const directory =
+    baseUrl && Astro.url.pathname.startsWith(baseUrl)
+        ? Astro.url.pathname.slice(baseUrl.length)
+        : Astro.url.pathname;
 const normalizedDirectory = directory.replace(/^\/+|\/+$/g, "");
 const docsEntries: CollectionEntry<"docs">[] = await getCollection("docs");
 const directoryPrefix = normalizedDirectory ? `${normalizedDirectory}/` : "";
@@ -19,9 +24,18 @@ function getEntryPath(entry: CollectionEntry<"docs">): string {
     return entry.id.replace(/\.(md|mdx)$/i, "");
 }
 
-const pages: Array<{ href: string; title: string; sidebarOrder?: number }> = docsEntries
+const pages: Array<{
+    href: string;
+    title: string;
+    sidebarOrder?: number;
+    draft?: boolean;
+}> = docsEntries
     .filter((entry) => {
         const entryPath = getEntryPath(entry);
+
+        if (entry.data.draft) {
+            return false;
+        }
 
         if (!directoryPrefix) {
             return entryPath !== "index";
@@ -50,19 +64,20 @@ const pages: Array<{ href: string; title: string; sidebarOrder?: number }> = doc
                 order?: number;
             };
         };
-        const title = entry.data.title ?? entryPath.split("/").at(-1) ?? entryPath;
+        const title =
+            entry.data.title ?? entryPath.split("/").at(-1) ?? entryPath;
         const sidebarOrder = entryData.sidebar?.order;
 
         if (typeof sidebarOrder === "number") {
             return {
-                href: `/${entryPath}`,
+                href: `${baseUrl}/${entryPath}/`,
                 title,
                 sidebarOrder,
             };
         }
 
         return {
-            href: `/${entryPath}`,
+            href: `${baseUrl}/${entryPath}/`,
             title,
         };
     });

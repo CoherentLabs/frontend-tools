@@ -5,12 +5,14 @@ interface Topic {
 }
 
 export interface CoherentThemeOptions {
-    documentationSearchTag:
-    'Gameface Custom Engine' | 'Prysm Custom Engine' |
-    'Gameface Unreal' | 'Prysm Unreal' |
-    'Gameface Unity' | 'Prysm Unity' |
+    /** Top-level product this site belongs to. Used to scope/pre-select search filters and nav highlighting. */
+    documentation:
+    'Gameface' | 'Prysm' |
+    'UI Workflow Guide' |
     'UI Tools' |
     'Gameface UI' | string
+    /** Which engine variant this site documents, if any. Only Gameface/Prysm sites have one. */
+    engine?: 'Custom Engine' | 'Unreal' | 'Unity' | string
     topicsConfig?: {
         native?: Topic
         unreal?: Topic
@@ -28,7 +30,7 @@ export interface CoherentThemeOptions {
 
 export default function getThemeConfig(): CoherentThemeOptions {
     let themeConfig = {
-        documentationSearchTag: '',
+        documentation: '',
         showPageProgress: false,
         navLinks: [],
         disableDefaultLogo: false,

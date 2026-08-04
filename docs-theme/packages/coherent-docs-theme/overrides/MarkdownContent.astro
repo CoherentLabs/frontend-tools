@@ -2,6 +2,11 @@
 import DefaultMarkdownContent from "@astrojs/starlight/components/MarkdownContent.astro";
 
 const pathname = Astro.url.pathname.toLowerCase();
+// Starlight's Page.astro renders <MarkdownContent> with no props at all (just a slot), so
+// Astro.props.frontmatter is always undefined here. The page's frontmatter instead lives on
+// the route context Starlight puts on locals — same pattern PageTitle.astro override uses.
+//@ts-ignore
+const frontmatter = Astro.locals.starlightRoute?.entry?.data;
 
 function getPageWeight() {
   if (
@@ -17,9 +22,23 @@ function getPageWeight() {
     return "2.0";
   }
 }
+
+function getPagefindFilter() {
+  if (frontmatter?.contentType) {
+    return `type:${frontmatter.contentType}`;
+  } else if (pathname.includes("/api_reference") || pathname.includes("/api-reference")) {
+    return "type:API Reference";
+  } else if (pathname.includes("/changelog")) {
+    return "type:Changelog";
+  } else if (pathname.includes("/releases") || pathname.includes("/release")) {
+    return "type:Release Notes";
+  } else {
+    return "type:Documentation";
+  }
+}
 ---
 
-<div data-pagefind-weight={getPageWeight()} style="display: contents;">
+<div data-pagefind-weight={getPageWeight()} style="display: contents;" {...(getPagefindFilter() ? {'data-pagefind-filter': getPagefindFilter()} : {})}>
   <DefaultMarkdownContent {...Astro.props}>
     <slot />
   </DefaultMarkdownContent>

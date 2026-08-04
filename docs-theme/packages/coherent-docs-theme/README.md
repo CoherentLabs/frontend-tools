@@ -56,7 +56,8 @@ export default defineConfig({
       plugins: [
         // ✅ CORRECT USAGE: Spread the array
         ...coherentTheme({
-          documentationSearchTag: 'docs', // Tag to scope the search index for documentation content
+          documentation: 'docs', // Top-level product this site belongs to; scopes/pre-selects search filters
+          // engine: 'Custom Engine', // Set only if this site documents a specific engine variant (e.g. Gameface/Prysm)
           showPageProgress: true,
           // navLinks: [
           //   { label: 'Roadmap', href: '/roadmap' },
@@ -81,13 +82,14 @@ export default defineConfig({
 
 ## ⚙️ Configuration Options
 
-| Option                     | Type                     | Default | Description                                                                                                                                                                                |
-| -------------------------- | ------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **documentationSearchTag** | `string`                 | `''`    | (Required) A tag to scope the search index for the documentation content. Also, used to show a button for the search resources filter for the current documentation.                       |
-| **navLinks**               | `Array<{ label, href }>` | `[]`    | Links displayed in the header (desktop) and top-bar in the mobile menu (mobile).                                                                                                           |
-| **showPageProgress**       | `boolean`                | `false` | Shows a reading progress bar at the top of the page.                                                                                                                                       |
-| **disableDefaultLogo**     | `boolean`                | `false` | If false, injects the Gameface UI logo automatically if such is not defined in the Starlight config of the documentation. Set to true if you want to remove the logo entirely.             |
-| **replacesTitle**          | `boolean`                | `true`  | If true, the logo will replace the title in the header. Set to false if you want to show the title next to the logo. Useful when using a custom logo that doesn't include the title in it. |
+| Option                 | Type                   | Default     | Description                                                                                                                                                                                |
+| ---------------------- | ---------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **documentation**      | `string`               | `''`        | (Required) The top-level product this site belongs to (e.g. `'Gameface'`, `'Prysm'`, `'UI Tools'`). Scopes the search index and pre-selects the matching documentation filter in search.   |
+| **engine**             | `string`               | -           | The engine variant this site documents, if any (e.g. `'Custom Engine'`, `'Unreal'`, `'Unity'`). Only set for Gameface/Prysm engine-specific sites; pre-selects the matching engine filter. |
+| **navLinks**           | Array<{ label, href }> | `[]`        | Links displayed in the header (desktop) and top-bar in the mobile menu (mobile).                                                                                                           |
+| **showPageProgress**   | `boolean`              | `false`     | Shows a reading progress bar at the top of the page.                                                                                                                                       |
+| **disableDefaultLogo** | `boolean`              | `false`     | If false, injects the Gameface UI logo automatically if such is not defined in the Starlight config of the documentation. Set to true if you want to remove the logo entirely.             |
+| **replacesTitle**      | `boolean`              | `true`      | If true, the logo will replace the title in the header. Set to false if you want to show the title next to the logo. Useful when using a custom logo that doesn't include the title in it. |
 
 To override the default logo, simply provide your own in the Starlight configuration:
 
@@ -100,6 +102,38 @@ starlight({
         replacesTitle: false,
     },
 })
+```
+
+## 🔍 Search Content-Type Filter
+
+Search results can be scoped by a "Content type" filter (e.g. Documentation, API Reference, Changelog). By default, this is inferred from the page's URL path, but any page can override it explicitly via a `contentType` frontmatter field:
+
+```mdx
+---
+title: My Page
+contentType: Tutorial
+---
+```
+
+Whatever string you use becomes a selectable option in the search filter's "Content type" tier automatically — no code changes needed. To use this field, first add it to your project's own `content.config.ts` schema (the theme can't inject fields into your content collection schema for you):
+
+```ts
+// src/content.config.ts
+import { defineCollection } from 'astro:content';
+import { docsLoader } from '@astrojs/starlight/loaders';
+import { docsSchema } from '@astrojs/starlight/schema';
+import { z } from 'astro/zod';
+
+export const collections = {
+  docs: defineCollection({
+    loader: docsLoader(),
+    schema: docsSchema({
+      extend: z.object({
+        contentType: z.string().optional(),
+      }),
+    }),
+  }),
+};
 ```
 
 ## 🛠️ Exported Utilities
