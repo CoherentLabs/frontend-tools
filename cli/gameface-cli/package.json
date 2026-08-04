@@ -1,0 +1,28 @@
+{
+  "name": "gameface-cli",
+  "version": "0.0.1",
+  "type": "module",
+  "engines": {
+    "node": ">=20.12.0"
+  },
+  "bin": {
+    "gameface-cli": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build",
+    "publish:package": "npm i&&npm run build&&npm publish"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.7.0",
+    "tiged": "^2.12.8"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "typescript": "^7.0.2"
+  }
+}
