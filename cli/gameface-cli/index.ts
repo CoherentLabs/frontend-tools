@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { cancel, text, select, confirm, isCancel, spinner, note, outro, log } from '@clack/prompts';
+import { cancel, confirm, isCancel, spinner, note, outro, log, intro } from '@clack/prompts';
 import fs from 'node:fs'
 import path from 'node:path'
 import { exec } from 'node:child_process'
@@ -33,6 +33,12 @@ interface Registry {
   version: string
   entries: Record<string, RegistryEntry>
 }
+
+type Decision =
+  | { status: 'install'; name: string; id: string; action: 'add' | 'update' }
+  | { status: 'skip';    name: string }
+  | { status: 'error';   name: string }
+
 
 const BASE_URL_ROOT = 'https://raw.githubusercontent.com/CoherentLabs/Gameface-UI/cli-temp';
 const REGISTRY_URL = `${BASE_URL_ROOT}/registry.json`;
@@ -103,155 +109,214 @@ function findComponentId(name: string, components: Record<string, RegistryEntry>
   return Object.keys(components).find(id => components[id].name?.toLowerCase() === name.toLowerCase());
 }
 
+function validateInput(command: string, names: string[]) {
+  if (!command || !['add', 'update', 'status'].includes(command.toLowerCase())) {
+    cancel(command ? `Unknown command: ${command}` : 'Please provide a command.');
+    printHelp();
+    process.exit(1);
+  }
+
+  if (command.toLowerCase() === 'add' && names.length === 0) {
+    cancel('Please provide a component name to add.');
+    process.exit(1);
+  }
+}
+
+function touchedDirs(filePaths: string[], depth = 2): string[] {
+  const dirs = filePaths.map(p =>
+    path.posix.dirname(p).split('/').slice(0, depth).join('/')
+  );
+  return [...new Set(dirs)].filter(d => d !== '.').sort();
+}
+
+function printHelp() {
+  console.log(`
+gameface-cli — add and update Gameface UI components in a SolidJS project
+
+Usage
+  gameface-cli <command> [components...]
+
+Commands
+  add <components...>      Add components, with their dependencies
+  update [components...]   Update to the latest version (all installed if omitted)
+  status                   Show installed components and available updates
+
+Options
+  -h, --help               Show this message
+
+Examples
+  gameface-cli add Dropdown
+  gameface-cli add Dropdown Scroll
+  gameface-cli update
+  gameface-cli update Dropdown
+  gameface-cli status
+`);
+}
+
 async function main() {
 
-  async function resolveComponent(componentId: string, components: Record<string, RegistryEntry>) {
+  async function decideAdd(name: string): Promise<Decision> {
+    const id = findComponentId(name, entries);
+
+    // Invalid component
+    if (!id) {
+      log.error(`${name} is not a valid component.`);
+      return { status: 'error', name };
+    }
+
+    const installedName = Object.keys(installedComponents).find(n => n.toLowerCase() === name.toLowerCase());
+    // Not installed -> Add
+    if (!installedName) return { status: 'install', name, id, action: 'add' };
+
+    // Already installed? Compare versions
+    const currVer = installedComponents[installedName];
+    const remoteVer = entries[id].version;
+
+    if (compareVersions(currVer, remoteVer) === 0) {
+      log.info(`${name} is already installed and up to date (v${currVer}).`);
+      return { status: 'skip', name };
+    }
+
+    const shouldUpdate = await confirm({
+      message: `${name} is installed at v${currVer}. Update to v${remoteVer}?`,
+    });
+
+    if (isCancel(shouldUpdate) || !shouldUpdate) {
+      log.warn(`Skipped ${name}.`);
+      return { status: 'skip', name };
+    }
+
+    return { status: 'install', name, id, action: 'add' };
+  }
+
+  async function decideUpdate(name: string): Promise<Decision> {
+    const id = findComponentId(name, entries);
+
+    if (!id) {
+      log.error(`${name} is not a valid component.`);
+      return { status: 'error', name };
+    }
+
+    // Check if the component is missing from the installed components
+    const installedName = Object.keys(installedComponents).find(n => n.toLowerCase() === name.toLowerCase());
+
+    if (!installedName) {
+      const shouldInstall = await confirm({
+        message: `${name} is not installed. Do you wish to add it now?`,
+      });
+
+      if (isCancel(shouldInstall) || !shouldInstall) {
+        log.warn(`Skipped ${name}.`);
+        return { status: 'skip', name };
+      }
+
+      return { status: 'install', name, id, action: 'add' };
+    }
+
+    // Compare versions
+    const currVer = installedComponents[entries[id].name];
+    const remoteVer = entries[id].version;
+    const areEqual = compareVersions(currVer, remoteVer) === 0;
+
+    if (areEqual) {
+      log.info(`${name} is already installed and up to date (v${currVer}).`);
+      return { status: 'skip', name };
+    }
+
+    return { status: 'install', name, id, action: 'update' };
+  }
+
+  async function resolve(rootIds: string[]) {
     const componentsToCopy = new Set<string>();
     const npmDepsToInstall = new Set<string>();
-
-    const componentName = components[componentId].name;
+    const root = path.dirname(pkgPath);
+    const spin = spinner();
+    spin.start(`Resolving ${rootIds.length} component${rootIds.length > 1 ? 's' : ''}...`);
+    let filesCount = 0;
 
     function findDeps(id: string) {
-      if (!id || componentsToCopy.has(id)) return;
+      if (componentsToCopy.has(id)) return;
 
       componentsToCopy.add(id);
-
       // Resolve npm deps
-      components[id].npmDependencies.forEach(npmDep => {
+      entries[id].npmDependencies.forEach(npmDep => {
         !Object.hasOwn(packageJson.dependencies ?? {}, npmDep) && npmDepsToInstall.add(npmDep) 
       });
 
       // Resolve component deps
-      components[id].dependsOn.forEach(depId => findDeps(depId));
+      entries[id].dependsOn.forEach(depId => findDeps(depId));
     }
 
-    Object.keys(components).forEach(id => id === componentId && findDeps(id));
+    rootIds.forEach(id => findDeps(id));
 
-    const root = path.dirname(pkgPath);
+    try {
+      for (const id of componentsToCopy) {
+        const entry = entries[id];
+        if (entry.name) spin.message(`Fetching ${entry.name}...`);
+        installedComponents[entry.name] = entry.version;
 
-    const spin = spinner();
-    spin.start(`Resolving ${componentName}...`);
-    let filesCount = 0;
+        for (const file of entry.files) {
+          const res = await fetch(`${BASE_URL_ROOT}/${file.path}`);
 
-    for (const id of componentsToCopy) {
-      const entry = components[id];
-      installedComponents[entry.name] = entry.version;
+          if (!res.ok) {
+            throw new Error(`Failed to fetch ${file.path}: ${res.status} ${res.statusText}`);
+          }
 
-      for (const file of entry.files) {
-        const res = await fetch(`${BASE_URL_ROOT}/${file.path}`);
+          const destPath = path.join(root, file.path);
 
-        if (!res.ok) {
-          throw new Error(`Failed to fetch ${file.path}: ${res.status} ${res.statusText}`);
+          fs.mkdirSync(path.dirname(destPath), { recursive: true });
+          fs.writeFileSync(destPath, await res.text());
+          filesCount++;
         }
-
-        const destPath = path.join(root, file.path);
-
-        fs.mkdirSync(path.dirname(destPath), { recursive: true });
-        fs.writeFileSync(destPath, await res.text());
-        filesCount++;
       }
+
+      fs.writeFileSync(pkgPath, JSON.stringify(packageJson, null, 2) + '\n');
+      spin.stop(`Fetched ${componentsToCopy.size} components · ${filesCount} files`);
+    } catch (err) {
+      spin.stop(`Failed to fetch component files`);
+      throw err;
     }
 
-    fs.writeFileSync(pkgPath, JSON.stringify(packageJson, null, 2) + '\n');
-    spin.stop(`Fetched ${componentName} files`);
+    // Files are already on disk by now, so a failed npm i degrades to a warning
+    // rather than failing the whole operation. The user retries it by hand.
+    let npmFailed: string[] = [];
 
     if (npmDepsToInstall.size > 0) {
       const deps = Array.from(npmDepsToInstall);
       const installSpin = spinner();
       installSpin.start(`Installing npm deps: ${deps.join(', ')}`);
-      
+
       try {
         await execAsync(`npm i ${deps.join(' ')}`);
         installSpin.stop(`Installed npm deps: ${deps.join(', ')}`);
       } catch (err: any) {
-        installSpin.stop(`Failed to install npm deps`);
-        throw err;
+        installSpin.stop(`Could not install npm deps`);
+        npmFailed = deps;
       }
     }
 
-    const depsCount = npmDepsToInstall.size + componentsToCopy.size - 1;
-    log.success(`✓ ${componentName} installed (v${components[componentId].version})`);
-    log.message(`+ ${depsCount} dependencies · ${filesCount} files`);
-  }
-
-  async function add(name: string) {
-    if (!name) {
-      cancel('Please provide a component name to add.');
-      process.exit(1);
+    // Safe to log again only now that both spinners have stopped
+    for (const id of rootIds) {
+      log.success(`${entries[id].name} (v${entries[id].version})`);
     }
 
-    const { entries } = await fetchRegistry();
-    const componentId = findComponentId(name, entries);
+    const depsCount = componentsToCopy.size - rootIds.length;
+    const npmCount = npmDepsToInstall.size - npmFailed.length;
 
-    if (!componentId) {
-      cancel(`${name} is not a valid component. Please check the name and try again.`);
-      process.exit(1);
+    if (depsCount > 0 || npmCount > 0) {
+      log.message(`+ ${depsCount} dependencies · ${npmCount} npm packages`);
     }
 
-    // Check if the component is already installed
-    if (Object.keys(installedComponents).find(n => name.toLowerCase() === n.toLowerCase())) {
-      const currVer = installedComponents[entries[componentId].name];
-      const remoteVer = entries[componentId].version;
+    const touched = touchedDirs(
+      [...componentsToCopy].flatMap(id => entries[id].files.map(f => f.path))
+    );
+    log.message(`Modified: ${touched.join(', ')}`);
 
-      const areEqual = compareVersions(currVer, remoteVer) === 0;
-
-      if (areEqual) {
-        outro(`The ${name} component is already installed and up to date.`);
-        process.exit(0);
-      } else {
-        const shouldUpdate = await confirm({
-          message: `The ${name} component is already installed (version ${currVer}). Do you want to update it to version ${remoteVer}?`,
-        })
-        if (shouldUpdate) await resolveComponent(componentId, entries);
-        else {
-          outro(`Update canceled.`);
-          process.exit(0);
-        }
-      }
-
-      return;
-    }
-
-    await resolveComponent(componentId, entries);
-  }
-
-  async function update(name: string) {
-    // Read package json and extract version
-    const { entries } = await fetchRegistry();
-    // if no name is provided update all
-    if (!name) {
-      console.log('Updating all components...');
-      process.exit(0);
-    }
-
-    const componentId = findComponentId(name, entries);
-    if (!componentId) {
-      cancel(`${name} is not a valid component. Please check the name and try again.`);
-      process.exit(1);
-    }
-
-    // Check if the component is missing from the installed components
-    if (!Object.hasOwn(installedComponents, name)) {
-      const shouldInstall = await confirm({
-        message: `The ${name} component is not installed. Do you wish to add it now?`,
-      });
-      if (shouldInstall) await add(name);
-      else {
-        outro(`Update canceled.`);
-        process.exit(0);
-      }
-      return;
-    }
-
-    const currVer = installedComponents[entries[componentId].name];
-    const remoteVer = entries[componentId].version;
-    const areEqual = compareVersions(currVer, remoteVer) === 0;
-
-    if (areEqual) {
-      outro(`The ${name} component is already installed and up to date.`);
-      process.exit(0);
-    } else {
-      await resolveComponent(componentId, entries);
+    if (npmFailed.length > 0) {
+      log.warn(
+        `npm installation failed. Install the dependencies manually:\n\n` +
+        `  npm i ${npmFailed.join(' ')}`
+      );
     }
   }
   
@@ -264,19 +329,97 @@ async function main() {
   })
   
   if (values.help) {
-    console.log('gameface-cli')
-    process.exit(0)
+    printHelp()
+    return
   }
   
-  const [command, name] = positionals;
-  // Shared setup logic
-  const { pkgPath, packageJson, installedComponents } = getPackageJson();
+  const [command, ...rest] = positionals
+  const names = [...new Set(rest)]
 
-  if (command === 'add') {
-    add(name)
-  } else if (command === 'update') {
-    update(name)
+  validateInput(command, names);
+
+  intro('gameface-cli')
+
+  const { pkgPath, packageJson, installedComponents } = getPackageJson();
+  const { entries } = await fetchRegistry()
+
+  if (command.toLowerCase() === 'status') {
+    const localComponents = Object.keys(installedComponents);
+
+    if (localComponents.length === 0) {
+      log.info('No components installed.');
+      outro('Run "gameface-cli add <component>" to install a component.');
+      return;
+    }
+
+    let outdatedCount = 0;
+    const componentStatus = []
+    const available = Object.values(entries).filter(c => c.kind === 'component' && !localComponents.includes(c.name));
+    // For alignment
+    const nameWidth = Math.max(...localComponents.map(n => n.length));
+    
+    for (const id of localComponents) {
+      const localVersion = installedComponents[id];
+      const componentId = findComponentId(id, entries);
+
+      if (!componentId) continue; // Component not found in registry, skip
+
+      const componentName = entries[componentId].name;
+      const remoteVersion = entries[componentId].version;
+      const equal = compareVersions(localVersion, remoteVersion) === 0;
+
+      if (!equal) outdatedCount++;
+
+      const status = equal ? '(up to date)' :`→ v${remoteVersion}`
+      componentStatus.push(`${componentName.padEnd(nameWidth)} v${localVersion} ${status}`)
+    }
+
+    note(componentStatus.join('\n'), 'Installed Components');
+
+    if (available.length > 0) {
+      log.info(`${available.length} more component${available.length > 1 ? 's' : ''} available in the library.`);
+    }
+
+    outro(outdatedCount === 0
+      ? 'All components are up to date!'
+      : `${outdatedCount} out of ${localComponents.length} outdated · run \`gameface-cli update\` to upgrade`);
+    return;
   }
+
+  const action = command.toLowerCase() === 'add' ? decideAdd : decideUpdate;
+
+  const targets = command.toLowerCase() === 'update' && names.length === 0
+    ? Object.keys(installedComponents)   // no-arg sweep; these are names, which is what decide takes
+    : names;
+
+  const decisions: Decision[] = [];
+  for (const name of targets) decisions.push(await action(name));
+
+  const rootIds = decisions.flatMap(d => d.status === 'install' ? [d.id] : []);
+
+  if (rootIds.length > 0) {
+    try {
+      await resolve(rootIds);
+    } catch (err: any) {
+      log.error(err.message ?? String(err));
+      outro('Installation failed.');
+      process.exitCode = 1;
+      return;
+    }
+
+    if (isFirstRun) {
+      note(
+        `Add the @components alias to tsconfig.json and vite.config\nPoint @assets/scss/variables at your style tokens`,
+        'Setup required'
+      );
+    }
+  }
+
+  const skipped = decisions.filter(d => d.status === 'skip').length;
+  const failed = decisions.filter(d => d.status === 'error').length;
+
+  outro(`${rootIds.length} installed · ${skipped} skipped · ${failed} failed`);
+  process.exitCode = failed > 0 ? 1 : 0;
 }
 
 await main();
