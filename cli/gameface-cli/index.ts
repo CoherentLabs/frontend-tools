@@ -1,57 +1,42 @@
 #!/usr/bin/env node
 import { cancel, confirm, isCancel, spinner, note, outro, log, intro } from '@clack/prompts';
+import detectIndent from 'detect-indent';
 import fs from 'node:fs'
 import path from 'node:path'
 import { exec } from 'node:child_process'
 import { parseArgs, promisify } from 'node:util'
+import { printHelp } from './help.js';
+import { compareVersions, findComponentId, touchedDirs } from './helpers.js';
+import type { Decision, PackageJsonInfo, Registry } from './types.js';
 
 const execAsync = promisify(exec)
 
-interface GameFacePackageJson {
-  dependencies?: Record<string, string>;
-  'gameface-ui-components'?: Record<string, string>;
-  [key: string]: unknown;
-}
-
-interface PackageJsonInfo {
-  pkgPath: string;
-  packageJson: GameFacePackageJson;
-  installedComponents: Record<string, string>;
-}
-
-interface RegistryEntry {
-  kind: 'component' | 'lib' | 'recipe'
-  name: string
-  version: string
-  category?: string
-  files: { path: string; hash: string }[]
-  dependsOn: string[]
-  npmDependencies: string[]
-}
-
-interface Registry {
-  version: string
-  entries: Record<string, RegistryEntry>
-}
-
-type Decision =
-  | { status: 'install'; name: string; id: string; action: 'add' | 'update' }
-  | { status: 'skip';    name: string }
-  | { status: 'error';   name: string }
-
-
-const BASE_URL_ROOT = 'https://raw.githubusercontent.com/CoherentLabs/Gameface-UI/cli-temp';
+const REPO = 'CoherentLabs/Gameface-UI';
+const REF = 'cli-temp'; 
+const BASE_URL_ROOT = process.env.GAMEFACE_REGISTRY_URL
+  ?? `https://raw.githubusercontent.com/${REPO}/${REF}`;
 const REGISTRY_URL = `${BASE_URL_ROOT}/registry.json`;
 let isFirstRun = false;
 
 async function fetchRegistry(): Promise<Registry> {
-  const res = await fetch(REGISTRY_URL)
+  const spin = spinner();
+  spin.start('Fetching component registry...');
 
-  if (!res.ok) {
-    throw new Error(`Failed to fetch registry: ${res.status} ${res.statusText}`)
+  try {
+    const res = await fetch(REGISTRY_URL);
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+
+    const registry = await res.json() as Registry;
+    spin.stop('Registry loaded');
+    return registry;
+  } catch (err: any) {
+    spin.stop();
+    throw new Error(
+      `Could not fetch the registry (${err.message}).\n` +
+      `Check your internet connection and try again. If the problem persists, ` +
+      `submit an issue at https://github.com/${REPO}/issues.`
+    );
   }
-
-  return res.json()
 }
 
 function findProjectRoot(startDir: string): string {
@@ -73,22 +58,12 @@ function findProjectRoot(startDir: string): string {
   }
 }
 
-function compareVersions(a: string, b: string): number {
-  const partsA = a.split('.').map(Number);
-  const partsB = b.split('.').map(Number);
-
-  for (let i = 0; i < Math.max(partsA.length, partsB.length); i++) {
-    const na = partsA[i] || 0;
-    const nb = partsB[i] || 0;
-    if (na !== nb) return na - nb; // negative: a < b, positive: a > b
-  }
-  return 0; // equal
-}
-
 function getPackageJson (): PackageJsonInfo {
   const root = findProjectRoot(process.cwd());
   const pkgPath = path.join(root, 'package.json');
-  const packageJson = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
+  const raw = fs.readFileSync(pkgPath, 'utf-8')
+  const packageJson = JSON.parse(raw);
+  const { indent } = detectIndent(raw);
 
   const hasSolid = packageJson.dependencies?.['solid-js'] ?? packageJson.devDependencies?.['solid-js'];
   if (!hasSolid) {
@@ -102,11 +77,8 @@ function getPackageJson (): PackageJsonInfo {
     isFirstRun = true;
   }
 
-  return { pkgPath, packageJson, installedComponents: packageJson['gameface-ui-components'] }
-}
 
-function findComponentId(name: string, components: Record<string, RegistryEntry>): string | undefined {
-  return Object.keys(components).find(id => components[id].name?.toLowerCase() === name.toLowerCase());
+  return { pkgPath, packageJson, installedComponents: packageJson['gameface-ui-components'], indent }
 }
 
 function validateInput(command: string, names: string[]) {
@@ -120,37 +92,8 @@ function validateInput(command: string, names: string[]) {
     cancel('Please provide a component name to add.');
     process.exit(1);
   }
-}
 
-function touchedDirs(filePaths: string[], depth = 2): string[] {
-  const dirs = filePaths.map(p =>
-    path.posix.dirname(p).split('/').slice(0, depth).join('/')
-  );
-  return [...new Set(dirs)].filter(d => d !== '.').sort();
-}
 
-function printHelp() {
-  console.log(`
-gameface-cli — add and update Gameface UI components in a SolidJS project
-
-Usage
-  gameface-cli <command> [components...]
-
-Commands
-  add <components...>      Add components, with their dependencies
-  update [components...]   Update to the latest version (all installed if omitted)
-  status                   Show installed components and available updates
-
-Options
-  -h, --help               Show this message
-
-Examples
-  gameface-cli add Dropdown
-  gameface-cli add Dropdown Scroll
-  gameface-cli update
-  gameface-cli update Dropdown
-  gameface-cli status
-`);
 }
 
 async function main() {
@@ -177,13 +120,15 @@ async function main() {
       return { status: 'skip', name };
     }
 
-    const shouldUpdate = await confirm({
-      message: `${name} is installed at v${currVer}. Update to v${remoteVer}?`,
-    });
+    if (!values.yes) {
+      const shouldUpdate = await confirm({
+        message: `${name} is installed at v${currVer}. Update to v${remoteVer}?`,
+      });
 
-    if (isCancel(shouldUpdate) || !shouldUpdate) {
-      log.warn(`Skipped ${name}.`);
-      return { status: 'skip', name };
+      if (isCancel(shouldUpdate) || !shouldUpdate) {
+        log.warn(`Skipped ${name}.`);
+        return { status: 'skip', name };
+      }
     }
 
     return { status: 'install', name, id, action: 'add' };
@@ -201,20 +146,22 @@ async function main() {
     const installedName = Object.keys(installedComponents).find(n => n.toLowerCase() === name.toLowerCase());
 
     if (!installedName) {
-      const shouldInstall = await confirm({
-        message: `${name} is not installed. Do you wish to add it now?`,
-      });
+      if (!values.yes) {
+        const shouldInstall = await confirm({
+          message: `${name} is not installed. Do you wish to add it now?`,
+        });
 
-      if (isCancel(shouldInstall) || !shouldInstall) {
-        log.warn(`Skipped ${name}.`);
-        return { status: 'skip', name };
+        if (isCancel(shouldInstall) || !shouldInstall) {
+          log.warn(`Skipped ${name}.`);
+          return { status: 'skip', name };
+        }
       }
 
       return { status: 'install', name, id, action: 'add' };
     }
 
     // Compare versions
-    const currVer = installedComponents[entries[id].name];
+    const currVer = installedComponents[installedName];
     const remoteVer = entries[id].version;
     const areEqual = compareVersions(currVer, remoteVer) === 0;
 
@@ -270,7 +217,7 @@ async function main() {
         }
       }
 
-      fs.writeFileSync(pkgPath, JSON.stringify(packageJson, null, 2) + '\n');
+      fs.writeFileSync(pkgPath, JSON.stringify(packageJson, null, indent) + '\n');
       spin.stop(`Fetched ${componentsToCopy.size} components · ${filesCount} files`);
     } catch (err) {
       spin.stop(`Failed to fetch component files`);
@@ -321,16 +268,27 @@ async function main() {
   }
   
   // ENTRY POINT
-  const { values, positionals } = parseArgs({
-    allowPositionals: true,
-    options: {
-      help: { type: 'boolean', short: 'h' },
-    },
-  })
-  
+  let values: Record<string, boolean | undefined>;
+  let positionals: string[];
+
+  try {
+    ({ values, positionals } = parseArgs({
+      allowPositionals: true,
+      options: {
+        help: { type: 'boolean', short: 'h' },
+        yes: { type: 'boolean', short: 'y' },
+      },
+    }));
+  } catch (err: any) {
+    cancel(err.message.split('.')[0]);
+    printHelp();
+    process.exitCode = 1;
+    return;
+  }
+
   if (values.help) {
-    printHelp()
-    return
+    printHelp();
+    return;
   }
   
   const [command, ...rest] = positionals
@@ -340,8 +298,17 @@ async function main() {
 
   intro('gameface-cli')
 
-  const { pkgPath, packageJson, installedComponents } = getPackageJson();
-  const { entries } = await fetchRegistry()
+  const { pkgPath, packageJson, installedComponents, indent } = getPackageJson();
+  let registry: Registry;
+  try {
+    registry = await fetchRegistry();
+  } catch (err: any) {
+    log.error(err.message);
+    outro('Aborted.');
+    process.exitCode = 1;
+    return;
+  }
+  const { entries } = registry;
 
   if (command.toLowerCase() === 'status') {
     const localComponents = Object.keys(installedComponents);
