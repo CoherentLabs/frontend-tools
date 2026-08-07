@@ -26,6 +26,11 @@ export interface CoherentThemeOptions {
     replacesTitle?: boolean
     tagManagerId?: string
     breadcrumbs?: boolean
+    /**
+     * Enables live Pagefind search in `astro dev` by crawling the dev server's own rendered pages
+     * at startup instead of requiring a prior `astro build`. Opt-in and off by default.
+     */
+    devSearch?: boolean
 }
 
 export default function getThemeConfig(): CoherentThemeOptions {

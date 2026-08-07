@@ -46,7 +46,7 @@ interface SearchConfig {
     engine: string | null;
     tagManagerId: string | null;
     baseUrl: string;
-    isDev: boolean;
+    searchUnavailable: boolean;
     mergeIndexes: MergeIndexConfig[];
     documentationValues: string[];
     engineValues: string[];
@@ -132,7 +132,7 @@ class SiteSearch extends HTMLElement {
         const formatURL = shouldStrip ? stripTrailingSlash : (path: string) => path;
 
         window.addEventListener("DOMContentLoaded", () => {
-            if (config.isDev) return;
+            if (config.searchUnavailable) return;
             const onIdle =
                 (window as any).requestIdleCallback || ((cb: () => void) => setTimeout(cb, 1));
             onIdle(() => initSearch(this, dialog, translations, formatURL, config));

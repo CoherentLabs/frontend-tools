@@ -16,6 +16,8 @@ import {
 
 const { documentation, engine, tagManagerId } = getThemeConfig();
 const isDev = import.meta.env.DEV;
+const devSearchAvailable = isDev && Boolean((import.meta.env as any).PAGEFIND_DEV_AVAILABLE);
+const searchUnavailable = isDev && !devSearchAvailable;
 const baseUrl =
     import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL;
 
@@ -57,7 +59,7 @@ const searchConfig = {
     engine: engine || null,
     tagManagerId: tagManagerId || null,
     baseUrl,
-    isDev,
+    searchUnavailable,
     mergeIndexes,
     documentationValues: DOCUMENTATION_VALUES,
     engineValues: ENGINE_VALUES,
@@ -94,7 +96,7 @@ if (project.trailingSlash === "never")
         </div>
         <div class="dialog-frame sl-flex">
             {
-                isDev ? (
+                searchUnavailable ? (
                     <div
                         style="margin: auto; text-align: center; white-space: pre-line;"
                         dir="ltr"
