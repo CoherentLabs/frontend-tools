@@ -159,6 +159,18 @@ function buildCustomSubResults(data: any, term: string, exactOnly: boolean) {
         const end = Math.min(words.length, start + WINDOW);
         const windowWords = words.slice(start, end);
         const matchLocations = new Set(items.map((it: any) => it.location));
+        // Pagefind's own weighted_locations can legitimately omit the exact occurrence
+        // findLiteralTermWordIndex confirmed and centered the window on — confirmed empirically:
+        // a case mismatch between the query and how Pagefind fused/indexed the token (e.g. querying
+        // "virtualallocate" against indexed "VirtualAllocate") can make Pagefind attribute a
+        // location elsewhere on the page instead, leaving the visible, centered word unmarked. Add
+        // every word position the literal match actually spans, not just what Pagefind reported.
+        if (literalMatchLocation !== null) {
+            const termWordCount = term.trim().split(/\s+/).filter(Boolean).length || 1;
+            for (let i = 0; i < termWordCount; i++) {
+                matchLocations.add(literalMatchLocation + i);
+            }
+        }
 
         const windowText = windowWords.join(" ");
         const isExactMatch = Boolean(lowerTerm) && windowText.toLowerCase().includes(lowerTerm);
