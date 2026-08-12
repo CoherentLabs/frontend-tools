@@ -1,0 +1,134 @@
+---
+title: Overview
+sidebar:
+    order: 1
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components'
+
+`gameface-cli` adds and updates **individual Gameface UI components** inside an existing project. Instead of pulling the whole library, you install the components you actually use, and the CLI keeps them current as new versions ship.
+
+It is not a scaffolder. If you are starting from nothing, use [`create-gameface-app`](/create-gameface-app/getting-started) with the **Gameface UI** template to create the project first. `gameface-cli` only ever operates on a project that already exists.
+
+## Requirements
+
+A [Gameface UI](https://gameface-ui.coherent-labs.com/) or a SolidJS project set up. The CLI checks for `solid-js` in your `package.json` and stops if it isn't there.
+
+Only the [Gameface UI](https://gameface-ui.coherent-labs.com/) project is ready to use straight away. 
+The `solid-js` template that can be downloaded from the [create-gameface-app](/create-gameface-app/getting-started/) CLI does not have the aliases and style variables that components rely on. 
+If you are using that one, or on a Solid project of your own, follow the one-time setup in [Existing projects](/gameface-cli/getting-started/existing-projects).
+
+## Quick start
+
+<Tabs syncKey="pkg">
+  <TabItem label="npm">
+    ```bash
+    npx gameface-cli add Dropdown
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm dlx gameface-cli add Dropdown
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```bash
+    yarn dlx gameface-cli add Dropdown
+    ```
+  </TabItem>
+</Tabs>
+
+That copies `Dropdown` into `src/components/`, along with everything it depends on, and records what it installed in your `package.json`.
+
+<Aside type="caution" title="Editing installed components">
+Installed components are managed by the CLI, so `update` replaces them with the newer version. Any local changes you have made to them will be replaced along with the file.
+
+If you need different behaviour, the safer options are to use the component's props, or to wrap it in your own component under `src/custom-components/`, which the CLI never touches. If something is missing or broken, an issue or a pull request against the library is worth more than a local patch.
+</Aside>
+
+## Commands
+
+### `add`
+
+Installs one or more components, together with their dependencies.
+
+```bash
+npx gameface-cli add Dropdown
+npx gameface-cli add Dropdown Scroll TextSlider
+```
+
+Adding several at once is cheaper than adding them one at a time, since shared dependencies are downloaded once and if external dependencies are missing `npm install` runs a single time at the end.
+
+`add` also refreshes what it touches. If a component you are installing shares a dependency with something you already have, that dependency is brought up to the current version too.
+
+This is also how you pick up components released since you created your project. `update` only refreshes what you already have, it never adds anything new.
+
+### `update`
+
+Brings installed components up to the latest published version.
+
+```bash
+npx gameface-cli update              # everything you have installed
+npx gameface-cli update Dropdown     # just this one
+```
+
+With no arguments it sweeps everything tracked in your `package.json`, updates whatever is out of date, and leaves current components alone.
+
+It only ever writes files it installed. Your own code, your views, and your config files (`tsconfig.json`, `vite.config`, `package.json` scripts) are never touched. Library changes that need a config edit are called out in the changelog and applied by hand.
+
+### `status`
+
+Shows what you have installed and what has moved on without you.
+
+```bash
+npx gameface-cli status
+```
+
+```
+┌  gameface-cli
+│
+◇  Gameface UI v3.2.0
+│
+├  Installed Components ────────────╮
+│                                   │
+│  Dropdown    v1.0.0 → v1.1.0      │
+│  TextSlider  v1.1.0 (up to date)  │
+│                                   │
+├───────────────────────────────────╯
+│
+●  12 more components available in the library.
+│
+└  1 out of 2 outdated · run `gameface-cli update` to upgrade
+```
+
+## Options
+
+| Flag | Alias | Description |
+| --- | --- | --- |
+| `--yes` | `-y` | Answer every confirmation prompt with yes. Useful in CI. |
+| `--help` | `-h` | Print usage information and exit. |
+
+## What it changes in your project
+
+Two things, and nothing else.
+
+**Component files** are written under `src/`, at the same paths they have in the library.
+
+**A record of what you installed** is added to your `package.json`, under `gameface-ui-components`:
+
+```json
+"gameface-ui-components": {
+  "Dropdown": "1.0.0",
+  "TextSlider": "1.1.0"
+}
+```
+
+`status` and `update` compare these versions against the ones the library publishes. Anything that differs is out of date.
+
+<Aside type="caution" title="Don't edit the gameface-ui-components property by hand">
+This entry is the CLI's only record of what you have installed, and it is trusted as-is. Editing it by hand makes every command report the wrong thing: lower a version and `update` will reinstall a component you already have, raise one and it will skip a component that is genuinely out of date, remove an entry and the component stops being tracked at all.
+
+Commit it with the rest of your `package.json` and let the CLI maintain it.
+</Aside>
+
+Nothing else in your project is modified, and the rest of your `package.json` keeps its existing formatting.

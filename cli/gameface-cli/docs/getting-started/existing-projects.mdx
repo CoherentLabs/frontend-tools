@@ -1,0 +1,128 @@
+---
+title: Existing projects
+sidebar:
+    order: 2
+---
+
+import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components'
+
+Projects created with the **`gameface-ui` template** from [`create-gameface-app`](/create-gameface-app/getting-started) are already wired up and need nothing from this page.
+
+Every other starting point needs a one-time setup, including the plain `solid` template. `create-gameface-app` scaffolds several frameworks, and only the [Gameface UI](https://gameface-ui.coherent-labs.com/) template ships the aliases and style variables that components depend on.
+
+The CLI prints a **Setup required** note the first time it installs into a project it doesn't recognise. This page is what that note refers to.
+
+<Aside type="note">
+The CLI does not wire this up for you on purpose. `tsconfig.json` allows comments and `vite.config` is executable code, so neither can be edited automatically without risking your existing configuration.
+</Aside>
+
+## Setup
+
+<Steps>
+
+1. **Install `sass`**
+
+   Component stylesheets are written in SCSS. It is a build-time tool rather than a runtime dependency, so the CLI does not install it for you.
+
+   <Tabs syncKey="pkg">
+     <TabItem label="npm">
+       ```bash
+       npm install -D sass
+       ```
+     </TabItem>
+     <TabItem label="pnpm">
+       ```bash
+       pnpm add -D sass
+       ```
+     </TabItem>
+     <TabItem label="yarn">
+       ```bash
+       yarn add -D sass
+       ```
+     </TabItem>
+   </Tabs>
+
+2. **Add the `@components` alias to `tsconfig.json`**
+
+   Components import each other through this alias, so TypeScript needs to resolve it:
+
+   ```json title="tsconfig.json"
+   {
+     "compilerOptions": {
+       "baseUrl": ".",
+       "paths": {
+         "@components/*": ["src/components/*"],
+         "@assets/*": ["src/assets/*"]
+       }
+     }
+   }
+   ```
+
+3. **Add the same aliases to your Vite config**
+
+   TypeScript path mappings only affect type checking. Vite resolves imports at build time and needs to be told separately:
+
+   ```ts title="vite.config.ts"
+   import { defineConfig } from 'vite';
+   import solid from 'vite-plugin-solid';
+   import path from 'node:path';
+
+   export default defineConfig({
+     plugins: [solid()],
+     resolve: {
+       alias: {
+         '@components': path.resolve(__dirname, './src/components'),
+         '@assets': path.resolve(__dirname, './src/assets'),
+       },
+     },
+   });
+   ```
+
+4. **Set up the style variables**
+
+   Every component stylesheet expects a set of shared SCSS variables to be available. Create the file at `src/assets/scss/_variables.scss`:
+
+   ```scss title="src/assets/scss/_variables.scss"
+   // Your design tokens: colours, spacing, typography.
+   // Component styles reference these, so the names must exist.
+    $primaryColor: #868599;
+    $secondaryColor: #3e3d5d;
+    $disabledColor: #bdbdbd;
+    $textColor: #ffffff;
+    $disabledTextColor: #dddedf;
+   ```
+
+   Then inject it into every SCSS file so components don't have to import it themselves:
+
+   ```ts title="vite.config.ts"
+   export default defineConfig({
+     // ...plugins and resolve as above
+     css: {
+       preprocessorOptions: {
+         scss: {
+           additionalData: `@use '@assets/scss/variables' as *;`,
+         },
+       },
+     },
+   });
+   ```
+
+</Steps>
+
+Once that is in place, `npx gameface-cli add <component>` behaves exactly as it does in a Gameface UI project.
+
+## Components that need a full Gameface project
+
+[`Icon`](https://gameface-ui.coherent-labs.com/components/media/icon/) and [`Keybinds`](https://gameface-ui.coherent-labs.com/components/basic/keybinds/) are not available outside a Gameface UI project. They depend on generated type files, an icon-generation script, and gamepad glyph assets that only exist in the full template, so installing them here would leave you with components that don't build.
+
+If you need them, start from `create-gameface-app` with the `gameface-ui` template instead.
+
+## Troubleshooting
+
+| Problem | Fix |
+| --- | --- |
+| `Cannot find module '@components/...'` | The alias is missing from `tsconfig.json`, from your Vite config, or from both. Each needs its own copy: TypeScript uses it for type checking, Vite for resolving the actual import. |
+| `Undefined variable` errors from SCSS | Either `_variables.scss` does not exist, `additionalData` is not injecting it, or the variable names do not match. Component styles reference specific names such as `$primaryColor`, `$secondaryColor` and `$textColor`, so your own tokens have to use those names rather than equivalents of your own choosing. |
+| `npm installation failed` | The component files were written, but installing their npm dependencies did not work. The CLI prints the exact command to run by hand. A pre-existing unresolvable dependency in your `package.json` is the usual cause, since npm resolves the whole tree on any install. |
+| `Gameface UI components require a SolidJS project` | `solid-js` is not in your `package.json`. Install it, or start from the `gameface-ui` template. |
+| Styles are missing after an update | The update replaced a component you had edited locally. Move your changes into `src/custom-components/` or into props, then re-run the update. |

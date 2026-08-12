@@ -1,6 +1,12 @@
 import path from 'node:path'
 import type { RegistryEntry } from './types.js'
 
+/** Where users go to see what shipped in a release. */
+export const CHANGELOG_URL = 'https://gameface-ui.coherent-labs.com/changelog/';
+
+/** How many available component names `status` lists before collapsing to a count. */
+export const MAX_LISTED_COMPONENTS = 5;
+
 /**
  * Compares two dot-separated versions.
  * Returns < 0 when a is older, 0 when equal, > 0 when a is newer.

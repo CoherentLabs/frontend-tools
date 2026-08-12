@@ -23,6 +23,8 @@ export interface RegistryEntry {
 
 export interface Registry {
   version: string
+  /** Git tag the files live at. Falls back to `v${version}` when absent. */
+  tag?: string
   entries: Record<string, RegistryEntry>
 }
 

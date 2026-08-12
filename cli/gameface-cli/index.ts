@@ -6,16 +6,25 @@ import path from 'node:path'
 import { exec } from 'node:child_process'
 import { parseArgs, promisify } from 'node:util'
 import { printHelp } from './help.js';
-import { compareVersions, findComponentId, touchedDirs } from './helpers.js';
+import { compareVersions, findComponentId, touchedDirs, CHANGELOG_URL, MAX_LISTED_COMPONENTS } from './helpers.js';
 import type { Decision, PackageJsonInfo, Registry } from './types.js';
 
 const execAsync = promisify(exec)
 
 const REPO = 'CoherentLabs/Gameface-UI';
-const REF = 'cli-temp'; 
-const BASE_URL_ROOT = process.env.GAMEFACE_REGISTRY_URL
-  ?? `https://raw.githubusercontent.com/${REPO}/${REF}`;
-const REGISTRY_URL = `${BASE_URL_ROOT}/registry.json`;
+const ORIGIN_OVERRIDE = process.env.GAMEFACE_REGISTRY_URL;
+
+// `releases/latest` always resolves to the newest published release
+const REGISTRY_URL = ORIGIN_OVERRIDE
+  ? `${ORIGIN_OVERRIDE}/registry.json`
+  : `https://github.com/${REPO}/releases/latest/download/registry.json`;
+
+// Files come from the tag the registry names, so a run is one consistent snapshot
+function filesBaseUrl(registry: Registry): string {
+  const ref = registry.tag ?? `v${registry.version}`;
+  return ORIGIN_OVERRIDE ?? `https://raw.githubusercontent.com/${REPO}/${ref}`;
+}
+
 let isFirstRun = false;
 
 async function fetchRegistry(): Promise<Registry> {
@@ -27,7 +36,7 @@ async function fetchRegistry(): Promise<Registry> {
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
 
     const registry = await res.json() as Registry;
-    spin.stop('Registry loaded');
+    spin.stop(`Gameface UI v${registry.version}`);
     return registry;
   } catch (err: any) {
     spin.stop();
@@ -67,7 +76,7 @@ function getPackageJson (): PackageJsonInfo {
 
   const hasSolid = packageJson.dependencies?.['solid-js'] ?? packageJson.devDependencies?.['solid-js'];
   if (!hasSolid) {
-    console.log('Gameface UI requires a SolidJS project. Start a new project with:');
+    console.log('Gameface UI components require a SolidJS project. Start a new project with:');
     console.log('  npm create gameface-app my-app');
     process.exit(1);
   }
@@ -92,8 +101,6 @@ function validateInput(command: string, names: string[]) {
     cancel('Please provide a component name to add.');
     process.exit(1);
   }
-
-
 }
 
 async function main() {
@@ -203,7 +210,7 @@ async function main() {
         installedComponents[entry.name] = entry.version;
 
         for (const file of entry.files) {
-          const res = await fetch(`${BASE_URL_ROOT}/${file.path}`);
+          const res = await fetch(`${filesBase}/${file.path}`);
 
           if (!res.ok) {
             throw new Error(`Failed to fetch ${file.path}: ${res.status} ${res.statusText}`);
@@ -309,6 +316,7 @@ async function main() {
     return;
   }
   const { entries } = registry;
+  const filesBase = filesBaseUrl(registry);
 
   if (command.toLowerCase() === 'status') {
     const localComponents = Object.keys(installedComponents);
@@ -344,7 +352,17 @@ async function main() {
     note(componentStatus.join('\n'), 'Installed Components');
 
     if (available.length > 0) {
-      log.info(`${available.length} more component${available.length > 1 ? 's' : ''} available in the library.`);
+      // Sorted so the list is stable between runs — an entry appearing or
+      // disappearing then actually means something.
+      const names = available.map(c => c.name).sort();
+      const shown = names.slice(0, MAX_LISTED_COMPONENTS);
+      const rest = names.length - shown.length;
+
+      log.info(
+        `${available.length} component${available.length > 1 ? 's' : ''} available to add: ` +
+        (rest > 0 ? `${shown.join(', ')} and ${rest} more` : shown.join(', '))
+      );
+      log.message(`See what's new at ${CHANGELOG_URL}`);
     }
 
     outro(outdatedCount === 0
