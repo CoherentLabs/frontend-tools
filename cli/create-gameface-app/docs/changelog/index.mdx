@@ -4,7 +4,13 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 1.0.0 :badge[Latest]{variant="note"}
+## 1.0.1 :badge[Latest]{variant="note"}
+
+<Badge text="Feature" variant="success" size="small" /> Projects scaffolded from the `gameface-ui` template now record the components they ship under `gameface-ui-components` in `package.json`, with versions read from the library registry. [`gameface-cli`](/gameface-cli/getting-started/) uses this to report and update them straight after scaffolding.
+
+<Badge text="Feature" variant="success" size="small" /> `manifest.json` files are stripped from the `gameface-ui` template. They are metadata for the registry generator and are not needed in a scaffolded project.
+
+## 1.0.0
 
 <Badge text="Feature" variant="success" size="small" /> Initial release of `create-gameface-app`.
 

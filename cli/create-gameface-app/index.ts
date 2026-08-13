@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { cancel, text, select, confirm, isCancel, spinner, note, outro } from '@clack/prompts';
-import { rmSync, existsSync, readdirSync, PathLike } from 'node:fs'
+import { rmSync, existsSync, readdirSync, readFileSync, writeFileSync, PathLike } from 'node:fs'
 import { join } from 'node:path'
 import tiged from 'tiged'
 import { rm } from 'node:fs/promises'
@@ -8,6 +8,44 @@ import { spawn } from 'node:child_process'
 import { parseArgs } from 'node:util'
 import TEMPLATES, { TemplateKey } from './config.js';
 import { printHelp } from './help.js';
+
+const REGISTRY_URL = 'https://github.com/CoherentLabs/Gameface-UI/releases/latest/download/registry.json';
+
+function removeManifests(dir: string) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, entry.name)
+    if (entry.isDirectory()) removeManifests(full)
+    else if (entry.name === 'manifest.json') rmSync(full, { force: true })
+  }
+}
+
+/**
+ * Records what the template ships under `gameface-ui-components`, so gameface-cli
+ * can tell what is installed. Versions come from the registry, not the template.
+ */
+async function writeComponentsMap(dest: string): Promise<number> {
+  const res = await fetch(REGISTRY_URL)
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`)
+
+  const registry = await res.json() as {
+    entries: Record<string, { kind: string; name: string; version: string }>
+  }
+
+  const components: Record<string, string> = {}
+  for (const entry of Object.values(registry.entries)) {
+    if (entry.kind === 'component') components[entry.name] = entry.version
+  }
+
+  const pkgPath = join(dest, 'package.json')
+  const raw = readFileSync(pkgPath, 'utf-8')
+  const indent = raw.match(/\n([ \t]+)"/)?.[1] ?? '  '
+  const packageJson = JSON.parse(raw)
+
+  packageJson['gameface-ui-components'] = components
+  writeFileSync(pkgPath, JSON.stringify(packageJson, null, indent) + '\n')
+
+  return Object.keys(components).length
+}
 
 function bail(value: string | symbol | boolean) {
   if (isCancel(value) || value === false) {
@@ -127,9 +165,10 @@ async function main() {
     await emitter.clone(dest)
     
     if (framework === 'gameface-ui') {
-      for (const dir of ['docs', 'tests', '.github']) {
+      for (const dir of ['docs', '.github']) {
         rmSync(join(dest, dir), { recursive: true, force: true })
       }
+      removeManifests(dest)
     }
 
     if (!existsSync(dest) || readdirSync(dest).length === 0) {
@@ -147,6 +186,21 @@ async function main() {
     
     if (error instanceof Error) cancel(error.message)
     process.exit(1)
+  }
+
+  if (framework === 'gameface-ui') {
+    s.start('Recording component versions')
+    try {
+      const count = await writeComponentsMap(dest)
+      s.stop(`Recorded ${count} components in package.json`)
+    } catch (error) {
+      s.stop('Could not fetch component versions')
+      note(
+        `The components are installed, but their versions were not recorded, so\n` +
+        `"gameface-cli update" will not see them. Re-run the scaffold when online.`,
+        'Heads up'
+      )
+    }
   }
 
   const pm = getPackageManager()

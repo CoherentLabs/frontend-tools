@@ -1,6 +1,6 @@
 {
   "name": "create-gameface-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "engines": {
     "node": ">=20.12.0"
