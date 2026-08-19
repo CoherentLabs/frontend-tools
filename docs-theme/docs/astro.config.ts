@@ -8,7 +8,8 @@ export default defineConfig({
     starlight({
       plugins: [
         ...coherentThemePlugin({
-          documentationSearchTag: 'Test docs',
+          documentation: 'Test docs',
+          devSearch: true,
         }),
       ],
       sidebar: [

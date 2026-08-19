@@ -3,7 +3,7 @@ import type { Root } from 'mdast';
 
 export function remarkFixDoxybookLinks() {
     return (tree: Root, file: any) => {
-        if (!file?.history?.[0].includes('API_reference')) return;
+        if (!file?.history?.[0]?.toLowerCase().includes('api_reference')) return;
 
         visit(tree, 'link', (node: any) => {
             if (node.url && node.url.includes('#')) {

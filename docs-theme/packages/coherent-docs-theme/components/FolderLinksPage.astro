@@ -1,0 +1,101 @@
+---
+import { LinkCard } from "@astrojs/starlight/components";
+import { getCollection, type CollectionEntry } from "astro:content";
+
+interface Props {
+    /** Optional directory (relative to site root) to list pages for. Defaults to current route. */
+    directory?: string;
+}
+
+const { directory: directoryProp } = Astro.props as Props;
+
+const baseUrl =
+    import.meta.env.BASE_URL === "/" ? "" : import.meta.env.BASE_URL;
+const directory =
+    directoryProp ??
+    (baseUrl && Astro.url.pathname.startsWith(baseUrl)
+        ? Astro.url.pathname.slice(baseUrl.length)
+        : Astro.url.pathname);
+const normalizedDirectory = directory.replace(/^\/+|\/+$/g, "");
+const docsEntries: CollectionEntry<"docs">[] = await getCollection("docs");
+const directoryPrefix = normalizedDirectory ? `${normalizedDirectory}/` : "";
+
+function getEntryPath(entry: CollectionEntry<"docs">): string {
+    if (entry.slug) {
+        return entry.slug;
+    }
+
+    return entry.id.replace(/\.(md|mdx)$/i, "");
+}
+
+const pages: Array<{
+    href: string;
+    title: string;
+    sidebarOrder?: number;
+    draft?: boolean;
+}> = docsEntries
+    .filter((entry) => {
+        const entryPath = getEntryPath(entry);
+
+        if (entry.data.draft) {
+            return false;
+        }
+
+        if (!directoryPrefix) {
+            return entryPath !== "index";
+        }
+
+        if (!entryPath.startsWith(directoryPrefix)) {
+            return false;
+        }
+
+        const relativeSlug = entryPath.slice(directoryPrefix.length);
+
+        if (!relativeSlug) {
+            return false;
+        }
+
+        if (relativeSlug === "index") {
+            return false;
+        }
+
+        return !relativeSlug.includes("/");
+    })
+    .map((entry) => {
+        const entryPath = getEntryPath(entry);
+        const entryData = entry.data as {
+            sidebar?: {
+                order?: number;
+            };
+        };
+        const title =
+            entry.data.title ?? entryPath.split("/").at(-1) ?? entryPath;
+        const sidebarOrder = entryData.sidebar?.order;
+
+        if (typeof sidebarOrder === "number") {
+            return {
+                href: `${baseUrl}/${entryPath}/`,
+                title,
+                sidebarOrder,
+            };
+        }
+
+        return {
+            href: `${baseUrl}/${entryPath}/`,
+            title,
+        };
+    });
+
+pages.sort((a, b) => {
+    const aOrder = a.sidebarOrder ?? Number.POSITIVE_INFINITY;
+    const bOrder = b.sidebarOrder ?? Number.POSITIVE_INFINITY;
+
+    if (aOrder !== bOrder) {
+        return aOrder - bOrder;
+    }
+
+    return a.title.localeCompare(b.title);
+});
+---
+
+{pages.map((page) => <LinkCard title={page.title} href={page.href} />)}

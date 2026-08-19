@@ -12,24 +12,44 @@ import { getSortedCoherentReleases } from './utils/coherentReleases';
 import { version } from './package.json';
 import { remarkFixAbsoluteLinks } from './remark-directives/fixAbsoluteLinks';
 import remarkCustomHeaderId from 'remark-custom-header-id';
+import { getNavLinks } from './internal/siteRegistry';
+import devPagefindPlugin from './internal/devPagefindPlugin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const defaultHeaderLinks = [
-  { href: 'https://docs.coherent-labs.com/cpp-gameface', label: 'Gameface', subDocumentations: ['Custom Engine', 'Unreal', 'Unity'] },
-  { href: 'https://docs.coherent-labs.com/cpp-prysm', label: 'Prysm', subDocumentations: ['Custom Engine', 'Unreal', 'Unity'] },
-  { href: 'https://guide.coherent-labs.com/', label: 'UI Workflow Guide' },
-  { href: 'https://frontend-tools.coherent-labs.com', label: 'UI Tools' },
-  { href: 'https://gameface-ui.coherent-labs.com', label: 'Gameface UI' },
-];
 
+const snippetHMRPlugin: import('vite').Plugin = {
+  name: 'starlight-release-snippet-hmr',
+  enforce: 'pre',
+  handleHotUpdate({ file }) {
+    const normalizedPath = file.replace(/\\/g, '/');
+    const releaseRootMatch = normalizedPath.match(/^(.*\/Releases\/(?:Release_[^\/]+|Version_[^\/]+|next_release))/i);
 
-export default function coherentThemePlugin(options: CoherentThemeOptions = { documentationSearchTag: '' }): StarlightPlugin[] {
-  if (!options?.documentationSearchTag) {
-    throw new Error('Coherent docs theme plugin requires "documentationSearchTag"!')
+    if (releaseRootMatch) {
+      const releaseDir = releaseRootMatch[1] as string;
+      const mainIndexMdx = `${releaseDir}/index.mdx`;
+
+      if (normalizedPath !== mainIndexMdx) {
+        const target = fs.existsSync(mainIndexMdx) ? mainIndexMdx : null;
+
+        if (target) {
+          const now = new Date();
+          fs.utimesSync(target, now, now);
+
+          const folderName = releaseDir.split('/').pop();
+          console.log(`\x1b[36m[Snippet HMR]\x1b[0m Force update \x1b[33m${folderName}/index\x1b[0m`);
+        }
+      }
+    }
+  }
+}
+
+export default function coherentThemePlugin(options: CoherentThemeOptions = { documentation: '' }): StarlightPlugin[] {
+  if (!options?.documentation) {
+    throw new Error('Coherent docs theme plugin requires "documentation"!')
   }
 
-  let navLinks = defaultHeaderLinks;
+  let navLinks = [...getNavLinks()];
   for (const link of options.navLinks ?? []) {
     navLinks.push(link)
   }
@@ -54,43 +74,26 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
                   remarkPlugins: [...directives, remarkCustomHeaderId, [remarkFixAbsoluteLinks, { basePath: astroConfig.base }]],
                 },
                 vite: {
-                  plugins: [
-                    {
-                      name: 'starlight-release-snippet-hmr',
-                      enforce: 'pre',
-                      handleHotUpdate({ file }) {
-                        const normalizedPath = file.replace(/\\/g, '/');
-                        const releaseRootMatch = normalizedPath.match(/^(.*\/Releases\/(?:Release_[^\/]+|Version_[^\/]+|next_release))/i);
-
-                        if (releaseRootMatch) {
-                          const releaseDir = releaseRootMatch[1] as string;
-                          const mainIndexMdx = `${releaseDir}/index.mdx`;
-
-                          if (normalizedPath !== mainIndexMdx) {
-                            const target = fs.existsSync(mainIndexMdx) ? mainIndexMdx : null;
-
-                            if (target) {
-                              const now = new Date();
-                              fs.utimesSync(target, now, now);
-
-                              const folderName = releaseDir.split('/').pop();
-                              console.log(`\x1b[36m[Snippet HMR]\x1b[0m Force update \x1b[33m${folderName}/index\x1b[0m`);
-                            }
-                          }
-                        }
-                      }
-                    }
-                  ]
+                  server: {
+                    fs: { allow: ['..'], },
+                  },
+                  worker: { format: 'es' },
+                  plugins: [snippetHMRPlugin]
                 },
               });
-            }
+            },
           }
         });
+
+        if (options.devSearch && command !== 'build') {
+          addIntegration(devPagefindPlugin());
+        }
 
         process.env.COHERENT_THEME_CONFIG = JSON.stringify({
           showPageProgress,
           navLinks,
-          documentationSearchTag: options.documentationSearchTag,
+          documentation: options.documentation,
+          engine: options.engine,
           tagManagerId: options.tagManagerId,
           breadcrumbs: options.breadcrumbs,
           topicsConfig: options.topicsConfig,
@@ -119,22 +122,24 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
         configUpdates.head.push({
           tag: 'meta',
           attrs: {
-            'data-pagefind-filter': 'resource[content]',
-            content: options.documentationSearchTag
+            'data-pagefind-filter': 'documentation[content]',
+            content: options.documentation
           }
         });
 
-        if (command === 'build') {
-          configUpdates.pagefind = {
-            indexWeight: 2,
-          };
-        } else {
-          logger.info('Dev mode detected. Skipping external Pagefind index validation.');
-          configUpdates.pagefind = {
-            indexWeight: 2,
-            mergeIndex: []
-          };
+        if (options.engine) {
+          configUpdates.head.push({
+            tag: 'meta',
+            attrs: {
+              'data-pagefind-filter': 'engine[content]',
+              content: options.engine
+            }
+          });
         }
+
+        configUpdates.pagefind = {
+          indexWeight: 2,
+        };
 
         updateConfig(configUpdates);
       },
