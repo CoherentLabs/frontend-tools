@@ -107,11 +107,10 @@ if (project.trailingSlash === "never")
                     <div class="search-container">
                         <div id="coherent-search">
                             <div class="search-form-wrapper">
-                                <form
+                                <div
                                     class="coh-form"
                                     role="search"
                                     aria-label={Astro.locals.t("search.label")}
-                                    action="javascript:void(0);"
                                 >
                                     <input
                                         type="text"
@@ -128,7 +127,7 @@ if (project.trailingSlash === "never")
                                     >
                                         ✕
                                     </button>
-                                </form>
+                                </div>
                                 <button
                                     data-close-modal
                                     class="sl-flex md:sl-hidden"

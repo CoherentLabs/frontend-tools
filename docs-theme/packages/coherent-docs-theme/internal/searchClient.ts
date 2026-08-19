@@ -80,7 +80,7 @@ class SiteSearch extends HTMLElement {
         };
 
         const onClick = (event: MouseEvent) => {
-            const isLink = "href" in (event.target || ({} as any));
+            const isLink = Boolean((event.target as Element | null)?.closest("a"));
             if (isLink || (mouseDownOutside && isMouseOutsideModal(event.target as Node))) {
                 closeModal();
             }
