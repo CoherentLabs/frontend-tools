@@ -11,14 +11,6 @@ import { printHelp } from './help.js';
 
 const REGISTRY_URL = 'https://github.com/CoherentLabs/Gameface-UI/releases/latest/download/registry.json';
 
-function removeManifests(dir: string) {
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    const full = join(dir, entry.name)
-    if (entry.isDirectory()) removeManifests(full)
-    else if (entry.name === 'manifest.json') rmSync(full, { force: true })
-  }
-}
-
 /**
  * Records what the template ships under `gameface-ui-components`, so gameface-cli
  * can tell what is installed. Versions come from the registry, not the template.
@@ -168,7 +160,6 @@ async function main() {
       for (const dir of ['docs', '.github']) {
         rmSync(join(dest, dir), { recursive: true, force: true })
       }
-      removeManifests(dest)
     }
 
     if (!existsSync(dest) || readdirSync(dest).length === 0) {
