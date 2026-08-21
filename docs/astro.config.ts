@@ -220,7 +220,7 @@ async function getConfig() {
         customCss: ['./src/styles/custom.css'],
         plugins: [
           ...coherentTheme({
-            documentationSearchTag: "UI Tools"
+            documentation: "UI Tools"
           }),
           starlightLinksValidator(),
           starlightSidebarTopics(sideBarTopics, {
