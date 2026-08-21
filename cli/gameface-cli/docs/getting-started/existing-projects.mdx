@@ -4,7 +4,7 @@ sidebar:
     order: 2
 ---
 
-import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components'
+import { Steps, Aside, Tabs, TabItem, FileTree } from '@astrojs/starlight/components'
 
 Projects created with the **`gameface-ui` template** from [`create-gameface-app`](/create-gameface-app/getting-started) are already wired up and need nothing from this page.
 
@@ -111,6 +111,61 @@ The CLI does not wire this up for you on purpose. `tsconfig.json` allows comment
 
 Once that is in place, `npx gameface-cli add <component>` behaves exactly as it does in a Gameface UI project.
 
+## What a set-up project looks like
+
+A plain Solid project after the setup above, with one component installed. **Highlighted** files are the ones you write or edit yourself.
+
+<FileTree>
+
+- package.json the CLI records what it installed here, under `gameface-ui-components`
+- **tsconfig.json** the `@components` and `@assets` paths from step 2
+- **vite.config.ts** the matching aliases and the SCSS injection from steps 3 and 4
+- src
+  - main.tsx
+  - App.tsx
+  - assets
+    - scss
+      - **\_variables.scss** your design tokens, injected into every stylesheet
+  - components your components and the CLI's, side by side
+    - BaseComponent
+      - BaseComponent.tsx
+    - Basic
+      - Button
+        - Button.tsx
+        - Button.module.scss
+    - Utility
+      - Navigation
+        - Navigation.tsx
+        - …
+    - types
+      - ComponentProps.d.ts
+      - …
+    - utils
+      - waitForFrames.ts
+      - …
+    - **HUD** yours, and the CLI will never touch it
+      - HUD.tsx
+      - HUD.module.scss
+
+</FileTree>
+
+Only `Button` was asked for. `BaseComponent`, `Utility/Navigation`, `types` and `utils` came along as its dependencies, which is why the folder looks fuller than a single install suggests. Those shared folders are reused by every component, so the next few installs add much less.
+
+## Living alongside your own components
+
+There is no separate folder to keep your components in. Put them wherever you like, `src/components/` included - the CLI has no opinion about what else is in there.
+
+What it does have is a fixed list of paths it owns. On every `add` and `update` it writes those paths from the registry, overwriting whatever is there without merging and without asking. Inside `src/components/`, that list is:
+
+```
+BaseComponent/  Basic/  Complex/  Feedback/  Layout/  Media/  Utility/  types/  utils/
+```
+:::caution[Path collisions]
+The one rule is not to put your own files at a path the CLI already claims. `src/components/Basic/Button/Button.tsx` belongs to Gameface UI, and a `Button` of
+ your own written there disappears the first time anyone installs or updates the Gameface UI one. 
+ Naming your component `Button` is fine. Path like `src/components/HUD/Button.tsx` is safe if adding the `Button` component. It is only the collision of the full path that costs you the file.
+:::
+
 ## Components that need a full Gameface project
 
 [`Icon`](https://gameface-ui.coherent-labs.com/components/media/icon/) and [`Keybinds`](https://gameface-ui.coherent-labs.com/components/basic/keybinds/) are not available outside a Gameface UI project. They depend on generated type files, an icon-generation script, and gamepad glyph assets that only exist in the full template, so installing them here would leave you with components that don't build.
@@ -125,4 +180,5 @@ If you need them, start from `create-gameface-app` with the `gameface-ui` templa
 | `Undefined variable` errors from SCSS | Either `_variables.scss` does not exist, `additionalData` is not injecting it, or the variable names do not match. Component styles reference specific names such as `$primaryColor`, `$secondaryColor` and `$textColor`, so your own tokens have to use those names rather than equivalents of your own choosing. |
 | `npm installation failed` | The component files were written, but installing their npm dependencies did not work. The CLI prints the exact command to run by hand. A pre-existing unresolvable dependency in your `package.json` is the usual cause, since npm resolves the whole tree on any install. |
 | `Gameface UI components require a SolidJS project` | `solid-js` is not in your `package.json`. Install it, or start from the `gameface-ui` template. |
-| Styles are missing after an update | The update replaced a component you had edited locally. Move your changes into `src/custom-components/` or into props, then re-run the update. |
+| Styles are missing after an update | The update replaced a stock component you had edited in place. Re-apply the change as a wrapper or through props so it lives at a path of your own, then re-run the update. |
+| A file of your own disappeared after `add` or `update` | It was at a path the registry owns. Recover it from source control and move it out of `BaseComponent/`, `Basic/`, `Complex/`, `Feedback/`, `Layout/`, `Media/`, `Utility/`, `types/` and `utils/` - anywhere else under `src/components/` is safe. |

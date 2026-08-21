@@ -59,9 +59,13 @@ npx gameface-cli add Dropdown Scroll TextSlider
 
 Adding several at once is cheaper than adding them one at a time, since shared dependencies are downloaded once and if external dependencies are missing `npm install` runs a single time at the end.
 
-`add` also refreshes what it touches. If a component you are installing shares a dependency with something you already have, that dependency is brought up to the current version too.
-
 This is also how you pick up components released since you created your project. `update` only refreshes what you already have, it never adds anything new.
+
+:::caution[Dependency upgrades]
+If a component you are installing shares a dependency with something you already have, that dependency is brought up to the current version too.
+
+For example, if you already have `Dropdown` and it has pulled the `Utility/Navigation` at v1.0.0 alongside it, and you add `TextSlider` which also depends on the `Navigation` component, the CLI will upgrade `Utility/Navigation` to its latest version for you.
+:::
 
 ### `update`
 
@@ -74,7 +78,7 @@ npx gameface-cli update Dropdown     # just this one
 
 With no arguments it sweeps everything tracked in your `package.json`, updates whatever is out of date, and leaves current components alone.
 
-It only ever writes files it installed. Your own code, your views, and your config files (`tsconfig.json`, `vite.config`, `package.json` scripts) are never touched. Library changes that need a config edit are called out in the changelog and applied by hand.
+The command updates files related just to Gameface UI components in your project. Your own code, your views, and your config files (`tsconfig.json`, `vite.config`, `package.json` scripts) are never touched. Library changes that need a config edit are called out in the changelog and applied by hand.
 
 ### `status`
 

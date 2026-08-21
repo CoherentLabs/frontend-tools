@@ -67,7 +67,7 @@ function findProjectRoot(startDir: string): string {
   }
 }
 
-function getPackageJson (): PackageJsonInfo {
+function getPackageJson(): PackageJsonInfo {
   const root = findProjectRoot(process.cwd());
   const pkgPath = path.join(root, 'package.json');
   const raw = fs.readFileSync(pkgPath, 'utf-8')
