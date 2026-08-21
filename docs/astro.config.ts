@@ -9,7 +9,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function getConfig() {
-  const documentations = ['e2e', 'gameface-vite-plugin', 'vite-solid-style-to-css-plugin', 'vite-gameface-style-transformer', 'interaction-manager', 'data-binding-autocomplete', 'eslint-plugin-gameface', 'create-gameface-app'];
+  const documentations = [
+    'e2e', 
+    'gameface-vite-plugin', 
+    'vite-solid-style-to-css-plugin', 
+    'vite-gameface-style-transformer', 
+    'interaction-manager', 
+    'data-binding-autocomplete', 
+    'eslint-plugin-gameface', 
+    'create-gameface-app', 
+    'gameface-cli'
+  ];
 
   const sideBarTopics = [
     {
@@ -184,13 +194,30 @@ async function getConfig() {
         generateMultipleDocsChangelog('create-gameface-app', path.join(__dirname, `./src/content/docs/create-gameface-app/changelog/index.mdx`)),
       ],
     },
+    {
+      link: '/gameface-cli/getting-started',
+      label: 'Gameface CLI',
+      id: 'gameface-cli',
+      icon: 'seti:powershell',
+      items: [
+        await generateVersionWithPackageJSON(
+          '../cli/gameface-cli/package.json',
+          'https://npmjs.org/gameface-cli'
+        ),
+        {
+          label: 'Getting Started',
+          autogenerate: { directory: 'gameface-cli/getting-started' },
+        },
+        generateMultipleDocsChangelog('gameface-cli', path.join(__dirname, `./src/content/docs/gameface-cli/changelog/index.mdx`)),
+      ],
+    },
   ];
 
   return defineConfig({
     vite: {
       server: {
         fs: {
-          allow: ['.', './src/content/docs/interaction-manager', './src/content/docs/eslint-plugin-gameface'],
+          allow: ['.', './src/content/docs/interaction-manager', './src/content/docs/eslint-plugin-gameface', './src/content/docs/gameface-cli'],
         },
       },
       resolve: {
