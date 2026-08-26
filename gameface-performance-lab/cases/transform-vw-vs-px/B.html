@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .mover {
+    position: absolute;
+    width: 56px;
+    height: 40px;
+    background: #b0764a;
+    border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // A writes the transform in px; B writes the same distance in vw. Both
+    // pages carry both paths so the scripts stay byte-identical apart from
+    // this one constant.
+    var USE_PX = false;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+    // The runner pins the viewport at 1920x1080, so 1vw is exactly 19.2px and
+    // the two variants move the elements the same distance.
+    var PX_PER_VW = 19.2;
+
+    var root = document.getElementById('root');
+    var movers = [];
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'mover';
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      root.appendChild(el);
+      movers.push(el);
+    }
+
+    // The per-frame writes are the subject of this case, so they replace the
+    // shared damage driver (AUTHORING.md rule 6).
+    var t = 0;
+    function frame() {
+      t += 1;
+      for (var j = 0; j < movers.length; j++) {
+        var dx = (((t + j * 5) % 32) - 16);
+        if (USE_PX) {
+          movers[j].style.transform = 'translateX(' + dx + 'px)';
+        } else {
+          movers[j].style.transform = 'translateX(' + (dx / PX_PER_VW) + 'vw)';
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

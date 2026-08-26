@@ -1,0 +1,18 @@
+{
+  "title": "Blurred box-shadow vs no shadow",
+  "variable": "blurred box-shadow vs none",
+  "hypothesis": "GPU",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "no shadow",
+    "b": "blur"
+  },
+  "claim": "Gameface RAG 05-graphics / nameplate analysis: blurred box-shadows are a GPU cost that scales with the number of shadowed elements. Companion case: box-shadow-baked answers whether pre-baking the shadow into a texture recovers that cost.",
+  "result": "CONFIRMED and scaling: no GPU finding at 30 (Paint 1.16x only), then GPU 1.65x with Paint 1.46x at 100, and GPU 2.12x with Paint 2.16x at 300. RecordRendering tracks it throughout (1.33x / 1.56x / 1.54x). A blurred box-shadow is a real per-frame cost that grows with the number of shadowed elements on screen, and it is invisible below about 100 of them - the same scale lesson text-shadow-blur taught.",
+  "notes": "Applicability gate: DIRECT. box-shadow is supported in cohtml (feature inventory: css/partial.json lists only the 'inset' keyword as rejected, which this case does not use; units px/em/rem/in/pt/vh/vw/vmin/vmax). Rule 1: A and B differ in exactly one declaration, the box-shadow line. Rule 2: identical DOM, identical tile geometry - the shadow paints outside the border box, so it changes no boxes. Rule 3: identical JS, byte-for-byte. Rule 4: no text, no assets. Rule 5: the 92x68 grid is 20 columns wide, so 300 tiles occupy 1852x1032 inside the 1920x1080 viewport with nothing clipped or occluded. Rule 6: shared root-nudge damage driver, identical in both. Rule 7: positions derive from the loop index only. Rule 8: counts 30/100/300 from the same inline loop. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is GPU - a blur is a real filter pass where a flat rounded rect is a single quad."
+}

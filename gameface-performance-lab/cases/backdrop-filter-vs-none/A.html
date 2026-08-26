@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  /* Something for the panels to sit in front of. Static, and identical in both
+     variants, so it contributes the same cost to each. No opacity anywhere on
+     this chain: an ancestor with opacity < 1 blocks the backdrop from reaching
+     backdrop-filter (Gameface graphics docs). */
+  #backdrop {
+    position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+    background-image: linear-gradient(135deg, #1d4e89, #b03a2e);
+  }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .panel {
+    position: absolute;
+    width: 88px;
+    height: 64px;
+    border-radius: 6px;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+</style>
+</head>
+<body>
+  <div id="backdrop"></div>
+  <div id="root"></div>
+  <script>
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 30;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var root = document.getElementById('root');
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'panel';
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      root.appendChild(el);
+    }
+
+    // Only the panels move. The backdrop stays put, so every frame the panels
+    // sit over different backdrop pixels - which is what forces a real
+    // re-sample in B rather than a cached one.
+    var t = 0;
+    function frame() {
+      t += 1;
+      root.style.transform = 'translateX(' + (t % 3) + 'px)';
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

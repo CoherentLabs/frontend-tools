@@ -1,0 +1,18 @@
+{
+  "title": "One parent class change vs an inline write on every element",
+  "variable": "1 class change on the parent vs N inline style writes",
+  "hypothesis": "Styles",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "parent class",
+    "b": "N inline writes"
+  },
+  "claim": "This case exists to confirm or refute an inference the lab drew across five other cases rather than measured directly. filter-blur-animated (Styles 11.81x) and clip-path-animated-vs-static (Styles 11.56x) both landed on Styles rather than their hypothesised GPU/Paint axis, at almost identical magnitude, on completely different properties - and in both, the only real difference was that B rewrote one inline style per element per frame. pool-vs-create (8.19x) and offscreen-node-count (4.60x) point the same way. The inference: the expensive thing is the per-element style write itself, not the property it targets. Here the property is held constant and trivial (a flat background colour) and ONLY the number of writes varies, so a large ratio confirms the inference and a null refutes it.",
+  "result": "REFUTES the inference it was built to test, and that is the useful outcome. Prediction was that N inline writes would cost several times one parent class change on Styles. The opposite happened: Styles 0.52x / 0.50x / 0.46x - the per-element inline writes are roughly TWICE AS CHEAP on the styling thread as a single parent class change, and the gap widens with count. Script goes the other way at 1.51x / 2.21x / 4.00x, which is simply the JS loop doing N calls instead of 1. Absolutes at 300 elements: A Styles 0.633ms / Script 0.088ms; B Styles 0.293ms / Script 0.354ms. The explanation is that A changing one class on the parent forces the descendant rule #root.hot .tile to be re-matched against all 300 tiles, whereas an inline write sets the property directly and skips selector matching entirely. Inline styles are not a style-system tax in cohtml - they are the cheapest way to invalidate many elements, paid for in JS time instead.",
+  "notes": "Applicability gate: DIRECT. classList was verified manually against the Player. Rule 1: one variable, whether the restyle is applied once to the parent or once per tile. Rule 2: identical DOM and identical CSS - both pages carry the #root.hot descendant rule, so neither gains a selector the other lacks. Rule 3: identical JS apart from the single WRITE_PER_ELEMENT constant; both pages define both paths. Rule 4: no text, no assets. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080. Rule 6: the restyle IS the case and replaces the shared damage driver; both variants flip every tile between the same two colours every frame from load. Rule 7: the on/off state derives from the frame counter. Rule 8: counts 30/100/300 - and the count is the point here, since the inference predicts the gap should widen with element count. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Styles. APPEARANCE NOTE: both variants render exactly the same colours on the same tiles on the same frames; only the mechanism differs. READING IT: if the inference holds, B should cost several times A on Styles and the ratio should grow with count. If B and A are close, then the earlier Styles results belong to the properties involved after all, and those four case notes need revising."
+}

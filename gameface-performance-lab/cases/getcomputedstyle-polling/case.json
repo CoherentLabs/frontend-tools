@@ -1,0 +1,18 @@
+{
+  "title": "Reading a value back with getComputedStyle vs remembering it",
+  "variable": "getComputedStyle read vs a cached JS value",
+  "hypothesis": "Script",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "cached value",
+    "b": "getComputedStyle"
+  },
+  "claim": "Antipattern #45 from web-performance-antipatterns-50.md: 'synchronous getComputedStyle polling for values the code itself set.' In Gameface this is not only a performance question but a CORRECTNESS one, which makes the row worth having whatever the ratio says - see notes.",
+  "result": "CONFIRMED: Script 1.38x / 1.53x / 2.00x, scaling with the number of reads. Polling getComputedStyle for values the code already knows costs about twice the JS time at 300 elements against reading them from a variable. But the performance result is the less important half. As the notes predicted and the lab established by probe, getComputedStyle in cohtml returns the value from the last COMPLETED style pass - so B is reading back the width from the PREVIOUS frame, not the one it just wrote. It is not a slower route to the same answer, it is a route to the wrong answer. The recommendation does not depend on the ratio: keep the value you set, because asking the engine for it back is both slower and stale.",
+  "notes": "Applicability gate: DIRECT. getComputedStyle works and is used by the shipped perf_lint tool, so it is not in doubt. Rule 1: one variable, where the read-back value comes from. Rule 2: identical DOM. Rule 3: identical JS apart from the single POLL_COMPUTED constant; both pages maintain the known array and both accumulate into the same sink, so only the source of the value differs. Rule 4: no text, no assets. Rule 5: 300 bars occupy 1852x1032 inside 1920x1080. Rule 6: the write/read loop IS the case and replaces the shared damage driver; the width writes give the engine real work every frame. Rule 7: widths derive from the frame counter and the index. Rule 8: counts 30/100/300 reads per frame. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Script. THE CORRECTNESS POINT, which outranks the performance one: the lab established by probe that getComputedStyle in cohtml returns the value from the last COMPLETED style pass, not the pending one. So in B, every read returns the width from the PREVIOUS frame, not the width just written on this one. A and B therefore accumulate different totals - B is not merely a slower way to get the same answer, it is a way to get the wrong answer. Any ratio this row produces is secondary to that; even if polling turned out to be free, the pattern would still be a bug. The sink values are deliberately not compared between variants for this reason."
+}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .bar { position: absolute; height: 20px; background: #b07a3a; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // B reads each element's geometry back after writing it; A never reads.
+    // Both pages carry both paths so the scripts stay byte-identical apart
+    // from this one constant.
+    var READ_BACK = true;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var root = document.getElementById('root');
+    var bars = [];
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'bar';
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      el.style.width = '88px';
+      root.appendChild(el);
+      bars.push(el);
+    }
+
+    // Reads accumulate here so they cannot be optimised away.
+    var sink = 0;
+
+    // The per-frame writes ARE the case, so they replace the shared damage
+    // driver (AUTHORING.md rule 6). Both variants write identically; only B
+    // additionally reads geometry back inside the same loop.
+    var t = 0;
+    function frame() {
+      t += 1;
+      var w = 40 + ((t % 48));
+      for (var j = 0; j < bars.length; j++) {
+        bars[j].style.width = w + 'px';
+        if (READ_BACK) sink += bars[j].getBoundingClientRect().width;
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

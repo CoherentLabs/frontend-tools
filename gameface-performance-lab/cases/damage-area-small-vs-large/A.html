@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .mover {
+    position: absolute;
+    width: 88px;
+    height: 64px;
+    background: #3a7ab0;
+  }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 5;
+
+    var CELL_H = 68;
+
+    var root = document.getElementById('root');
+    var movers = [];
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'mover';
+      el.style.left = '16px';
+      el.style.top = (16 + i * CELL_H) + 'px';
+      root.appendChild(el);
+      movers.push(el);
+    }
+
+    // Each element moves the same distance at the same rate in both variants.
+    // The only thing that differs is how many pixels each one covers, which is
+    // how much of the screen its movement dirties.
+    var t = 0;
+    function frame() {
+      t += 1;
+      var dx = (t % 32) - 16;
+      for (var j = 0; j < movers.length; j++) {
+        movers[j].style.transform = 'translateX(' + dx + 'px)';
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

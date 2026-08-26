@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 16px; top: 16px; width: 400px; }
+  .row { width: 400px; height: 16px; background: #4a6a2a; margin-bottom: 1px; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // Both variants rotate the visible order by one slot per frame. A leaves the
+    // DOM alone and shifts each row with a transform; B physically moves the
+    // first node to the end. Both pages carry both paths so the scripts stay
+    // byte-identical apart from this one constant.
+    var MOVE_NODES = false;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 30;
+
+    var ROW_H = 17;
+
+    var root = document.getElementById('root');
+    var rows = [];
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'row';
+      root.appendChild(el);
+      rows.push(el);
+    }
+
+    // The reorder IS the case, so it replaces the shared damage driver.
+    var t = 0;
+    function frame() {
+      t += 1;
+      if (MOVE_NODES) {
+        if (root.firstChild) root.appendChild(root.firstChild);
+      } else {
+        for (var j = 0; j < rows.length; j++) {
+          var slot = (j + t) % COUNT;
+          rows[j].style.transform = 'translateY(' + ((slot - j) * ROW_H) + 'px)';
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

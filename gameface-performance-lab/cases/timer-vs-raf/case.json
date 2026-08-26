@@ -1,0 +1,18 @@
+{
+  "title": "A 16ms setInterval vs requestAnimationFrame",
+  "variable": "setInterval(16ms) vs rAF as the update driver",
+  "hypothesis": "Script",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "rAF",
+    "b": "setInterval"
+  },
+  "claim": "Antipattern #43 from web-performance-antipatterns-50.md: 'high-frequency timers (setInterval at 16ms) running regardless of visibility or need.' 16ms is chosen by developers as shorthand for 60fps, but on the web a timer has no relationship to the frame at all and fires whether or not anything will be drawn. This case was authored expecting that to be WORSE in Gameface, on the reasoning that the Player settles near 32fps so a 16ms timer would fire about twice per rendered frame. That reasoning turned out to be wrong - see result.",
+  "result": "NOT CONFIRMED, because the premise does not hold in cohtml - and the reason is the useful finding. No reliable difference on any phase at any count. Direct probe: a setInterval(fn, 16) fires 159 times in 5 seconds, which is 31.8 per second - IDENTICAL to the rAF callback count over the same window, and nowhere near the ~312 ticks a true 16ms timer would produce. COHTML CLAMPS TIMERS TO THE FRAME RATE. They are serviced once per frame inside Coherent_ExecuteTimers, so a timer cannot fire more often than the engine renders. The web antipattern is about work performed between frames that nobody will ever see; in Gameface that work is impossible to schedule. Practical consequence: setInterval(fn, 16) and a rAF loop are the same thing here, and lowering the interval below the frame time buys nothing. The case does NOT cover the other half of the antipattern - a timer that keeps running when the UI is hidden or not needed - which remains a real waste and is untested.",
+  "notes": "Applicability gate: DIRECT. setInterval is listed as supported in the feature inventory. Rule 1: one variable, what drives the update. Rule 2: identical DOM. Rule 3: identical JS apart from the single USE_INTERVAL constant; both pages define both drivers and share the update function, and both keep a rAF loop alive so the rendering cadence is the same in each - in B the rAF loop simply does no work of its own. Rule 4: identical text. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080. Rule 6: the driver IS the case and replaces the shared damage driver; update() nudges the root itself so both variants keep the engine rendering. Rule 7: values derive from an internal counter, not from wall-clock time, so neither variant's output depends on when it happened to be called. Rule 8: counts 30/100/300 elements updated per invocation. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Script. CORRECTION: an earlier version of this note claimed B does roughly twice as many invocations per rendered frame, and read the expected ratio as the cost of an unsynchronised timer. Direct probe disproved it - cohtml services timers once per frame, so both variants invoke update() exactly as often and the null result is correct rather than a measurement failure. The note is left here rather than deleted because the wrong prediction is why the case was worth running."
+}

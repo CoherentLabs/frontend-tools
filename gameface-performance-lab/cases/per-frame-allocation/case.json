@@ -1,0 +1,19 @@
+{
+  "title": "Recycling objects vs allocating fresh ones every frame",
+  "variable": "pre-allocated objects reused vs new objects per frame",
+  "hypothesis": "Script",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "recycled",
+    "b": "allocated"
+  },
+  "metric": "frame-spike",
+  "claim": "Antipattern #42 from web-performance-antipatterns-50.md: 'per-frame allocations (closures, arrays, strings in rAF loops) - GC pauses land as frame spikes.' The claim has two halves and they need different instruments: the allocation work itself is steady per-frame cost that a median can see, while the garbage collection it eventually provokes is a spike that only the frame-jitter metric can. This case declares both.",
+  "result": "NOT CONFIRMED as steady cost, and only weakly confirmed as jitter. Script is flat at every count (1.05x / 1.01x / 1.02x) - allocating a fresh array of fresh objects every frame costs no measurable JS time against recycling a pool, so V8 handles this allocation rate comfortably. The GC half of the claim is at best marginal: the frame spike cleared the guardrail at 100 (1.9->3.0) but not at 30 (5.2->4.8) or 300 (2.1->2.3), and a finding that appears at one count and not its neighbours is exactly the pattern the size gate exists to distrust. Read this as: at these allocation rates, object churn is not worth optimising in Gameface. It does NOT clear allocation at much higher rates, and it says nothing about the string and closure allocation the antipattern also names, which this case deliberately holds equal between variants.",
+  "notes": "Applicability gate: DIRECT. Rule 1: one variable, whether the per-frame objects are recycled or newly allocated. Rule 2: identical DOM. Rule 3: identical JS apart from the single ALLOCATE constant; both pages define both paths and both build the pool at startup, so the pool's existence is not the variable - only whether the frame loop uses it. Rule 4: identical text - both variants write the same numbers to the same tiles. Deliberately numbers rather than concatenated strings, so string allocation is equal in both and the variable stays purely object and array allocation. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080. Rule 6: the allocation loop IS the case and replaces the shared damage driver; the textContent writes give the engine something to render every frame. Rule 7: values derive from the frame counter and the index. Rule 8: counts 30/100/300 objects allocated per frame. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Script for the allocation work, plus the frame-spike metric for the GC pauses - V8 garbage-collection phases appear in the trace under their own names, so if collection is what dominates it should also surface in the 'other' column rather than staying hidden."
+}

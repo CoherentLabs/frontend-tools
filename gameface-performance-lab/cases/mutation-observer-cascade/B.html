@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  #watched { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  #mirror { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile { position: absolute; width: 88px; height: 40px; border-radius: 6px; background: #2a4a6a; }
+  .marker { position: absolute; width: 88px; height: 16px; border-radius: 3px; background: #6a4a2a; }
+</style>
+</head>
+<body>
+  <div id="root">
+    <div id="watched"></div>
+    <div id="mirror"></div>
+  </div>
+  <script>
+    // Both variants perform exactly the same two mutations per tile per frame.
+    // A does the second one inline; B lets a MutationObserver watching #watched
+    // do it. Both pages carry both paths so the scripts stay byte-identical
+    // apart from this one constant.
+    var USE_OBSERVER = true;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var root = document.getElementById('root');
+    var watched = document.getElementById('watched');
+    var mirror = document.getElementById('mirror');
+    var tiles = [];
+    var markers = [];
+    for (var i = 0; i < COUNT; i++) {
+      var left = 16 + (i % COLS) * CELL_W;
+      var top = 16 + Math.floor(i / COLS) * CELL_H;
+
+      var tile = document.createElement('div');
+      tile.className = 'tile';
+      tile.style.left = left + 'px';
+      tile.style.top = top + 'px';
+      watched.appendChild(tile);
+      tiles.push(tile);
+
+      var marker = document.createElement('div');
+      marker.className = 'marker';
+      marker.style.left = left + 'px';
+      marker.style.top = (top + 44) + 'px';
+      mirror.appendChild(marker);
+      markers.push(marker);
+    }
+
+    // The observer writes to #mirror, which it does NOT watch. The unbounded
+    // form of this antipattern - a callback mutating what it observes - would
+    // be a hang rather than a measurement, so the cascade here is one hop deep
+    // and terminates. See case.json.
+    var observer = new MutationObserver(function (records) {
+      for (var k = 0; k < records.length; k++) {
+        var index = records[k].target.__index;
+        if (index !== undefined) markers[index].setAttribute('data-seen', String(t % 7));
+      }
+    });
+    for (var m = 0; m < tiles.length; m++) tiles[m].__index = m;
+    if (USE_OBSERVER) observer.observe(watched, { attributes: true, subtree: true });
+
+    var t = 0;
+    function frame() {
+      t += 1;
+      for (var j = 0; j < tiles.length; j++) {
+        tiles[j].setAttribute('data-x', String(t % 7));
+        if (!USE_OBSERVER) markers[j].setAttribute('data-seen', String(t % 7));
+      }
+      // The attribute writes change nothing visible, so without this the page
+      // renders nothing and the trace measures an idle engine (AUTHORING.md
+      // rule 6). Identical in both variants, so it cancels in the ratio.
+      root.style.transform = 'translateX(' + (t % 3) + 'px)';
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "title": "Viewport units vs px in a per-frame transform write",
+  "variable": "vw units vs px units in transform",
+  "hypothesis": "Styles",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "px",
+    "b": "vw"
+  },
+  "claim": "Resolution-independent HUDs are usually authored in vw/vh so they scale across aspect ratios, and that habit tends to leak into per-frame JS writes. If a viewport unit has to be re-resolved against viewport size on every write, the convenience has a per-frame price; if it is resolved once, it does not. Nameplate-analysis inference - this case is what decides it.",
+  "result": "CONFIRMED - and this verdict CHANGED as the lab improved, which is worth recording. The original four-column sweep reported NO RELIABLE DIFFERENCE, and the coverage map recorded the pattern as refuted on that basis. Adding the Script column during the antipatterns intake revealed what the rendering phases could not see: Script 1.18x / 1.70x / 1.48x, with every rendering phase still flat. Resolving a viewport-relative length on each write costs real JS-thread time; it simply never touched GPU, Paint, Layout or Styles. A null result is only as good as the instrument, and this row read as refuted until the lab grew the axis the cost actually lived on.",
+  "notes": "Applicability gate: DIRECT. transform and translateX are supported, and vw/vh are listed among the supported units for length-valued properties in the feature inventory. Rule 1: one variable, the unit the transform is written in. Rule 2: identical DOM and identical CSS. Rule 3: identical JS apart from the single USE_PX constant; both pages define both write paths and both compute PX_PER_VW. Rule 4: no text, no assets. Rule 5: 300 movers stay inside 1920x1080. Rule 6: the per-frame writes ARE the case and replace the shared damage driver. Rule 7: the offset derives from the frame counter and the element index. Rule 8: counts 30/100/300. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Styles - resolving a viewport-relative length is style-resolution work, not layout. A result on Layout instead would be the more interesting outcome and is worth a note. GEOMETRY NOTE: the runner pins the viewport at 1920x1080, so 1vw is exactly 19.2px and both variants move each element the same distance; this case is only valid at that pinned size."
+}

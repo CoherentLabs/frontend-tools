@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile { position: absolute; width: 88px; height: 64px; border-radius: 6px; background: #2a4a6a; }
+  /* Scoped: the class sits on the element that changes. */
+  .tile.hot { background: #c04a4a; }
+  /* Global: one class on <body> restyles every tile through a descendant rule. */
+  body.hot .tile { background: #c04a4a; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // A toggles a class on every leaf; B toggles a single class on <body> and
+    // lets a descendant rule do the work. Both pages carry both paths so the
+    // scripts stay byte-identical apart from this one constant.
+    var TOGGLE_ON_BODY = true;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var root = document.getElementById('root');
+    var tiles = [];
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'tile';
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      root.appendChild(el);
+      tiles.push(el);
+    }
+
+    // The toggle IS the case, so it replaces the shared damage driver.
+    var t = 0;
+    function frame() {
+      t += 1;
+      var on = (t % 2) === 0;
+      if (TOGGLE_ON_BODY) {
+        if (on) document.body.classList.add('hot');
+        else document.body.classList.remove('hot');
+      } else {
+        for (var j = 0; j < tiles.length; j++) {
+          if (on) tiles[j].classList.add('hot');
+          else tiles[j].classList.remove('hot');
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

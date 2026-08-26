@@ -1,0 +1,18 @@
+{
+  "title": "Building a list with innerHTML += vs the DOM API",
+  "variable": "repeated innerHTML += vs createElement/appendChild",
+  "hypothesis": "Script",
+  "status": "DIRECT",
+  "counts": [
+    10,
+    30,
+    100
+  ],
+  "labels": {
+    "a": "appendChild",
+    "b": "innerHTML +="
+  },
+  "claim": "Antipattern #35 from web-performance-antipatterns-50.md: 'innerHTML += re-parses and rebuilds the entire container content.' The damage is quadratic rather than linear: the Nth append serialises and re-parses the N-1 elements already there, so a list built this way costs O(N^2) even though it looks like a simple loop. It survives in real code because for small N it is the shortest thing to write.",
+  "result": "CONFIRMED, quadratic, and the most damaging single result in the lab. Script 2.53x / 8.49x / 36.63x - the ratio itself grows about 14x as the list grows 10x, which is the signature of O(N^2) rather than a constant overhead. The absolute numbers are what matter: at 100 items, B spends 20.62ms per frame on the JS thread against A 0.563ms. That is two thirds of a 31ms frame budget consumed by ONE list of one hundred items. A NEW PHASE surfaced here that no other case has produced: Coherent_BuildDOM, present only in B - the HTML parse. It is only 0.085ms, which locates the cost precisely: parsing the markup is cheap, and what is expensive is the read-modify-write of innerHTML serialising the entire container to a string on every single append.",
+  "notes": "Applicability gate: DIRECT. innerHTML get and set both work in cohtml - verified against the Player, where d.innerHTML='<i>a</i>' followed by d.innerHTML+='<i>b</i>' produced two children, confirming the read-modify-write round trip that makes this antipattern quadratic. Rule 1: one variable, how the list is constructed. Rule 2: identical DOM at the end of every frame - the same COUNT items with the same class at the same positions; only the route there differs. Rule 3: identical JS apart from the single USE_INNERHTML constant; both pages define both paths and share the slot functions, and both pay the same teardown loop. Rule 4: no text, no external assets - the markup string in B is byte-equivalent to what A builds. Rule 5: 100 items occupy 1852x352 inside 1920x1080. Rule 6: the rebuild IS the case and replaces the shared damage driver; it runs every frame from load in both variants. Rule 7: positions derive from the loop index only. Rule 8: counts are 10/30/100 rather than the lab's usual 30/100/300 - if the cost really is quadratic then 300 would mean roughly 45,000 element parses per frame, which risks measuring a hang rather than a cost. The three counts are chosen so the shape of the curve is visible: a linear cost triples from 30 to 100, a quadratic one grows about eleven-fold. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Script - parsing is JS-thread work - with Styles following, since every rebuilt element must have its style resolved from scratch."
+}

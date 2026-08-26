@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile { position: absolute; width: 88px; height: 64px; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // A draws every tile from one atlas, offsetting into it with
+    // background-position. B loads each sprite as its own file. Both pages carry
+    // both paths so the scripts stay byte-identical apart from this constant.
+    var USE_SHEET = false;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+    var SPRITES = 16, SHEET_COLS = 4, TILE_W = 88, TILE_H = 64;
+
+    var root = document.getElementById('root');
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'tile';
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+
+      var sprite = i % SPRITES;
+      if (USE_SHEET) {
+        el.style.backgroundImage = "url('sheet.png')";
+        el.style.backgroundPosition =
+          (-(sprite % SHEET_COLS) * TILE_W) + 'px ' + (-Math.floor(sprite / SHEET_COLS) * TILE_H) + 'px';
+      } else {
+        el.style.backgroundImage = "url('sprite-" + sprite + ".png')";
+      }
+
+      root.appendChild(el);
+    }
+
+    var t = 0;
+    function frame() {
+      t += 1;
+      root.style.transform = 'translateX(' + (t % 3) + 'px)';
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

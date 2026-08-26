@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile {
+    position: absolute;
+    width: 88px;
+    height: 64px;
+    background: #2a4a6a;
+    border-radius: 6px;
+    filter: blur(4px);
+  }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // B rewrites the blur radius every frame; A leaves the one from the
+    // stylesheet alone. Both pages carry both paths so the scripts stay
+    // byte-identical apart from this one constant.
+    var ANIMATE_FILTER = true;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var root = document.getElementById('root');
+    var tiles = [];
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'tile';
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      root.appendChild(el);
+      tiles.push(el);
+    }
+
+    // Both variants are blurred and both re-render every frame via the shared
+    // damage driver. The only question is whether CHANGING the radius costs
+    // more than holding it steady.
+    var t = 0;
+    function frame() {
+      t += 1;
+      if (ANIMATE_FILTER) {
+        var radius = 2 + (t % 7);
+        for (var j = 0; j < tiles.length; j++) tiles[j].style.filter = 'blur(' + radius + 'px)';
+      }
+      root.style.transform = 'translateX(' + (t % 3) + 'px)';
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

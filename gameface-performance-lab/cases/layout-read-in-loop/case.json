@@ -1,0 +1,18 @@
+{
+  "title": "Reading layout per element in a loop vs not reading at all",
+  "variable": "per-element getBoundingClientRect read vs no read",
+  "hypothesis": "Layout",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "no read",
+    "b": "read back"
+  },
+  "claim": "Antipattern #10 from web-performance-antipatterns-50.md: 'reading layout inside a loop over many elements (per-item getBoundingClientRect)'. On the web this is the costliest form of layout thrashing because each read flushes layout for the whole document. Companion to layout-read-interleave, which holds the read count fixed and varies only the ordering; this case varies whether the reads happen at all.",
+  "result": "CONFIRMED, but on a different axis than the web explains. Script 1.91x / 2.41x / 4.21x while Layout stays flat (0.88x / 0.95x / 0.99x). Reading getBoundingClientRect per element in a loop IS expensive - but not because it induces layout, which it provably does not in cohtml. What it costs is the JS-thread call itself, and that scales with how many times you make it. So the correct advice in Gameface is not batch your reads (layout-read-interleave found that free) but do not read geometry in a loop at all.",
+  "notes": "Applicability gate: DIRECT, with the same caveat established by probe: in cohtml a layout read returns the value from the last completed layout rather than forcing a fresh one, so there is no per-read flush for this pattern to trigger. Whatever this case measures is therefore the cost of the read call itself, not of induced layout - which is why the interesting axis here is Script rather than Layout. Rule 1: one variable, whether the loop reads geometry back. Rule 2: identical DOM. Rule 3: identical JS apart from the single READ_BACK constant. Rule 4: no text, no assets. Rule 5: 300 bars occupy 1852x1032 inside 1920x1080. Rule 6: the per-frame writes replace the shared damage driver and run from load in both variants. Rule 7: the width derives from the frame counter. Rule 8: counts 30/100/300. Rule 9: plain HTML/CSS/JS. Rule 10: hypothesis is Layout because that is the web's claim; a Script-only result would confirm that the read is just a function call in Gameface and would be the more useful finding."
+}

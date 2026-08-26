@@ -1,0 +1,18 @@
+{
+  "title": ":nth-child colouring vs class colouring, under sibling churn",
+  "variable": ":nth-child selectors vs per-element classes on a reordering list",
+  "hypothesis": "Styles",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "classes",
+    "b": ":nth-child"
+  },
+  "claim": "Antipattern #32 from web-performance-antipatterns-50.md: 'structural pseudo-classes (:nth-child) on lists that change - sibling-dependent re-matching on every mutation.' Zebra-striped inventories, leaderboards and chat logs are exactly this shape: a list styled by position that also gains, loses or reorders rows. The claim is that position-keyed selectors turn one mutation into a re-match of every following sibling.",
+  "result": "NOT CONFIRMED. No reliable difference at any count while the list reorders every single frame - moving firstChild to the end shifts every sibling index, which is precisely the mutation :nth-child is supposed to make expensive. Styles 1.00x / 0.98x / 0.95x. Zebra-striped lists, leaderboards and chat logs styled by position are safe to churn in Gameface; the sibling-dependent re-matching the web warns about does not show up as measurable cost here.",
+  "notes": "Applicability gate: DIRECT. :nth-child is not covered by the feature inventory at all, so it was verified manually against the Player - document.querySelectorAll('.t:nth-child(2n)') matched correctly. (Worth noting for future cases: :not() does NOT work, it throws 'Invalid CSS selector' in querySelector.) Rule 1: one variable, whether colour comes from a class or from sibling position. Rule 2: identical DOM - same element count, same geometry, same positions; only the class attribute differs, which is the variable. Both pages carry BOTH rule sets so the stylesheet is byte-identical and rule count cannot leak in. Rule 3: identical JS apart from the single USE_NTH_CHILD constant. Rule 4: no text, no assets. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080. Rule 6: the reorder IS the case and replaces the shared damage driver - moving firstChild to the end shifts every sibling index by one every frame, which is the mutation :nth-child is sensitive to and classes are immune to. DOM size never changes. Rule 7: no randomness. Rule 8: counts 30/100/300. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Styles. APPEARANCE NOTE: the two variants are not identical frame by frame - in A a tile keeps its colour as it moves, in B the colour belongs to the slot. That difference IS the semantics of the two techniques; element count, geometry and painted area are the same."
+}

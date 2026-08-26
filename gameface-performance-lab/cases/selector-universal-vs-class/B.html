@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile { position: absolute; width: 88px; height: 64px; border-radius: 6px; background: #2a4a6a; }
+  .tile.hot { opacity: 0.65; }
+  * [data-k="0"] { background: #3cb4b4; }
+  * [data-k="1"] { background: #b43c92; }
+  * [data-k="2"] { background: #70b43c; }
+  * [data-k="3"] { background: #3c4eb4; }
+  * [data-k="4"] { background: #b44c3c; }
+  * [data-k="5"] { background: #3cb46e; }
+  * [data-k="6"] { background: #903cb4; }
+  * [data-k="7"] { background: #b4b23c; }
+  * [data-k="8"] { background: #3c94b4; }
+  * [data-k="9"] { background: #b43c72; }
+  * [data-k="10"] { background: #50b43c; }
+  * [data-k="11"] { background: #4a3cb4; }
+  * [data-k="12"] { background: #b46c3c; }
+  * [data-k="13"] { background: #3cb48e; }
+  * [data-k="14"] { background: #b03cb4; }
+  * [data-k="15"] { background: #96b43c; }
+  * [data-k="16"] { background: #3c74b4; }
+  * [data-k="17"] { background: #b43c52; }
+  * [data-k="18"] { background: #3cb448; }
+  * [data-k="19"] { background: #6a3cb4; }
+  * [data-k="20"] { background: #b48c3c; }
+  * [data-k="21"] { background: #3cb4ae; }
+  * [data-k="22"] { background: #b43c98; }
+  * [data-k="23"] { background: #76b43c; }
+  * [data-k="24"] { background: #3c54b4; }
+  * [data-k="25"] { background: #b4463c; }
+  * [data-k="26"] { background: #3cb468; }
+  * [data-k="27"] { background: #8a3cb4; }
+  * [data-k="28"] { background: #b4ac3c; }
+  * [data-k="29"] { background: #3c9ab4; }
+  * [data-k="30"] { background: #b43c78; }
+  * [data-k="31"] { background: #56b43c; }
+  * [data-k="32"] { background: #443cb4; }
+  * [data-k="33"] { background: #b4663c; }
+  * [data-k="34"] { background: #3cb488; }
+  * [data-k="35"] { background: #aa3cb4; }
+  * [data-k="36"] { background: #9cb43c; }
+  * [data-k="37"] { background: #3c7ab4; }
+  * [data-k="38"] { background: #b43c58; }
+  * [data-k="39"] { background: #3cb442; }
+  * [data-k="40"] { background: #643cb4; }
+  * [data-k="41"] { background: #b4863c; }
+  * [data-k="42"] { background: #3cb4a8; }
+  * [data-k="43"] { background: #b43c9e; }
+  * [data-k="44"] { background: #7cb43c; }
+  * [data-k="45"] { background: #3c5ab4; }
+  * [data-k="46"] { background: #b4403c; }
+  * [data-k="47"] { background: #3cb462; }
+  * [data-k="48"] { background: #843cb4; }
+  * [data-k="49"] { background: #b4a63c; }
+  * [data-k="50"] { background: #3ca0b4; }
+  * [data-k="51"] { background: #b43c7e; }
+  * [data-k="52"] { background: #5cb43c; }
+  * [data-k="53"] { background: #3e3cb4; }
+  * [data-k="54"] { background: #b4603c; }
+  * [data-k="55"] { background: #3cb482; }
+  * [data-k="56"] { background: #a43cb4; }
+  * [data-k="57"] { background: #a2b43c; }
+  * [data-k="58"] { background: #3c80b4; }
+  * [data-k="59"] { background: #b43c5e; }
+  * [data-k="60"] { background: #3cb43c; }
+  * [data-k="61"] { background: #5e3cb4; }
+  * [data-k="62"] { background: #b4803c; }
+  * [data-k="63"] { background: #3cb4a2; }
+  * [data-k="64"] { background: #b43ca4; }
+  * [data-k="65"] { background: #82b43c; }
+  * [data-k="66"] { background: #3c60b4; }
+  * [data-k="67"] { background: #b43c3e; }
+  * [data-k="68"] { background: #3cb45c; }
+  * [data-k="69"] { background: #7e3cb4; }
+  * [data-k="70"] { background: #b4a03c; }
+  * [data-k="71"] { background: #3ca6b4; }
+  * [data-k="72"] { background: #b43c84; }
+  * [data-k="73"] { background: #62b43c; }
+  * [data-k="74"] { background: #3c40b4; }
+  * [data-k="75"] { background: #b45a3c; }
+  * [data-k="76"] { background: #3cb47c; }
+  * [data-k="77"] { background: #9e3cb4; }
+  * [data-k="78"] { background: #a8b43c; }
+  * [data-k="79"] { background: #3c86b4; }
+  * [data-k="80"] { background: #b43c64; }
+  * [data-k="81"] { background: #42b43c; }
+  * [data-k="82"] { background: #583cb4; }
+  * [data-k="83"] { background: #b47a3c; }
+  * [data-k="84"] { background: #3cb49c; }
+  * [data-k="85"] { background: #b43caa; }
+  * [data-k="86"] { background: #88b43c; }
+  * [data-k="87"] { background: #3c66b4; }
+  * [data-k="88"] { background: #b43c44; }
+  * [data-k="89"] { background: #3cb456; }
+  * [data-k="90"] { background: #783cb4; }
+  * [data-k="91"] { background: #b49a3c; }
+  * [data-k="92"] { background: #3cacb4; }
+  * [data-k="93"] { background: #b43c8a; }
+  * [data-k="94"] { background: #68b43c; }
+  * [data-k="95"] { background: #3c46b4; }
+  * [data-k="96"] { background: #b4543c; }
+  * [data-k="97"] { background: #3cb476; }
+  * [data-k="98"] { background: #983cb4; }
+  * [data-k="99"] { background: #aeb43c; }
+  * [data-k="100"] { background: #3c8cb4; }
+  * [data-k="101"] { background: #b43c6a; }
+  * [data-k="102"] { background: #48b43c; }
+  * [data-k="103"] { background: #523cb4; }
+  * [data-k="104"] { background: #b4743c; }
+  * [data-k="105"] { background: #3cb496; }
+  * [data-k="106"] { background: #b43cb0; }
+  * [data-k="107"] { background: #8eb43c; }
+  * [data-k="108"] { background: #3c6cb4; }
+  * [data-k="109"] { background: #b43c4a; }
+  * [data-k="110"] { background: #3cb450; }
+  * [data-k="111"] { background: #723cb4; }
+  * [data-k="112"] { background: #b4943c; }
+  * [data-k="113"] { background: #3cb2b4; }
+  * [data-k="114"] { background: #b43c90; }
+  * [data-k="115"] { background: #6eb43c; }
+  * [data-k="116"] { background: #3c4cb4; }
+  * [data-k="117"] { background: #b44e3c; }
+  * [data-k="118"] { background: #3cb470; }
+  * [data-k="119"] { background: #923cb4; }
+  * [data-k="120"] { background: #b4b43c; }
+  * [data-k="121"] { background: #3c92b4; }
+  * [data-k="122"] { background: #b43c70; }
+  * [data-k="123"] { background: #4eb43c; }
+  * [data-k="124"] { background: #4c3cb4; }
+  * [data-k="125"] { background: #b46e3c; }
+  * [data-k="126"] { background: #3cb490; }
+  * [data-k="127"] { background: #b23cb4; }
+  * [data-k="128"] { background: #94b43c; }
+  * [data-k="129"] { background: #3c72b4; }
+  * [data-k="130"] { background: #b43c50; }
+  * [data-k="131"] { background: #3cb44a; }
+  * [data-k="132"] { background: #6c3cb4; }
+  * [data-k="133"] { background: #b48e3c; }
+  * [data-k="134"] { background: #3cb4b0; }
+  * [data-k="135"] { background: #b43c96; }
+  * [data-k="136"] { background: #74b43c; }
+  * [data-k="137"] { background: #3c52b4; }
+  * [data-k="138"] { background: #b4483c; }
+  * [data-k="139"] { background: #3cb46a; }
+  * [data-k="140"] { background: #8c3cb4; }
+  * [data-k="141"] { background: #b4ae3c; }
+  * [data-k="142"] { background: #3c98b4; }
+  * [data-k="143"] { background: #b43c76; }
+  * [data-k="144"] { background: #54b43c; }
+  * [data-k="145"] { background: #463cb4; }
+  * [data-k="146"] { background: #b4683c; }
+  * [data-k="147"] { background: #3cb48a; }
+  * [data-k="148"] { background: #ac3cb4; }
+  * [data-k="149"] { background: #9ab43c; }
+  * [data-k="150"] { background: #3c78b4; }
+  * [data-k="151"] { background: #b43c56; }
+  * [data-k="152"] { background: #3cb444; }
+  * [data-k="153"] { background: #663cb4; }
+  * [data-k="154"] { background: #b4883c; }
+  * [data-k="155"] { background: #3cb4aa; }
+  * [data-k="156"] { background: #b43c9c; }
+  * [data-k="157"] { background: #7ab43c; }
+  * [data-k="158"] { background: #3c58b4; }
+  * [data-k="159"] { background: #b4423c; }
+  * [data-k="160"] { background: #3cb464; }
+  * [data-k="161"] { background: #863cb4; }
+  * [data-k="162"] { background: #b4a83c; }
+  * [data-k="163"] { background: #3c9eb4; }
+  * [data-k="164"] { background: #b43c7c; }
+  * [data-k="165"] { background: #5ab43c; }
+  * [data-k="166"] { background: #403cb4; }
+  * [data-k="167"] { background: #b4623c; }
+  * [data-k="168"] { background: #3cb484; }
+  * [data-k="169"] { background: #a63cb4; }
+  * [data-k="170"] { background: #a0b43c; }
+  * [data-k="171"] { background: #3c7eb4; }
+  * [data-k="172"] { background: #b43c5c; }
+  * [data-k="173"] { background: #3cb43e; }
+  * [data-k="174"] { background: #603cb4; }
+  * [data-k="175"] { background: #b4823c; }
+  * [data-k="176"] { background: #3cb4a4; }
+  * [data-k="177"] { background: #b43ca2; }
+  * [data-k="178"] { background: #80b43c; }
+  * [data-k="179"] { background: #3c5eb4; }
+  * [data-k="180"] { background: #b43c3c; }
+  * [data-k="181"] { background: #3cb45e; }
+  * [data-k="182"] { background: #803cb4; }
+  * [data-k="183"] { background: #b4a23c; }
+  * [data-k="184"] { background: #3ca4b4; }
+  * [data-k="185"] { background: #b43c82; }
+  * [data-k="186"] { background: #60b43c; }
+  * [data-k="187"] { background: #3c3eb4; }
+  * [data-k="188"] { background: #b45c3c; }
+  * [data-k="189"] { background: #3cb47e; }
+  * [data-k="190"] { background: #a03cb4; }
+  * [data-k="191"] { background: #a6b43c; }
+  * [data-k="192"] { background: #3c84b4; }
+  * [data-k="193"] { background: #b43c62; }
+  * [data-k="194"] { background: #40b43c; }
+  * [data-k="195"] { background: #5a3cb4; }
+  * [data-k="196"] { background: #b47c3c; }
+  * [data-k="197"] { background: #3cb49e; }
+  * [data-k="198"] { background: #b43ca8; }
+  * [data-k="199"] { background: #86b43c; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var host = document.getElementById('root');
+    var tiles = [];
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'tile k' + (i % 200);
+      el.setAttribute('data-k', String(i % 200));
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      host.appendChild(el);
+      tiles.push(el);
+    }
+
+    var t = 0;
+    function frame() {
+      t += 1;
+      var on = (t % 2) === 0;
+      for (var j = 0; j < tiles.length; j++) {
+        if (on) tiles[j].classList.add('hot');
+        else tiles[j].classList.remove('hot');
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

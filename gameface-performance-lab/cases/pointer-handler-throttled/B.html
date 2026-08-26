@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile {
+    position: absolute; width: 88px; height: 64px; border-radius: 6px;
+    background: #2a4a6a; color: #e8e8f0; font-size: 16px;
+  }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // A records the pointer and does the work once per frame; B does the work
+    // inside the handler, on every event. Both pages carry both paths so the
+    // scripts stay byte-identical apart from this one constant.
+    var THROTTLE = false;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var root = document.getElementById('root');
+    var tiles = [];
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'tile';
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      root.appendChild(el);
+      tiles.push(el);
+    }
+
+    // The work a pointer handler might plausibly do: recompute something per
+    // element from the cursor position.
+    function applyWork(x, y) {
+      for (var j = 0; j < tiles.length; j++) {
+        tiles[j].textContent = (x + y + j) % 1000;
+      }
+    }
+
+    var pendingX = 0, pendingY = 0, havePending = false;
+    document.addEventListener('mousemove', function (event) {
+      if (THROTTLE) {
+        pendingX = event.clientX;
+        pendingY = event.clientY;
+        havePending = true;
+      } else {
+        applyWork(event.clientX, event.clientY);
+      }
+    });
+
+    var t = 0;
+    function frame() {
+      t += 1;
+      if (THROTTLE && havePending) {
+        applyWork(pendingX, pendingY);
+        havePending = false;
+      }
+      root.style.transform = 'translateX(' + (t % 3) + 'px)';
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

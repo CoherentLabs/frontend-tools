@@ -1,0 +1,18 @@
+{
+  "title": "style.cssText string rewrite vs targeted property writes",
+  "variable": "cssText assignment vs individual style property writes",
+  "hypothesis": "Script",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "property writes",
+    "b": "cssText"
+  },
+  "claim": "Antipattern #46 from web-performance-antipatterns-50.md: 'string-building style updates (el.style.cssText = ...) instead of targeted property writes.' Gameface RAG 07-performance.md pushes the same way from a different angle, recommending CSSTOM and the engine's numeric setters over string work. cssText is attractive because it looks like one assignment instead of four, but it requires the engine to parse a declaration list and it discards every inline property not mentioned.",
+  "result": "CONFIRMED on both axes: Styles 1.86x / 2.09x / 1.84x and Script 1.93x / 2.66x / 3.58x, with the Script cost growing as the element count rises. Rebuilding the inline style as a string costs roughly two to three and a half times what setting the same four properties directly does - the engine has to parse a declaration list where the property path does not. This is the one case in the JS batch that agrees with both the web advice and Gameface RAG 07-performance.md, which recommends CSSTOM and the engine numeric setters over string work. Note the fairness constraint that shapes the ratio: assigning cssText REPLACES the whole inline style, so B must restate every declaration including the constant height, and A writes height too. A real codebase using cssText to set one changing property would restate all of them and pay more than this row shows.",
+  "notes": "Applicability gate: DIRECT. style.cssText was verified against the Player - assigning it and reading back el.style.width returned the assigned value. Rule 1: one variable, how the inline style is applied. Rule 2: identical DOM and identical rendered geometry - both variants end each frame with the same four declarations producing the same boxes. Rule 3: identical JS apart from the single USE_CSSTEXT constant; both pages define both paths and compute left/top/width identically. Rule 4: no text, no assets. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080. Rule 6: the style writes ARE the case and replace the shared damage driver. Rule 7: values derive from the frame counter and the index. Rule 8: counts 30/100/300 elements written per frame. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Script for the string building and parsing, with Styles following. FAIRNESS NOTE: B's cssText string includes all four declarations, including the constant height, because assigning cssText REPLACES the entire inline style - omitting height would leave B's tiles unsized and break rule 2. A therefore also writes height every frame, so both variants perform four declarations per element and the comparison stays about the mechanism rather than about how many properties are set."
+}

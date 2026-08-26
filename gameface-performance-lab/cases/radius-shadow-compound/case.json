@@ -1,0 +1,18 @@
+{
+  "title": "border-radius combined with a blurred shadow vs shadow alone",
+  "variable": "border-radius added to an already-shadowed element",
+  "hypothesis": "GPU",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "square + shadow",
+    "b": "rounded + shadow"
+  },
+  "claim": "Antipattern #19 from web-performance-antipatterns-50.md: 'border-radius combined with shadows/filters on the same element - compound per-pixel cost.' The claim is specifically about COMPOUNDING: that rounding a shadowed element costs more than the sum of its parts, because the shadow's blur must now follow a rounded silhouette. Rounded panels with drop shadows are close to universal in game UI, so if the compound penalty is real it is being paid nearly everywhere.",
+  "result": "CONFIRMED but mild: no reliable difference at 30, then GPU 1.67x at 100 and 1.56x at 300, with Paint 1.16x / 1.30x. Rounding an already-shadowed element does cost extra, so the compounding the antipattern describes is real - but at roughly 1.6x it is far smaller than the shadow itself (box-shadow-blur measured 2.12x GPU for the shadow against none). Rounded shadowed panels are affordable; it is the shadow you pay for, not the corners.",
+  "notes": "Applicability gate: DIRECT. box-shadow is supported (only the 'inset' keyword is rejected) and border-radius is fully supported. Rule 1: one variable, the border-radius declaration. Rule 2: identical DOM and identical box geometry - border-radius changes the silhouette but not the element's size or position. Rule 3: identical JS, byte-for-byte. Rule 4: no text, no assets. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080. Rule 6: the shared root-nudge damage driver, identical in both. Rule 7: no randomness. Rule 8: counts 30/100/300. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is GPU. READING THIS ROW: box-shadow-blur already measured what the shadow alone costs (2.12x GPU at 300 against no shadow). This row isolates the increment that rounding adds on top, so the two should be read together - a large ratio here would mean the combination is worse than either part, which is the actual claim under test."
+}

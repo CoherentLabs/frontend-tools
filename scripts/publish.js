@@ -104,7 +104,7 @@ const eslintPluginPath = path.join(__dirname, '../eslint-gameface/packages/eslin
 async function main() {
     try {
         const tools = [
-            ...await getToolsDirs(TOOLS_PATH, ['gameface-ui-vite-plugins', 'cli', 'language-server', 'gf-figma-exporter', 'eslint-gameface', 'google-fonts-server', 'gameface-templates', 'gameface-unsupported-features']),
+            ...await getToolsDirs(TOOLS_PATH, ['gameface-ui-vite-plugins', 'cli', 'language-server', 'gf-figma-exporter', 'eslint-gameface', 'google-fonts-server', 'gameface-templates', 'gameface-unsupported-features', 'gameface-performance-lab']),
             ...await getToolsDirs(VITE_PLUGINS_PATH),
             ...await getToolsDirs(CLI_PATH),
             coherentDocsThemePath,

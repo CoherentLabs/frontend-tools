@@ -1,0 +1,13 @@
+node_modules
+package-lock.json
+
+# Raw traces from the last run. Kept on disk so a surprising row can be
+# re-examined without re-running, but never committed - one 5s trace is
+# several MB and a single case run produces six of them.
+runs/
+
+# The Player writes these into whatever directory it was launched from, which
+# for the lab is this one.
+CohtmlApplication.log
+CohtmlApplicationPerformance.log
+PlayerConfig.ini

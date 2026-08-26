@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile {
+    position: absolute; width: 88px; height: 64px; border-radius: 6px;
+    background: #2a4a6a; color: #e8e8f0; font-size: 16px;
+  }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // A drives the update from requestAnimationFrame, so it runs exactly once
+    // per rendered frame. B drives it from a 16ms setInterval, which knows
+    // nothing about the frame rate. Both pages carry both paths so the scripts
+    // stay byte-identical apart from this one constant.
+    var USE_INTERVAL = true;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var root = document.getElementById('root');
+    var tiles = [];
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'tile';
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      root.appendChild(el);
+      tiles.push(el);
+    }
+
+    // Identical work per invocation. What differs is how often it is invoked.
+    var t = 0;
+    function update() {
+      t += 1;
+      for (var j = 0; j < tiles.length; j++) tiles[j].textContent = (t + j) % 1000;
+      root.style.transform = 'translateX(' + (t % 3) + 'px)';
+    }
+
+    if (USE_INTERVAL) {
+      setInterval(update, 16);
+      // rAF still runs so the two variants share the same rendering cadence;
+      // it simply does no work of its own here.
+      requestAnimationFrame(function idle() { requestAnimationFrame(idle); });
+    } else {
+      requestAnimationFrame(function loop() {
+        update();
+        requestAnimationFrame(loop);
+      });
+    }
+  </script>
+</body>
+</html>

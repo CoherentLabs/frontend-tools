@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile {
+    position: absolute;
+    width: 88px;
+    height: 64px;
+    border-radius: 6px;
+    background: #6a4a2a;
+  }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // A hides and shows with visibility; B detaches and reattaches the nodes.
+    // Both pages carry both paths so the scripts stay byte-identical apart
+    // from this one constant.
+    var USE_VISIBILITY = true;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var root = document.getElementById('root');
+    var tiles = [];
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'tile';
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      root.appendChild(el);
+      tiles.push(el);
+    }
+
+    // The show/hide churn IS the case, so it replaces the shared damage driver
+    // (AUTHORING.md rule 6). Every tile flips every frame rather than once a
+    // second - see the ADAPTED note in case.json.
+    var t = 0;
+    function frame() {
+      t += 1;
+      var on = (t % 2) === 0;
+      for (var j = 0; j < tiles.length; j++) {
+        if (USE_VISIBILITY) {
+          tiles[j].style.visibility = on ? 'visible' : 'hidden';
+        } else {
+          if (on) root.appendChild(tiles[j]);
+          else if (tiles[j].parentNode) root.removeChild(tiles[j]);
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

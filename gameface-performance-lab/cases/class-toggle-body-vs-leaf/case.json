@@ -1,0 +1,18 @@
+{
+  "title": "Toggling a class on every leaf vs one class on <body>",
+  "variable": "N scoped class toggles vs 1 global class toggle",
+  "hypothesis": "Styles",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "leaf classes",
+    "b": "body class"
+  },
+  "claim": "Antipattern #25 from web-performance-antipatterns-50.md: 'toggling classes on <html>/<body> - invalidates style for the entire tree.' This case is deliberately a collision between two pieces of advice. The web says the body toggle is the expensive one because it invalidates globally. The lab's own cross-case inference says per-element writes are what cost, which points the opposite way - A does N writes, B does one. Whichever wins, one of those two rules of thumb is wrong for Gameface.",
+  "result": "REFUTES the web antipattern, and inverts it. Styles is flat at every count (1.06x / 1.02x / 0.99x): toggling one class on <body> invalidates no more styling work than toggling a class on all 300 leaves. Script strongly favours the body toggle - 0.81x / 0.69x / 0.48x - because it is one write instead of N. Absolutes at 300: A Styles 0.652ms / Script 0.188ms; B Styles 0.648ms / Script 0.091ms. So the global toggle is not the trap the web describes; in Gameface it is the better option on both axes. What costs is the number of elements whose style ends up invalidated, which is 300 either way here - not where the class that caused it happens to sit.",
+  "notes": "Applicability gate: DIRECT. classList was verified manually against the Player. Rule 1: one variable, where the class toggle is applied. Rule 2: identical DOM and identical CSS - both pages carry BOTH the .tile.hot and the body.hot .tile rule, so neither variant gains a selector the other lacks and the stylesheet is byte-identical. Rule 3: identical JS apart from the single TOGGLE_ON_BODY constant. Rule 4: no text, no assets. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080. Rule 6: the toggle IS the case and replaces the shared damage driver; it runs every frame from load in both. Rule 7: the on/off state derives from the frame counter. Rule 8: counts 30/100/300 - the count matters because A's write count scales with it and B's does not, so the two should diverge as the grid grows. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Styles. APPEARANCE NOTE: both variants render the same tiles in the same colours on the same frames. READING IT WITH style-write-scope: that case pits 1 parent class change against N inline writes; this one pits N class toggles against 1 body toggle. Together they separate write count from invalidation scope, which neither case can do alone."
+}

@@ -1,0 +1,18 @@
+{
+  "title": "Animating a fill bar with scaleX vs with width",
+  "variable": "transform scaleX vs width animation",
+  "hypothesis": "Layout",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "scaleX",
+    "b": "width"
+  },
+  "claim": "Gameface RAG 07-performance.md, 'Transform vs. Layout: Animate Only What's Cheap' (SEVERITY: critical): any box-model change including width runs a full Yoga solve (SolveFlexLayout), while transform changes take the cheap UpdateNodeTransforms path. Health bars, cast bars and cooldown fills are the most common animated element in a game HUD, so this is the highest-traffic instance of that claim.",
+  "result": "CONFIRMED, identically to animate-translate-vs-position: Layout is B-only at 30, 100 and 300, with UpdateNodeTransforms A-only as the counterpart. Animating width runs Yoga; animating scaleX does not run it at all. These two rows are the measurement behind the RAG 07-performance.md Transform vs. Layout guidance, and they support it as strongly as a measurement can - not a ratio but a categorical difference in which phases execute.",
+  "notes": "Applicability gate: DIRECT. transform/scaleX are supported (scaleX is a supported css-function); width is supported with px units. Rule 1: one variable, the property used to animate the fill. Rule 2: identical DOM and identical CSS - both variants declare transform-origin so neither gets a property the other lacks. Rule 3: identical JS apart from the single USE_TRANSFORM constant; both pages define both animation paths, which is the form AUTHORING.md prefers. Rule 4: no text, no assets. Rule 5: 300 bars occupy 1852x984 inside 1920x1080. Rule 6: the per-frame animation IS the case, so it replaces the shared damage driver; it runs at rAF rate from load in both variants. Rule 7: the fill fraction derives from the frame counter and the bar index, so two runs do identical work. Rule 8: counts 30/100/300. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Layout - if the RAG claim holds, B moves Layout and A does not. APPEARANCE NOTE: both variants render a bar of the same visible width each frame; A scales an 88px box, B resizes it."
+}

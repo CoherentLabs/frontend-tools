@@ -1,0 +1,18 @@
+{
+  "title": "Shallow vs deep wrapper nesting, same visible result",
+  "variable": "wrapper depth 2 vs 20",
+  "hypothesis": "Layout",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "depth 2",
+    "b": "depth 20"
+  },
+  "claim": "Antipattern #4 from web-performance-antipatterns-50.md: 'deep DOM nesting - every layout/style pass traverses more nodes than the visuals need.' In Gameface this connects to a much stronger claim: RAG 07-performance.md 'Yoga Layout Complexity: The O(4^Depth) Cliff' (SEVERITY: critical) says a 4-level deep tree can run ~256 layout calls per frame instead of 4. That doc attributes the cliff to auto-sized children and align-items:stretch specifically, so this case deliberately holds sizing explicit and isolates depth on its own - if depth alone is expensive, that is a separate finding from the documented cliff.",
+  "result": "CONFIRMED, badly, and entirely outside the printed columns: UpdateNodeTransforms 3.48x / 5.35x / 7.50x while GPU, Paint, Layout, Styles and Script all stay inside the guardrail. Deep nesting costs the per-frame scene-graph walk on the Layout thread. This is the case that exposed a bug in the lab itself - judged on the printed columns alone it read NO RELIABLE DIFFERENCE, and the verdict now considers every recorded phase because of this row. Note the two upper counts were measured at 64 and 43fps rather than 32; the finding sits on a phase unaffected by that, and the fps column records it.",
+  "notes": "Applicability gate: DIRECT. display:flex is supported; every wrapper is explicitly sized with width/height 100%. Rule 1: one variable, the DEPTH constant. Rule 2 EXCEPTION: total node count necessarily differs - that is what nesting depth MEANS, and holding both node count and leaf count equal while varying depth is impossible. What is held identical is the rendered result: the same number of visible tiles, the same size, at the same positions, so no fill or paint difference can leak into the comparison. Node counts are COUNT*4 for A and COUNT*22 for B. Rule 3: identical JS apart from the single DEPTH constant. Rule 4: no text, no assets. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080. Rule 6: static tree plus the shared root-nudge damage driver, identical in both. Rule 7: no randomness. Rule 8: counts 30/100/300 leaves. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Layout, with Styles plausible since every wrapper is also a style-resolution target."
+}

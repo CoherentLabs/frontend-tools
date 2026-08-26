@@ -1,0 +1,18 @@
+{
+  "title": "Layout thrashing: interleaved write/read vs batched",
+  "variable": "interleaved style-write/layout-read vs batched",
+  "hypothesis": "Layout",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "batched",
+    "b": "interleaved"
+  },
+  "claim": "Antipattern #2 from web-performance-antipatterns-50.md: 'interleaving style writes with layout reads forces synchronous reflow per read.' This is one of the most repeated rules in web performance. The whole rule rests on the browser being forced to flush layout when you read geometry - and cohtml appears not to do that, which is exactly why it needs measuring rather than assuming.",
+  "result": "NOT CONFIRMED, and the mechanism is absent rather than merely cheap. No reliable difference at any count. cohtml does not force a synchronous layout on a geometry read - probed directly: after el.style.width = 400px, both getBoundingClientRect and offsetWidth still return the OLD value, and the new one appears a frame later. There is no forced reflow for interleaving to trigger, so the web rule batch your reads is pointless here. The real hazard is correctness rather than speed: ported code that reads back what it just wrote silently gets stale numbers.",
+  "notes": "Applicability gate: DIRECT, but with a load-bearing caveat established by probe before authoring. In cohtml, writing el.style.width and immediately reading getBoundingClientRect().width or offsetWidth returns the STALE value; the new value appears only a frame later. Layout is deferred to the frame boundary and reads do not force it. The web antipattern's mechanism therefore does not exist here, and this case is expected to return NO RELIABLE DIFFERENCE - a measured null, which is stronger evidence than the probe alone. IMPORTANT CONSEQUENCE beyond performance: because reads return stale geometry rather than forcing a flush, code ported from the web that relies on read-after-write is not slow in Gameface, it is WRONG. That is a correctness warning, not a performance one, and it belongs in the docs regardless of how this row reads. Rule 1: one variable, the order of the writes and reads. Rule 2: identical DOM. Rule 3: identical JS apart from the single INTERLEAVE constant; both pages define both paths. Rule 4: no text, no assets. Rule 5: 300 bars occupy 1852x1032 inside 1920x1080. Rule 6: the write/read pattern IS the case and replaces the shared damage driver. Rule 7: the width derives from the frame counter. Rule 8: counts 30/100/300. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Layout on the web's theory; if the theory does not hold in cohtml, Script is where any residual difference would show, since both variants do identical numbers of reads and writes."
+}

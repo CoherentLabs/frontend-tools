@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .lvl1, .lvl2 { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile {
+    position: absolute;
+    width: 88px;
+    height: 64px;
+    border-radius: 6px;
+    background: #2a4a6a;
+  }
+
+  /* 500 rules whose bodies are identical between A and B. Only the
+     selector form differs: A matches on the class alone, B forces the engine
+     to walk two ancestors for every candidate. This block is the variable,
+     which is why the A/B diff for this case is 500 lines rather than one. */
+  .r0 { background: #3cb4b4; }
+  .r1 { background: #b43c92; }
+  .r2 { background: #70b43c; }
+  .r3 { background: #3c4eb4; }
+  .r4 { background: #b44c3c; }
+  .r5 { background: #3cb46e; }
+  .r6 { background: #903cb4; }
+  .r7 { background: #b4b23c; }
+  .r8 { background: #3c94b4; }
+  .r9 { background: #b43c72; }
+  .r10 { background: #50b43c; }
+  .r11 { background: #4a3cb4; }
+  .r12 { background: #b46c3c; }
+  .r13 { background: #3cb48e; }
+  .r14 { background: #b03cb4; }
+  .r15 { background: #96b43c; }
+  .r16 { background: #3c74b4; }
+  .r17 { background: #b43c52; }
+  .r18 { background: #3cb448; }
+  .r19 { background: #6a3cb4; }
+  .r20 { background: #b48c3c; }
+  .r21 { background: #3cb4ae; }
+  .r22 { background: #b43c98; }
+  .r23 { background: #76b43c; }
+  .r24 { background: #3c54b4; }
+  .r25 { background: #b4463c; }
+  .r26 { background: #3cb468; }
+  .r27 { background: #8a3cb4; }
+  .r28 { background: #b4ac3c; }
+  .r29 { background: #3c9ab4; }
+  .r30 { background: #b43c78; }
+  .r31 { background: #56b43c; }
+  .r32 { background: #443cb4; }
+  .r33 { background: #b4663c; }
+  .r34 { background: #3cb488; }
+  .r35 { background: #aa3cb4; }
+  .r36 { background: #9cb43c; }
+  .r37 { background: #3c7ab4; }
+  .r38 { background: #b43c58; }
+  .r39 { background: #3cb442; }
+  .r40 { background: #643cb4; }
+  .r41 { background: #b4863c; }
+  .r42 { background: #3cb4a8; }
+  .r43 { background: #b43c9e; }
+  .r44 { background: #7cb43c; }
+  .r45 { background: #3c5ab4; }
+  .r46 { background: #b4403c; }
+  .r47 { background: #3cb462; }
+  .r48 { background: #843cb4; }
+  .r49 { background: #b4a63c; }
+  .r50 { background: #3ca0b4; }
+  .r51 { background: #b43c7e; }
+  .r52 { background: #5cb43c; }
+  .r53 { background: #3e3cb4; }
+  .r54 { background: #b4603c; }
+  .r55 { background: #3cb482; }
+  .r56 { background: #a43cb4; }
+  .r57 { background: #a2b43c; }
+  .r58 { background: #3c80b4; }
+  .r59 { background: #b43c5e; }
+  .r60 { background: #3cb43c; }
+  .r61 { background: #5e3cb4; }
+  .r62 { background: #b4803c; }
+  .r63 { background: #3cb4a2; }
+  .r64 { background: #b43ca4; }
+  .r65 { background: #82b43c; }
+  .r66 { background: #3c60b4; }
+  .r67 { background: #b43c3e; }
+  .r68 { background: #3cb45c; }
+  .r69 { background: #7e3cb4; }
+  .r70 { background: #b4a03c; }
+  .r71 { background: #3ca6b4; }
+  .r72 { background: #b43c84; }
+  .r73 { background: #62b43c; }
+  .r74 { background: #3c40b4; }
+  .r75 { background: #b45a3c; }
+  .r76 { background: #3cb47c; }
+  .r77 { background: #9e3cb4; }
+  .r78 { background: #a8b43c; }
+  .r79 { background: #3c86b4; }
+  .r80 { background: #b43c64; }
+  .r81 { background: #42b43c; }
+  .r82 { background: #583cb4; }
+  .r83 { background: #b47a3c; }
+  .r84 { background: #3cb49c; }
+  .r85 { background: #b43caa; }
+  .r86 { background: #88b43c; }
+  .r87 { background: #3c66b4; }
+  .r88 { background: #b43c44; }
+  .r89 { background: #3cb456; }
+  .r90 { background: #783cb4; }
+  .r91 { background: #b49a3c; }
+  .r92 { background: #3cacb4; }
+  .r93 { background: #b43c8a; }
+  .r94 { background: #68b43c; }
+  .r95 { background: #3c46b4; }
+  .r96 { background: #b4543c; }
+  .r97 { background: #3cb476; }
+  .r98 { background: #983cb4; }
+  .r99 { background: #aeb43c; }
+  .r100 { background: #3c8cb4; }
+  .r101 { background: #b43c6a; }
+  .r102 { background: #48b43c; }
+  .r103 { background: #523cb4; }
+  .r104 { background: #b4743c; }
+  .r105 { background: #3cb496; }
+  .r106 { background: #b43cb0; }
+  .r107 { background: #8eb43c; }
+  .r108 { background: #3c6cb4; }
+  .r109 { background: #b43c4a; }
+  .r110 { background: #3cb450; }
+  .r111 { background: #723cb4; }
+  .r112 { background: #b4943c; }
+  .r113 { background: #3cb2b4; }
+  .r114 { background: #b43c90; }
+  .r115 { background: #6eb43c; }
+  .r116 { background: #3c4cb4; }
+  .r117 { background: #b44e3c; }
+  .r118 { background: #3cb470; }
+  .r119 { background: #923cb4; }
+  .r120 { background: #b4b43c; }
+  .r121 { background: #3c92b4; }
+  .r122 { background: #b43c70; }
+  .r123 { background: #4eb43c; }
+  .r124 { background: #4c3cb4; }
+  .r125 { background: #b46e3c; }
+  .r126 { background: #3cb490; }
+  .r127 { background: #b23cb4; }
+  .r128 { background: #94b43c; }
+  .r129 { background: #3c72b4; }
+  .r130 { background: #b43c50; }
+  .r131 { background: #3cb44a; }
+  .r132 { background: #6c3cb4; }
+  .r133 { background: #b48e3c; }
+  .r134 { background: #3cb4b0; }
+  .r135 { background: #b43c96; }
+  .r136 { background: #74b43c; }
+  .r137 { background: #3c52b4; }
+  .r138 { background: #b4483c; }
+  .r139 { background: #3cb46a; }
+  .r140 { background: #8c3cb4; }
+  .r141 { background: #b4ae3c; }
+  .r142 { background: #3c98b4; }
+  .r143 { background: #b43c76; }
+  .r144 { background: #54b43c; }
+  .r145 { background: #463cb4; }
+  .r146 { background: #b4683c; }
+  .r147 { background: #3cb48a; }
+  .r148 { background: #ac3cb4; }
+  .r149 { background: #9ab43c; }
+  .r150 { background: #3c78b4; }
+  .r151 { background: #b43c56; }
+  .r152 { background: #3cb444; }
+  .r153 { background: #663cb4; }
+  .r154 { background: #b4883c; }
+  .r155 { background: #3cb4aa; }
+  .r156 { background: #b43c9c; }
+  .r157 { background: #7ab43c; }
+  .r158 { background: #3c58b4; }
+  .r159 { background: #b4423c; }
+  .r160 { background: #3cb464; }
+  .r161 { background: #863cb4; }
+  .r162 { background: #b4a83c; }
+  .r163 { background: #3c9eb4; }
+  .r164 { background: #b43c7c; }
+  .r165 { background: #5ab43c; }
+  .r166 { background: #403cb4; }
+  .r167 { background: #b4623c; }
+  .r168 { background: #3cb484; }
+  .r169 { background: #a63cb4; }
+  .r170 { background: #a0b43c; }
+  .r171 { background: #3c7eb4; }
+  .r172 { background: #b43c5c; }
+  .r173 { background: #3cb43e; }
+  .r174 { background: #603cb4; }
+  .r175 { background: #b4823c; }
+  .r176 { background: #3cb4a4; }
+  .r177 { background: #b43ca2; }
+  .r178 { background: #80b43c; }
+  .r179 { background: #3c5eb4; }
+  .r180 { background: #b43c3c; }
+  .r181 { background: #3cb45e; }
+  .r182 { background: #803cb4; }
+  .r183 { background: #b4a23c; }
+  .r184 { background: #3ca4b4; }
+  .r185 { background: #b43c82; }
+  .r186 { background: #60b43c; }
+  .r187 { background: #3c3eb4; }
+  .r188 { background: #b45c3c; }
+  .r189 { background: #3cb47e; }
+  .r190 { background: #a03cb4; }
+  .r191 { background: #a6b43c; }
+  .r192 { background: #3c84b4; }
+  .r193 { background: #b43c62; }
+  .r194 { background: #40b43c; }
+  .r195 { background: #5a3cb4; }
+  .r196 { background: #b47c3c; }
+  .r197 { background: #3cb49e; }
+  .r198 { background: #b43ca8; }
+  .r199 { background: #86b43c; }
+  .r200 { background: #3c64b4; }
+  .r201 { background: #b43c42; }
+  .r202 { background: #3cb458; }
+  .r203 { background: #7a3cb4; }
+  .r204 { background: #b49c3c; }
+  .r205 { background: #3caab4; }
+  .r206 { background: #b43c88; }
+  .r207 { background: #66b43c; }
+  .r208 { background: #3c44b4; }
+  .r209 { background: #b4563c; }
+  .r210 { background: #3cb478; }
+  .r211 { background: #9a3cb4; }
+  .r212 { background: #acb43c; }
+  .r213 { background: #3c8ab4; }
+  .r214 { background: #b43c68; }
+  .r215 { background: #46b43c; }
+  .r216 { background: #543cb4; }
+  .r217 { background: #b4763c; }
+  .r218 { background: #3cb498; }
+  .r219 { background: #b43cae; }
+  .r220 { background: #8cb43c; }
+  .r221 { background: #3c6ab4; }
+  .r222 { background: #b43c48; }
+  .r223 { background: #3cb452; }
+  .r224 { background: #743cb4; }
+  .r225 { background: #b4963c; }
+  .r226 { background: #3cb0b4; }
+  .r227 { background: #b43c8e; }
+  .r228 { background: #6cb43c; }
+  .r229 { background: #3c4ab4; }
+  .r230 { background: #b4503c; }
+  .r231 { background: #3cb472; }
+  .r232 { background: #943cb4; }
+  .r233 { background: #b2b43c; }
+  .r234 { background: #3c90b4; }
+  .r235 { background: #b43c6e; }
+  .r236 { background: #4cb43c; }
+  .r237 { background: #4e3cb4; }
+  .r238 { background: #b4703c; }
+  .r239 { background: #3cb492; }
+  .r240 { background: #b43cb4; }
+  .r241 { background: #92b43c; }
+  .r242 { background: #3c70b4; }
+  .r243 { background: #b43c4e; }
+  .r244 { background: #3cb44c; }
+  .r245 { background: #6e3cb4; }
+  .r246 { background: #b4903c; }
+  .r247 { background: #3cb4b2; }
+  .r248 { background: #b43c94; }
+  .r249 { background: #72b43c; }
+  .r250 { background: #3c50b4; }
+  .r251 { background: #b44a3c; }
+  .r252 { background: #3cb46c; }
+  .r253 { background: #8e3cb4; }
+  .r254 { background: #b4b03c; }
+  .r255 { background: #3c96b4; }
+  .r256 { background: #b43c74; }
+  .r257 { background: #52b43c; }
+  .r258 { background: #483cb4; }
+  .r259 { background: #b46a3c; }
+  .r260 { background: #3cb48c; }
+  .r261 { background: #ae3cb4; }
+  .r262 { background: #98b43c; }
+  .r263 { background: #3c76b4; }
+  .r264 { background: #b43c54; }
+  .r265 { background: #3cb446; }
+  .r266 { background: #683cb4; }
+  .r267 { background: #b48a3c; }
+  .r268 { background: #3cb4ac; }
+  .r269 { background: #b43c9a; }
+  .r270 { background: #78b43c; }
+  .r271 { background: #3c56b4; }
+  .r272 { background: #b4443c; }
+  .r273 { background: #3cb466; }
+  .r274 { background: #883cb4; }
+  .r275 { background: #b4aa3c; }
+  .r276 { background: #3c9cb4; }
+  .r277 { background: #b43c7a; }
+  .r278 { background: #58b43c; }
+  .r279 { background: #423cb4; }
+  .r280 { background: #b4643c; }
+  .r281 { background: #3cb486; }
+  .r282 { background: #a83cb4; }
+  .r283 { background: #9eb43c; }
+  .r284 { background: #3c7cb4; }
+  .r285 { background: #b43c5a; }
+  .r286 { background: #3cb440; }
+  .r287 { background: #623cb4; }
+  .r288 { background: #b4843c; }
+  .r289 { background: #3cb4a6; }
+  .r290 { background: #b43ca0; }
+  .r291 { background: #7eb43c; }
+  .r292 { background: #3c5cb4; }
+  .r293 { background: #b43e3c; }
+  .r294 { background: #3cb460; }
+  .r295 { background: #823cb4; }
+  .r296 { background: #b4a43c; }
+  .r297 { background: #3ca2b4; }
+  .r298 { background: #b43c80; }
+  .r299 { background: #5eb43c; }
+  .r300 { background: #3c3cb4; }
+  .r301 { background: #b45e3c; }
+  .r302 { background: #3cb480; }
+  .r303 { background: #a23cb4; }
+  .r304 { background: #a4b43c; }
+  .r305 { background: #3c82b4; }
+  .r306 { background: #b43c60; }
+  .r307 { background: #3eb43c; }
+  .r308 { background: #5c3cb4; }
+  .r309 { background: #b47e3c; }
+  .r310 { background: #3cb4a0; }
+  .r311 { background: #b43ca6; }
+  .r312 { background: #84b43c; }
+  .r313 { background: #3c62b4; }
+  .r314 { background: #b43c40; }
+  .r315 { background: #3cb45a; }
+  .r316 { background: #7c3cb4; }
+  .r317 { background: #b49e3c; }
+  .r318 { background: #3ca8b4; }
+  .r319 { background: #b43c86; }
+  .r320 { background: #64b43c; }
+  .r321 { background: #3c42b4; }
+  .r322 { background: #b4583c; }
+  .r323 { background: #3cb47a; }
+  .r324 { background: #9c3cb4; }
+  .r325 { background: #aab43c; }
+  .r326 { background: #3c88b4; }
+  .r327 { background: #b43c66; }
+  .r328 { background: #44b43c; }
+  .r329 { background: #563cb4; }
+  .r330 { background: #b4783c; }
+  .r331 { background: #3cb49a; }
+  .r332 { background: #b43cac; }
+  .r333 { background: #8ab43c; }
+  .r334 { background: #3c68b4; }
+  .r335 { background: #b43c46; }
+  .r336 { background: #3cb454; }
+  .r337 { background: #763cb4; }
+  .r338 { background: #b4983c; }
+  .r339 { background: #3caeb4; }
+  .r340 { background: #b43c8c; }
+  .r341 { background: #6ab43c; }
+  .r342 { background: #3c48b4; }
+  .r343 { background: #b4523c; }
+  .r344 { background: #3cb474; }
+  .r345 { background: #963cb4; }
+  .r346 { background: #b0b43c; }
+  .r347 { background: #3c8eb4; }
+  .r348 { background: #b43c6c; }
+  .r349 { background: #4ab43c; }
+  .r350 { background: #503cb4; }
+  .r351 { background: #b4723c; }
+  .r352 { background: #3cb494; }
+  .r353 { background: #b43cb2; }
+  .r354 { background: #90b43c; }
+  .r355 { background: #3c6eb4; }
+  .r356 { background: #b43c4c; }
+  .r357 { background: #3cb44e; }
+  .r358 { background: #703cb4; }
+  .r359 { background: #b4923c; }
+  .r360 { background: #3cb4b4; }
+  .r361 { background: #b43c92; }
+  .r362 { background: #70b43c; }
+  .r363 { background: #3c4eb4; }
+  .r364 { background: #b44c3c; }
+  .r365 { background: #3cb46e; }
+  .r366 { background: #903cb4; }
+  .r367 { background: #b4b23c; }
+  .r368 { background: #3c94b4; }
+  .r369 { background: #b43c72; }
+  .r370 { background: #50b43c; }
+  .r371 { background: #4a3cb4; }
+  .r372 { background: #b46c3c; }
+  .r373 { background: #3cb48e; }
+  .r374 { background: #b03cb4; }
+  .r375 { background: #96b43c; }
+  .r376 { background: #3c74b4; }
+  .r377 { background: #b43c52; }
+  .r378 { background: #3cb448; }
+  .r379 { background: #6a3cb4; }
+  .r380 { background: #b48c3c; }
+  .r381 { background: #3cb4ae; }
+  .r382 { background: #b43c98; }
+  .r383 { background: #76b43c; }
+  .r384 { background: #3c54b4; }
+  .r385 { background: #b4463c; }
+  .r386 { background: #3cb468; }
+  .r387 { background: #8a3cb4; }
+  .r388 { background: #b4ac3c; }
+  .r389 { background: #3c9ab4; }
+  .r390 { background: #b43c78; }
+  .r391 { background: #56b43c; }
+  .r392 { background: #443cb4; }
+  .r393 { background: #b4663c; }
+  .r394 { background: #3cb488; }
+  .r395 { background: #aa3cb4; }
+  .r396 { background: #9cb43c; }
+  .r397 { background: #3c7ab4; }
+  .r398 { background: #b43c58; }
+  .r399 { background: #3cb442; }
+  .r400 { background: #643cb4; }
+  .r401 { background: #b4863c; }
+  .r402 { background: #3cb4a8; }
+  .r403 { background: #b43c9e; }
+  .r404 { background: #7cb43c; }
+  .r405 { background: #3c5ab4; }
+  .r406 { background: #b4403c; }
+  .r407 { background: #3cb462; }
+  .r408 { background: #843cb4; }
+  .r409 { background: #b4a63c; }
+  .r410 { background: #3ca0b4; }
+  .r411 { background: #b43c7e; }
+  .r412 { background: #5cb43c; }
+  .r413 { background: #3e3cb4; }
+  .r414 { background: #b4603c; }
+  .r415 { background: #3cb482; }
+  .r416 { background: #a43cb4; }
+  .r417 { background: #a2b43c; }
+  .r418 { background: #3c80b4; }
+  .r419 { background: #b43c5e; }
+  .r420 { background: #3cb43c; }
+  .r421 { background: #5e3cb4; }
+  .r422 { background: #b4803c; }
+  .r423 { background: #3cb4a2; }
+  .r424 { background: #b43ca4; }
+  .r425 { background: #82b43c; }
+  .r426 { background: #3c60b4; }
+  .r427 { background: #b43c3e; }
+  .r428 { background: #3cb45c; }
+  .r429 { background: #7e3cb4; }
+  .r430 { background: #b4a03c; }
+  .r431 { background: #3ca6b4; }
+  .r432 { background: #b43c84; }
+  .r433 { background: #62b43c; }
+  .r434 { background: #3c40b4; }
+  .r435 { background: #b45a3c; }
+  .r436 { background: #3cb47c; }
+  .r437 { background: #9e3cb4; }
+  .r438 { background: #a8b43c; }
+  .r439 { background: #3c86b4; }
+  .r440 { background: #b43c64; }
+  .r441 { background: #42b43c; }
+  .r442 { background: #583cb4; }
+  .r443 { background: #b47a3c; }
+  .r444 { background: #3cb49c; }
+  .r445 { background: #b43caa; }
+  .r446 { background: #88b43c; }
+  .r447 { background: #3c66b4; }
+  .r448 { background: #b43c44; }
+  .r449 { background: #3cb456; }
+  .r450 { background: #783cb4; }
+  .r451 { background: #b49a3c; }
+  .r452 { background: #3cacb4; }
+  .r453 { background: #b43c8a; }
+  .r454 { background: #68b43c; }
+  .r455 { background: #3c46b4; }
+  .r456 { background: #b4543c; }
+  .r457 { background: #3cb476; }
+  .r458 { background: #983cb4; }
+  .r459 { background: #aeb43c; }
+  .r460 { background: #3c8cb4; }
+  .r461 { background: #b43c6a; }
+  .r462 { background: #48b43c; }
+  .r463 { background: #523cb4; }
+  .r464 { background: #b4743c; }
+  .r465 { background: #3cb496; }
+  .r466 { background: #b43cb0; }
+  .r467 { background: #8eb43c; }
+  .r468 { background: #3c6cb4; }
+  .r469 { background: #b43c4a; }
+  .r470 { background: #3cb450; }
+  .r471 { background: #723cb4; }
+  .r472 { background: #b4943c; }
+  .r473 { background: #3cb2b4; }
+  .r474 { background: #b43c90; }
+  .r475 { background: #6eb43c; }
+  .r476 { background: #3c4cb4; }
+  .r477 { background: #b44e3c; }
+  .r478 { background: #3cb470; }
+  .r479 { background: #923cb4; }
+  .r480 { background: #b4b43c; }
+  .r481 { background: #3c92b4; }
+  .r482 { background: #b43c70; }
+  .r483 { background: #4eb43c; }
+  .r484 { background: #4c3cb4; }
+  .r485 { background: #b46e3c; }
+  .r486 { background: #3cb490; }
+  .r487 { background: #b23cb4; }
+  .r488 { background: #94b43c; }
+  .r489 { background: #3c72b4; }
+  .r490 { background: #b43c50; }
+  .r491 { background: #3cb44a; }
+  .r492 { background: #6c3cb4; }
+  .r493 { background: #b48e3c; }
+  .r494 { background: #3cb4b0; }
+  .r495 { background: #b43c96; }
+  .r496 { background: #74b43c; }
+  .r497 { background: #3c52b4; }
+  .r498 { background: #b4483c; }
+  .r499 { background: #3cb46a; }
+
+  .tile.hot { opacity: 0.65; }
+</style>
+</head>
+<body>
+  <div id="root">
+    <div class="lvl1">
+      <div class="lvl2"></div>
+    </div>
+  </div>
+  <script>
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68, RULE_COUNT = 500;
+
+    var host = document.querySelector('.lvl2');
+    var tiles = [];
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'tile r' + (i % RULE_COUNT);
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      host.appendChild(el);
+      tiles.push(el);
+    }
+
+    // The class churn IS the case, so it replaces the shared damage driver
+    // (AUTHORING.md rule 6). Every tile restyles every frame, which is what
+    // forces the engine to re-match it against the whole rule set.
+    var t = 0;
+    function frame() {
+      t += 1;
+      var on = (t % 2) === 0;
+      for (var j = 0; j < tiles.length; j++) {
+        if (on) tiles[j].classList.add('hot');
+        else tiles[j].classList.remove('hot');
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

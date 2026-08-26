@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile { position: absolute; width: 88px; height: 64px; border-radius: 6px; }
+  /* Keyed on a class the element carries: reordering siblings cannot change
+     which of these matches. */
+  .c0 { background: #2a4a6a; }
+  .c1 { background: #3a7a5a; }
+  .c2 { background: #7a4ab0; }
+  .c3 { background: #b0764a; }
+  .c4 { background: #c04a4a; }
+  /* Keyed on sibling position: reordering changes which one matches. */
+  #root > .tile:nth-child(5n + 1) { background: #2a4a6a; }
+  #root > .tile:nth-child(5n + 2) { background: #3a7a5a; }
+  #root > .tile:nth-child(5n + 3) { background: #7a4ab0; }
+  #root > .tile:nth-child(5n + 4) { background: #b0764a; }
+  #root > .tile:nth-child(5n + 5) { background: #c04a4a; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // A gives each tile a class that decides its colour; B leaves the colour to
+    // :nth-child. Both pages carry both rule sets and both reorder the list the
+    // same way, so the scripts stay byte-identical apart from this constant.
+    var USE_NTH_CHILD = false;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var root = document.getElementById('root');
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = USE_NTH_CHILD ? 'tile' : ('tile c' + (i % 5));
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      root.appendChild(el);
+    }
+
+    // Moving the first child to the end shifts every sibling's position by one,
+    // which is exactly what forces :nth-child to be re-evaluated. The DOM size
+    // never changes, and both variants perform the identical move.
+    var t = 0;
+    function frame() {
+      t += 1;
+      if (root.firstChild) root.appendChild(root.firstChild);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

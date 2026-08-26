@@ -1,0 +1,18 @@
+{
+  "title": "mix-blend-mode: multiply vs normal",
+  "variable": "mix-blend-mode multiply vs normal",
+  "hypothesis": "GPU",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "normal",
+    "b": "multiply"
+  },
+  "claim": "Antipattern #15 from web-performance-antipatterns-50.md: 'mix-blend-mode - non-source-over compositing, breaks simple layer merging.' The lab's own spec lists blend cost as 'compositing-math-based' reasoning with no measurement behind it, so this row replaces an inference with a number.",
+  "result": "CONFIRMED: GPU 2.01x / 4.33x / 7.01x, Paint 1.65x / 2.78x / 5.46x, scaling steadily with element count. The lab spec listed blend cost as compositing-math-based reasoning with no measurement behind it; this replaces that inference with a number. Second most expensive effect in the lab after backdrop-filter.",
+  "notes": "Applicability gate: DIRECT. mix-blend-mode is supported and every standard blend mode is listed in css/partial.json (normal, multiply, screen, overlay, darken, lighten, colour-dodge, colour-burn, hard-light, soft-light, difference, exclusion...); it was confirmed against the Player, where getComputedStyle reports 'multiply' back. Rule 1: one variable, the blend mode. Rule 2: identical DOM including the shared #backdrop, and identical geometry - both variants declare mix-blend-mode, so neither gains a property the other lacks; only its value differs. Rule 3: identical JS, byte-for-byte. Rule 4: no text, no assets. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080. Rule 6: the shared root-nudge damage driver moves only the tiles, so each frame they blend against different backdrop pixels. Rule 7: no randomness. Rule 8: counts 30/100/300. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is GPU. APPEARANCE NOTE: the two variants deliberately do NOT look the same - a blend mode that composites identically to normal would not be testing anything. Coverage, element count and painted area are identical, which is what keeps the comparison fair."
+}

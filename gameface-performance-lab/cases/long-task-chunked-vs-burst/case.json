@@ -1,0 +1,18 @@
+{
+  "title": "Chunked work every frame vs one long task every tenth frame",
+  "variable": "work spread across frames vs done in a burst",
+  "hypothesis": "Script",
+  "status": "ADAPTED",
+  "counts": [
+    100,
+    300
+  ],
+  "labels": {
+    "a": "chunked",
+    "b": "burst"
+  },
+  "metric": "frame-spike",
+  "claim": "Antipattern #41 from web-performance-antipatterns-50.md: 'long tasks blocking the frame: heavy synchronous work in handlers instead of chunked/deferred work.' Every render loop bolted onto game state eventually grows one - a pathfinding pass, an inventory sort, a leaderboard recompute - that runs occasionally and costs a lot when it does. The player experiences it as a hitch, not as a higher average.",
+  "result": "CONFIRMED - and it caught a bug in the lab on the way. Frame spike 1.3->11.7 at 100 units and 1.5->30.7 at 300: the burst variant makes one frame in ten cost thirty times the typical one, which is precisely the hitch the antipattern describes. Meanwhile the median columns say the opposite, exactly as predicted - Script reads 0.44x and 0.20x, because B genuinely is cheaper on the nine frames out of ten when it does nothing. THE BUG: the first version of the spike metric only consulted the spike when no median phase had cleared the guardrail, so this row initially published the verdict B costs less (Script) with 30.7x sitting in the spike column beside it - the lab recommending the antipattern in its own table. A case declaring metric: frame-spike now has the spike decide its verdict outright. This row is the reason the lab can measure hitches at all, and the reason it does not quietly invert them.",
+  "notes": "Applicability gate: DIRECT for the pattern itself. ADAPTED for how it is MEASURED, and that adaptation is the point of this case. The lab reports steady-state MEDIANS, and a long task is precisely what a median cannot see: A pays a little on every frame, B pays nothing on nine frames out of ten and a lot on the tenth. Compared on medians, the correctly-chunked variant looks WORSE - the lab would confidently recommend the antipattern. This case therefore declares metric: frame-spike, which compares max/median of the main-thread frame envelope (Coherent_Advance) instead. A well-behaved page in this lab sits around 1.6; a bursty one should be far higher. The median columns are still recorded and are still expected to favour B, which is exactly the demonstration - read the spike column, not the Script column, for this row. Rule 1: one variable, the distribution of the work. Rule 2: identical DOM - the same 30 tiles and readout in both. Rule 3: identical JS apart from the single BURST constant; both pages define both paths and share doWork. Rule 4: identical text - the accumulator readout, which also stops the work being optimised away as dead code. Rule 5: the tiles and readout are on-screen; this case's subject is JS work rather than pixels. Rule 6: work runs from load at a fixed scripted rate in both variants; the shared root-nudge driver keeps the engine rendering so the frame envelope is real. Rule 7: the work is a fixed arithmetic loop with no randomness, and the totals are identical - A does UNITS/10 every frame, B does UNITS every tenth frame. Rule 8: counts are WORK UNITS (100/300), not element counts, and both divide evenly by the 10-frame cycle so the totals match exactly. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is the frame spike."
+}

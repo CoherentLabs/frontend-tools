@@ -1,0 +1,18 @@
+{
+  "title": "Blurred text-shadow vs solid text-shadow",
+  "variable": "blur vs solid shadow",
+  "hypothesis": "GPU",
+  "status": "DIRECT",
+  "counts": [
+    10,
+    30,
+    100
+  ],
+  "labels": {
+    "a": "solid",
+    "b": "blur"
+  },
+  "claim": "Nameplate-analysis inference: blurred text shadows on many simultaneously-visible labels (player nameplates, floating damage, world markers) are a GPU cost, and the cheap solid offset shadow is the recommended form. This case is the measurement behind that recommendation, and it also establishes the lab's scale lesson - the cost is invisible at 10 and 30 elements and 5.49x at 100.",
+  "result": "CONFIRMED, and only at scale: no reliable difference at 10 or 30 elements, then GPU 5.61x with Paint 1.60x at 100 (measured twice, 5.49x and 5.61x in separate runs). This is the case that established the lab scale lesson - a single small count would have concluded that blurred text shadows are free, and rule 8 exists because of it. MEASUREMENT-CONDITION CAVEAT found later: the count=30 row was re-measured on 2026-08-25 and came back at 64fps rather than the 32fps of the original sweep, with Coherent_GPU absent entirely and a reproducible but physically implausible Paint 0.89x - a blurred shadow cannot paint FASTER than a solid one. The Player renders light pages at 64fps and heavy ones at 32, and Coherent_GPU is only emitted in the 32fps mode, so at 30 elements this case is now too cheap to stay in the mode where GPU is measurable. Read the 30-element row as measured under different conditions rather than as a contradiction; the fps column records which. The 100-element finding is unaffected and is the row this case exists for.",
+  "notes": "Applicability gate: DIRECT. text-shadow is fully supported in cohtml (feature inventory: css/supported.json, units px/em/rem/in/pt/vh/vw/vmin/vmax), so the web pattern tests as-is. Rule 1: A and B differ in exactly one CSS declaration, the text-shadow line. Rule 2: identical DOM - same generated divs, same class, same order. Rule 3: identical JS, byte-for-byte. Rule 4: identical strings ('Player Nameplate 1000+i') and no assets. Rule 5: labels are laid out in a fixed grid inside 1920x1080 and none are occluded. Rule 6: the shared root-nudge damage driver runs from load at rAF rate in both variants - a fully static page does no paint or GPU work in Gameface, so without it the trace would measure nothing. Rule 7: no randomness, positions and text derive from the loop index. Rule 8: counts 10/30/100 from the same inline loop, count read off location.search because URLSearchParams is unsupported in cohtml. Rule 9: plain HTML/CSS/JS. Rule 10: the expected axis is GPU - a blurred shadow needs a real blur pass where a solid offset shadow is another glyph draw."
+}

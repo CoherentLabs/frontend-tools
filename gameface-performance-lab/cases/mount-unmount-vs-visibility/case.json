@@ -1,0 +1,18 @@
+{
+  "title": "visibility toggle vs unmounting and remounting nodes",
+  "variable": "visibility hidden/visible vs removeChild/appendChild",
+  "hypothesis": "Layout",
+  "status": "ADAPTED",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "visibility",
+    "b": "unmount"
+  },
+  "claim": "Gameface RAG 07-performance.md, 'DOM Hiding Techniques Compared' (SEVERITY: high), which tabulates visibility:hidden as toggle cost 'Zero' against data-bind-if removal as 'Layout + DOM parse', and advises visibility for anything toggling every few seconds. perf-lint.ts lists DOM hiding technique choice among the patterns it cannot check statically, so this table has no measurement behind it until now.",
+  "result": "CONFIRMED: Layout is B-only at every count - unmounting introduces a Layout phase that toggling visibility never runs - with Styles 1.94x at 30 and Script rising to 2.37x at 300. This supports the RAG 07-performance.md DOM Hiding Techniques table, which lists visibility:hidden toggle cost as Zero against DOM removal as Layout plus DOM parse. ADAPTATION REMINDER: the toggle runs every frame rather than once a second, because the lab reports medians and a low duty cycle would have hidden the cost entirely. Read the ratio as what a toggle costs, not as what a once-per-second HUD costs.",
+  "notes": "Applicability gate: ADAPTED. visibility is supported for hidden/visible (the inventory rejects only 'collapse', which this case does not use), and removeChild/appendChild were verified manually. THE ADAPTATION, and why: the spec frames this as 'mount/unmount per second vs visibility toggle'. At the Player's ~32fps a once-per-second flip would leave ~31 idle frames between events, and the lab reports steady-state MEDIANS - so the spike would fall outside the median entirely and both variants would report the idle cost, producing a false NO RELIABLE DIFFERENCE. The toggle therefore runs every frame instead: a harsher duty cycle than the real scenario, but it measures the per-toggle cost the RAG table is actually claiming, and it is identical in both variants so the ratio stays honest. Read the ratio as 'which technique is cheaper per toggle', not as 'what a once-per-second HUD costs'. Rule 1: one variable, the hiding technique. Rule 2: identical DOM when shown. Rule 3: identical JS apart from the single USE_VISIBILITY constant. Rule 4: no text, no assets. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080. Rule 6: the churn replaces the damage driver and starts at load with no idle window. Rule 7: the on/off state derives from the frame counter. Rule 8: counts 30/100/300. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Layout - if the RAG table holds, B moves Layout and A does not."
+}

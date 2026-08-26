@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .lvl1, .lvl2 { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile {
+    position: absolute;
+    width: 88px;
+    height: 64px;
+    border-radius: 6px;
+    background: #2a4a6a;
+  }
+
+  /* 500 rules whose bodies are identical between A and B. Only the
+     selector form differs: A matches on the class alone, B forces the engine
+     to walk two ancestors for every candidate. This block is the variable,
+     which is why the A/B diff for this case is 500 lines rather than one. */
+  #root .lvl1 .lvl2 .r0 { background: #3cb4b4; }
+  #root .lvl1 .lvl2 .r1 { background: #b43c92; }
+  #root .lvl1 .lvl2 .r2 { background: #70b43c; }
+  #root .lvl1 .lvl2 .r3 { background: #3c4eb4; }
+  #root .lvl1 .lvl2 .r4 { background: #b44c3c; }
+  #root .lvl1 .lvl2 .r5 { background: #3cb46e; }
+  #root .lvl1 .lvl2 .r6 { background: #903cb4; }
+  #root .lvl1 .lvl2 .r7 { background: #b4b23c; }
+  #root .lvl1 .lvl2 .r8 { background: #3c94b4; }
+  #root .lvl1 .lvl2 .r9 { background: #b43c72; }
+  #root .lvl1 .lvl2 .r10 { background: #50b43c; }
+  #root .lvl1 .lvl2 .r11 { background: #4a3cb4; }
+  #root .lvl1 .lvl2 .r12 { background: #b46c3c; }
+  #root .lvl1 .lvl2 .r13 { background: #3cb48e; }
+  #root .lvl1 .lvl2 .r14 { background: #b03cb4; }
+  #root .lvl1 .lvl2 .r15 { background: #96b43c; }
+  #root .lvl1 .lvl2 .r16 { background: #3c74b4; }
+  #root .lvl1 .lvl2 .r17 { background: #b43c52; }
+  #root .lvl1 .lvl2 .r18 { background: #3cb448; }
+  #root .lvl1 .lvl2 .r19 { background: #6a3cb4; }
+  #root .lvl1 .lvl2 .r20 { background: #b48c3c; }
+  #root .lvl1 .lvl2 .r21 { background: #3cb4ae; }
+  #root .lvl1 .lvl2 .r22 { background: #b43c98; }
+  #root .lvl1 .lvl2 .r23 { background: #76b43c; }
+  #root .lvl1 .lvl2 .r24 { background: #3c54b4; }
+  #root .lvl1 .lvl2 .r25 { background: #b4463c; }
+  #root .lvl1 .lvl2 .r26 { background: #3cb468; }
+  #root .lvl1 .lvl2 .r27 { background: #8a3cb4; }
+  #root .lvl1 .lvl2 .r28 { background: #b4ac3c; }
+  #root .lvl1 .lvl2 .r29 { background: #3c9ab4; }
+  #root .lvl1 .lvl2 .r30 { background: #b43c78; }
+  #root .lvl1 .lvl2 .r31 { background: #56b43c; }
+  #root .lvl1 .lvl2 .r32 { background: #443cb4; }
+  #root .lvl1 .lvl2 .r33 { background: #b4663c; }
+  #root .lvl1 .lvl2 .r34 { background: #3cb488; }
+  #root .lvl1 .lvl2 .r35 { background: #aa3cb4; }
+  #root .lvl1 .lvl2 .r36 { background: #9cb43c; }
+  #root .lvl1 .lvl2 .r37 { background: #3c7ab4; }
+  #root .lvl1 .lvl2 .r38 { background: #b43c58; }
+  #root .lvl1 .lvl2 .r39 { background: #3cb442; }
+  #root .lvl1 .lvl2 .r40 { background: #643cb4; }
+  #root .lvl1 .lvl2 .r41 { background: #b4863c; }
+  #root .lvl1 .lvl2 .r42 { background: #3cb4a8; }
+  #root .lvl1 .lvl2 .r43 { background: #b43c9e; }
+  #root .lvl1 .lvl2 .r44 { background: #7cb43c; }
+  #root .lvl1 .lvl2 .r45 { background: #3c5ab4; }
+  #root .lvl1 .lvl2 .r46 { background: #b4403c; }
+  #root .lvl1 .lvl2 .r47 { background: #3cb462; }
+  #root .lvl1 .lvl2 .r48 { background: #843cb4; }
+  #root .lvl1 .lvl2 .r49 { background: #b4a63c; }
+  #root .lvl1 .lvl2 .r50 { background: #3ca0b4; }
+  #root .lvl1 .lvl2 .r51 { background: #b43c7e; }
+  #root .lvl1 .lvl2 .r52 { background: #5cb43c; }
+  #root .lvl1 .lvl2 .r53 { background: #3e3cb4; }
+  #root .lvl1 .lvl2 .r54 { background: #b4603c; }
+  #root .lvl1 .lvl2 .r55 { background: #3cb482; }
+  #root .lvl1 .lvl2 .r56 { background: #a43cb4; }
+  #root .lvl1 .lvl2 .r57 { background: #a2b43c; }
+  #root .lvl1 .lvl2 .r58 { background: #3c80b4; }
+  #root .lvl1 .lvl2 .r59 { background: #b43c5e; }
+  #root .lvl1 .lvl2 .r60 { background: #3cb43c; }
+  #root .lvl1 .lvl2 .r61 { background: #5e3cb4; }
+  #root .lvl1 .lvl2 .r62 { background: #b4803c; }
+  #root .lvl1 .lvl2 .r63 { background: #3cb4a2; }
+  #root .lvl1 .lvl2 .r64 { background: #b43ca4; }
+  #root .lvl1 .lvl2 .r65 { background: #82b43c; }
+  #root .lvl1 .lvl2 .r66 { background: #3c60b4; }
+  #root .lvl1 .lvl2 .r67 { background: #b43c3e; }
+  #root .lvl1 .lvl2 .r68 { background: #3cb45c; }
+  #root .lvl1 .lvl2 .r69 { background: #7e3cb4; }
+  #root .lvl1 .lvl2 .r70 { background: #b4a03c; }
+  #root .lvl1 .lvl2 .r71 { background: #3ca6b4; }
+  #root .lvl1 .lvl2 .r72 { background: #b43c84; }
+  #root .lvl1 .lvl2 .r73 { background: #62b43c; }
+  #root .lvl1 .lvl2 .r74 { background: #3c40b4; }
+  #root .lvl1 .lvl2 .r75 { background: #b45a3c; }
+  #root .lvl1 .lvl2 .r76 { background: #3cb47c; }
+  #root .lvl1 .lvl2 .r77 { background: #9e3cb4; }
+  #root .lvl1 .lvl2 .r78 { background: #a8b43c; }
+  #root .lvl1 .lvl2 .r79 { background: #3c86b4; }
+  #root .lvl1 .lvl2 .r80 { background: #b43c64; }
+  #root .lvl1 .lvl2 .r81 { background: #42b43c; }
+  #root .lvl1 .lvl2 .r82 { background: #583cb4; }
+  #root .lvl1 .lvl2 .r83 { background: #b47a3c; }
+  #root .lvl1 .lvl2 .r84 { background: #3cb49c; }
+  #root .lvl1 .lvl2 .r85 { background: #b43caa; }
+  #root .lvl1 .lvl2 .r86 { background: #88b43c; }
+  #root .lvl1 .lvl2 .r87 { background: #3c66b4; }
+  #root .lvl1 .lvl2 .r88 { background: #b43c44; }
+  #root .lvl1 .lvl2 .r89 { background: #3cb456; }
+  #root .lvl1 .lvl2 .r90 { background: #783cb4; }
+  #root .lvl1 .lvl2 .r91 { background: #b49a3c; }
+  #root .lvl1 .lvl2 .r92 { background: #3cacb4; }
+  #root .lvl1 .lvl2 .r93 { background: #b43c8a; }
+  #root .lvl1 .lvl2 .r94 { background: #68b43c; }
+  #root .lvl1 .lvl2 .r95 { background: #3c46b4; }
+  #root .lvl1 .lvl2 .r96 { background: #b4543c; }
+  #root .lvl1 .lvl2 .r97 { background: #3cb476; }
+  #root .lvl1 .lvl2 .r98 { background: #983cb4; }
+  #root .lvl1 .lvl2 .r99 { background: #aeb43c; }
+  #root .lvl1 .lvl2 .r100 { background: #3c8cb4; }
+  #root .lvl1 .lvl2 .r101 { background: #b43c6a; }
+  #root .lvl1 .lvl2 .r102 { background: #48b43c; }
+  #root .lvl1 .lvl2 .r103 { background: #523cb4; }
+  #root .lvl1 .lvl2 .r104 { background: #b4743c; }
+  #root .lvl1 .lvl2 .r105 { background: #3cb496; }
+  #root .lvl1 .lvl2 .r106 { background: #b43cb0; }
+  #root .lvl1 .lvl2 .r107 { background: #8eb43c; }
+  #root .lvl1 .lvl2 .r108 { background: #3c6cb4; }
+  #root .lvl1 .lvl2 .r109 { background: #b43c4a; }
+  #root .lvl1 .lvl2 .r110 { background: #3cb450; }
+  #root .lvl1 .lvl2 .r111 { background: #723cb4; }
+  #root .lvl1 .lvl2 .r112 { background: #b4943c; }
+  #root .lvl1 .lvl2 .r113 { background: #3cb2b4; }
+  #root .lvl1 .lvl2 .r114 { background: #b43c90; }
+  #root .lvl1 .lvl2 .r115 { background: #6eb43c; }
+  #root .lvl1 .lvl2 .r116 { background: #3c4cb4; }
+  #root .lvl1 .lvl2 .r117 { background: #b44e3c; }
+  #root .lvl1 .lvl2 .r118 { background: #3cb470; }
+  #root .lvl1 .lvl2 .r119 { background: #923cb4; }
+  #root .lvl1 .lvl2 .r120 { background: #b4b43c; }
+  #root .lvl1 .lvl2 .r121 { background: #3c92b4; }
+  #root .lvl1 .lvl2 .r122 { background: #b43c70; }
+  #root .lvl1 .lvl2 .r123 { background: #4eb43c; }
+  #root .lvl1 .lvl2 .r124 { background: #4c3cb4; }
+  #root .lvl1 .lvl2 .r125 { background: #b46e3c; }
+  #root .lvl1 .lvl2 .r126 { background: #3cb490; }
+  #root .lvl1 .lvl2 .r127 { background: #b23cb4; }
+  #root .lvl1 .lvl2 .r128 { background: #94b43c; }
+  #root .lvl1 .lvl2 .r129 { background: #3c72b4; }
+  #root .lvl1 .lvl2 .r130 { background: #b43c50; }
+  #root .lvl1 .lvl2 .r131 { background: #3cb44a; }
+  #root .lvl1 .lvl2 .r132 { background: #6c3cb4; }
+  #root .lvl1 .lvl2 .r133 { background: #b48e3c; }
+  #root .lvl1 .lvl2 .r134 { background: #3cb4b0; }
+  #root .lvl1 .lvl2 .r135 { background: #b43c96; }
+  #root .lvl1 .lvl2 .r136 { background: #74b43c; }
+  #root .lvl1 .lvl2 .r137 { background: #3c52b4; }
+  #root .lvl1 .lvl2 .r138 { background: #b4483c; }
+  #root .lvl1 .lvl2 .r139 { background: #3cb46a; }
+  #root .lvl1 .lvl2 .r140 { background: #8c3cb4; }
+  #root .lvl1 .lvl2 .r141 { background: #b4ae3c; }
+  #root .lvl1 .lvl2 .r142 { background: #3c98b4; }
+  #root .lvl1 .lvl2 .r143 { background: #b43c76; }
+  #root .lvl1 .lvl2 .r144 { background: #54b43c; }
+  #root .lvl1 .lvl2 .r145 { background: #463cb4; }
+  #root .lvl1 .lvl2 .r146 { background: #b4683c; }
+  #root .lvl1 .lvl2 .r147 { background: #3cb48a; }
+  #root .lvl1 .lvl2 .r148 { background: #ac3cb4; }
+  #root .lvl1 .lvl2 .r149 { background: #9ab43c; }
+  #root .lvl1 .lvl2 .r150 { background: #3c78b4; }
+  #root .lvl1 .lvl2 .r151 { background: #b43c56; }
+  #root .lvl1 .lvl2 .r152 { background: #3cb444; }
+  #root .lvl1 .lvl2 .r153 { background: #663cb4; }
+  #root .lvl1 .lvl2 .r154 { background: #b4883c; }
+  #root .lvl1 .lvl2 .r155 { background: #3cb4aa; }
+  #root .lvl1 .lvl2 .r156 { background: #b43c9c; }
+  #root .lvl1 .lvl2 .r157 { background: #7ab43c; }
+  #root .lvl1 .lvl2 .r158 { background: #3c58b4; }
+  #root .lvl1 .lvl2 .r159 { background: #b4423c; }
+  #root .lvl1 .lvl2 .r160 { background: #3cb464; }
+  #root .lvl1 .lvl2 .r161 { background: #863cb4; }
+  #root .lvl1 .lvl2 .r162 { background: #b4a83c; }
+  #root .lvl1 .lvl2 .r163 { background: #3c9eb4; }
+  #root .lvl1 .lvl2 .r164 { background: #b43c7c; }
+  #root .lvl1 .lvl2 .r165 { background: #5ab43c; }
+  #root .lvl1 .lvl2 .r166 { background: #403cb4; }
+  #root .lvl1 .lvl2 .r167 { background: #b4623c; }
+  #root .lvl1 .lvl2 .r168 { background: #3cb484; }
+  #root .lvl1 .lvl2 .r169 { background: #a63cb4; }
+  #root .lvl1 .lvl2 .r170 { background: #a0b43c; }
+  #root .lvl1 .lvl2 .r171 { background: #3c7eb4; }
+  #root .lvl1 .lvl2 .r172 { background: #b43c5c; }
+  #root .lvl1 .lvl2 .r173 { background: #3cb43e; }
+  #root .lvl1 .lvl2 .r174 { background: #603cb4; }
+  #root .lvl1 .lvl2 .r175 { background: #b4823c; }
+  #root .lvl1 .lvl2 .r176 { background: #3cb4a4; }
+  #root .lvl1 .lvl2 .r177 { background: #b43ca2; }
+  #root .lvl1 .lvl2 .r178 { background: #80b43c; }
+  #root .lvl1 .lvl2 .r179 { background: #3c5eb4; }
+  #root .lvl1 .lvl2 .r180 { background: #b43c3c; }
+  #root .lvl1 .lvl2 .r181 { background: #3cb45e; }
+  #root .lvl1 .lvl2 .r182 { background: #803cb4; }
+  #root .lvl1 .lvl2 .r183 { background: #b4a23c; }
+  #root .lvl1 .lvl2 .r184 { background: #3ca4b4; }
+  #root .lvl1 .lvl2 .r185 { background: #b43c82; }
+  #root .lvl1 .lvl2 .r186 { background: #60b43c; }
+  #root .lvl1 .lvl2 .r187 { background: #3c3eb4; }
+  #root .lvl1 .lvl2 .r188 { background: #b45c3c; }
+  #root .lvl1 .lvl2 .r189 { background: #3cb47e; }
+  #root .lvl1 .lvl2 .r190 { background: #a03cb4; }
+  #root .lvl1 .lvl2 .r191 { background: #a6b43c; }
+  #root .lvl1 .lvl2 .r192 { background: #3c84b4; }
+  #root .lvl1 .lvl2 .r193 { background: #b43c62; }
+  #root .lvl1 .lvl2 .r194 { background: #40b43c; }
+  #root .lvl1 .lvl2 .r195 { background: #5a3cb4; }
+  #root .lvl1 .lvl2 .r196 { background: #b47c3c; }
+  #root .lvl1 .lvl2 .r197 { background: #3cb49e; }
+  #root .lvl1 .lvl2 .r198 { background: #b43ca8; }
+  #root .lvl1 .lvl2 .r199 { background: #86b43c; }
+  #root .lvl1 .lvl2 .r200 { background: #3c64b4; }
+  #root .lvl1 .lvl2 .r201 { background: #b43c42; }
+  #root .lvl1 .lvl2 .r202 { background: #3cb458; }
+  #root .lvl1 .lvl2 .r203 { background: #7a3cb4; }
+  #root .lvl1 .lvl2 .r204 { background: #b49c3c; }
+  #root .lvl1 .lvl2 .r205 { background: #3caab4; }
+  #root .lvl1 .lvl2 .r206 { background: #b43c88; }
+  #root .lvl1 .lvl2 .r207 { background: #66b43c; }
+  #root .lvl1 .lvl2 .r208 { background: #3c44b4; }
+  #root .lvl1 .lvl2 .r209 { background: #b4563c; }
+  #root .lvl1 .lvl2 .r210 { background: #3cb478; }
+  #root .lvl1 .lvl2 .r211 { background: #9a3cb4; }
+  #root .lvl1 .lvl2 .r212 { background: #acb43c; }
+  #root .lvl1 .lvl2 .r213 { background: #3c8ab4; }
+  #root .lvl1 .lvl2 .r214 { background: #b43c68; }
+  #root .lvl1 .lvl2 .r215 { background: #46b43c; }
+  #root .lvl1 .lvl2 .r216 { background: #543cb4; }
+  #root .lvl1 .lvl2 .r217 { background: #b4763c; }
+  #root .lvl1 .lvl2 .r218 { background: #3cb498; }
+  #root .lvl1 .lvl2 .r219 { background: #b43cae; }
+  #root .lvl1 .lvl2 .r220 { background: #8cb43c; }
+  #root .lvl1 .lvl2 .r221 { background: #3c6ab4; }
+  #root .lvl1 .lvl2 .r222 { background: #b43c48; }
+  #root .lvl1 .lvl2 .r223 { background: #3cb452; }
+  #root .lvl1 .lvl2 .r224 { background: #743cb4; }
+  #root .lvl1 .lvl2 .r225 { background: #b4963c; }
+  #root .lvl1 .lvl2 .r226 { background: #3cb0b4; }
+  #root .lvl1 .lvl2 .r227 { background: #b43c8e; }
+  #root .lvl1 .lvl2 .r228 { background: #6cb43c; }
+  #root .lvl1 .lvl2 .r229 { background: #3c4ab4; }
+  #root .lvl1 .lvl2 .r230 { background: #b4503c; }
+  #root .lvl1 .lvl2 .r231 { background: #3cb472; }
+  #root .lvl1 .lvl2 .r232 { background: #943cb4; }
+  #root .lvl1 .lvl2 .r233 { background: #b2b43c; }
+  #root .lvl1 .lvl2 .r234 { background: #3c90b4; }
+  #root .lvl1 .lvl2 .r235 { background: #b43c6e; }
+  #root .lvl1 .lvl2 .r236 { background: #4cb43c; }
+  #root .lvl1 .lvl2 .r237 { background: #4e3cb4; }
+  #root .lvl1 .lvl2 .r238 { background: #b4703c; }
+  #root .lvl1 .lvl2 .r239 { background: #3cb492; }
+  #root .lvl1 .lvl2 .r240 { background: #b43cb4; }
+  #root .lvl1 .lvl2 .r241 { background: #92b43c; }
+  #root .lvl1 .lvl2 .r242 { background: #3c70b4; }
+  #root .lvl1 .lvl2 .r243 { background: #b43c4e; }
+  #root .lvl1 .lvl2 .r244 { background: #3cb44c; }
+  #root .lvl1 .lvl2 .r245 { background: #6e3cb4; }
+  #root .lvl1 .lvl2 .r246 { background: #b4903c; }
+  #root .lvl1 .lvl2 .r247 { background: #3cb4b2; }
+  #root .lvl1 .lvl2 .r248 { background: #b43c94; }
+  #root .lvl1 .lvl2 .r249 { background: #72b43c; }
+  #root .lvl1 .lvl2 .r250 { background: #3c50b4; }
+  #root .lvl1 .lvl2 .r251 { background: #b44a3c; }
+  #root .lvl1 .lvl2 .r252 { background: #3cb46c; }
+  #root .lvl1 .lvl2 .r253 { background: #8e3cb4; }
+  #root .lvl1 .lvl2 .r254 { background: #b4b03c; }
+  #root .lvl1 .lvl2 .r255 { background: #3c96b4; }
+  #root .lvl1 .lvl2 .r256 { background: #b43c74; }
+  #root .lvl1 .lvl2 .r257 { background: #52b43c; }
+  #root .lvl1 .lvl2 .r258 { background: #483cb4; }
+  #root .lvl1 .lvl2 .r259 { background: #b46a3c; }
+  #root .lvl1 .lvl2 .r260 { background: #3cb48c; }
+  #root .lvl1 .lvl2 .r261 { background: #ae3cb4; }
+  #root .lvl1 .lvl2 .r262 { background: #98b43c; }
+  #root .lvl1 .lvl2 .r263 { background: #3c76b4; }
+  #root .lvl1 .lvl2 .r264 { background: #b43c54; }
+  #root .lvl1 .lvl2 .r265 { background: #3cb446; }
+  #root .lvl1 .lvl2 .r266 { background: #683cb4; }
+  #root .lvl1 .lvl2 .r267 { background: #b48a3c; }
+  #root .lvl1 .lvl2 .r268 { background: #3cb4ac; }
+  #root .lvl1 .lvl2 .r269 { background: #b43c9a; }
+  #root .lvl1 .lvl2 .r270 { background: #78b43c; }
+  #root .lvl1 .lvl2 .r271 { background: #3c56b4; }
+  #root .lvl1 .lvl2 .r272 { background: #b4443c; }
+  #root .lvl1 .lvl2 .r273 { background: #3cb466; }
+  #root .lvl1 .lvl2 .r274 { background: #883cb4; }
+  #root .lvl1 .lvl2 .r275 { background: #b4aa3c; }
+  #root .lvl1 .lvl2 .r276 { background: #3c9cb4; }
+  #root .lvl1 .lvl2 .r277 { background: #b43c7a; }
+  #root .lvl1 .lvl2 .r278 { background: #58b43c; }
+  #root .lvl1 .lvl2 .r279 { background: #423cb4; }
+  #root .lvl1 .lvl2 .r280 { background: #b4643c; }
+  #root .lvl1 .lvl2 .r281 { background: #3cb486; }
+  #root .lvl1 .lvl2 .r282 { background: #a83cb4; }
+  #root .lvl1 .lvl2 .r283 { background: #9eb43c; }
+  #root .lvl1 .lvl2 .r284 { background: #3c7cb4; }
+  #root .lvl1 .lvl2 .r285 { background: #b43c5a; }
+  #root .lvl1 .lvl2 .r286 { background: #3cb440; }
+  #root .lvl1 .lvl2 .r287 { background: #623cb4; }
+  #root .lvl1 .lvl2 .r288 { background: #b4843c; }
+  #root .lvl1 .lvl2 .r289 { background: #3cb4a6; }
+  #root .lvl1 .lvl2 .r290 { background: #b43ca0; }
+  #root .lvl1 .lvl2 .r291 { background: #7eb43c; }
+  #root .lvl1 .lvl2 .r292 { background: #3c5cb4; }
+  #root .lvl1 .lvl2 .r293 { background: #b43e3c; }
+  #root .lvl1 .lvl2 .r294 { background: #3cb460; }
+  #root .lvl1 .lvl2 .r295 { background: #823cb4; }
+  #root .lvl1 .lvl2 .r296 { background: #b4a43c; }
+  #root .lvl1 .lvl2 .r297 { background: #3ca2b4; }
+  #root .lvl1 .lvl2 .r298 { background: #b43c80; }
+  #root .lvl1 .lvl2 .r299 { background: #5eb43c; }
+  #root .lvl1 .lvl2 .r300 { background: #3c3cb4; }
+  #root .lvl1 .lvl2 .r301 { background: #b45e3c; }
+  #root .lvl1 .lvl2 .r302 { background: #3cb480; }
+  #root .lvl1 .lvl2 .r303 { background: #a23cb4; }
+  #root .lvl1 .lvl2 .r304 { background: #a4b43c; }
+  #root .lvl1 .lvl2 .r305 { background: #3c82b4; }
+  #root .lvl1 .lvl2 .r306 { background: #b43c60; }
+  #root .lvl1 .lvl2 .r307 { background: #3eb43c; }
+  #root .lvl1 .lvl2 .r308 { background: #5c3cb4; }
+  #root .lvl1 .lvl2 .r309 { background: #b47e3c; }
+  #root .lvl1 .lvl2 .r310 { background: #3cb4a0; }
+  #root .lvl1 .lvl2 .r311 { background: #b43ca6; }
+  #root .lvl1 .lvl2 .r312 { background: #84b43c; }
+  #root .lvl1 .lvl2 .r313 { background: #3c62b4; }
+  #root .lvl1 .lvl2 .r314 { background: #b43c40; }
+  #root .lvl1 .lvl2 .r315 { background: #3cb45a; }
+  #root .lvl1 .lvl2 .r316 { background: #7c3cb4; }
+  #root .lvl1 .lvl2 .r317 { background: #b49e3c; }
+  #root .lvl1 .lvl2 .r318 { background: #3ca8b4; }
+  #root .lvl1 .lvl2 .r319 { background: #b43c86; }
+  #root .lvl1 .lvl2 .r320 { background: #64b43c; }
+  #root .lvl1 .lvl2 .r321 { background: #3c42b4; }
+  #root .lvl1 .lvl2 .r322 { background: #b4583c; }
+  #root .lvl1 .lvl2 .r323 { background: #3cb47a; }
+  #root .lvl1 .lvl2 .r324 { background: #9c3cb4; }
+  #root .lvl1 .lvl2 .r325 { background: #aab43c; }
+  #root .lvl1 .lvl2 .r326 { background: #3c88b4; }
+  #root .lvl1 .lvl2 .r327 { background: #b43c66; }
+  #root .lvl1 .lvl2 .r328 { background: #44b43c; }
+  #root .lvl1 .lvl2 .r329 { background: #563cb4; }
+  #root .lvl1 .lvl2 .r330 { background: #b4783c; }
+  #root .lvl1 .lvl2 .r331 { background: #3cb49a; }
+  #root .lvl1 .lvl2 .r332 { background: #b43cac; }
+  #root .lvl1 .lvl2 .r333 { background: #8ab43c; }
+  #root .lvl1 .lvl2 .r334 { background: #3c68b4; }
+  #root .lvl1 .lvl2 .r335 { background: #b43c46; }
+  #root .lvl1 .lvl2 .r336 { background: #3cb454; }
+  #root .lvl1 .lvl2 .r337 { background: #763cb4; }
+  #root .lvl1 .lvl2 .r338 { background: #b4983c; }
+  #root .lvl1 .lvl2 .r339 { background: #3caeb4; }
+  #root .lvl1 .lvl2 .r340 { background: #b43c8c; }
+  #root .lvl1 .lvl2 .r341 { background: #6ab43c; }
+  #root .lvl1 .lvl2 .r342 { background: #3c48b4; }
+  #root .lvl1 .lvl2 .r343 { background: #b4523c; }
+  #root .lvl1 .lvl2 .r344 { background: #3cb474; }
+  #root .lvl1 .lvl2 .r345 { background: #963cb4; }
+  #root .lvl1 .lvl2 .r346 { background: #b0b43c; }
+  #root .lvl1 .lvl2 .r347 { background: #3c8eb4; }
+  #root .lvl1 .lvl2 .r348 { background: #b43c6c; }
+  #root .lvl1 .lvl2 .r349 { background: #4ab43c; }
+  #root .lvl1 .lvl2 .r350 { background: #503cb4; }
+  #root .lvl1 .lvl2 .r351 { background: #b4723c; }
+  #root .lvl1 .lvl2 .r352 { background: #3cb494; }
+  #root .lvl1 .lvl2 .r353 { background: #b43cb2; }
+  #root .lvl1 .lvl2 .r354 { background: #90b43c; }
+  #root .lvl1 .lvl2 .r355 { background: #3c6eb4; }
+  #root .lvl1 .lvl2 .r356 { background: #b43c4c; }
+  #root .lvl1 .lvl2 .r357 { background: #3cb44e; }
+  #root .lvl1 .lvl2 .r358 { background: #703cb4; }
+  #root .lvl1 .lvl2 .r359 { background: #b4923c; }
+  #root .lvl1 .lvl2 .r360 { background: #3cb4b4; }
+  #root .lvl1 .lvl2 .r361 { background: #b43c92; }
+  #root .lvl1 .lvl2 .r362 { background: #70b43c; }
+  #root .lvl1 .lvl2 .r363 { background: #3c4eb4; }
+  #root .lvl1 .lvl2 .r364 { background: #b44c3c; }
+  #root .lvl1 .lvl2 .r365 { background: #3cb46e; }
+  #root .lvl1 .lvl2 .r366 { background: #903cb4; }
+  #root .lvl1 .lvl2 .r367 { background: #b4b23c; }
+  #root .lvl1 .lvl2 .r368 { background: #3c94b4; }
+  #root .lvl1 .lvl2 .r369 { background: #b43c72; }
+  #root .lvl1 .lvl2 .r370 { background: #50b43c; }
+  #root .lvl1 .lvl2 .r371 { background: #4a3cb4; }
+  #root .lvl1 .lvl2 .r372 { background: #b46c3c; }
+  #root .lvl1 .lvl2 .r373 { background: #3cb48e; }
+  #root .lvl1 .lvl2 .r374 { background: #b03cb4; }
+  #root .lvl1 .lvl2 .r375 { background: #96b43c; }
+  #root .lvl1 .lvl2 .r376 { background: #3c74b4; }
+  #root .lvl1 .lvl2 .r377 { background: #b43c52; }
+  #root .lvl1 .lvl2 .r378 { background: #3cb448; }
+  #root .lvl1 .lvl2 .r379 { background: #6a3cb4; }
+  #root .lvl1 .lvl2 .r380 { background: #b48c3c; }
+  #root .lvl1 .lvl2 .r381 { background: #3cb4ae; }
+  #root .lvl1 .lvl2 .r382 { background: #b43c98; }
+  #root .lvl1 .lvl2 .r383 { background: #76b43c; }
+  #root .lvl1 .lvl2 .r384 { background: #3c54b4; }
+  #root .lvl1 .lvl2 .r385 { background: #b4463c; }
+  #root .lvl1 .lvl2 .r386 { background: #3cb468; }
+  #root .lvl1 .lvl2 .r387 { background: #8a3cb4; }
+  #root .lvl1 .lvl2 .r388 { background: #b4ac3c; }
+  #root .lvl1 .lvl2 .r389 { background: #3c9ab4; }
+  #root .lvl1 .lvl2 .r390 { background: #b43c78; }
+  #root .lvl1 .lvl2 .r391 { background: #56b43c; }
+  #root .lvl1 .lvl2 .r392 { background: #443cb4; }
+  #root .lvl1 .lvl2 .r393 { background: #b4663c; }
+  #root .lvl1 .lvl2 .r394 { background: #3cb488; }
+  #root .lvl1 .lvl2 .r395 { background: #aa3cb4; }
+  #root .lvl1 .lvl2 .r396 { background: #9cb43c; }
+  #root .lvl1 .lvl2 .r397 { background: #3c7ab4; }
+  #root .lvl1 .lvl2 .r398 { background: #b43c58; }
+  #root .lvl1 .lvl2 .r399 { background: #3cb442; }
+  #root .lvl1 .lvl2 .r400 { background: #643cb4; }
+  #root .lvl1 .lvl2 .r401 { background: #b4863c; }
+  #root .lvl1 .lvl2 .r402 { background: #3cb4a8; }
+  #root .lvl1 .lvl2 .r403 { background: #b43c9e; }
+  #root .lvl1 .lvl2 .r404 { background: #7cb43c; }
+  #root .lvl1 .lvl2 .r405 { background: #3c5ab4; }
+  #root .lvl1 .lvl2 .r406 { background: #b4403c; }
+  #root .lvl1 .lvl2 .r407 { background: #3cb462; }
+  #root .lvl1 .lvl2 .r408 { background: #843cb4; }
+  #root .lvl1 .lvl2 .r409 { background: #b4a63c; }
+  #root .lvl1 .lvl2 .r410 { background: #3ca0b4; }
+  #root .lvl1 .lvl2 .r411 { background: #b43c7e; }
+  #root .lvl1 .lvl2 .r412 { background: #5cb43c; }
+  #root .lvl1 .lvl2 .r413 { background: #3e3cb4; }
+  #root .lvl1 .lvl2 .r414 { background: #b4603c; }
+  #root .lvl1 .lvl2 .r415 { background: #3cb482; }
+  #root .lvl1 .lvl2 .r416 { background: #a43cb4; }
+  #root .lvl1 .lvl2 .r417 { background: #a2b43c; }
+  #root .lvl1 .lvl2 .r418 { background: #3c80b4; }
+  #root .lvl1 .lvl2 .r419 { background: #b43c5e; }
+  #root .lvl1 .lvl2 .r420 { background: #3cb43c; }
+  #root .lvl1 .lvl2 .r421 { background: #5e3cb4; }
+  #root .lvl1 .lvl2 .r422 { background: #b4803c; }
+  #root .lvl1 .lvl2 .r423 { background: #3cb4a2; }
+  #root .lvl1 .lvl2 .r424 { background: #b43ca4; }
+  #root .lvl1 .lvl2 .r425 { background: #82b43c; }
+  #root .lvl1 .lvl2 .r426 { background: #3c60b4; }
+  #root .lvl1 .lvl2 .r427 { background: #b43c3e; }
+  #root .lvl1 .lvl2 .r428 { background: #3cb45c; }
+  #root .lvl1 .lvl2 .r429 { background: #7e3cb4; }
+  #root .lvl1 .lvl2 .r430 { background: #b4a03c; }
+  #root .lvl1 .lvl2 .r431 { background: #3ca6b4; }
+  #root .lvl1 .lvl2 .r432 { background: #b43c84; }
+  #root .lvl1 .lvl2 .r433 { background: #62b43c; }
+  #root .lvl1 .lvl2 .r434 { background: #3c40b4; }
+  #root .lvl1 .lvl2 .r435 { background: #b45a3c; }
+  #root .lvl1 .lvl2 .r436 { background: #3cb47c; }
+  #root .lvl1 .lvl2 .r437 { background: #9e3cb4; }
+  #root .lvl1 .lvl2 .r438 { background: #a8b43c; }
+  #root .lvl1 .lvl2 .r439 { background: #3c86b4; }
+  #root .lvl1 .lvl2 .r440 { background: #b43c64; }
+  #root .lvl1 .lvl2 .r441 { background: #42b43c; }
+  #root .lvl1 .lvl2 .r442 { background: #583cb4; }
+  #root .lvl1 .lvl2 .r443 { background: #b47a3c; }
+  #root .lvl1 .lvl2 .r444 { background: #3cb49c; }
+  #root .lvl1 .lvl2 .r445 { background: #b43caa; }
+  #root .lvl1 .lvl2 .r446 { background: #88b43c; }
+  #root .lvl1 .lvl2 .r447 { background: #3c66b4; }
+  #root .lvl1 .lvl2 .r448 { background: #b43c44; }
+  #root .lvl1 .lvl2 .r449 { background: #3cb456; }
+  #root .lvl1 .lvl2 .r450 { background: #783cb4; }
+  #root .lvl1 .lvl2 .r451 { background: #b49a3c; }
+  #root .lvl1 .lvl2 .r452 { background: #3cacb4; }
+  #root .lvl1 .lvl2 .r453 { background: #b43c8a; }
+  #root .lvl1 .lvl2 .r454 { background: #68b43c; }
+  #root .lvl1 .lvl2 .r455 { background: #3c46b4; }
+  #root .lvl1 .lvl2 .r456 { background: #b4543c; }
+  #root .lvl1 .lvl2 .r457 { background: #3cb476; }
+  #root .lvl1 .lvl2 .r458 { background: #983cb4; }
+  #root .lvl1 .lvl2 .r459 { background: #aeb43c; }
+  #root .lvl1 .lvl2 .r460 { background: #3c8cb4; }
+  #root .lvl1 .lvl2 .r461 { background: #b43c6a; }
+  #root .lvl1 .lvl2 .r462 { background: #48b43c; }
+  #root .lvl1 .lvl2 .r463 { background: #523cb4; }
+  #root .lvl1 .lvl2 .r464 { background: #b4743c; }
+  #root .lvl1 .lvl2 .r465 { background: #3cb496; }
+  #root .lvl1 .lvl2 .r466 { background: #b43cb0; }
+  #root .lvl1 .lvl2 .r467 { background: #8eb43c; }
+  #root .lvl1 .lvl2 .r468 { background: #3c6cb4; }
+  #root .lvl1 .lvl2 .r469 { background: #b43c4a; }
+  #root .lvl1 .lvl2 .r470 { background: #3cb450; }
+  #root .lvl1 .lvl2 .r471 { background: #723cb4; }
+  #root .lvl1 .lvl2 .r472 { background: #b4943c; }
+  #root .lvl1 .lvl2 .r473 { background: #3cb2b4; }
+  #root .lvl1 .lvl2 .r474 { background: #b43c90; }
+  #root .lvl1 .lvl2 .r475 { background: #6eb43c; }
+  #root .lvl1 .lvl2 .r476 { background: #3c4cb4; }
+  #root .lvl1 .lvl2 .r477 { background: #b44e3c; }
+  #root .lvl1 .lvl2 .r478 { background: #3cb470; }
+  #root .lvl1 .lvl2 .r479 { background: #923cb4; }
+  #root .lvl1 .lvl2 .r480 { background: #b4b43c; }
+  #root .lvl1 .lvl2 .r481 { background: #3c92b4; }
+  #root .lvl1 .lvl2 .r482 { background: #b43c70; }
+  #root .lvl1 .lvl2 .r483 { background: #4eb43c; }
+  #root .lvl1 .lvl2 .r484 { background: #4c3cb4; }
+  #root .lvl1 .lvl2 .r485 { background: #b46e3c; }
+  #root .lvl1 .lvl2 .r486 { background: #3cb490; }
+  #root .lvl1 .lvl2 .r487 { background: #b23cb4; }
+  #root .lvl1 .lvl2 .r488 { background: #94b43c; }
+  #root .lvl1 .lvl2 .r489 { background: #3c72b4; }
+  #root .lvl1 .lvl2 .r490 { background: #b43c50; }
+  #root .lvl1 .lvl2 .r491 { background: #3cb44a; }
+  #root .lvl1 .lvl2 .r492 { background: #6c3cb4; }
+  #root .lvl1 .lvl2 .r493 { background: #b48e3c; }
+  #root .lvl1 .lvl2 .r494 { background: #3cb4b0; }
+  #root .lvl1 .lvl2 .r495 { background: #b43c96; }
+  #root .lvl1 .lvl2 .r496 { background: #74b43c; }
+  #root .lvl1 .lvl2 .r497 { background: #3c52b4; }
+  #root .lvl1 .lvl2 .r498 { background: #b4483c; }
+  #root .lvl1 .lvl2 .r499 { background: #3cb46a; }
+
+  .tile.hot { opacity: 0.65; }
+</style>
+</head>
+<body>
+  <div id="root">
+    <div class="lvl1">
+      <div class="lvl2"></div>
+    </div>
+  </div>
+  <script>
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68, RULE_COUNT = 500;
+
+    var host = document.querySelector('.lvl2');
+    var tiles = [];
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'tile r' + (i % RULE_COUNT);
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      host.appendChild(el);
+      tiles.push(el);
+    }
+
+    // The class churn IS the case, so it replaces the shared damage driver
+    // (AUTHORING.md rule 6). Every tile restyles every frame, which is what
+    // forces the engine to re-match it against the whole rule set.
+    var t = 0;
+    function frame() {
+      t += 1;
+      var on = (t % 2) === 0;
+      for (var j = 0; j < tiles.length; j++) {
+        if (on) tiles[j].classList.add('hot');
+        else tiles[j].classList.remove('hot');
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

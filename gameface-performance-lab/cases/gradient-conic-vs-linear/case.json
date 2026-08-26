@@ -1,0 +1,18 @@
+{
+  "title": "conic-gradient vs linear-gradient",
+  "variable": "conic gradient vs linear gradient",
+  "hypothesis": "Paint",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "linear",
+    "b": "conic"
+  },
+  "claim": "Antipattern #17 from web-performance-antipatterns-50.md names radial and conic as the expensive gradient types. Conic is the one game UIs reach for constantly - cooldown sweeps, radial timers, ability wheels - and it is the most arithmetic-heavy of the three, so it is the case most likely to justify baking a texture instead. Companion to gradient-radial-vs-linear, which holds everything else identical.",
+  "result": "NOT CONFIRMED. No reliable difference at any count, matching gradient-radial-vs-linear. Conic gradients are the arithmetic-heaviest of the three and the one game UIs reach for most (cooldown sweeps, radial timers), so this is the more useful half of the null: a conic sweep costs no more to paint than a linear fade.",
+  "notes": "Applicability gate: DIRECT. conic-gradient is listed as fully supported in the feature inventory and was confirmed against the Player, where getComputedStyle reports it back resolved as 'conic-gradient(from 0deg at 50% 50%, ...)'. Rule 1: one variable, the gradient function. Rule 2: identical DOM and geometry; the A side is byte-identical to gradient-radial-vs-linear/A.html so the two gradient cases share a baseline and their ratios can be read against each other. Rule 3: identical JS, byte-for-byte. Rule 4: no text, no assets. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080. Rule 6: the shared root-nudge damage driver, identical in both. Rule 7: no randomness. Rule 8: counts 30/100/300. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Paint, with GPU plausible. APPEARANCE NOTE: the conic gradient closes the loop back to its start colour (#ff7a18 at both ends) so there is no hard seam, keeping painted coverage equivalent to the linear variant."
+}

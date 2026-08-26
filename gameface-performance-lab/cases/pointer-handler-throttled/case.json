@@ -1,0 +1,19 @@
+{
+  "title": "A pointer handler throttled to one frame vs working on every event",
+  "variable": "work batched to rAF vs done per mousemove event",
+  "hypothesis": "Script",
+  "status": "ADAPTED",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "throttled",
+    "b": "every event"
+  },
+  "input": "pointer-sweep",
+  "claim": "Antipattern #44 from web-performance-antipatterns-50.md: 'unthrottled scroll/pointermove/resize handlers doing real work per event.' It also absorbs #3 ('triggering layout in scroll/pointer/resize handlers that fire at high frequency'), which is the same underlying question. Hover tooltips, drag previews and cursor-tracking highlights are all built this way, and the handler has no idea how often it will be called.",
+  "result": "CONFIRMED, and only visible because the verdict considers every phase. The headline ratios are JSEvent 1.68x / 2.59x / 5.29x - growing steeply with element count. Script goes the OTHER way (0.40x / 0.28x / 0.10x), which looks like B winning until you see where the work went: in B the work runs inside the mousemove handler, which the engine accounts to Coherent_JSEvent, while in A it runs in the rAF callback, accounted to Coherent_ExecuteTimers. B did not get cheaper; its cost moved to a phase the printed columns do not show. Had the lab still judged verdicts on the printed columns alone - as it did before batch 1 - this row would have concluded that the unthrottled handler was four times FASTER. REMEMBER THE FLOOR: the sweep dispatches at 16ms against a ~32fps Player, so B fires about twice per frame; a 500-1000Hz gaming mouse would fire 15-30 times per frame, so the real-world effect is roughly an order of magnitude larger than 5.29x.",
+  "notes": "Applicability gate: ADAPTED, on the input side. Pointer input works: Input.dispatchMouseEvent is accepted by the Player and was verified to deliver real mousemove events to page handlers - 60 dispatches produced exactly 60 mousemove events with correct clientX/clientY. The runner's pointer-sweep walks a fixed deterministic path so both variants receive identical input. THE ADAPTATION: the sweep dispatches at 16ms, and the Player renders at about 32fps, so B's handler fires roughly TWICE per rendered frame. A real gaming mouse reports at 500-1000Hz, which would be 15-30 events per frame, so the ratio this row produces UNDERSTATES the real-world effect by an order of magnitude. Read it as a floor. Also note PointerEvent and WheelEvent are both N/A in cohtml, so this tests the mouse path only. Rule 1: one variable, whether the work is batched to the frame. Rule 2: identical DOM. Rule 3: identical JS apart from the single THROTTLE constant; both pages install the same listener and define both paths. Rule 4: identical text derived from the pointer position - and because both variants see the same deterministic sweep, both end each frame showing the same values. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080, and the sweep covers that area. Rule 6: the pointer sweep is the churn and starts before the warmup; the shared root-nudge driver also runs so the engine renders regardless of pointer position. Rule 7: the sweep path is deterministic. Rule 8: counts 30/100/300 elements touched per invocation. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Script, with Styles following since B invalidates the same elements more than once per frame."
+}

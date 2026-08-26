@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile { position: absolute; width: 88px; height: 64px; border-radius: 6px; background: #2a4a6a; }
+  .tile.hot { opacity: 0.65; }
+  .w0 { background: #b4b23c; }
+  div.tile.w0 { background: #3cb48e !important; }
+  #root .tile.w0 { background: #3cb4b4 !important; }
+  .w1 { background: #3c94b4; }
+  div.tile.w1 { background: #b03cb4 !important; }
+  #root .tile.w1 { background: #b43c92 !important; }
+  .w2 { background: #b43c72; }
+  div.tile.w2 { background: #96b43c !important; }
+  #root .tile.w2 { background: #70b43c !important; }
+  .w3 { background: #50b43c; }
+  div.tile.w3 { background: #3c74b4 !important; }
+  #root .tile.w3 { background: #3c4eb4 !important; }
+  .w4 { background: #4a3cb4; }
+  div.tile.w4 { background: #b43c52 !important; }
+  #root .tile.w4 { background: #b44c3c !important; }
+  .w5 { background: #b46c3c; }
+  div.tile.w5 { background: #3cb448 !important; }
+  #root .tile.w5 { background: #3cb46e !important; }
+  .w6 { background: #3cb48e; }
+  div.tile.w6 { background: #6a3cb4 !important; }
+  #root .tile.w6 { background: #903cb4 !important; }
+  .w7 { background: #b03cb4; }
+  div.tile.w7 { background: #b48c3c !important; }
+  #root .tile.w7 { background: #b4b23c !important; }
+  .w8 { background: #96b43c; }
+  div.tile.w8 { background: #3cb4ae !important; }
+  #root .tile.w8 { background: #3c94b4 !important; }
+  .w9 { background: #3c74b4; }
+  div.tile.w9 { background: #b43c98 !important; }
+  #root .tile.w9 { background: #b43c72 !important; }
+  .w10 { background: #b43c52; }
+  div.tile.w10 { background: #76b43c !important; }
+  #root .tile.w10 { background: #50b43c !important; }
+  .w11 { background: #3cb448; }
+  div.tile.w11 { background: #3c54b4 !important; }
+  #root .tile.w11 { background: #4a3cb4 !important; }
+  .w12 { background: #6a3cb4; }
+  div.tile.w12 { background: #b4463c !important; }
+  #root .tile.w12 { background: #b46c3c !important; }
+  .w13 { background: #b48c3c; }
+  div.tile.w13 { background: #3cb468 !important; }
+  #root .tile.w13 { background: #3cb48e !important; }
+  .w14 { background: #3cb4ae; }
+  div.tile.w14 { background: #8a3cb4 !important; }
+  #root .tile.w14 { background: #b03cb4 !important; }
+  .w15 { background: #b43c98; }
+  div.tile.w15 { background: #b4ac3c !important; }
+  #root .tile.w15 { background: #96b43c !important; }
+  .w16 { background: #76b43c; }
+  div.tile.w16 { background: #3c9ab4 !important; }
+  #root .tile.w16 { background: #3c74b4 !important; }
+  .w17 { background: #3c54b4; }
+  div.tile.w17 { background: #b43c78 !important; }
+  #root .tile.w17 { background: #b43c52 !important; }
+  .w18 { background: #b4463c; }
+  div.tile.w18 { background: #56b43c !important; }
+  #root .tile.w18 { background: #3cb448 !important; }
+  .w19 { background: #3cb468; }
+  div.tile.w19 { background: #443cb4 !important; }
+  #root .tile.w19 { background: #6a3cb4 !important; }
+  .w20 { background: #8a3cb4; }
+  div.tile.w20 { background: #b4663c !important; }
+  #root .tile.w20 { background: #b48c3c !important; }
+  .w21 { background: #b4ac3c; }
+  div.tile.w21 { background: #3cb488 !important; }
+  #root .tile.w21 { background: #3cb4ae !important; }
+  .w22 { background: #3c9ab4; }
+  div.tile.w22 { background: #aa3cb4 !important; }
+  #root .tile.w22 { background: #b43c98 !important; }
+  .w23 { background: #b43c78; }
+  div.tile.w23 { background: #9cb43c !important; }
+  #root .tile.w23 { background: #76b43c !important; }
+  .w24 { background: #56b43c; }
+  div.tile.w24 { background: #3c7ab4 !important; }
+  #root .tile.w24 { background: #3c54b4 !important; }
+  .w25 { background: #443cb4; }
+  div.tile.w25 { background: #b43c58 !important; }
+  #root .tile.w25 { background: #b4463c !important; }
+  .w26 { background: #b4663c; }
+  div.tile.w26 { background: #3cb442 !important; }
+  #root .tile.w26 { background: #3cb468 !important; }
+  .w27 { background: #3cb488; }
+  div.tile.w27 { background: #643cb4 !important; }
+  #root .tile.w27 { background: #8a3cb4 !important; }
+  .w28 { background: #aa3cb4; }
+  div.tile.w28 { background: #b4863c !important; }
+  #root .tile.w28 { background: #b4ac3c !important; }
+  .w29 { background: #9cb43c; }
+  div.tile.w29 { background: #3cb4a8 !important; }
+  #root .tile.w29 { background: #3c9ab4 !important; }
+  .w30 { background: #3c7ab4; }
+  div.tile.w30 { background: #b43c9e !important; }
+  #root .tile.w30 { background: #b43c78 !important; }
+  .w31 { background: #b43c58; }
+  div.tile.w31 { background: #7cb43c !important; }
+  #root .tile.w31 { background: #56b43c !important; }
+  .w32 { background: #3cb442; }
+  div.tile.w32 { background: #3c5ab4 !important; }
+  #root .tile.w32 { background: #443cb4 !important; }
+  .w33 { background: #643cb4; }
+  div.tile.w33 { background: #b4403c !important; }
+  #root .tile.w33 { background: #b4663c !important; }
+  .w34 { background: #b4863c; }
+  div.tile.w34 { background: #3cb462 !important; }
+  #root .tile.w34 { background: #3cb488 !important; }
+  .w35 { background: #3cb4a8; }
+  div.tile.w35 { background: #843cb4 !important; }
+  #root .tile.w35 { background: #aa3cb4 !important; }
+  .w36 { background: #b43c9e; }
+  div.tile.w36 { background: #b4a63c !important; }
+  #root .tile.w36 { background: #9cb43c !important; }
+  .w37 { background: #7cb43c; }
+  div.tile.w37 { background: #3ca0b4 !important; }
+  #root .tile.w37 { background: #3c7ab4 !important; }
+  .w38 { background: #3c5ab4; }
+  div.tile.w38 { background: #b43c7e !important; }
+  #root .tile.w38 { background: #b43c58 !important; }
+  .w39 { background: #b4403c; }
+  div.tile.w39 { background: #5cb43c !important; }
+  #root .tile.w39 { background: #3cb442 !important; }
+  .w40 { background: #3cb462; }
+  div.tile.w40 { background: #3e3cb4 !important; }
+  #root .tile.w40 { background: #643cb4 !important; }
+  .w41 { background: #843cb4; }
+  div.tile.w41 { background: #b4603c !important; }
+  #root .tile.w41 { background: #b4863c !important; }
+  .w42 { background: #b4a63c; }
+  div.tile.w42 { background: #3cb482 !important; }
+  #root .tile.w42 { background: #3cb4a8 !important; }
+  .w43 { background: #3ca0b4; }
+  div.tile.w43 { background: #a43cb4 !important; }
+  #root .tile.w43 { background: #b43c9e !important; }
+  .w44 { background: #b43c7e; }
+  div.tile.w44 { background: #a2b43c !important; }
+  #root .tile.w44 { background: #7cb43c !important; }
+  .w45 { background: #5cb43c; }
+  div.tile.w45 { background: #3c80b4 !important; }
+  #root .tile.w45 { background: #3c5ab4 !important; }
+  .w46 { background: #3e3cb4; }
+  div.tile.w46 { background: #b43c5e !important; }
+  #root .tile.w46 { background: #b4403c !important; }
+  .w47 { background: #b4603c; }
+  div.tile.w47 { background: #3cb43c !important; }
+  #root .tile.w47 { background: #3cb462 !important; }
+  .w48 { background: #3cb482; }
+  div.tile.w48 { background: #5e3cb4 !important; }
+  #root .tile.w48 { background: #843cb4 !important; }
+  .w49 { background: #a43cb4; }
+  div.tile.w49 { background: #b4803c !important; }
+  #root .tile.w49 { background: #b4a63c !important; }
+  .w50 { background: #a2b43c; }
+  div.tile.w50 { background: #3cb4a2 !important; }
+  #root .tile.w50 { background: #3ca0b4 !important; }
+  .w51 { background: #3c80b4; }
+  div.tile.w51 { background: #b43ca4 !important; }
+  #root .tile.w51 { background: #b43c7e !important; }
+  .w52 { background: #b43c5e; }
+  div.tile.w52 { background: #82b43c !important; }
+  #root .tile.w52 { background: #5cb43c !important; }
+  .w53 { background: #3cb43c; }
+  div.tile.w53 { background: #3c60b4 !important; }
+  #root .tile.w53 { background: #3e3cb4 !important; }
+  .w54 { background: #5e3cb4; }
+  div.tile.w54 { background: #b43c3e !important; }
+  #root .tile.w54 { background: #b4603c !important; }
+  .w55 { background: #b4803c; }
+  div.tile.w55 { background: #3cb45c !important; }
+  #root .tile.w55 { background: #3cb482 !important; }
+  .w56 { background: #3cb4a2; }
+  div.tile.w56 { background: #7e3cb4 !important; }
+  #root .tile.w56 { background: #a43cb4 !important; }
+  .w57 { background: #b43ca4; }
+  div.tile.w57 { background: #b4a03c !important; }
+  #root .tile.w57 { background: #a2b43c !important; }
+  .w58 { background: #82b43c; }
+  div.tile.w58 { background: #3ca6b4 !important; }
+  #root .tile.w58 { background: #3c80b4 !important; }
+  .w59 { background: #3c60b4; }
+  div.tile.w59 { background: #b43c84 !important; }
+  #root .tile.w59 { background: #b43c5e !important; }
+  .w60 { background: #b43c3e; }
+  div.tile.w60 { background: #62b43c !important; }
+  #root .tile.w60 { background: #3cb43c !important; }
+  .w61 { background: #3cb45c; }
+  div.tile.w61 { background: #3c40b4 !important; }
+  #root .tile.w61 { background: #5e3cb4 !important; }
+  .w62 { background: #7e3cb4; }
+  div.tile.w62 { background: #b45a3c !important; }
+  #root .tile.w62 { background: #b4803c !important; }
+  .w63 { background: #b4a03c; }
+  div.tile.w63 { background: #3cb47c !important; }
+  #root .tile.w63 { background: #3cb4a2 !important; }
+  .w64 { background: #3ca6b4; }
+  div.tile.w64 { background: #9e3cb4 !important; }
+  #root .tile.w64 { background: #b43ca4 !important; }
+  .w65 { background: #b43c84; }
+  div.tile.w65 { background: #a8b43c !important; }
+  #root .tile.w65 { background: #82b43c !important; }
+  .w66 { background: #62b43c; }
+  div.tile.w66 { background: #3c86b4 !important; }
+  #root .tile.w66 { background: #3c60b4 !important; }
+  .w67 { background: #3c40b4; }
+  div.tile.w67 { background: #b43c64 !important; }
+  #root .tile.w67 { background: #b43c3e !important; }
+  .w68 { background: #b45a3c; }
+  div.tile.w68 { background: #42b43c !important; }
+  #root .tile.w68 { background: #3cb45c !important; }
+  .w69 { background: #3cb47c; }
+  div.tile.w69 { background: #583cb4 !important; }
+  #root .tile.w69 { background: #7e3cb4 !important; }
+  .w70 { background: #9e3cb4; }
+  div.tile.w70 { background: #b47a3c !important; }
+  #root .tile.w70 { background: #b4a03c !important; }
+  .w71 { background: #a8b43c; }
+  div.tile.w71 { background: #3cb49c !important; }
+  #root .tile.w71 { background: #3ca6b4 !important; }
+  .w72 { background: #3c86b4; }
+  div.tile.w72 { background: #b43caa !important; }
+  #root .tile.w72 { background: #b43c84 !important; }
+  .w73 { background: #b43c64; }
+  div.tile.w73 { background: #88b43c !important; }
+  #root .tile.w73 { background: #62b43c !important; }
+  .w74 { background: #42b43c; }
+  div.tile.w74 { background: #3c66b4 !important; }
+  #root .tile.w74 { background: #3c40b4 !important; }
+  .w75 { background: #583cb4; }
+  div.tile.w75 { background: #b43c44 !important; }
+  #root .tile.w75 { background: #b45a3c !important; }
+  .w76 { background: #b47a3c; }
+  div.tile.w76 { background: #3cb456 !important; }
+  #root .tile.w76 { background: #3cb47c !important; }
+  .w77 { background: #3cb49c; }
+  div.tile.w77 { background: #783cb4 !important; }
+  #root .tile.w77 { background: #9e3cb4 !important; }
+  .w78 { background: #b43caa; }
+  div.tile.w78 { background: #b49a3c !important; }
+  #root .tile.w78 { background: #a8b43c !important; }
+  .w79 { background: #88b43c; }
+  div.tile.w79 { background: #3cacb4 !important; }
+  #root .tile.w79 { background: #3c86b4 !important; }
+  .w80 { background: #3c66b4; }
+  div.tile.w80 { background: #b43c8a !important; }
+  #root .tile.w80 { background: #b43c64 !important; }
+  .w81 { background: #b43c44; }
+  div.tile.w81 { background: #68b43c !important; }
+  #root .tile.w81 { background: #42b43c !important; }
+  .w82 { background: #3cb456; }
+  div.tile.w82 { background: #3c46b4 !important; }
+  #root .tile.w82 { background: #583cb4 !important; }
+  .w83 { background: #783cb4; }
+  div.tile.w83 { background: #b4543c !important; }
+  #root .tile.w83 { background: #b47a3c !important; }
+  .w84 { background: #b49a3c; }
+  div.tile.w84 { background: #3cb476 !important; }
+  #root .tile.w84 { background: #3cb49c !important; }
+  .w85 { background: #3cacb4; }
+  div.tile.w85 { background: #983cb4 !important; }
+  #root .tile.w85 { background: #b43caa !important; }
+  .w86 { background: #b43c8a; }
+  div.tile.w86 { background: #aeb43c !important; }
+  #root .tile.w86 { background: #88b43c !important; }
+  .w87 { background: #68b43c; }
+  div.tile.w87 { background: #3c8cb4 !important; }
+  #root .tile.w87 { background: #3c66b4 !important; }
+  .w88 { background: #3c46b4; }
+  div.tile.w88 { background: #b43c6a !important; }
+  #root .tile.w88 { background: #b43c44 !important; }
+  .w89 { background: #b4543c; }
+  div.tile.w89 { background: #48b43c !important; }
+  #root .tile.w89 { background: #3cb456 !important; }
+  .w90 { background: #3cb476; }
+  div.tile.w90 { background: #523cb4 !important; }
+  #root .tile.w90 { background: #783cb4 !important; }
+  .w91 { background: #983cb4; }
+  div.tile.w91 { background: #b4743c !important; }
+  #root .tile.w91 { background: #b49a3c !important; }
+  .w92 { background: #aeb43c; }
+  div.tile.w92 { background: #3cb496 !important; }
+  #root .tile.w92 { background: #3cacb4 !important; }
+  .w93 { background: #3c8cb4; }
+  div.tile.w93 { background: #b43cb0 !important; }
+  #root .tile.w93 { background: #b43c8a !important; }
+  .w94 { background: #b43c6a; }
+  div.tile.w94 { background: #8eb43c !important; }
+  #root .tile.w94 { background: #68b43c !important; }
+  .w95 { background: #48b43c; }
+  div.tile.w95 { background: #3c6cb4 !important; }
+  #root .tile.w95 { background: #3c46b4 !important; }
+  .w96 { background: #523cb4; }
+  div.tile.w96 { background: #b43c4a !important; }
+  #root .tile.w96 { background: #b4543c !important; }
+  .w97 { background: #b4743c; }
+  div.tile.w97 { background: #3cb450 !important; }
+  #root .tile.w97 { background: #3cb476 !important; }
+  .w98 { background: #3cb496; }
+  div.tile.w98 { background: #723cb4 !important; }
+  #root .tile.w98 { background: #983cb4 !important; }
+  .w99 { background: #b43cb0; }
+  div.tile.w99 { background: #b4943c !important; }
+  #root .tile.w99 { background: #aeb43c !important; }
+  .w100 { background: #8eb43c; }
+  div.tile.w100 { background: #3cb2b4 !important; }
+  #root .tile.w100 { background: #3c8cb4 !important; }
+  .w101 { background: #3c6cb4; }
+  div.tile.w101 { background: #b43c90 !important; }
+  #root .tile.w101 { background: #b43c6a !important; }
+  .w102 { background: #b43c4a; }
+  div.tile.w102 { background: #6eb43c !important; }
+  #root .tile.w102 { background: #48b43c !important; }
+  .w103 { background: #3cb450; }
+  div.tile.w103 { background: #3c4cb4 !important; }
+  #root .tile.w103 { background: #523cb4 !important; }
+  .w104 { background: #723cb4; }
+  div.tile.w104 { background: #b44e3c !important; }
+  #root .tile.w104 { background: #b4743c !important; }
+  .w105 { background: #b4943c; }
+  div.tile.w105 { background: #3cb470 !important; }
+  #root .tile.w105 { background: #3cb496 !important; }
+  .w106 { background: #3cb2b4; }
+  div.tile.w106 { background: #923cb4 !important; }
+  #root .tile.w106 { background: #b43cb0 !important; }
+  .w107 { background: #b43c90; }
+  div.tile.w107 { background: #b4b43c !important; }
+  #root .tile.w107 { background: #8eb43c !important; }
+  .w108 { background: #6eb43c; }
+  div.tile.w108 { background: #3c92b4 !important; }
+  #root .tile.w108 { background: #3c6cb4 !important; }
+  .w109 { background: #3c4cb4; }
+  div.tile.w109 { background: #b43c70 !important; }
+  #root .tile.w109 { background: #b43c4a !important; }
+  .w110 { background: #b44e3c; }
+  div.tile.w110 { background: #4eb43c !important; }
+  #root .tile.w110 { background: #3cb450 !important; }
+  .w111 { background: #3cb470; }
+  div.tile.w111 { background: #4c3cb4 !important; }
+  #root .tile.w111 { background: #723cb4 !important; }
+  .w112 { background: #923cb4; }
+  div.tile.w112 { background: #b46e3c !important; }
+  #root .tile.w112 { background: #b4943c !important; }
+  .w113 { background: #b4b43c; }
+  div.tile.w113 { background: #3cb490 !important; }
+  #root .tile.w113 { background: #3cb2b4 !important; }
+  .w114 { background: #3c92b4; }
+  div.tile.w114 { background: #b23cb4 !important; }
+  #root .tile.w114 { background: #b43c90 !important; }
+  .w115 { background: #b43c70; }
+  div.tile.w115 { background: #94b43c !important; }
+  #root .tile.w115 { background: #6eb43c !important; }
+  .w116 { background: #4eb43c; }
+  div.tile.w116 { background: #3c72b4 !important; }
+  #root .tile.w116 { background: #3c4cb4 !important; }
+  .w117 { background: #4c3cb4; }
+  div.tile.w117 { background: #b43c50 !important; }
+  #root .tile.w117 { background: #b44e3c !important; }
+  .w118 { background: #b46e3c; }
+  div.tile.w118 { background: #3cb44a !important; }
+  #root .tile.w118 { background: #3cb470 !important; }
+  .w119 { background: #3cb490; }
+  div.tile.w119 { background: #6c3cb4 !important; }
+  #root .tile.w119 { background: #923cb4 !important; }
+  .w120 { background: #b23cb4; }
+  div.tile.w120 { background: #b48e3c !important; }
+  #root .tile.w120 { background: #b4b43c !important; }
+  .w121 { background: #94b43c; }
+  div.tile.w121 { background: #3cb4b0 !important; }
+  #root .tile.w121 { background: #3c92b4 !important; }
+  .w122 { background: #3c72b4; }
+  div.tile.w122 { background: #b43c96 !important; }
+  #root .tile.w122 { background: #b43c70 !important; }
+  .w123 { background: #b43c50; }
+  div.tile.w123 { background: #74b43c !important; }
+  #root .tile.w123 { background: #4eb43c !important; }
+  .w124 { background: #3cb44a; }
+  div.tile.w124 { background: #3c52b4 !important; }
+  #root .tile.w124 { background: #4c3cb4 !important; }
+  .w125 { background: #6c3cb4; }
+  div.tile.w125 { background: #b4483c !important; }
+  #root .tile.w125 { background: #b46e3c !important; }
+  .w126 { background: #b48e3c; }
+  div.tile.w126 { background: #3cb46a !important; }
+  #root .tile.w126 { background: #3cb490 !important; }
+  .w127 { background: #3cb4b0; }
+  div.tile.w127 { background: #8c3cb4 !important; }
+  #root .tile.w127 { background: #b23cb4 !important; }
+  .w128 { background: #b43c96; }
+  div.tile.w128 { background: #b4ae3c !important; }
+  #root .tile.w128 { background: #94b43c !important; }
+  .w129 { background: #74b43c; }
+  div.tile.w129 { background: #3c98b4 !important; }
+  #root .tile.w129 { background: #3c72b4 !important; }
+  .w130 { background: #3c52b4; }
+  div.tile.w130 { background: #b43c76 !important; }
+  #root .tile.w130 { background: #b43c50 !important; }
+  .w131 { background: #b4483c; }
+  div.tile.w131 { background: #54b43c !important; }
+  #root .tile.w131 { background: #3cb44a !important; }
+  .w132 { background: #3cb46a; }
+  div.tile.w132 { background: #463cb4 !important; }
+  #root .tile.w132 { background: #6c3cb4 !important; }
+  .w133 { background: #8c3cb4; }
+  div.tile.w133 { background: #b4683c !important; }
+  #root .tile.w133 { background: #b48e3c !important; }
+  .w134 { background: #b4ae3c; }
+  div.tile.w134 { background: #3cb48a !important; }
+  #root .tile.w134 { background: #3cb4b0 !important; }
+  .w135 { background: #3c98b4; }
+  div.tile.w135 { background: #ac3cb4 !important; }
+  #root .tile.w135 { background: #b43c96 !important; }
+  .w136 { background: #b43c76; }
+  div.tile.w136 { background: #9ab43c !important; }
+  #root .tile.w136 { background: #74b43c !important; }
+  .w137 { background: #54b43c; }
+  div.tile.w137 { background: #3c78b4 !important; }
+  #root .tile.w137 { background: #3c52b4 !important; }
+  .w138 { background: #463cb4; }
+  div.tile.w138 { background: #b43c56 !important; }
+  #root .tile.w138 { background: #b4483c !important; }
+  .w139 { background: #b4683c; }
+  div.tile.w139 { background: #3cb444 !important; }
+  #root .tile.w139 { background: #3cb46a !important; }
+  .w140 { background: #3cb48a; }
+  div.tile.w140 { background: #663cb4 !important; }
+  #root .tile.w140 { background: #8c3cb4 !important; }
+  .w141 { background: #ac3cb4; }
+  div.tile.w141 { background: #b4883c !important; }
+  #root .tile.w141 { background: #b4ae3c !important; }
+  .w142 { background: #9ab43c; }
+  div.tile.w142 { background: #3cb4aa !important; }
+  #root .tile.w142 { background: #3c98b4 !important; }
+  .w143 { background: #3c78b4; }
+  div.tile.w143 { background: #b43c9c !important; }
+  #root .tile.w143 { background: #b43c76 !important; }
+  .w144 { background: #b43c56; }
+  div.tile.w144 { background: #7ab43c !important; }
+  #root .tile.w144 { background: #54b43c !important; }
+  .w145 { background: #3cb444; }
+  div.tile.w145 { background: #3c58b4 !important; }
+  #root .tile.w145 { background: #463cb4 !important; }
+  .w146 { background: #663cb4; }
+  div.tile.w146 { background: #b4423c !important; }
+  #root .tile.w146 { background: #b4683c !important; }
+  .w147 { background: #b4883c; }
+  div.tile.w147 { background: #3cb464 !important; }
+  #root .tile.w147 { background: #3cb48a !important; }
+  .w148 { background: #3cb4aa; }
+  div.tile.w148 { background: #863cb4 !important; }
+  #root .tile.w148 { background: #ac3cb4 !important; }
+  .w149 { background: #b43c9c; }
+  div.tile.w149 { background: #b4a83c !important; }
+  #root .tile.w149 { background: #9ab43c !important; }
+  .w150 { background: #7ab43c; }
+  div.tile.w150 { background: #3c9eb4 !important; }
+  #root .tile.w150 { background: #3c78b4 !important; }
+  .w151 { background: #3c58b4; }
+  div.tile.w151 { background: #b43c7c !important; }
+  #root .tile.w151 { background: #b43c56 !important; }
+  .w152 { background: #b4423c; }
+  div.tile.w152 { background: #5ab43c !important; }
+  #root .tile.w152 { background: #3cb444 !important; }
+  .w153 { background: #3cb464; }
+  div.tile.w153 { background: #403cb4 !important; }
+  #root .tile.w153 { background: #663cb4 !important; }
+  .w154 { background: #863cb4; }
+  div.tile.w154 { background: #b4623c !important; }
+  #root .tile.w154 { background: #b4883c !important; }
+  .w155 { background: #b4a83c; }
+  div.tile.w155 { background: #3cb484 !important; }
+  #root .tile.w155 { background: #3cb4aa !important; }
+  .w156 { background: #3c9eb4; }
+  div.tile.w156 { background: #a63cb4 !important; }
+  #root .tile.w156 { background: #b43c9c !important; }
+  .w157 { background: #b43c7c; }
+  div.tile.w157 { background: #a0b43c !important; }
+  #root .tile.w157 { background: #7ab43c !important; }
+  .w158 { background: #5ab43c; }
+  div.tile.w158 { background: #3c7eb4 !important; }
+  #root .tile.w158 { background: #3c58b4 !important; }
+  .w159 { background: #403cb4; }
+  div.tile.w159 { background: #b43c5c !important; }
+  #root .tile.w159 { background: #b4423c !important; }
+  .w160 { background: #b4623c; }
+  div.tile.w160 { background: #3cb43e !important; }
+  #root .tile.w160 { background: #3cb464 !important; }
+  .w161 { background: #3cb484; }
+  div.tile.w161 { background: #603cb4 !important; }
+  #root .tile.w161 { background: #863cb4 !important; }
+  .w162 { background: #a63cb4; }
+  div.tile.w162 { background: #b4823c !important; }
+  #root .tile.w162 { background: #b4a83c !important; }
+  .w163 { background: #a0b43c; }
+  div.tile.w163 { background: #3cb4a4 !important; }
+  #root .tile.w163 { background: #3c9eb4 !important; }
+  .w164 { background: #3c7eb4; }
+  div.tile.w164 { background: #b43ca2 !important; }
+  #root .tile.w164 { background: #b43c7c !important; }
+  .w165 { background: #b43c5c; }
+  div.tile.w165 { background: #80b43c !important; }
+  #root .tile.w165 { background: #5ab43c !important; }
+  .w166 { background: #3cb43e; }
+  div.tile.w166 { background: #3c5eb4 !important; }
+  #root .tile.w166 { background: #403cb4 !important; }
+  .w167 { background: #603cb4; }
+  div.tile.w167 { background: #b43c3c !important; }
+  #root .tile.w167 { background: #b4623c !important; }
+  .w168 { background: #b4823c; }
+  div.tile.w168 { background: #3cb45e !important; }
+  #root .tile.w168 { background: #3cb484 !important; }
+  .w169 { background: #3cb4a4; }
+  div.tile.w169 { background: #803cb4 !important; }
+  #root .tile.w169 { background: #a63cb4 !important; }
+  .w170 { background: #b43ca2; }
+  div.tile.w170 { background: #b4a23c !important; }
+  #root .tile.w170 { background: #a0b43c !important; }
+  .w171 { background: #80b43c; }
+  div.tile.w171 { background: #3ca4b4 !important; }
+  #root .tile.w171 { background: #3c7eb4 !important; }
+  .w172 { background: #3c5eb4; }
+  div.tile.w172 { background: #b43c82 !important; }
+  #root .tile.w172 { background: #b43c5c !important; }
+  .w173 { background: #b43c3c; }
+  div.tile.w173 { background: #60b43c !important; }
+  #root .tile.w173 { background: #3cb43e !important; }
+  .w174 { background: #3cb45e; }
+  div.tile.w174 { background: #3c3eb4 !important; }
+  #root .tile.w174 { background: #603cb4 !important; }
+  .w175 { background: #803cb4; }
+  div.tile.w175 { background: #b45c3c !important; }
+  #root .tile.w175 { background: #b4823c !important; }
+  .w176 { background: #b4a23c; }
+  div.tile.w176 { background: #3cb47e !important; }
+  #root .tile.w176 { background: #3cb4a4 !important; }
+  .w177 { background: #3ca4b4; }
+  div.tile.w177 { background: #a03cb4 !important; }
+  #root .tile.w177 { background: #b43ca2 !important; }
+  .w178 { background: #b43c82; }
+  div.tile.w178 { background: #a6b43c !important; }
+  #root .tile.w178 { background: #80b43c !important; }
+  .w179 { background: #60b43c; }
+  div.tile.w179 { background: #3c84b4 !important; }
+  #root .tile.w179 { background: #3c5eb4 !important; }
+  .w180 { background: #3c3eb4; }
+  div.tile.w180 { background: #b43c62 !important; }
+  #root .tile.w180 { background: #b43c3c !important; }
+  .w181 { background: #b45c3c; }
+  div.tile.w181 { background: #40b43c !important; }
+  #root .tile.w181 { background: #3cb45e !important; }
+  .w182 { background: #3cb47e; }
+  div.tile.w182 { background: #5a3cb4 !important; }
+  #root .tile.w182 { background: #803cb4 !important; }
+  .w183 { background: #a03cb4; }
+  div.tile.w183 { background: #b47c3c !important; }
+  #root .tile.w183 { background: #b4a23c !important; }
+  .w184 { background: #a6b43c; }
+  div.tile.w184 { background: #3cb49e !important; }
+  #root .tile.w184 { background: #3ca4b4 !important; }
+  .w185 { background: #3c84b4; }
+  div.tile.w185 { background: #b43ca8 !important; }
+  #root .tile.w185 { background: #b43c82 !important; }
+  .w186 { background: #b43c62; }
+  div.tile.w186 { background: #86b43c !important; }
+  #root .tile.w186 { background: #60b43c !important; }
+  .w187 { background: #40b43c; }
+  div.tile.w187 { background: #3c64b4 !important; }
+  #root .tile.w187 { background: #3c3eb4 !important; }
+  .w188 { background: #5a3cb4; }
+  div.tile.w188 { background: #b43c42 !important; }
+  #root .tile.w188 { background: #b45c3c !important; }
+  .w189 { background: #b47c3c; }
+  div.tile.w189 { background: #3cb458 !important; }
+  #root .tile.w189 { background: #3cb47e !important; }
+  .w190 { background: #3cb49e; }
+  div.tile.w190 { background: #7a3cb4 !important; }
+  #root .tile.w190 { background: #a03cb4 !important; }
+  .w191 { background: #b43ca8; }
+  div.tile.w191 { background: #b49c3c !important; }
+  #root .tile.w191 { background: #a6b43c !important; }
+  .w192 { background: #86b43c; }
+  div.tile.w192 { background: #3caab4 !important; }
+  #root .tile.w192 { background: #3c84b4 !important; }
+  .w193 { background: #3c64b4; }
+  div.tile.w193 { background: #b43c88 !important; }
+  #root .tile.w193 { background: #b43c62 !important; }
+  .w194 { background: #b43c42; }
+  div.tile.w194 { background: #66b43c !important; }
+  #root .tile.w194 { background: #40b43c !important; }
+  .w195 { background: #3cb458; }
+  div.tile.w195 { background: #3c44b4 !important; }
+  #root .tile.w195 { background: #5a3cb4 !important; }
+  .w196 { background: #7a3cb4; }
+  div.tile.w196 { background: #b4563c !important; }
+  #root .tile.w196 { background: #b47c3c !important; }
+  .w197 { background: #b49c3c; }
+  div.tile.w197 { background: #3cb478 !important; }
+  #root .tile.w197 { background: #3cb49e !important; }
+  .w198 { background: #3caab4; }
+  div.tile.w198 { background: #9a3cb4 !important; }
+  #root .tile.w198 { background: #b43ca8 !important; }
+  .w199 { background: #b43c88; }
+  div.tile.w199 { background: #acb43c !important; }
+  #root .tile.w199 { background: #86b43c !important; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var host = document.getElementById('root');
+    var tiles = [];
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'tile w' + (i % 200);
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      host.appendChild(el);
+      tiles.push(el);
+    }
+
+    var t = 0;
+    function frame() {
+      t += 1;
+      var on = (t % 2) === 0;
+      for (var j = 0; j < tiles.length; j++) {
+        if (on) tiles[j].classList.add('hot');
+        else tiles[j].classList.remove('hot');
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile { position: absolute; width: 88px; height: 64px; border-radius: 6px; background: #2a4a6a; }
+  #readout { position: absolute; left: 16px; top: 700px; color: #e8e8f0; font-size: 20px; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // Both variants do exactly the same total work over the trace. A spreads it
+    // evenly across every frame; B saves it up and does it all on every tenth.
+    // Both pages carry both paths so the scripts stay byte-identical apart from
+    // this one constant.
+    var BURST = true;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var UNITS = match ? parseInt(match[1], 10) : 100;
+
+    var CYCLE = 10;
+    var TILES = 30, COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var root = document.getElementById('root');
+    for (var i = 0; i < TILES; i++) {
+      var el = document.createElement('div');
+      el.className = 'tile';
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      root.appendChild(el);
+    }
+    var readout = document.createElement('div');
+    readout.id = 'readout';
+    root.appendChild(readout);
+
+    // Deterministic CPU work. The accumulator is written to the DOM so nothing
+    // here can be optimised away as dead code.
+    var acc = 0;
+    function doWork(units) {
+      var iterations = units * 5000;
+      for (var k = 0; k < iterations; k++) acc = (acc + k) % 100000;
+    }
+
+    var t = 0;
+    function frame() {
+      t += 1;
+      if (BURST) {
+        if (t % CYCLE === 0) doWork(UNITS);
+      } else {
+        doWork(UNITS / CYCLE);
+      }
+      readout.textContent = acc;
+      root.style.transform = 'translateX(' + (t % 3) + 'px)';
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "title": "Animating a clip-path polygon vs holding it fixed",
+  "variable": "per-frame clip-path change vs static clip-path",
+  "hypothesis": "Paint",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "static",
+    "b": "animated"
+  },
+  "claim": "Antipattern #18 from web-performance-antipatterns-50.md: 'clip-path/mask on animated elements - path clipping per frame.' gradient-clip-baked covered a STATIC clip-path against a baked texture. This case isolates the animation half: whether re-evaluating the polygon each frame costs on top of being clipped at all. Animated clip paths are how wipe transitions and radial reveals are built, so the answer decides whether those need baking.",
+  "result": "CONFIRMED, but on a different axis than hypothesized. Expected Paint; Paint stayed flat (0.98x/0.99x/1.04x) and the cost landed in Styles: 2.82x / 7.45x / 11.56x, with Script 1.58x / 2.29x / 4.16x behind it. CORRECTED EXPLANATION - an earlier version of this note attributed the cost to the per-element style write itself. style-write-scope refuted that: inline writes turn out to be the CHEAPEST way to invalidate many elements, about half the cost of a selector-driven restyle. The real reading is the same as filter-blur-animated: A invalidates no elements per frame, B invalidates all of them, and that difference is the ratio. The near-identical magnitude to filter-blur-animated (11.56x vs 11.81x) is not because the write mechanism dominates - it is because both cases make the same jump from invalidating nothing to invalidating everything, with two comparably expensive visual properties.",
+  "notes": "Applicability gate: DIRECT. clip-path is supported for polygon() - css/partial.json rejects only fill-box, path, stroke-box and view-box, and polygon is a supported css-function. The el.style.clipPath JS property was verified against the Player before authoring, because a silently-ignored write would make B identical to A and produce a false null. Rule 1: one variable, whether the polygon is rewritten each frame. Rule 2: identical DOM and identical CSS - both variants declare the same starting clip-path, so both pay for being clipped. Rule 3: identical JS apart from the single ANIMATE_CLIP constant. Rule 4: no text, no assets. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080. Rule 6: the shared root-nudge damage driver runs in both so both genuinely re-render; B additionally mutates the path. Rule 7: the polygon derives from the frame counter. Rule 8: counts 30/100/300. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Paint, with Script plausible if the cost turns out to be the style write rather than the clipping."
+}

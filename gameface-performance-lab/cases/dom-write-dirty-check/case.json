@@ -1,0 +1,18 @@
+{
+  "title": "Dirty-checking before a DOM write vs writing every frame",
+  "variable": "write only on change vs write unconditionally",
+  "hypothesis": "Styles",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "dirty-checked",
+    "b": "write always"
+  },
+  "claim": "Antipattern #38 from web-performance-antipatterns-50.md: 'writing to the DOM every frame when the underlying value changed less often (no dirty-check).' This is the natural shape of a render loop bolted onto game state: the loop runs at frame rate, the values do not. The lab's corrected model from batch 3 says styling cost is governed by how many elements get invalidated per frame, which predicts a large effect here - A invalidates about a tenth as many elements as B for exactly the same visible result. That makes this both a test of the antipattern and a second, independent check on the model.",
+  "result": "CONFIRMED, and it independently validates the corrected model from batch 3. Styles 1.70x / 3.35x / 5.64x, Layout 1.47x / 2.27x / 2.58x, Script 1.28x / 2.01x / 2.61x. The sub-question this case raised is answered: cohtml does NOT short-circuit a textContent assignment that writes back the same value, so writing unconditionally really does invalidate ten times as many elements as writing on change. The Styles ratio of 5.64x against a 10x difference in elements invalidated is close to what the model predicts, and the residual gap is the fixed per-frame cost both variants share. A dirty-check is worth having, and it is worth having specifically because the engine will not do it for you.",
+  "notes": "Applicability gate: DIRECT. Rule 1: one variable, whether the write is guarded by a comparison. Rule 2: identical DOM - same counters, same geometry, same text on every frame. Rule 3: identical JS apart from the single WRITE_ALWAYS constant; both pages define both paths and both maintain the lastWritten array, so the bookkeeping cost exists in B too and only the guard differs. Rule 4: identical text - both variants display the same numbers at the same moments; the only difference is how often that text is assigned. Rule 5: 300 counters occupy 1852x1032 inside 1920x1080. Rule 6: the render loop IS the case and replaces the shared damage driver; it runs every frame from load in both variants. Rule 7: values derive from the frame counter and the element index, staggered so about one counter in ten changes on any given frame rather than all of them at once. Rule 8: counts 30/100/300. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Styles, with Script following since B also does more work in the loop. NOTE: writing the same value back is the interesting sub-question - if the engine short-circuits an assignment that does not change the text, B costs nothing extra and the antipattern is moot in Gameface. If it does not, B invalidates ten times as many elements as A for no visible reason."
+}

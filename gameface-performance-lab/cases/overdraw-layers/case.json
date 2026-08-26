@@ -1,0 +1,18 @@
+{
+  "title": "Stacked translucent full-screen layers vs one opaque layer",
+  "variable": "N translucent full-screen layers vs one pre-composited layer",
+  "hypothesis": "GPU",
+  "status": "DIRECT",
+  "counts": [
+    2,
+    5,
+    10
+  ],
+  "labels": {
+    "a": "one opaque",
+    "b": "N translucent"
+  },
+  "claim": "Antipattern #16 from web-performance-antipatterns-50.md: 'heavy overdraw - many stacked semi-transparent layers repainting the same pixels.' A side finding while validating the GPU column makes this worth measuring properly: 40 stacked OPAQUE full-screen layers cost the same as 40 translucent ones (3.41ms vs 3.59ms), which means cohtml does not cull fully-occluded opaque layers. If overdraw is paid for regardless of whether it is visible, layer count is a budget in its own right.",
+  "result": "CONFIRMED and roughly linear in layer count: no reliable difference at 2 layers, GPU 1.81x at 5, 3.22x at 10. Paint and Script stay flat throughout, confirming this is pure fill-rate. Combined with the earlier probe finding that 40 stacked OPAQUE full-screen layers cost the same as 40 translucent ones, the conclusion is that cohtml does not cull occluded layers - stacked layer count is a budget whether or not the result is visible.",
+  "notes": "Applicability gate: DIRECT. Rule 1: one variable, how the same screen area gets filled. Rule 2 EXCEPTION: element count is necessarily the variable here - one layer versus N - so it cannot be held equal. Everything else is: the same full-screen geometry, the same root, the same driver. Rule 3: identical JS apart from the single STACK_TRANSLUCENT constant; both pages define both construction paths. Rule 4: no text, no assets. Rule 5: the layers fill the whole 1920x1080 viewport by construction. Rule 6: the shared root-nudge damage driver, identical in both. Rule 7: no randomness. Rule 8: counts are the LAYER count (2/5/10), not an element grid count. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is GPU - blending N full-screen quads is fill-rate work and should not touch layout or styling. APPEARANCE NOTE: A's flat #2f4a63 approximates the stack rather than matching it exactly, because the composite of N translucent layers depends on N and no single colour can match all three counts. Painted area is identical in every case, which is what a fill-rate comparison rests on."
+}

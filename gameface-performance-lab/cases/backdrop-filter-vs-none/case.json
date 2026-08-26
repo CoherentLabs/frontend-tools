@@ -1,0 +1,18 @@
+{
+  "title": "backdrop-filter vs a plain translucent panel",
+  "variable": "backdrop-filter: blur(8px) vs none",
+  "hypothesis": "GPU",
+  "status": "DIRECT",
+  "counts": [
+    10,
+    30,
+    100
+  ],
+  "labels": {
+    "a": "plain",
+    "b": "backdrop-filter"
+  },
+  "claim": "Antipattern #14 from web-performance-antipatterns-50.md: 'backdrop-filter samples and processes the live backdrop every frame.' Gameface documents this as a headline feature - RAG 05-graphics.md 'backdrop-filter for Live Scene Blur' describes the frosted-glass pause menu, processing the live frame as a Backdrop Root Image before compositing the UI. It is recommended without a price attached; this case attaches one.",
+  "result": "CONFIRMED, and the most expensive effect measured anywhere in the lab: GPU 3.28x / 4.98x / 10.93x with Paint tracking it at 2.19x / 3.83x / 9.75x, reached at only 100 panels where other cases need 300. Treat this as a LOWER BOUND - the Player composites the page own gradient as the backdrop, while a shipping game composites the live 3D scene, which is the expensive case RAG 05-graphics.md is actually describing.",
+  "notes": "Applicability gate: DIRECT. backdrop-filter is supported (css/partial.json rejects only the 'initial' keyword) and was confirmed against the Player - getComputedStyle reports 'blur(6px)' back. Two constraints from RAG 05-graphics.md are honoured in the markup: the filtered element has a transparent (rgba) background rather than an opaque one, and nothing on its ancestor chain uses opacity < 1, which the doc says blocks the backdrop from reaching the filter. Rule 1: one variable, the backdrop-filter declaration. Rule 2: identical DOM including the shared #backdrop layer. Rule 3: identical JS, byte-for-byte. Rule 4: no text, no assets. Rule 5: counts are capped at 100 rather than the usual 300 because backdrop-filter is expected to be the most expensive effect in the lab; all panels remain on-screen. Rule 6: the shared damage driver moves only #root, so the panels traverse a static backdrop and B must re-sample fresh pixels every frame instead of reusing a cached result. Rule 7: no randomness. Rule 8: counts 10/30/100. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is GPU. CAVEAT: in the Player the backdrop is the page's own gradient layer, not a live 3D scene. A real game composites the engine's frame instead, which may cost more; read this row as a lower bound."
+}

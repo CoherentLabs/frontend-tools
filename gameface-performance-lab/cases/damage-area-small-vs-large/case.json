@@ -1,0 +1,18 @@
+{
+  "title": "A small moving element vs a full-width one",
+  "variable": "88px-wide mover vs 1872px-wide mover",
+  "hypothesis": "GPU",
+  "status": "DIRECT",
+  "counts": [
+    1,
+    5,
+    15
+  ],
+  "labels": {
+    "a": "small",
+    "b": "full width"
+  },
+  "claim": "Antipattern #20 from web-performance-antipatterns-50.md: 'full-screen repaints caused by tiny changes (a moving element with huge bounds dirtying everything).' The practical version in game UI is the invisible full-width wrapper: a banner, a row background or a stretched container that animates and drags the whole strip through repaint with it. If cohtml tracks damage by element bounds, the fix is to shrink the animated element rather than the animation.",
+  "result": "CONFIRMED, and one of the largest effects in the lab: GPU 4.21x / 8.76x / 10.86x for identical movement, identical element counts and identical JS - the only difference is that each element is 1872px wide instead of 88px. Paint, Styles and Script all stay flat, so this is entirely fill cost driven by element bounds. The practical warning is that the expensive element is often invisible: a stretched wrapper or full-width row background that animates costs its whole area every frame, and nothing in the markup looks wrong.",
+  "notes": "Applicability gate: DIRECT. Rule 1: one variable, the width of the moving element. Rule 2 EXCEPTION: the element's painted area IS the variable, so it cannot be held equal - that is the point of the case rather than a flaw in it. Everything else is identical: same element count, same positions, same movement, same distance, same colour. Rule 3: identical JS, byte-for-byte - the movement loop does not know how wide the elements are. Rule 4: no text, no assets. Rule 5: at 15 movers B occupies 1872x1020 inside 1920x1080 and every element stays fully on-screen; the +/-16px travel keeps them inside the viewport. Rule 6: the movement IS the case and replaces the shared damage driver. Rule 7: the offset derives from the frame counter. Rule 8: counts 1/5/15 movers - lower than the lab's usual grid counts because each B element is 21x the area of an A element. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is GPU or Paint, scaling with dirtied area. A flat result would mean cohtml does not track damage regions per element, which would itself be worth knowing."
+}

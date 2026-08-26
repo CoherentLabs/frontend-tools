@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .row {
+    position: absolute; width: 88px; height: 64px; border-radius: 6px;
+    background: #2a4a6a; color: #e8e8f0; font-size: 16px;
+  }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // One row's value changes per frame. A updates just that row; B rebuilds
+    // the whole list. Both pages carry both paths so the scripts stay
+    // byte-identical apart from this one constant.
+    var REBUILD_ALL = false;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var root = document.getElementById('root');
+    var values = [];
+    var rows = [];
+
+    function slotLeft(i) { return 16 + (i % COLS) * CELL_W; }
+    function slotTop(i) { return 16 + Math.floor(i / COLS) * CELL_H; }
+
+    function makeRow(i) {
+      var el = document.createElement('div');
+      el.className = 'row';
+      el.style.left = slotLeft(i) + 'px';
+      el.style.top = slotTop(i) + 'px';
+      el.textContent = values[i];
+      return el;
+    }
+
+    for (var i = 0; i < COUNT; i++) {
+      values.push(i);
+      var el = makeRow(i);
+      root.appendChild(el);
+      rows.push(el);
+    }
+
+    // The data change IS the case, so it replaces the shared damage driver.
+    // Exactly one value changes per frame in both variants.
+    var t = 0;
+    function frame() {
+      t += 1;
+      var changed = t % COUNT;
+      values[changed] = t;
+
+      if (REBUILD_ALL) {
+        while (root.firstChild) root.removeChild(root.firstChild);
+        rows.length = 0;
+        for (var j = 0; j < COUNT; j++) {
+          var fresh = makeRow(j);
+          root.appendChild(fresh);
+          rows.push(fresh);
+        }
+      } else {
+        rows[changed].textContent = values[changed];
+      }
+
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

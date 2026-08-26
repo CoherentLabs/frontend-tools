@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile { position: absolute; width: 88px; height: 64px; border-radius: 6px; background: #2a4a6a; }
+  /* One class on the parent restyles every tile underneath it. */
+  #root.hot .tile { background: #c04a4a; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // A changes ONE class on the parent; B writes the same colour inline on
+    // every tile. The rendered result is identical either way - the variable is
+    // how many style writes it takes to get there.
+    var WRITE_PER_ELEMENT = true;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var root = document.getElementById('root');
+    var tiles = [];
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'tile';
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      root.appendChild(el);
+      tiles.push(el);
+    }
+
+    // The restyle IS the case, so it replaces the shared damage driver. Both
+    // variants flip every tile between the same two colours every frame.
+    var t = 0;
+    function frame() {
+      t += 1;
+      var on = (t % 2) === 0;
+      if (WRITE_PER_ELEMENT) {
+        var colour = on ? '#c04a4a' : '#2a4a6a';
+        for (var j = 0; j < tiles.length; j++) tiles[j].style.background = colour;
+      } else {
+        if (on) root.classList.add('hot');
+        else root.classList.remove('hot');
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

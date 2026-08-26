@@ -1,0 +1,18 @@
+{
+  "title": "Reordering a list by transform vs by moving the nodes",
+  "variable": "per-row transform vs removeChild/appendChild reorder",
+  "hypothesis": "Layout",
+  "status": "DIRECT",
+  "counts": [
+    10,
+    30,
+    60
+  ],
+  "labels": {
+    "a": "transform",
+    "b": "move nodes"
+  },
+  "claim": "Antipattern #39 from web-performance-antipatterns-50.md: 'moving nodes with re-append (remove+insert) when a transform/order swap would do.' Scrolling feeds, kill logs and rotating leaderboards all reorder rows continuously. The lab already knows transforms skip layout entirely in cohtml (animate-translate-vs-position) - the question here is whether that advantage survives when the alternative is a single cheap DOM operation rather than N expensive style writes.",
+  "result": "REFUTES the web antipattern, at least at the sizes a flow layout allows. The verdict line reads B introduces Layout work, which is true and is the effect the advice predicts - a DOM move reflows the container while a transform does not. But the Layout it introduces is tiny and A pays more everywhere else. Absolutes at 60 rows: Layout A absent / B 0.039ms, Styling A 0.062 / B 0.043, Script A 0.096 / B 0.078, UpdateNodeTransforms A 0.024 / B absent. The main-thread frame roll-up Coherent_Advance comes out A 0.144ms against B 0.120ms, so the DOM move is the CHEAPER technique overall - the reflow it triggers costs less than the 60 per-element transform writes it avoids. IMPORTANT LIMIT: counts stop at 60 because the rows must be in normal flow for a DOM move to mean anything, and 60 rows at 17px is what fits on screen. One appendChild reflowing 60 rows is cheap; the balance could invert for a much longer list, and this row does not test that.",
+  "notes": "Applicability gate: DIRECT. Rule 1: one variable, how the visible order is rotated. Rule 2: identical DOM element count and identical row geometry. Rule 3: identical JS apart from the single MOVE_NODES constant; both pages define both paths. Rule 4: no text, no assets. Rule 5 CONSTRAINT ON COUNTS: the rows must be in normal flow for a DOM move to change anything, so they stack vertically at 17px per row. Counts are therefore 10/30/60 rather than the lab's usual 30/100/300 - at 60 rows the list is 1020px tall, which is the most that fits inside 1080 with every row visible. Rule 6: the reorder IS the case and replaces the shared damage driver; both variants rotate by exactly one slot per frame. Rule 7: the slot mapping derives from the frame counter and the row index. Rule 8: counts 10/30/60. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Layout for B, since a DOM move reflows the flow container, against a transform path that should skip layout entirely. THE TENSION WORTH WATCHING: A does N style writes and one cheap layout; B does ONE DOM operation and a full reflow. Batch 3 established that per-element writes are cheaper than they look, so this is not the foregone conclusion the web framing suggests. APPEARANCE NOTE: both variants show the same rows in the same rotating order; in A a row keeps its identity as it moves, in B the node itself relocates."
+}

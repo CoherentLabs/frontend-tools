@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .bar { position: absolute; height: 20px; background: #3a7ab0; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // Both variants write a width and then read it back. A reads the value it
+    // already knows from a JS variable; B asks getComputedStyle for it. Both
+    // pages carry both paths so the scripts stay byte-identical apart from this
+    // one constant.
+    var POLL_COMPUTED = false;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var root = document.getElementById('root');
+    var bars = [];
+    var known = [];
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'bar';
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      el.style.width = '88px';
+      root.appendChild(el);
+      bars.push(el);
+      known.push(88);
+    }
+
+    // Accumulated so neither variant's read can be optimised away.
+    var sink = 0;
+
+    var t = 0;
+    function frame() {
+      t += 1;
+      for (var j = 0; j < bars.length; j++) {
+        var width = 40 + ((t + j) % 48);
+        bars[j].style.width = width + 'px';
+        known[j] = width;
+      }
+      for (var k = 0; k < bars.length; k++) {
+        sink += POLL_COMPUTED ? parseFloat(getComputedStyle(bars[k]).width) : known[k];
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

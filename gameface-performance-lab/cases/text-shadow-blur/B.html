@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .label {
+    position: absolute;
+    width: 300px;
+    height: 28px;
+    color: #e8e8f0;
+    font-size: 20px;
+    text-shadow: 0 2px 4px #000;
+  }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // URLSearchParams is not available in cohtml, so the count comes off
+    // location.search by hand.
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 30;
+
+    var root = document.getElementById('root');
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'label';
+      // Fixed positions and fixed text: two runs of this page do identical work.
+      el.style.left = (40 + (i % 6) * 310) + 'px';
+      el.style.top = (40 + Math.floor(i / 6) * 44) + 'px';
+      el.textContent = 'Player Nameplate ' + (1000 + i);
+      root.appendChild(el);
+    }
+
+    // The damage driver (AUTHORING.md rule 6). A page that holds perfectly
+    // still does no paint or GPU work at all in Gameface, so the trace window
+    // would measure nothing. This nudge forces a real re-render every frame and
+    // costs the same in both variants, so it cancels in the ratio.
+    var t = 0;
+    function frame() {
+      t += 1;
+      root.style.transform = 'translateX(' + (t % 3) + 'px)';
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

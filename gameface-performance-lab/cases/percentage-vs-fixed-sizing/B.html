@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .cell { position: absolute; width: 88px; height: 64px; }
+  .lvl { width: 100%; height: 100%; }
+  .tile { width: 100%; height: 100%; background: #3a7a5a; border-radius: 6px; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // A sizes the whole chain in fixed px; B sizes it in percentages that
+    // resolve to exactly the same pixels. The only difference between the two
+    // pages is the .lvl and .tile rules in the stylesheet above.
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68, CHAIN = 4;
+
+    var root = document.getElementById('root');
+    for (var i = 0; i < COUNT; i++) {
+      var cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      cell.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+
+      var host = cell;
+      for (var d = 0; d < CHAIN; d++) {
+        var lvl = document.createElement('div');
+        lvl.className = 'lvl';
+        host.appendChild(lvl);
+        host = lvl;
+      }
+
+      var tile = document.createElement('div');
+      tile.className = 'tile';
+      host.appendChild(tile);
+      root.appendChild(cell);
+    }
+
+    var t = 0;
+    function frame() {
+      t += 1;
+      root.style.transform = 'translateX(' + (t % 3) + 'px)';
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

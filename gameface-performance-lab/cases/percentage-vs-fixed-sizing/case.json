@@ -1,0 +1,18 @@
+{
+  "title": "Percentage sizing chain vs fixed px, identical result",
+  "variable": "percentage sizing vs fixed px in a 5-level chain",
+  "hypothesis": "Layout",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "fixed px",
+    "b": "percentage"
+  },
+  "claim": "Antipattern #6 from web-performance-antipatterns-50.md: 'percentage/auto sizing chains that make every parent resize cascade into children.' Percentage sizing is the default habit for resolution-independent HUDs, and Gameface RAG 07-performance.md warns hard about auto-sized flex children specifically ('Define Explicit flex-basis on Every Flex Item'). This case separates the two ideas: it tests percentages that RESOLVE against a fixed parent, with no auto-sizing anywhere, so a null here would mean the RAG warning is about auto-sizing rather than about relative units.",
+  "result": "NOT CONFIRMED. No reliable difference at 30, 100 or 300 on any phase. Percentage sizing that resolves against a fixed parent costs nothing per frame against the equivalent px values. This narrows the RAG 07-performance.md warning usefully: the documented Yoga cliff is about AUTO-sized flex children, not about relative units, and this row shows relative units alone are not the problem.",
+  "notes": "Applicability gate: DIRECT. width/height accept both px and % per the feature inventory (supportedUnits includes '%'). Rule 1: one variable, the unit the chain is sized in. Rule 2: identical DOM - same 5-level chain, same node count, same classes; only the two stylesheet rules differ. Because the outermost cell is a fixed 88x64, B's percentages resolve to exactly A's pixels, so the two variants are pixel-identical. Rule 3: identical JS, byte-for-byte. Rule 4: no text, no assets. Rule 5: 300 chains occupy 1852x1032 inside 1920x1080. Rule 6: static tree plus the shared root-nudge damage driver. Rule 7: no randomness. Rule 8: counts 30/100/300 chains. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Layout. SCOPE NOTE: this deliberately does NOT test the cascade under a resizing parent, because making the parent resize would change B's rendered geometry while leaving A's fixed, breaking rule 2. The steady-state question - does resolving a percentage cost more per frame than a px - is the one this row answers."
+}

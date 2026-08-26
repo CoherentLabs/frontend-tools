@@ -1,0 +1,18 @@
+{
+  "title": "Updating the one changed row vs rebuilding the whole list",
+  "variable": "targeted row update vs full list rebuild",
+  "hypothesis": "Styles",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "update one row",
+    "b": "rebuild all"
+  },
+  "claim": "Antipattern #36 from web-performance-antipatterns-50.md: 'rebuilding whole lists on data change instead of updating changed rows (no keying/diffing).' This is the single most common shape in data-driven game UI - a scoreboard, inventory or kill feed where one entry changed and the render function redraws all of them. It is also the case that decides whether a diffing layer is worth its complexity in Gameface, so the ratio here is a build-or-skip input, not just a warning.",
+  "result": "CONFIRMED, and it is the largest ratio measured anywhere in the lab: Styles 13.17x / 26.82x / 81.88x, with Script 3.93x / 8.65x / 23.31x and Layout 2.07x / 2.94x / 4.12x. Absolutes at 300 rows: Styling 0.017ms -> 1.392ms, Script 0.081ms -> 1.888ms, Layout 0.209ms -> 0.861ms, so a full rebuild costs roughly 4ms per frame against about 0.3ms for the targeted update. The ratio grows faster than linearly because A does a fixed amount of work regardless of list length while B scales with it. This is the strongest argument the lab has produced for keyed/diffing rendering in Gameface: for a 300-row list where one row changed, redrawing everything costs about 80x the styling work of touching the one row that moved.",
+  "notes": "Applicability gate: DIRECT. Rule 1: one variable, whether the render touches the changed row or all rows. Rule 2: identical DOM at the end of every frame - same COUNT rows, same class, same positions, same text - so the comparison is purely about the work done to get there. Rule 3: identical JS apart from the single REBUILD_ALL constant; both pages define both paths, share makeRow, and mutate the values array identically. Rule 4: identical text - both variants render the same numbers in the same slots on the same frames. Rule 5: 300 rows occupy 1852x1032 inside 1920x1080. Rule 6: the data change IS the case and replaces the shared damage driver; exactly one value changes per frame in both variants, so the underlying 'data' churn is held constant and only the render strategy varies. Rule 7: the changed index and its value derive from the frame counter. Rule 8: counts 30/100/300 - the count matters because A's work is constant while B's scales with it, so the ratio should grow roughly linearly. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Styles, since every rebuilt row must have its style resolved from scratch, with Script and Layout following. RELATED: pool-vs-create asks a neighbouring question - reuse versus recreate when ALL elements refresh. This one holds the data change at exactly one row, which is the situation a diffing layer actually exists to exploit."
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile {
+    position: absolute;
+    width: 88px;
+    height: 64px;
+    border-radius: 6px;
+    background: #2a6a4a;
+  }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // A inserts the whole batch through one DocumentFragment; B appends each
+    // node to the live tree in a loop. Both pages carry both paths so the
+    // scripts stay byte-identical apart from this one constant.
+    var USE_FRAGMENT = false;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var root = document.getElementById('root');
+
+    function makeTile(i) {
+      var el = document.createElement('div');
+      el.className = 'tile';
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      return el;
+    }
+
+    // The insertion IS the case, so it replaces the shared damage driver
+    // (AUTHORING.md rule 6). The whole list is rebuilt every frame at a fixed
+    // rate from load, identically in both variants.
+    function frame() {
+      while (root.firstChild) root.removeChild(root.firstChild);
+
+      if (USE_FRAGMENT) {
+        var fragment = document.createDocumentFragment();
+        for (var i = 0; i < COUNT; i++) fragment.appendChild(makeTile(i));
+        root.appendChild(fragment);
+      } else {
+        for (var j = 0; j < COUNT; j++) root.appendChild(makeTile(j));
+      }
+
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "title": "One animation on the parent vs one animation per element",
+  "variable": "1 CSS animation vs N identical CSS animations",
+  "hypothesis": "Styles",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "one animation",
+    "b": "N animations"
+  },
+  "claim": "Antipattern #50 from web-performance-antipatterns-50.md: 'running hundreds of simultaneous CSS animations/transitions instead of animating a parent or using a single driver.' Idle-state game UI is full of this - every card breathing, every icon pulsing, every notification shimmering, each with its own animation declaration. The lab's corrected model says cost tracks how many elements are touched per frame, which predicts N animations should cost roughly N times one; this case checks whether the engine's animation machinery follows that rule or amortises it.",
+  "result": "CONFIRMED for styling, and it exposes a genuine trade-off the antipattern does not mention. Styles 2.00x / 3.96x / 6.77x - N animations cost roughly proportionally more styling work than one, exactly as the corrected model predicts. But GPU runs the OTHER way at low counts: 0.20x at 30 and 0.48x at 100. Absolutes make it clear. At 30 tiles A costs GPU 0.560ms and Styles 0.041ms; B costs GPU 0.110ms and Styles 0.082ms. Animating the parent moves a full-screen container, so it dirties the entire viewport every frame - the same effect damage-area-small-vs-large measured at 10.86x - while animating each tile dirties only 30 small rectangles. The two costs cross over as the count rises: by 300 the GPU advantage has gone (0.90x, inside the guardrail) and styling dominates at 6.77x, and the main-thread frame envelope finally favours A (0.137ms vs 0.173ms). SO THE ADVICE IS CONDITIONAL: animate the parent when the animated set is large, and prefer per-element animation when the set is small and the parent covers far more screen than its children do.",
+  "notes": "Applicability gate: DIRECT. animation is listed as fully supported, and the keyframes here use plain translateX values - no calc() and no custom properties, both of which Gameface rejects inside @keyframes. Rule 1: one variable, whether the animation is declared once on the container or once per tile. Rule 2: identical DOM and identical CSS - both pages carry the same @keyframes and the same .animated rule, so neither gains a declaration the other lacks; only which elements match it differs. Rule 3: identical JS apart from the single ANIMATE_EACH constant. Rule 4: no text, no assets. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080, and the 24px drift keeps them on-screen. Rule 6: the animation IS the churn - it changes a transform on every frame in both variants - so no separate damage driver is needed and none is used. This is the only case in the lab where the engine, rather than the page's script, drives the per-frame change. Rule 7: no randomness; the animation is time-driven and identical in both. Rule 8: counts 30/100/300 animated elements. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Styles, with Script expected to stay flat since neither variant runs any per-frame JS at all. APPEARANCE NOTE: both variants drift every tile the same 24px at the same rate. In A the container moves and the tiles ride along; in B each tile moves itself. The rendered result is equivalent."
+}

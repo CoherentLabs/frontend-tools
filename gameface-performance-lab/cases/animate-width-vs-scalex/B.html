@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .bar {
+    position: absolute;
+    width: 88px;
+    height: 16px;
+    background: #3aa06b;
+    transform-origin: left center;
+  }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // A animates the fill with a transform; B animates it with width.
+    // Both pages carry both paths so the scripts stay byte-identical apart
+    // from this one constant.
+    var USE_TRANSFORM = false;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68, BAR_W = 88;
+
+    var root = document.getElementById('root');
+    var bars = [];
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'bar';
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      root.appendChild(el);
+      bars.push(el);
+    }
+
+    // The churn is the subject of this case, so it replaces the shared damage
+    // driver (AUTHORING.md rule 6). Fixed rate from load, identical in both.
+    var t = 0;
+    function frame() {
+      t += 1;
+      for (var j = 0; j < bars.length; j++) {
+        var v = 0.25 + 0.75 * (((t + j * 3) % 60) / 60);
+        if (USE_TRANSFORM) {
+          bars[j].style.transform = 'scaleX(' + v + ')';
+        } else {
+          bars[j].style.width = (BAR_W * v) + 'px';
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

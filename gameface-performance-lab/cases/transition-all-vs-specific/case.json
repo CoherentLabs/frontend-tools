@@ -1,0 +1,18 @@
+{
+  "title": "transition: all vs transition: transform",
+  "variable": "transition: all vs naming the one property that changes",
+  "hypothesis": "Styles",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "transform only",
+    "b": "all"
+  },
+  "claim": "Antipattern #49 from web-performance-antipatterns-50.md: 'transition: all - accidentally animating expensive properties that were never meant to move.' This is the case the lab flagged as most likely to be WORSE in Gameface than on the web, from a probe made while authoring batch 2: in cohtml, transition: all expands to more than 45 properties, and the list includes filter, backdrop-filter, box-shadow, text-shadow, clip-path, mask-position, mask-size and coh-enable-backdrop-filter - nearly every property this lab has already shown to be expensive. A developer writing 'all' to save typing is enrolling every one of them.",
+  "result": "NOT CONFIRMED - and it refutes the lab own prediction, which was that this would be the case most likely to be WORSE in Gameface than on the web. No reliable difference at 30, 100 or 300 elements on any phase. Absolutes at 300: Styles 0.549ms -> 0.567ms, Script 0.069 -> 0.067, frame 0.248 -> 0.284. The reasoning behind the prediction was sound as far as it went - transition: all really does expand to more than 45 properties in cohtml, including filter, backdrop-filter, box-shadow and clip-path, which was read back from the Player directly. What the prediction got wrong is assuming the engine pays per DECLARED property. It evidently pays per property that actually has a transition in flight, and since only transform ever changes here, the other 44 cost nothing. PRACTICAL READING: transition: all is not a per-frame performance problem in Gameface. It remains a correctness and maintenance hazard - it will animate a property you did not mean to move the moment something else about the element changes - but that is a different argument, and this lab found no evidence for the performance one.",
+  "notes": "Applicability gate: DIRECT. transition and transition-property are both listed as fully supported, and the expansion of 'all' was read back from the Player directly - setting transition: all 1s and reading el.style.transition returned a 45-plus-property list. Rule 1: one variable, the transition property list. Rule 2: identical DOM, identical geometry, identical rendered result - only transform ever changes in EITHER variant, so B animates nothing extra in practice and any difference is the cost of watching the other 44 properties rather than of moving them. Rule 3: identical JS, byte-for-byte. Rule 4: no text, no assets. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080; the 20px travel keeps them on-screen. Rule 6: the transition IS the case and replaces the shared damage driver. The flip interval is 10 frames and the transition lasts 0.3s, which at this Player's ~32fps is also about 10 frames - so a transition is always in flight and the trace never catches the page at rest. That matters: a low duty cycle here would have hidden the effect in the median, the way it would have in mount-unmount-vs-visibility. Rule 7: the flip derives from the frame counter. Rule 8: counts 30/100/300. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Styles - the engine has to evaluate transition state per property per element per frame, and B has 45 times as many properties to consider."
+}

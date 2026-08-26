@@ -1,0 +1,18 @@
+{
+  "title": "Animating a blur radius vs holding it steady",
+  "variable": "per-frame blur radius change vs constant blur",
+  "hypothesis": "GPU",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "constant",
+    "b": "animated"
+  },
+  "claim": "Antipattern #13 from web-performance-antipatterns-50.md: 'filter effects on large or frequently-changing elements - forces offscreen surface + filter pass per frame.' filter-grayscale already established what a filter costs against no filter at all. This case isolates the second half of the claim: whether CHANGING the filter each frame costs more than a filter that simply exists, which is what decides whether an animated blur is affordable.",
+  "result": "CONFIRMED, but on a different axis than hypothesized. Expected GPU; GPU stayed flat (0.98x/1.22x/1.01x) and the cost landed in Styles: 2.29x / 5.32x / 11.81x. CORRECTED EXPLANATION - an earlier version of this note claimed the cost was the per-element style WRITE and that the property did not matter. style-write-scope was built to test that and refuted it. What this row actually shows is invalidation COUNT: A changes nothing per element (Styles 0.052ms at 300, essentially idle) while B invalidates all 300 (0.614ms). The jump from invalidating nothing to invalidating everything is the 11.81x. The property does also matter, by about 2x - style-write-scope invalidates the same 300 elements by writing a flat background and reaches only 0.293ms, against 0.614ms here for filter. So: invalidating N elements per frame is the dominant cost, and an expensive visual property costs roughly twice a cheap one on top of that.",
+  "notes": "Applicability gate: DIRECT. filter is supported (css/partial.json rejects only the 'initial' keyword) and blur() is a supported css-function. Rule 1: one variable, whether the blur radius is rewritten each frame. Rule 2: identical DOM and identical CSS - both variants declare filter: blur(4px), so both pay for having a filter at all. Rule 3: identical JS apart from the single ANIMATE_FILTER constant. Rule 4: no text, no assets. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080. Rule 6: the shared root-nudge damage driver runs in both, so both variants genuinely re-render every frame; B additionally mutates the radius. Rule 7: the radius derives from the frame counter. Rule 8: counts 30/100/300. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is GPU - if the engine caches a filtered surface, changing the radius should invalidate that cache and show up here. A Script-dominant result would instead mean the cost is the style write, not the filter."
+}

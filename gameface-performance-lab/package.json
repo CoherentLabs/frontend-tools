@@ -1,0 +1,18 @@
+{
+  "name": "gameface-performance-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A/B performance cases measured in the Coherent Gameface Player.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "run": "node run.js",
+    "report": "node tools/build-report.js"
+  },
+  "dependencies": {
+    "chrome-remote-interface": "^0.34.0"
+  }
+}

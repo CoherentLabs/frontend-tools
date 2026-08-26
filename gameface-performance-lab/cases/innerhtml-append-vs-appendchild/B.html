@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .item { position: absolute; width: 88px; height: 64px; border-radius: 6px; background: #2a6a4a; }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // A builds the list with the DOM API; B builds it by repeatedly appending
+    // to innerHTML, which re-serialises and re-parses everything already there.
+    // Both pages carry both paths so the scripts stay byte-identical apart from
+    // this one constant.
+    var USE_INNERHTML = true;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 30;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var root = document.getElementById('root');
+
+    function slotLeft(i) { return 16 + (i % COLS) * CELL_W; }
+    function slotTop(i) { return 16 + Math.floor(i / COLS) * CELL_H; }
+
+    // The rebuild IS the case, so it replaces the shared damage driver. Both
+    // variants end each frame with the same COUNT items at the same positions.
+    var t = 0;
+    function frame() {
+      t += 1;
+      while (root.firstChild) root.removeChild(root.firstChild);
+
+      if (USE_INNERHTML) {
+        for (var i = 0; i < COUNT; i++) {
+          root.innerHTML += '<div class="item" style="left:' + slotLeft(i) + 'px;top:' + slotTop(i) + 'px"></div>';
+        }
+      } else {
+        for (var j = 0; j < COUNT; j++) {
+          var el = document.createElement('div');
+          el.className = 'item';
+          el.style.left = slotLeft(j) + 'px';
+          el.style.top = slotTop(j) + 'px';
+          root.appendChild(el);
+        }
+      }
+
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

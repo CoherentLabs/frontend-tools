@@ -1,0 +1,18 @@
+{
+  "title": "Mounting many offscreen nodes vs mounting only what is visible",
+  "variable": "offscreen nodes mounted vs absent",
+  "hypothesis": "Layout",
+  "status": "DIRECT",
+  "counts": [
+    300,
+    1000,
+    3000
+  ],
+  "labels": {
+    "a": "visible only",
+    "b": "+ offscreen"
+  },
+  "claim": "Antipattern #5 from web-performance-antipatterns-50.md: 'huge DOM node counts (thousands of elements mounted at once, most off-screen)'. This is the case behind every virtual-list decision: if cohtml skips work for nodes it will not draw, mounting a whole inventory or scoreboard is cheap and virtualisation is wasted effort; if it does not, the node count itself is the budget. AUTHORING.md rule 5 already warns that the engine may skip offscreen work - this measures how much.",
+  "result": "CONFIRMED, and one of the most actionable results in the lab: UpdateNodeTransforms 2.90x / 4.84x / 10.95x with Styles 1.49x / 2.11x / 4.60x, against a visible set held constant at 100 tiles. Mounting 3000 nodes parked off-screen costs eleven times the scene-graph walk of not mounting them, even though they are never drawn - GPU and Paint stay flat throughout, which confirms the engine skips the DRAWING but not the walking or the styling. Virtualising a long list earns real time in Gameface, and this is the row to cite for it.",
+  "notes": "Applicability gate: DIRECT. Rule 1: one variable, whether the offscreen nodes exist. Rule 2: the visible set is byte-identical in both variants - 100 tiles at identical positions - so no visible-rendering difference can leak in. Rule 3: identical JS apart from the single MOUNT_OFFSCREEN constant. Rule 4: no text, no assets. Rule 5 DELIBERATE EXCEPTION: this case exists precisely to test the rule's own assumption, so B's extra tiles are parked at top 2000px+, far below the 1080-tall viewport. The tested VISIBLE set remains fully on-screen and unoccluded in both variants. Rule 6: static tree plus the shared root-nudge damage driver, identical in both. Rule 7: positions derive from the loop index only. Rule 8: counts are the number of OFFSCREEN extras (300/1000/3000), not the total node count - the visible 100 are constant. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is Layout, since offscreen nodes should still be laid out even if never painted; a GPU or Paint difference would mean the engine is doing drawing work for pixels nobody sees, which would be the more alarming result."
+}

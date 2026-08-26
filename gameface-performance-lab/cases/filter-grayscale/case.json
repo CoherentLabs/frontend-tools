@@ -1,0 +1,18 @@
+{
+  "title": "filter:grayscale vs a pre-desaturated colour",
+  "variable": "filter:grayscale(1) vs an already-grey colour",
+  "hypothesis": "GPU",
+  "status": "DIRECT",
+  "counts": [
+    30,
+    100,
+    300
+  ],
+  "labels": {
+    "a": "grey colour",
+    "b": "filter"
+  },
+  "claim": "'Grey out the disabled items with filter:grayscale' is common web advice and a common game-UI pattern (disabled abilities, locked items). This case decides whether it should be a filter at all, or whether the desaturated colour belongs in the class.",
+  "result": "CONFIRMED, modestly and only at scale: nothing at 30, Paint 1.15x at 100, then Paint 1.50x with Styles 1.18x at 300, and RecordRendering rising throughout (1.40x / 1.67x / 1.79x). Using filter:grayscale to grey out disabled items costs measurably more than putting the desaturated colour in the class, but only once there are on the order of a hundred of them. For a handful of disabled buttons it is free.",
+  "notes": "Applicability gate: DIRECT. filter is supported in cohtml (feature inventory: css/partial.json rejects only the 'initial' keyword) and grayscale() is listed as a supported css-function. Rule 1: one variable, the technique used to render a grey tile. Rule 2: identical DOM, identical geometry. Rule 3: identical JS, byte-for-byte. Rule 4: no text, no assets. Rule 5: 300 tiles occupy 1852x1032 inside 1920x1080. Rule 6: shared root-nudge damage driver. Rule 7: no randomness. Rule 8: counts 30/100/300. Rule 9: plain HTML/CSS/JS. Rule 10: expected axis is GPU - a filter is a post-process pass over the element's rendered output, a flat colour is not. APPEARANCE NOTE: A uses #717171, the Rec.709 luminance of B's #b4652a (0.2126*180 + 0.7152*101 + 0.0722*42 = 113.5), so the two variants render near-identical grey tiles. They are not guaranteed bit-identical, since the engine's grayscale matrix is its own; the point is that the rendered pixel area and coverage match, which is what the fill comparison depends on."
+}

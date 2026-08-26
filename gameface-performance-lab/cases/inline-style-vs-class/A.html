@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile { position: absolute; width: 88px; height: 64px; }
+  /* The shared look, declared once and matched by every tile. */
+  .shared { background: #2a4a6a; border-radius: 6px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6); }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // A gives every tile the same class; B gives every tile the same
+    // declarations inline. Both pages carry both paths so the scripts stay
+    // byte-identical apart from this one constant.
+    var USE_INLINE = false;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+
+    var root = document.getElementById('root');
+    for (var i = 0; i < COUNT; i++) {
+      var el = document.createElement('div');
+      el.className = 'tile';
+      if (USE_INLINE) {
+        el.style.background = '#2a4a6a';
+        el.style.borderRadius = '6px';
+        el.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.6)';
+      } else {
+        el.className = 'tile shared';
+      }
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+      root.appendChild(el);
+    }
+
+    var t = 0;
+    function frame() {
+      t += 1;
+      root.style.transform = 'translateX(' + (t % 3) + 'px)';
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>
