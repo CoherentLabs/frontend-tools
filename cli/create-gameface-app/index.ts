@@ -157,7 +157,7 @@ async function main() {
     await emitter.clone(dest)
     
     if (framework === 'gameface-ui') {
-      for (const dir of ['docs', '.github']) {
+      for (const dir of ['docs', '.github', 'src/recipes']) {
         rmSync(join(dest, dir), { recursive: true, force: true })
       }
     }
