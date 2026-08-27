@@ -6,7 +6,7 @@ import path from 'node:path'
 import { exec } from 'node:child_process'
 import { parseArgs, promisify } from 'node:util'
 import { printHelp } from './help.js';
-import { compareVersions, findComponentId, touchedDirs, CHANGELOG_URL, MAX_LISTED_COMPONENTS, findInstalledComponent, plural, matchesHash } from './helpers.js';
+import { compareVersions, findComponentId, touchedDirs, CHANGELOG_URL, SETUP_URL, MAX_LISTED_COMPONENTS, findInstalledComponent, missingSetupSteps, plural, matchesHash } from './helpers.js';
 import { COMMANDS, type Boot, type Command, type Context, type Decision, type GameFacePackageJson, type PackageJsonInfo, type Registry } from './types.js';
 
 const execAsync = promisify(exec)
@@ -68,7 +68,6 @@ function getPackageJson(): PackageJsonInfo {
   const raw = fs.readFileSync(pkgPath, 'utf-8')
   const packageJson: GameFacePackageJson = JSON.parse(raw);
   const { indent } = detectIndent(raw);
-  let isFirstRun = false;
 
   const hasSolid = packageJson.dependencies?.['solid-js'] ?? packageJson.devDependencies?.['solid-js'];
   if (!hasSolid) {
@@ -79,7 +78,6 @@ function getPackageJson(): PackageJsonInfo {
 
   if (!packageJson['gameface-ui-components']) {
     packageJson['gameface-ui-components'] = {};
-    isFirstRun = true;
   }
 
   return { 
@@ -87,7 +85,7 @@ function getPackageJson(): PackageJsonInfo {
     packageJson, 
     installedComponents: packageJson['gameface-ui-components'], 
     indent,
-    isFirstRun 
+    missingSetup: missingSetupSteps(root)
   }
 }
 
@@ -382,9 +380,13 @@ async function handleInstall(ctx: Context) {
       return 1;
     }
 
-    if (pkg.isFirstRun) {
+    if (pkg.missingSetup.length > 0) {
       note(
-        `Add the @components alias to tsconfig.json and vite.config\nPoint @assets/scss/variables at your style tokens`,
+        [
+          `This project is missing ${pkg.missingSetup.join(' and ')}.`,
+          'Components will not resolve until that is in place:',
+          SETUP_URL,
+        ].join('\n'),
         'Setup required'
       );
     }
@@ -400,7 +402,7 @@ async function handleInstall(ctx: Context) {
 async function handleTrack(ctx: Context) {
   const {
     entries, 
-    pkg: {isFirstRun, installedComponents, packageJson, pkgPath, indent },
+    pkg: { installedComponents, packageJson, pkgPath, indent },
     yes,
     verbose
   } = ctx;

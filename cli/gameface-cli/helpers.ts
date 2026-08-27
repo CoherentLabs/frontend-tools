@@ -6,6 +6,9 @@ import crypto from 'node:crypto';
 /** Where users go to see what shipped in a release. */
 export const CHANGELOG_URL = 'https://gameface-ui.coherent-labs.com/changelog/';
 
+/** The one-time setup guide for projects that are not Gameface UI ones. */
+export const SETUP_URL = 'https://frontend-tools.coherent-labs.com/gameface-cli/getting-started/existing-projects/#setup';
+
 /** How many available component names `status` lists before collapsing to a count. */
 export const MAX_LISTED_COMPONENTS = 5;
 
@@ -59,6 +62,39 @@ export function matchesHash(filePath: string, expected: string): boolean {
 
 export function findInstalledComponent(installedComponents: Record<string, string>, name: string): string | undefined {
   return Object.keys(installedComponents).find(n => n.toLowerCase() === name.toLowerCase());
+}
+
+const SETUP_STEPS = [
+  {
+    label: 'style variables at src/assets/scss/_variables.scss',
+    ok: (root: string) => fs.existsSync(path.join(root, 'src/assets/scss/_variables.scss')),
+  },
+  {
+    label: 'the @components alias in tsconfig.json',
+    ok: (root: string) => tsconfigsContain(root, '@components'),
+  },
+];
+
+/**
+ * Greps every tsconfig in the project root. Configs are often split across
+ * tsconfig.app.json and tsconfig.node.json via `references`, and they allow
+ * comments, so this reads them as text rather than parsing one file as JSON.
+ */
+function tsconfigsContain(root: string, needle: string): boolean {
+  return fs.readdirSync(root)
+    .filter(f => f.startsWith('tsconfig') && f.endsWith('.json'))
+    .some(f => {
+      try {
+        return fs.readFileSync(path.join(root, f), 'utf-8').includes(needle);
+      } catch {
+        return false;
+      }
+    });
+}
+
+/** Setup steps the project has not done yet. Empty means it is ready. */
+export function missingSetupSteps(root: string): string[] {
+  return SETUP_STEPS.filter(step => !step.ok(root)).map(step => step.label);
 }
 
 /** Plural suffix for a count: 0 and 2+ get an "s", 1 does not. */

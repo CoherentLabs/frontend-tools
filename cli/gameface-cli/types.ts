@@ -10,7 +10,8 @@ export interface PackageJsonInfo {
   packageJson: GameFacePackageJson;
   installedComponents: Record<string, string>;
   indent: string;
-  isFirstRun: boolean;
+  /** Setup steps the project still needs; empty in a wired-up project. */
+  missingSetup: string[];
 }
 
 export interface RegistryEntry {

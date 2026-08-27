@@ -80,6 +80,30 @@ With no arguments it sweeps everything tracked in your `package.json`, updates w
 
 The command updates files related just to Gameface UI components in your project. Your own code, your views, and your config files (`tsconfig.json`, `vite.config`, `package.json` scripts) are never touched. Library changes that need a config edit are called out in the changelog and applied by hand.
 
+### `track`
+
+Registers Gameface UI components that are already in your project but were never recorded under `gameface-ui-components`. Without this, `status` and `update` cannot see them.
+
+```bash
+npx gameface-cli track
+```
+
+It compares every file in your project against the registry and sorts each component into one of three outcomes:
+
+| Result | What it means | What gets recorded |
+| --- | --- | --- |
+| Up to date | Every file matches the published version | its real version |
+| Behind | One or more files are missing or different | `0.0.0`, so `update` picks it up |
+| Not installed | None of its files are present | nothing |
+
+Anything recorded as `0.0.0` counts as out of date, so the next `update` restores it to the published version.
+
+**`track` never writes component files.** It only adds entries to `package.json`, and it never modifies or removes entries that are already there - so it is safe to re-run, and doubles as a repair after a bad merge drops keys from your `package.json`. When it finishes you can either record the versions and stop, or record and run the update immediately.
+
+:::note[When you need it]
+Projects scaffolded by a recent `create-gameface-app` already have their components recorded. You need `track` if your project predates the CLI (Gameface UI v3.1.0 or earlier), if you copied components in by hand, or if the version recording failed while scaffolding.
+:::
+
 ### `status`
 
 Shows what you have installed and what has moved on without you.
@@ -109,8 +133,36 @@ npx gameface-cli status
 
 | Flag | Alias | Description |
 | --- | --- | --- |
-| `--yes` | `-y` | Answer every confirmation prompt with yes. Useful in CI. |
+| `--yes` | `-y` | Answer every confirmation prompt with yes. |
 | `--help` | `-h` | Print usage information and exit. |
+
+Two more flags apply to specific commands only: [`--verbose`](#verbose) on `add`, `update` and `track`, and [`--hard`](#hard) on `update`.
+
+### `--verbose`
+
+Lists the individual files behind each result instead of just the counts.
+
+On `add` and `update` it prints every file written rather than the directories they live in. On `track` it names the files that are missing or differ under each component, and reports the components it skipped as not installed.
+
+```bash
+npx gameface-cli track --verbose
+npx gameface-cli update --verbose
+```
+
+### `--hard`
+
+Reinstalls components even when their recorded version already matches the registry, which `update` would normally skip.
+
+```bash
+npx gameface-cli update Dropdown --hard   # restore a component you edited
+npx gameface-cli update --hard            # refresh everything, shared files included
+```
+
+Use it to restore a stock component after editing it in place, or to refresh the shared files that components depend on. Those shared files carry no version of their own, so nothing else can tell that they have drifted.
+
+:::caution
+`--hard` overwrites local edits without asking, and with no arguments it reinstalls everything you have. Commit your work first.
+:::
 
 ## What it changes in your project
 
