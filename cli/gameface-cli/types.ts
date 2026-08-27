@@ -35,13 +35,15 @@ export type Decision =
   | { status: 'skip';    name: string }
   | { status: 'error';   name: string }
 
-export const COMMANDS = ['add', 'update', 'status'] as const;
+export const COMMANDS = ['add', 'update', 'status', 'track'] as const;
 export type Command = typeof COMMANDS[number];
 
 export type Context = {
   command: Command;
   names: string[];
   yes: boolean;
+  hard: boolean;
+  verbose: boolean;
   registry: Registry;
   entries: Registry['entries'];
   pkg: PackageJsonInfo;
