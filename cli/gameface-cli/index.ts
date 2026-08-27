@@ -194,7 +194,8 @@ async function resolve(ctx: Context, rootIds: string[]) {
   const { 
     entries, 
     pkg: { installedComponents, packageJson, pkgPath, indent }, 
-    registry 
+    registry,
+    verbose
   } = ctx;
 
   const componentsToCopy = new Set<string>();
@@ -282,7 +283,16 @@ async function resolve(ctx: Context, rootIds: string[]) {
   const touched = touchedDirs(
     [...componentsToCopy].flatMap(id => entries[id].files.map(f => f.path))
   );
-  log.message(`Modified: ${touched.join(', ')}`);
+  if (verbose) {
+    // Display all files
+    const written = [...componentsToCopy]
+      .flatMap(id => entries[id].files.map(f => f.path))
+      .sort();
+    log.message(['Modified:', ...written.map(p => `  ${p}`)].join('\n'));
+  } else {
+    // Display only the top-level directories that were modified, for a concise summary
+    log.message(`Modified: ${touched.join(', ')}`);
+  }
 
   if (npmFailed.length > 0) {
     log.warn(
@@ -428,8 +438,10 @@ async function handleTrack(ctx: Context) {
 
     // skip, not installed
     if (info.missing.length === all) {
-      if (data.kind === 'recipe') return;
-      return log.info(`${data.name} is not installed, skipping.`);
+      if (verbose && data.kind !== 'recipe') {
+        log.info(`${data.name} is not installed, skipping.`);
+      }
+      return;
     }
 
     // stale
@@ -456,7 +468,7 @@ async function handleTrack(ctx: Context) {
 
     // up to date
     installedComponents[data.name] = data.version;
-    verbose && log.info(`${data.name} is up to date (v${data.version})`);
+    verbose && log.success(`${data.name} is up to date (v${data.version})`);
     upToDate++;
   })
 
@@ -494,7 +506,7 @@ async function handleTrack(ctx: Context) {
 
   if (action === 'update') {
     return handleInstall({ ...ctx, command: 'update', names: needUpdate });
-  } 
+  }
   
   log.success(`Tracking complete. ${needUpdate.length} component${plural(needUpdate.length)} to update.`);
   outro(`${upToDate} component${plural(upToDate)} up to date.`);
