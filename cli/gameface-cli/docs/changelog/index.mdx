@@ -14,6 +14,8 @@ import { Badge } from '@astrojs/starlight/components'
 
 <Badge text="Improvement" variant="tip" size="small" /> The **Setup required** note now names the steps a project is actually missing and links the guide. It is based on the project itself rather than on whether the CLI has run before, so a Gameface UI project no longer sees it and a project that still needs setting up keeps being told.
 
+<Badge text="Improvement" variant="tip" size="small" /> `add` and `update` now write only the files that differ from the published version, instead of rewriting every file of every component they touch. Updating a project that is behind by a few files no longer produces a diff spanning its whole component tree.
+
 <Badge text="Fix" variant="danger" size="small" /> Binary files are no longer corrupted on install. Component files were decoded as UTF-8 text before being written, which damaged assets such as the icon fallback image and any font shipped with a component.
 
 ## 1.0.0

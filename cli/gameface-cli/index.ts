@@ -263,7 +263,7 @@ async function resolve(ctx: Context, rootIds: string[]) {
   if (npmDepsToInstall.size > 0) {
     const deps = Array.from(npmDepsToInstall);
     const installSpin = spinner();
-    installSpin.start(`Installing npm deps: ${deps.join(', ')}`);
+    installSpin.start(`Installing ${deps.length} npm package${plural(deps.length)}: ${deps.join(', ')}`);
 
     try {
       await execAsync(`npm i ${deps.join(' ')}`);
@@ -286,7 +286,7 @@ async function resolve(ctx: Context, rootIds: string[]) {
 
   if (libDeps.length > 0 || npmCount > 0) {
     const detail = verbose ? libDeps.map(id => `\n  ${id}`).join('') : '';
-    log.message(`+ ${libDeps.length} dependencies · ${npmCount} npm packages${detail}`);
+    log.message(`+ ${libDeps.length} dependenc${libDeps.length === 1 ? 'y' : 'ies'} · ${npmCount} npm package${plural(npmCount)}${detail}`);
   }
 
   if (writtenPaths.length === 0) return;
@@ -350,7 +350,7 @@ function handleStatus(ctx: Context) {
     const rest = names.length - shown.length;
 
     log.info(
-      `${available.length} component${available.length > 1 ? 's' : ''} available to add: ` +
+      `${available.length} component${plural(available.length)} available to add: ` +
       (rest > 0 ? `${shown.join(', ')} and ${rest} more` : shown.join(', '))
     );
     log.message(`See what's new at ${CHANGELOG_URL}`);
