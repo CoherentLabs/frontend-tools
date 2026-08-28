@@ -8,6 +8,10 @@ import { Steps, Aside, Tabs, TabItem, FileTree } from '@astrojs/starlight/compon
 
 Projects created with the **`gameface-ui` template** from [`create-gameface-app`](/create-gameface-app/getting-started) are already wired up and need nothing from this page.
 
+<Aside type="tip" title="Components already in your project?">
+If your project was created from the Gameface UI template before this CLI existed, its components are on disk but not recorded, so `status` and `update` cannot see them. Run `npx gameface-cli track` once to register them. It only writes to the `package.json` - your component files are left alone. See [`track`](/gameface-cli/getting-started/#track).
+</Aside>
+
 Every other starting point needs a one-time setup, including the plain `solid` template. `create-gameface-app` scaffolds several frameworks, and only the [Gameface UI](https://gameface-ui.coherent-labs.com/) template ships the aliases and style variables that components depend on.
 
 The CLI prints a **Setup required** note the first time it installs into a project it doesn't recognise. This page is what that note refers to.
@@ -180,5 +184,7 @@ If you need them, start from `create-gameface-app` with the `gameface-ui` templa
 | `Undefined variable` errors from SCSS | Either `_variables.scss` does not exist, `additionalData` is not injecting it, or the variable names do not match. Component styles reference specific names such as `$primaryColor`, `$secondaryColor` and `$textColor`, so your own tokens have to use those names rather than equivalents of your own choosing. |
 | `npm installation failed` | The component files were written, but installing their npm dependencies did not work. The CLI prints the exact command to run by hand. A pre-existing unresolvable dependency in your `package.json` is the usual cause, since npm resolves the whole tree on any install. |
 | `Gameface UI components require a SolidJS project` | `solid-js` is not in your `package.json`. Install it, or start from the `gameface-ui` template. |
+| `status` shows almost nothing installed, but the components are clearly there | They were never recorded under `gameface-ui-components`. Run `npx gameface-cli track` to register what is already on disk. |
+| `track` reports a component as behind that you never touched | Its files differ from the published version, which usually means they are simply from an older release. Run with `--verbose` to see exactly which files differ. |
 | Styles are missing after an update | The update replaced a stock component you had edited in place. Re-apply the change as a wrapper or through props so it lives at a path of your own, then re-run the update. |
 | A file of your own disappeared after `add` or `update` | It was at a path the registry owns. Recover it from source control and move it out of `BaseComponent/`, `Basic/`, `Complex/`, `Feedback/`, `Layout/`, `Media/`, `Utility/`, `types/` and `utils/` - anywhere else under `src/components/` is safe. |

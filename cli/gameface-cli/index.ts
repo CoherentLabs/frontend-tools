@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-import { cancel, confirm, isCancel, spinner, note, outro, log, intro } from '@clack/prompts';
+import { cancel, confirm, isCancel, spinner, note, outro, log, intro, select } from '@clack/prompts';
 import detectIndent from 'detect-indent';
 import fs from 'node:fs'
 import path from 'node:path'
 import { exec } from 'node:child_process'
 import { parseArgs, promisify } from 'node:util'
 import { printHelp } from './help.js';
-import { compareVersions, findComponentId, touchedDirs, CHANGELOG_URL, MAX_LISTED_COMPONENTS } from './helpers.js';
+import { compareVersions, findComponentId, touchedDirs, CHANGELOG_URL, SETUP_URL, MAX_LISTED_COMPONENTS, findInstalledComponent, missingSetupSteps, plural, matchesHash } from './helpers.js';
 import { COMMANDS, type Boot, type Command, type Context, type Decision, type GameFacePackageJson, type PackageJsonInfo, type Registry } from './types.js';
 
 const execAsync = promisify(exec)
@@ -68,7 +68,6 @@ function getPackageJson(): PackageJsonInfo {
   const raw = fs.readFileSync(pkgPath, 'utf-8')
   const packageJson: GameFacePackageJson = JSON.parse(raw);
   const { indent } = detectIndent(raw);
-  let isFirstRun = false;
 
   const hasSolid = packageJson.dependencies?.['solid-js'] ?? packageJson.devDependencies?.['solid-js'];
   if (!hasSolid) {
@@ -79,7 +78,6 @@ function getPackageJson(): PackageJsonInfo {
 
   if (!packageJson['gameface-ui-components']) {
     packageJson['gameface-ui-components'] = {};
-    isFirstRun = true;
   }
 
   return { 
@@ -87,7 +85,7 @@ function getPackageJson(): PackageJsonInfo {
     packageJson, 
     installedComponents: packageJson['gameface-ui-components'], 
     indent,
-    isFirstRun 
+    missingSetup: missingSetupSteps(root)
   }
 }
 
@@ -120,7 +118,7 @@ async function decideAdd(ctx: Context, name: string): Promise<Decision> {
     return { status: 'error', name };
   }
 
-  const installedName = Object.keys(installedComponents).find(n => n.toLowerCase() === name.toLowerCase());
+  const installedName = findInstalledComponent(installedComponents, name);
   // Not installed -> Add
   if (!installedName) return { status: 'install', name, id, action: 'add' };
 
@@ -158,7 +156,7 @@ async function decideUpdate(ctx: Context, name: string): Promise<Decision> {
   }
 
   // Check if the component is missing from the installed components
-  const installedName = Object.keys(installedComponents).find(n => n.toLowerCase() === name.toLowerCase());
+  const installedName = findInstalledComponent(installedComponents, name)
 
   if (!installedName) {
     if (!ctx.yes) {
@@ -176,13 +174,15 @@ async function decideUpdate(ctx: Context, name: string): Promise<Decision> {
   }
 
   // Compare versions
-  const currVer = installedComponents[installedName];
-  const remoteVer = entries[id].version;
-  const areEqual = compareVersions(currVer, remoteVer) === 0;
-
-  if (areEqual) {
-    log.info(`${name} is already installed and up to date (v${currVer}).`);
-    return { status: 'skip', name };
+  if (!ctx.hard) {
+    const currVer = installedComponents[installedName];
+    const remoteVer = entries[id].version;
+    const areEqual = compareVersions(currVer, remoteVer) === 0;
+  
+    if (areEqual) {
+      log.info(`${name} is already installed and up to date (v${currVer}).`);
+      return { status: 'skip', name };
+    }
   }
 
   return { status: 'install', name, id, action: 'update' };
@@ -192,16 +192,19 @@ async function resolve(ctx: Context, rootIds: string[]) {
   const { 
     entries, 
     pkg: { installedComponents, packageJson, pkgPath, indent }, 
-    registry 
+    registry,
+    verbose
   } = ctx;
 
   const componentsToCopy = new Set<string>();
   const npmDepsToInstall = new Set<string>();
   const root = path.dirname(pkgPath);
-  let filesCount = 0;
+  const changedComponents = new Set<string>();
+  /** Registry paths actually written, for the counts and the summary below. */
+  const writtenPaths: string[] = [];
 
   const spin = spinner();
-  spin.start(`Resolving ${rootIds.length} component${rootIds.length > 1 ? 's' : ''}...`);
+  spin.start(`Resolving ${rootIds.length} component${plural(rootIds.length)}...`);
 
   function findDeps(id: string) {
     if (componentsToCopy.has(id)) return;
@@ -226,22 +229,28 @@ async function resolve(ctx: Context, rootIds: string[]) {
       installedComponents[entry.name] = entry.version;
 
       for (const file of entry.files) {
+        const destPath = path.join(root, file.path);
+        // Do not overwrite files that are already the absolute same as the remote version
+        if (fs.existsSync(destPath) && matchesHash(destPath, file.hash)) continue;
+
         const res = await fetch(`${fileBaseUrl}/${file.path}`);
 
         if (!res.ok) {
           throw new Error(`Failed to fetch ${file.path}: ${res.status} ${res.statusText}`);
         }
 
-        const destPath = path.join(root, file.path);
-
         fs.mkdirSync(path.dirname(destPath), { recursive: true });
-        fs.writeFileSync(destPath, await res.text());
-        filesCount++;
+        fs.writeFileSync(destPath, Buffer.from(await res.arrayBuffer()));
+        changedComponents.add(id);
+        writtenPaths.push(file.path);
       }
     }
 
     fs.writeFileSync(pkgPath, JSON.stringify(packageJson, null, indent) + '\n');
-    spin.stop(`Fetched ${componentsToCopy.size} components · ${filesCount} files`);
+    spin.stop(
+      writtenPaths.length > 0
+        ? `Wrote ${writtenPaths.length} file${plural(writtenPaths.length)}`
+        : `Everything already up to date`);
   } catch (err) {
     spin.stop(`Failed to fetch component files`);
     throw err;
@@ -254,7 +263,7 @@ async function resolve(ctx: Context, rootIds: string[]) {
   if (npmDepsToInstall.size > 0) {
     const deps = Array.from(npmDepsToInstall);
     const installSpin = spinner();
-    installSpin.start(`Installing npm deps: ${deps.join(', ')}`);
+    installSpin.start(`Installing ${deps.length} npm package${plural(deps.length)}: ${deps.join(', ')}`);
 
     try {
       await execAsync(`npm i ${deps.join(' ')}`);
@@ -270,17 +279,26 @@ async function resolve(ctx: Context, rootIds: string[]) {
     log.success(`${entries[id].name} (v${entries[id].version})`);
   }
 
-  const depsCount = componentsToCopy.size - rootIds.length;
+  // Only roots that actually changed count against the total.
+  const changedRoots = rootIds.filter(id => changedComponents.has(id));
+  const libDeps = Array.from(changedComponents).filter(id => !changedRoots.includes(id));
   const npmCount = npmDepsToInstall.size - npmFailed.length;
 
-  if (depsCount > 0 || npmCount > 0) {
-    log.message(`+ ${depsCount} dependencies · ${npmCount} npm packages`);
+  if (libDeps.length > 0 || npmCount > 0) {
+    const detail = verbose ? libDeps.map(id => `\n  ${id}`).join('') : '';
+    log.message(`+ ${libDeps.length} dependenc${libDeps.length === 1 ? 'y' : 'ies'} · ${npmCount} npm package${plural(npmCount)}${detail}`);
   }
 
-  const touched = touchedDirs(
-    [...componentsToCopy].flatMap(id => entries[id].files.map(f => f.path))
-  );
-  log.message(`Modified: ${touched.join(', ')}`);
+  if (writtenPaths.length === 0) return;
+
+  if (verbose) {
+    // Every file that was written, in full
+    const listed = [...writtenPaths].sort().map(p => `  ${p}`);
+    log.message(['Modified:', ...listed].join('\n'));
+  } else {
+    // Just the top-level directories they live in, for a concise summary
+    log.message(`Modified: ${touchedDirs(writtenPaths).join(", ")}`);
+  }
 
   if (npmFailed.length > 0) {
     log.warn(
@@ -332,7 +350,7 @@ function handleStatus(ctx: Context) {
     const rest = names.length - shown.length;
 
     log.info(
-      `${available.length} component${available.length > 1 ? 's' : ''} available to add: ` +
+      `${available.length} component${plural(available.length)} available to add: ` +
       (rest > 0 ? `${shown.join(', ')} and ${rest} more` : shown.join(', '))
     );
     log.message(`See what's new at ${CHANGELOG_URL}`);
@@ -370,9 +388,13 @@ async function handleInstall(ctx: Context) {
       return 1;
     }
 
-    if (pkg.isFirstRun) {
+    if (pkg.missingSetup.length > 0) {
       note(
-        `Add the @components alias to tsconfig.json and vite.config\nPoint @assets/scss/variables at your style tokens`,
+        [
+          `This project is missing ${pkg.missingSetup.join(' and ')}.`,
+          'Components will not resolve until that is in place:',
+          SETUP_URL,
+        ].join('\n'),
         'Setup required'
       );
     }
@@ -385,6 +407,123 @@ async function handleInstall(ctx: Context) {
   return failed > 0 ? 1 : 0;
 }
 
+async function handleTrack(ctx: Context) {
+  const {
+    entries, 
+    pkg: { installedComponents, packageJson, pkgPath, indent },
+    yes,
+    verbose
+  } = ctx;
+  const root = path.dirname(pkgPath);
+  
+
+  let needUpdate = [] as string[];
+  let upToDate = 0, alreadyTracked = 0;
+  
+  Object.entries(entries).forEach(([id, data]) => {
+    if (data.kind === "lib") return;
+
+    if (findInstalledComponent(installedComponents, data.name)) {
+      alreadyTracked++;
+      return;
+    }
+
+    const all = data.files.length;
+
+    const info = {
+      differ: [] as string[],
+      missing: [] as string[],
+    }
+
+    data.files.forEach((file) => {
+      const localFilePath = path.join(root, file.path);
+
+      if (!fs.existsSync(localFilePath)) {
+        info.missing.push(file.path);
+        return;
+      }
+
+      if (!matchesHash(localFilePath, file.hash)) info.differ.push(file.path);
+    })
+
+    // skip, not installed
+    if (info.missing.length === all) {
+      if (verbose && data.kind !== 'recipe') {
+        log.info(`${data.name} is not installed, skipping.`);
+      }
+      return;
+    }
+
+    // stale
+    if (info.missing.length > 0 || info.differ.length > 0) {
+      needUpdate.push(data.name);
+      installedComponents[data.name] = "0.0.0";
+
+      const { missing, differ } = info;
+      const summary = [
+        missing.length ? `${missing.length} missing file${plural(missing.length)}` : null,
+        differ.length ? `${differ.length} modified file${plural(differ.length)}` : null,
+      ].filter(Boolean).join(' and ');
+
+      const lines = [`${data.name} has ${summary}. Recording as v0.0.0`];
+
+      if (verbose) {
+        for (const f of missing) lines.push(`  missing   ${f}`);
+        for (const f of differ) lines.push(`  modified  ${f}`);
+      }
+      log.warn(lines.join('\n'));
+
+      return;
+    }
+
+    // up to date
+    installedComponents[data.name] = data.version;
+    verbose && log.success(`${data.name} is up to date (v${data.version})`);
+    upToDate++;
+  })
+
+  const total = needUpdate.length + upToDate;
+  if (total === 0) {
+    if (alreadyTracked > 0) {
+      outro(`Already tracking ${alreadyTracked} component${plural(alreadyTracked)}. Nothing new to record.`);
+      return 0;
+    }
+    log.info('No Gameface UI components detected in target project.');
+    outro('Run "gameface-cli add <component>" to install a component.');
+    return 0;
+  }
+
+  const options = [
+    { value: 'record', label: 'Record versions only', hint: 'Writes component versions to package.json' },
+    ...(needUpdate.length > 0 ? [{ value: 'update', label: 'Record and update now', hint: 'Overwrites component files' }] : []),
+    { value: 'cancel', label: 'Cancel', hint: 'Abort the operation' },
+  ]
+
+  log.message(`Detected ${needUpdate.length} component${plural(needUpdate.length)} to update and ${upToDate} component${plural(upToDate)} up to date.`);
+
+  const action = yes ? 'record' : await select({
+    message: `Record ${needUpdate.length + upToDate} component${plural(needUpdate.length + upToDate)}?`,
+    options
+  });
+
+  if (isCancel(action) || action === 'cancel') {
+    cancel('Aborted.');
+    return 1;
+  }
+
+  // Record the component versions to package.json
+  fs.writeFileSync(pkgPath, JSON.stringify(packageJson, null, indent) + '\n');
+
+  if (action === 'update') {
+    return handleInstall({ ...ctx, command: 'update', names: needUpdate });
+  }
+  
+  log.success(`Tracking complete. ${needUpdate.length} component${plural(needUpdate.length)} to update.`);
+  outro(`${upToDate} component${plural(upToDate)} up to date.`);
+
+  return 0;
+}
+
 async function bootStrap(): Promise<Boot> {
   let values: Record<string, boolean | undefined>;
   let positionals: string[];
@@ -395,6 +534,8 @@ async function bootStrap(): Promise<Boot> {
       options: {
         help: { type: 'boolean', short: 'h' },
         yes: { type: 'boolean', short: 'y' },
+        hard: { type: 'boolean' },
+        verbose: { type: 'boolean', short: 'v' },
       },
     }));
   } catch (err: any) {
@@ -435,6 +576,8 @@ async function bootStrap(): Promise<Boot> {
     registry,
     entries: registry.entries,
     yes: Boolean(values.yes),
+    hard: Boolean(values.hard),
+    verbose: Boolean(values.verbose),
   }}
 }
 
@@ -443,6 +586,7 @@ async function main() {
   if (!boot.ok) return boot.code;
 
   switch (boot.ctx.command) {
+    case 'track': return handleTrack(boot.ctx);
     case 'status': return handleStatus(boot.ctx);
     case 'add':
     case 'update': return handleInstall(boot.ctx);

@@ -11,14 +11,14 @@
     "@actions/github": "^6.0.0",
     "@astrojs/starlight": "0.37.6",
     "astro": "5.17.1",
-    "coherent-docs-theme": "^1.0.0",
+    "coherent-docs-theme": "^1.0.16",
     "gray-matter": "^4.0.3",
     "remark-mdx": "^3.1.0",
     "remark-parse": "^11.0.0",
     "sharp": "^0.34.5",
+    "starlight-links-validator": "^0.15.0",
     "starlight-sidebar-topics": "0.6.2",
     "starlight-sidebar-topics-dropdown": "0.5.2",
-    "starlight-links-validator": "^0.15.0",
     "unified": "^11.0.5"
   },
   "overrides": {
