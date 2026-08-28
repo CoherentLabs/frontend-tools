@@ -186,3 +186,70 @@ describe('track', () => {
     expect(stdout).toContain(FILES.buttonScss);
   });
 });
+
+/**
+ * `resolve` skips any file whose contents already match the registry, so an
+ * update writes only what genuinely changed instead of rewriting whole
+ * component closures. These need the hash-accurate fixture registry: the
+ * add/update suite uses placeholder hashes, where nothing ever matches.
+ */
+describe('resolve skips files that already match', () => {
+  /** File paths the CLI asked the server for, ignoring the registry itself. */
+  const fetched = () => server.hits.filter(u => u !== '/registry.json');
+
+  test('fetches nothing when every file is already current', async () => {
+    // Recorded as behind, but the files on disk are the published ones
+    const dir = project({ installed: { Button: '0.0.0' } });
+    install(dir, pristine());
+
+    const { code, stdout } = await runCli(['update', 'Button', '--yes'], {
+      cwd: dir, registryUrl: server.url,
+    });
+
+    expect(code).toBe(0);
+    expect(fetched()).toHaveLength(0);
+    expect(stdout).toContain('Everything already up to date');
+    // The version is still corrected, even though no file moved
+    expect(readInstalled(dir)!.Button).toBe(VERSIONS.Button);
+    expect(read(dir, FILES.buttonTsx)).toBe(CONTENTS[FILES.buttonTsx]);
+  });
+
+  test('fetches only the file that differs, not the whole component', async () => {
+    const dir = project({ installed: { Button: '0.0.0' } });
+    install(dir, { ...pristine(), [FILES.buttonScss]: 'locally changed\n' });
+
+    await runCli(['update', 'Button', '--yes'], { cwd: dir, registryUrl: server.url });
+
+    expect(fetched()).toEqual(['/' + FILES.buttonScss]);
+    // The untouched sibling keeps its bytes — this is what stops a one-file
+    // change from showing up as a whole-component diff
+    expect(read(dir, FILES.buttonTsx)).toBe(CONTENTS[FILES.buttonTsx]);
+    expect(read(dir, FILES.buttonScss)).not.toBe('locally changed\n');
+  });
+
+  test('reports only the files it actually wrote', async () => {
+    const dir = project({ installed: { Button: '0.0.0' } });
+    install(dir, { ...pristine(), [FILES.buttonScss]: 'locally changed\n' });
+
+    const { stdout } = await runCli(['update', 'Button', '--yes', '--verbose'], {
+      cwd: dir, registryUrl: server.url,
+    });
+
+    expect(stdout).toContain(FILES.buttonScss);
+    expect(stdout).not.toContain(FILES.buttonTsx);
+  });
+
+  test('--hard on an intact component still writes nothing', async () => {
+    // --hard bypasses the version check, not the file check
+    const dir = project({ installed: { Button: VERSIONS.Button } });
+    install(dir, pristine());
+
+    const { code, stdout } = await runCli(['update', 'Button', '--hard', '--yes'], {
+      cwd: dir, registryUrl: server.url,
+    });
+
+    expect(code).toBe(0);
+    expect(fetched()).toHaveLength(0);
+    expect(stdout).toContain('Everything already up to date');
+  });
+});

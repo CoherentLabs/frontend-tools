@@ -199,10 +199,12 @@ async function resolve(ctx: Context, rootIds: string[]) {
   const componentsToCopy = new Set<string>();
   const npmDepsToInstall = new Set<string>();
   const root = path.dirname(pkgPath);
-  let filesCount = 0;
+  const changedComponents = new Set<string>();
+  /** Registry paths actually written, for the counts and the summary below. */
+  const writtenPaths: string[] = [];
 
   const spin = spinner();
-  spin.start(`Resolving ${rootIds.length} component${rootIds.length > 1 ? 's' : ''}...`);
+  spin.start(`Resolving ${rootIds.length} component${plural(rootIds.length)}...`);
 
   function findDeps(id: string) {
     if (componentsToCopy.has(id)) return;
@@ -227,22 +229,28 @@ async function resolve(ctx: Context, rootIds: string[]) {
       installedComponents[entry.name] = entry.version;
 
       for (const file of entry.files) {
+        const destPath = path.join(root, file.path);
+        // Do not overwrite files that are already the absolute same as the remote version
+        if (fs.existsSync(destPath) && matchesHash(destPath, file.hash)) continue;
+
         const res = await fetch(`${fileBaseUrl}/${file.path}`);
 
         if (!res.ok) {
           throw new Error(`Failed to fetch ${file.path}: ${res.status} ${res.statusText}`);
         }
 
-        const destPath = path.join(root, file.path);
-
         fs.mkdirSync(path.dirname(destPath), { recursive: true });
         fs.writeFileSync(destPath, Buffer.from(await res.arrayBuffer()));
-        filesCount++;
+        changedComponents.add(id);
+        writtenPaths.push(file.path);
       }
     }
 
     fs.writeFileSync(pkgPath, JSON.stringify(packageJson, null, indent) + '\n');
-    spin.stop(`Fetched ${componentsToCopy.size} components · ${filesCount} files`);
+    spin.stop(
+      writtenPaths.length > 0
+        ? `Wrote ${writtenPaths.length} file${plural(writtenPaths.length)}`
+        : `Everything already up to date`);
   } catch (err) {
     spin.stop(`Failed to fetch component files`);
     throw err;
@@ -271,25 +279,25 @@ async function resolve(ctx: Context, rootIds: string[]) {
     log.success(`${entries[id].name} (v${entries[id].version})`);
   }
 
-  const depsCount = componentsToCopy.size - rootIds.length;
+  // Only roots that actually changed count against the total.
+  const changedRoots = rootIds.filter(id => changedComponents.has(id));
+  const libDeps = Array.from(changedComponents).filter(id => !changedRoots.includes(id));
   const npmCount = npmDepsToInstall.size - npmFailed.length;
 
-  if (depsCount > 0 || npmCount > 0) {
-    log.message(`+ ${depsCount} dependencies · ${npmCount} npm packages`);
+  if (libDeps.length > 0 || npmCount > 0) {
+    const detail = verbose ? libDeps.map(id => `\n  ${id}`).join('') : '';
+    log.message(`+ ${libDeps.length} dependencies · ${npmCount} npm packages${detail}`);
   }
 
-  const touched = touchedDirs(
-    [...componentsToCopy].flatMap(id => entries[id].files.map(f => f.path))
-  );
+  if (writtenPaths.length === 0) return;
+
   if (verbose) {
-    // Display all files
-    const written = [...componentsToCopy]
-      .flatMap(id => entries[id].files.map(f => f.path))
-      .sort();
-    log.message(['Modified:', ...written.map(p => `  ${p}`)].join('\n'));
+    // Every file that was written, in full
+    const listed = [...writtenPaths].sort().map(p => `  ${p}`);
+    log.message(['Modified:', ...listed].join('\n'));
   } else {
-    // Display only the top-level directories that were modified, for a concise summary
-    log.message(`Modified: ${touched.join(', ')}`);
+    // Just the top-level directories they live in, for a concise summary
+    log.message(`Modified: ${touchedDirs(writtenPaths).join(", ")}`);
   }
 
   if (npmFailed.length > 0) {
