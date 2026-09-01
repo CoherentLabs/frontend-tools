@@ -4,6 +4,8 @@
   "description": "Generates a structured JSON inventory of CSS, HTML, and JS features supported by the Gameface renderer.",
   "scripts": {
     "build": "tsc",
+    "clean-logs": "node scripts/clean-cohtml-logs.js",
+    "preprobe": "npm run clean-logs",
     "probe": "tsc && DEBUG=oclif:gameface-e2e* gameface-e2e --config=gameface-e2e-config-selectors.js && DEBUG=oclif:gameface-e2e* gameface-e2e && DEBUG=oclif:gameface-e2e* gameface-e2e --config=gameface-e2e-config-functions.js",
     "probe:clean": "rimraf dist results && npm run probe"
   },

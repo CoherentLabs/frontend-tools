@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "publish:packages": "node ./scripts/publish.js",
-    "test": "node ./scripts/test.js"
+    "test": "node ./scripts/test.js",
+    "scrape:update-eslint": "node ./scripts/scrape-and-update-eslint-plugin.js --skip-tests"
   },
   "dependencies": {
     "cors-env": "^1.0.2",

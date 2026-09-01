@@ -389,10 +389,24 @@ function reconcileCssProperties(input: ReconcileInput, output: ReconcileOutput):
                 status = 'partial-shorthand';
                 evidence['missingLonghands'] = result.missingLonghands;
                 evidence['longhandValues'] = result.longhandValues;
-                evidence['logRejectedValues'] = [...allInvalidValues];
+                // Sorted here, at the point the Set becomes an array: log-line
+                // arrival order is async and varies run-to-run even for the same
+                // engine build, which would otherwise make every cross-version
+                // diff noisy. Every other evidence array (supportedValues,
+                // unsupportedValues, missing, …) is built from .filter()/.push()
+                // over an already-fixed source order and must NOT be sorted —
+                // sorting those would destroy a meaningful order for no benefit.
+                evidence['logRejectedValues'] = [...allInvalidValues].sort();
             } else {
                 status = 'partial';
-                evidence['logRejectedValues'] = [...allInvalidValues];
+                // Sorted here, at the point the Set becomes an array: log-line
+                // arrival order is async and varies run-to-run even for the same
+                // engine build, which would otherwise make every cross-version
+                // diff noisy. Every other evidence array (supportedValues,
+                // unsupportedValues, missing, …) is built from .filter()/.push()
+                // over an already-fixed source order and must NOT be sorted —
+                // sorting those would destroy a meaningful order for no benefit.
+                evidence['logRejectedValues'] = [...allInvalidValues].sort();
             }
         } else if (hasShorthandLimitation) {
             status = 'partial';

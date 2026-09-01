@@ -21,8 +21,9 @@ import { SELECTOR_LIST } from '../static/selector-list';
 import type { SelectorEntry } from '../static/selector-list';
 import { getBcdCssSelectors } from '../static/bcd-source';
 
-import { parseLogSync } from '../log/log-parser';
+import { parseLogSync, findActiveLogPath } from '../log/log-parser';
 import { reconcile, partitionBySurface } from '../merge/reconciler';
+import { canonicalizeCatalogRows, writeJsonFile } from '../write/catalog-writer';
 
 import type { CssSelectorResults } from '../probes/css-probe';
 
@@ -46,11 +47,13 @@ const INTERMEDIATE_DIR = path.resolve(OUTPUT_DIR, 'intermediate');
 export const SELECTOR_INTERMEDIATE_PATH = path.resolve(INTERMEDIATE_DIR, 'selector-data.json');
 
 function resolveLogPath(): string {
-    if (config.logPath) return config.logPath;
-    if (config.gamefacePath) {
-        return path.resolve(path.dirname(config.gamefacePath), 'CohtmlApplication.log');
+    let preferred = '';
+    if (config.logPath) {
+        preferred = path.resolve(config.logPath);
+    } else if (config.gamefacePath) {
+        preferred = path.resolve(path.dirname(config.gamefacePath), 'CohtmlApplication.log');
     }
-    return '';
+    return findActiveLogPath(preferred);
 }
 
 // ── Accumulated results ───────────────────────────────────────────────────────
@@ -249,16 +252,16 @@ describe('Gameface Selector Probe', function () {
         const partitioned = partitionBySurface({ supported, partial, unsupported, summary });
 
         const write = (filePath: string, data: unknown): void => {
-            fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+            writeJsonFile(filePath, data);
             console.log(`[writer] Wrote ${filePath}`);
         };
 
         const selDir = path.join(OUTPUT_DIR, 'selectors');
         fs.mkdirSync(selDir, { recursive: true });
         const sel = partitioned.selectors;
-        write(path.join(selDir, 'supported.json'), sel.supported);
-        write(path.join(selDir, 'partial.json'), sel.partial);
-        write(path.join(selDir, 'unsupported.json'), sel.unsupported);
+        write(path.join(selDir, 'supported.json'), canonicalizeCatalogRows(sel.supported));
+        write(path.join(selDir, 'partial.json'), canonicalizeCatalogRows(sel.partial));
+        write(path.join(selDir, 'unsupported.json'), canonicalizeCatalogRows(sel.unsupported));
         write(path.join(selDir, 'summary.json'), sel.summary);
 
         // Write intermediate data for probe-runner.spec.js to consume.
