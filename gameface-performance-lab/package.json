@@ -14,5 +14,8 @@
   },
   "dependencies": {
     "chrome-remote-interface": "^0.34.0"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2"
   }
 }

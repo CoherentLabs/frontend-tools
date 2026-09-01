@@ -79,6 +79,26 @@ async function waitForDebugPort(port, timeoutMs = 30000) {
 }
 
 /**
+ * The debug port answers /json/version before it has a target list to serve:
+ * /json/list can still return a bare `null` for a moment after that. Polling
+ * for a non-empty array is the difference between a run of 54 launches
+ * finishing and one of them dying on a race.
+ */
+async function waitForTargets(port, timeoutMs = 15000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    try {
+      const targets = await (await fetch(`http://localhost:${port}/json/list`)).json();
+      if (Array.isArray(targets) && targets.length > 0) return targets;
+    } catch {
+      // Same race, seen from the other side - keep polling.
+    }
+    await sleep(150);
+  }
+  throw new Error(`Player on port ${port} exposed no CDP target`);
+}
+
+/**
  * Boots a Player on `pageUrl` and returns a connected CDP client plus the
  * environment we actually got (as opposed to the one we asked for).
  */
@@ -105,9 +125,8 @@ export async function launchPlayer(playerPath, pageUrl, { port = DEBUG_PORT } = 
   try {
     const version = await Promise.race([waitForDebugPort(port), spawnFailure]);
 
-    const targets = await (await fetch(`http://localhost:${port}/json/list`)).json();
+    const targets = await waitForTargets(port);
     const target = targets.find((t) => t.type === "page") ?? targets[0];
-    if (!target) throw new Error("The Player exposed no CDP target");
 
     client = await CDP({ host: "localhost", port, target: `/devtools/page/${target.id}`, local: true });
 

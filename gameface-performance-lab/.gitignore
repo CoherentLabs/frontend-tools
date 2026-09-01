@@ -11,3 +11,4 @@ runs/
 CohtmlApplication.log
 CohtmlApplicationPerformance.log
 PlayerConfig.ini
+.sentry-native/
