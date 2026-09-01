@@ -343,14 +343,21 @@ const targets = [
   // The atlas, and the same sprites again as separate files. Both variants of
   // many-images-vs-spritesheet therefore show pixel-identical artwork; only the
   // number of textures behind it differs.
-  {
-    path: join(LAB_ROOT, "cases", "many-images-vs-spritesheet", "sheet.png"),
-    canvas: spriteSheet(),
-  },
-  ...Array.from({ length: SPRITES }, (_, i) => ({
-    path: join(LAB_ROOT, "cases", "many-images-vs-spritesheet", `sprite-${i}.png`),
-    canvas: loneSprite(i),
-  })),
+  //
+  // spritesheet-vs-files-churn asks the same question of element creation
+  // rather than of steady-state drawing, so it needs the same assets. They are
+  // emitted twice from the same spriteAt() rather than copied, which is what
+  // keeps "the same artwork" true across both cases.
+  ...["many-images-vs-spritesheet", "spritesheet-vs-files-churn"].flatMap((caseId) => [
+    {
+      path: join(LAB_ROOT, "cases", caseId, "sheet.png"),
+      canvas: spriteSheet(),
+    },
+    ...Array.from({ length: SPRITES }, (_, i) => ({
+      path: join(LAB_ROOT, "cases", caseId, `sprite-${i}.png`),
+      canvas: loneSprite(i),
+    })),
+  ]),
 ];
 
 for (const { path, canvas } of targets) {

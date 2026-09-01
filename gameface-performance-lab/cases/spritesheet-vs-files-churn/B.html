@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #101014; overflow: hidden; }
+  #root { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .tile {
+    position: absolute;
+    width: 88px;
+    height: 64px;
+  }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    // A draws every sprite out of one atlas with background-position. B loads
+    // each sprite as its own file. Both pages carry both paths so the scripts
+    // stay byte-identical apart from this constant - the same arrangement
+    // many-images-vs-spritesheet uses, so the two cases differ only in what
+    // drives the damage.
+    var USE_SHEET = false;
+
+    var match = /[?&]count=(\d+)/.exec(location.search);
+    var COUNT = match ? parseInt(match[1], 10) : 100;
+
+    var COLS = 20, CELL_W = 92, CELL_H = 68;
+    var SPRITES = 16, SHEET_COLS = 4, TILE_W = 88, TILE_H = 64;
+
+    var root = document.getElementById('root');
+
+    function makeTile(i) {
+      var el = document.createElement('div');
+      el.className = 'tile';
+      el.style.left = (16 + (i % COLS) * CELL_W) + 'px';
+      el.style.top = (16 + Math.floor(i / COLS) * CELL_H) + 'px';
+
+      var sprite = i % SPRITES;
+      if (USE_SHEET) {
+        el.style.backgroundImage = "url('sheet.png')";
+        el.style.backgroundPosition =
+          (-(sprite % SHEET_COLS) * TILE_W) + 'px ' + (-Math.floor(sprite / SHEET_COLS) * TILE_H) + 'px';
+      } else {
+        el.style.backgroundImage = "url('sprite-" + sprite + ".png')";
+      }
+
+      return el;
+    }
+
+    for (var i = 0; i < COUNT; i++) root.appendChild(makeTile(i));
+
+    // The churn is this case's damage driver (AUTHORING.md rule 6), NOT its
+    // variable: it is byte-identical in both variants and only the number of
+    // textures the recreated tiles reference differs. many-images-vs-spritesheet
+    // measures the same variable on a settled scene; this one asks what it
+    // costs to BUILD that scene, which is where png-vs-svg-churn-complex found
+    // the cost of an image actually lives. See the ADAPTED note in case.json.
+    function frame() {
+      while (root.firstChild) root.removeChild(root.firstChild);
+      for (var k = 0; k < COUNT; k++) root.appendChild(makeTile(k));
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>
