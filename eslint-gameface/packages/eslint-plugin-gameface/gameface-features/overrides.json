@@ -1,0 +1,51 @@
+{
+  "files": {
+    "functions/supported.json": {
+      "added": {
+        "css-function|repeating-linear-gradient": {
+          "status": "supported",
+          "surface": "css-function",
+          "name": "repeating-linear-gradient",
+          "evidence": {
+            "category": "image",
+            "testProperty": "background-image",
+            "canonicalValue": "repeating-linear-gradient(red 0, red 10px, blue 10px, blue 20px)",
+            "note": "Override (gameface-features/overrides.json): the raw scraper classifies this 'partial' — it rejects the two-position (\"double stop\") color-stop shorthand (e.g. `red 0 10px, blue 10px 20px`) but accepts the single-position form used here. Treated as supported because the plugin has no partial-function tracking yet (unlike CSS properties, which do); revisit once that exists."
+          }
+        },
+        "css-function|repeating-radial-gradient": {
+          "status": "supported",
+          "surface": "css-function",
+          "name": "repeating-radial-gradient",
+          "evidence": {
+            "category": "image",
+            "testProperty": "background-image",
+            "canonicalValue": "repeating-radial-gradient(red 0, red 10px, blue 10px, blue 20px)",
+            "note": "Override (gameface-features/overrides.json): same as repeating-linear-gradient — supports single-position color stops, rejects the two-position shorthand. Treated as supported because the plugin has no partial-function tracking yet."
+          }
+        }
+      }
+    },
+    "functions/unsupported.json": {
+      "removed": ["css-function|repeating-linear-gradient", "css-function|repeating-radial-gradient"]
+    },
+    "css/supported.json": {
+      "removed": ["css-property|pointer-events"]
+    },
+    "css/partial.json": {
+      "added": {
+        "css-property|pointer-events": {
+          "status": "partial",
+          "surface": "css-property",
+          "name": "pointer-events",
+          "evidence": {
+            "supportedValues": ["none", "auto", "visiblePainted", "visibleFill", "visibleStroke"],
+            "unsupportedValues": ["all", "visible", "painted", "fill", "stroke"],
+            "logRejectedValues": ["all", "fill", "painted", "stroke", "visible", "visiblefill", "visiblepainted", "visiblestroke"],
+            "note": "Override (gameface-features/overrides.json): the raw scraper shows this as fully 'supported' because Gameface's CSS parser emits no rejection warning for any pointer-events keyword (verified directly against CohtmlApplication.log — zero warnings, across two separate live probe runs of the same engine build), and pointer-events isn't in the small READBACK_FOCUS allowlist that gets accurate JS set+readback testing (probe-runner.spec.ts). A silent parser accept is not evidence the value actually works at runtime — it just means this property's values aren't validated at parse time, so the log-based detection method can't tell 'supported' apart from 'unvalidated'. Evidence here is carried over from the last version (3.1.0.25) where this was correctly detected; revisit once pointer-events gets real readback coverage."
+          }
+        }
+      }
+    }
+  }
+}

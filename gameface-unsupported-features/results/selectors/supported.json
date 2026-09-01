@@ -2,31 +2,9 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": ":active",
-    "evidence": {
-      "group": "pseudo-class",
-      "probeA": false,
-      "probeB": false,
-      "probe": "log-silent-no-rules-observed"
-    }
-  },
-  {
-    "status": "supported",
-    "surface": "css-selector",
     "name": "::after",
     "evidence": {
       "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "probe": "log-silent-no-rules-observed"
-    }
-  },
-  {
-    "status": "supported",
-    "surface": "css-selector",
-    "name": "[attr]",
-    "evidence": {
-      "group": "basic-attribute",
       "probeA": false,
       "probeB": false,
       "probe": "log-silent-no-rules-observed"
@@ -46,9 +24,9 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "div > p",
+    "name": "::part(foo)",
     "evidence": {
-      "group": "combinator-child",
+      "group": "pseudo-element-shadow",
       "probeA": false,
       "probeB": false,
       "probe": "log-silent-no-rules-observed"
@@ -57,9 +35,9 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": ".foo",
+    "name": "::slotted(*)",
     "evidence": {
-      "group": "basic-class",
+      "group": "pseudo-element-shadow",
       "probeA": false,
       "probeB": false,
       "probe": "log-silent-no-rules-observed"
@@ -68,20 +46,9 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "div || td",
+    "name": ":active",
     "evidence": {
-      "group": "combinator-column",
-      "probeA": false,
-      "probeB": false,
-      "probe": "log-silent-no-rules-observed"
-    }
-  },
-  {
-    "status": "supported",
-    "surface": "css-selector",
-    "name": "div p",
-    "evidence": {
-      "group": "combinator-descendant",
+      "group": "pseudo-class",
       "probeA": false,
       "probeB": false,
       "probe": "log-silent-no-rules-observed"
@@ -145,42 +112,9 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "#foo",
-    "evidence": {
-      "group": "basic-id",
-      "probeA": false,
-      "probeB": false,
-      "probe": "log-silent-no-rules-observed"
-    }
-  },
-  {
-    "status": "supported",
-    "surface": "css-selector",
     "name": ":last-child",
     "evidence": {
       "group": "pseudo-class",
-      "probeA": false,
-      "probeB": false,
-      "probe": "log-silent-no-rules-observed"
-    }
-  },
-  {
-    "status": "supported",
-    "surface": "css-selector",
-    "name": "& .nested",
-    "evidence": {
-      "group": "css-nesting",
-      "probeA": false,
-      "probeB": false,
-      "probe": "log-silent-no-rules-observed"
-    }
-  },
-  {
-    "status": "supported",
-    "surface": "css-selector",
-    "name": "div + p",
-    "evidence": {
-      "group": "combinator-adjacent-sibling",
       "probeA": false,
       "probeB": false,
       "probe": "log-silent-no-rules-observed"
@@ -200,17 +134,6 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "::part(foo)",
-    "evidence": {
-      "group": "pseudo-element-shadow",
-      "probeA": false,
-      "probeB": false,
-      "probe": "log-silent-no-rules-observed"
-    }
-  },
-  {
-    "status": "supported",
-    "surface": "css-selector",
     "name": ":root",
     "evidence": {
       "group": "pseudo-class",
@@ -222,9 +145,9 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "::slotted(*)",
+    "name": ".foo",
     "evidence": {
-      "group": "pseudo-element-shadow",
+      "group": "basic-class",
       "probeA": false,
       "probeB": false,
       "probe": "log-silent-no-rules-observed"
@@ -233,9 +156,9 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "div ~ p",
+    "name": "[attr i]",
     "evidence": {
-      "group": "combinator-general-sibling",
+      "group": "attribute-case-insensitive",
       "probeA": false,
       "probeB": false,
       "probe": "log-silent-no-rules-observed"
@@ -244,9 +167,9 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "div",
+    "name": "[attr]",
     "evidence": {
-      "group": "basic-type",
+      "group": "basic-attribute",
       "probeA": false,
       "probeB": false,
       "probe": "log-silent-no-rules-observed"
@@ -255,9 +178,9 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "*",
+    "name": "[attr*=\"val\"]",
     "evidence": {
-      "group": "basic-universal",
+      "group": "attribute-contains",
       "probeA": false,
       "probeB": false,
       "probe": "log-silent-no-rules-observed"
@@ -266,7 +189,62 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "@media (max-width: 600px)",
+    "name": "[attr^=\"val\"]",
+    "evidence": {
+      "group": "attribute-prefix",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "[attr=\"val\"]",
+    "evidence": {
+      "group": "attribute-exact",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "[attr|=\"val\"]",
+    "evidence": {
+      "group": "attribute-hyphen",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "[attr~=\"val\"]",
+    "evidence": {
+      "group": "attribute-word",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "[attr$=\"val\"]",
+    "evidence": {
+      "group": "attribute-suffix",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "@layer base",
     "evidence": {
       "group": "at-rule",
       "probeA": false,
@@ -277,7 +255,7 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "@layer base",
+    "name": "@media (max-width: 600px)",
     "evidence": {
       "group": "at-rule",
       "probeA": false,
@@ -299,9 +277,9 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "[attr^=\"val\"]",
+    "name": "*",
     "evidence": {
-      "group": "attribute-prefix",
+      "group": "basic-universal",
       "probeA": false,
       "probeB": false,
       "probe": "log-silent-no-rules-observed"
@@ -310,9 +288,9 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "[attr$=\"val\"]",
+    "name": "& .nested",
     "evidence": {
-      "group": "attribute-suffix",
+      "group": "css-nesting",
       "probeA": false,
       "probeB": false,
       "probe": "log-silent-no-rules-observed"
@@ -321,9 +299,9 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "[attr*=\"val\"]",
+    "name": "#foo",
     "evidence": {
-      "group": "attribute-contains",
+      "group": "basic-id",
       "probeA": false,
       "probeB": false,
       "probe": "log-silent-no-rules-observed"
@@ -332,9 +310,9 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "[attr~=\"val\"]",
+    "name": "div",
     "evidence": {
-      "group": "attribute-word",
+      "group": "basic-type",
       "probeA": false,
       "probeB": false,
       "probe": "log-silent-no-rules-observed"
@@ -343,9 +321,9 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "[attr|=\"val\"]",
+    "name": "div + p",
     "evidence": {
-      "group": "attribute-hyphen",
+      "group": "combinator-adjacent-sibling",
       "probeA": false,
       "probeB": false,
       "probe": "log-silent-no-rules-observed"
@@ -354,9 +332,9 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "[attr=\"val\"]",
+    "name": "div > p",
     "evidence": {
-      "group": "attribute-exact",
+      "group": "combinator-child",
       "probeA": false,
       "probeB": false,
       "probe": "log-silent-no-rules-observed"
@@ -365,9 +343,31 @@
   {
     "status": "supported",
     "surface": "css-selector",
-    "name": "[attr i]",
+    "name": "div || td",
     "evidence": {
-      "group": "attribute-case-insensitive",
+      "group": "combinator-column",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "div ~ p",
+    "evidence": {
+      "group": "combinator-general-sibling",
+      "probeA": false,
+      "probeB": false,
+      "probe": "log-silent-no-rules-observed"
+    }
+  },
+  {
+    "status": "supported",
+    "surface": "css-selector",
+    "name": "div p",
+    "evidence": {
+      "group": "combinator-descendant",
       "probeA": false,
       "probeB": false,
       "probe": "log-silent-no-rules-observed"
