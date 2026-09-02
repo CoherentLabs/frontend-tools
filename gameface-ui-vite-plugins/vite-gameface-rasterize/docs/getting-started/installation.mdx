@@ -1,0 +1,53 @@
+---
+title: Installation
+sidebar:
+    order: 2
+---
+
+```shell
+npm install -D vite-gameface-rasterize
+```
+
+## Pointing it at the Player
+
+The plugin needs a Gameface Player to render with. It looks in two places, in order:
+
+1. the `playerPath` option in `vite.config`
+2. the `GAMEFACE_PATH` environment variable, which Vite loads from your `.env` for you
+
+The environment variable is the one to prefer: the Player lives somewhere different on every
+machine, so a committed `vite.config` should not name a path.
+
+```shell
+# .env  (git-ignored)
+GAMEFACE_PATH=D:/gameface-packages/Cohtml-3.2.0.2/Player/Player.exe
+```
+
+```ts
+// only when you need to override it for a particular build
+rasterize({ playerPath: process.env.CI_PLAYER });
+```
+
+If neither is set the build fails immediately with a message saying so, rather than partway
+through with something cryptic.
+
+## In CI
+
+Set `GAMEFACE_PATH` on the runner and nothing else changes - the plugin launches the Player
+itself, with its window disabled, and closes it when the bake finishes. The bake cache lives in
+`node_modules/.cache/rasterize` and is keyed by content, so caching that directory between runs
+turns most builds into no-ops.
+
+## Requirements
+
+- Vite 5 or newer
+- A Gameface Player. cohtml 3.2.0 is what this was developed and verified against; the engine
+  version is part of every cache key, so upgrading the engine correctly invalidates the bakes.
+
+:::caution
+Image processing uses [sharp](https://sharp.pixelplumbing.com/), which ships a compiled binary per
+platform. `npm install` picks the right one for you and there is nothing to configure - but if
+your CI installs dependencies on one platform and runs the build on another, or uses
+`--ignore-scripts`, that binary will be missing and the bake will fail on the first capture.
+Install on the machine that runs the build.
+:::

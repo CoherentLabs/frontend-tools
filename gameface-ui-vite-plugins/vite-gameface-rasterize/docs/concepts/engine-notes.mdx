@@ -1,0 +1,97 @@
+---
+title: How it works, and what cohtml made us do differently
+---
+
+The pipeline captures in the engine that will draw the result. That is the whole design premise:
+Chromium cannot render cohtml, so a texture captured anywhere else would be a picture of a
+different renderer's opinion.
+
+## The pass, end to end
+
+1. Vite writes the build.
+2. The plugin serves that output over HTTP and loads it in the Player, one configured route at a
+   time, running each route's optional setup script.
+3. It reads every `[data-rasterize]` element out of the live DOM: computed decoration, geometry,
+   and - in element mode - which descendants must stay live.
+4. It plans each bake: mode, canonical size, ink overflow, bakeability, diagnostics.
+5. It captures each element **in place**, hiding everything else, and trims the result.
+6. It writes the textures, a stylesheet, a small runtime and a manifest, and adds two tags to
+   each HTML entry.
+
+Capturing in place rather than rebuilding each element in a synthesized harness page means the
+element keeps its real cascade, fonts and engine state. There is nothing to reconstruct and
+therefore nothing to reconstruct wrongly.
+
+## Six things this engine does differently
+
+Everything here was established by driving cohtml 3.2.0.2 over CDP, and each one changed the
+implementation.
+
+### The capture comes back premultiplied
+
+`Page.captureScreenshot` returns premultiplied RGBA. A PNG is straight alpha by definition, and
+cohtml premultiplies again when it uploads the texture - so saving the capture as-is multiplies
+every partially transparent pixel by its alpha twice. It is invisible in the file and
+unmistakable on screen: soft shadows come out dark and desaturated. Every capture is converted
+back to straight alpha before it is written.
+
+This was the difference between SSIM 0.907 and SSIM 1.0000.
+
+### `CSS.forcePseudoState` reports success and does nothing
+
+The command is accepted and has no effect whatsoever. State variants are therefore baked with
+real input: `Input.dispatchMouseEvent` for `hover` and `active`, `focus()` for `focus`, an
+attribute for `disabled`, and a class for `class:` variants.
+
+### `getBoundingClientRect` ignores transforms
+
+The element renders transformed - verified crisp against doubling every length by hand - but its
+measured rectangle does not move. Where a placed element ends up is therefore computed from its
+pre-transform box, never measured afterwards. Hit-testing, on the other hand, *does* follow the
+transform, so pointer input for a hover bake is aimed at the drawn rectangle.
+
+### Nothing applies synchronously
+
+Reading a size straight after changing a style returns the old one; reading a computed value
+straight after appending a `<style>` returns the old one too. Both land on the next frame.
+
+This is one behaviour with two faces, and it is easy to mistake for a missing feature: measure in
+the same call and you conclude that injected stylesheets never apply, when they apply a frame
+later. Isolation is therefore split into two calls with a frame between them: set everything up,
+wait, then measure and place.
+
+The pipeline still emits a real stylesheet at build time rather than injecting one at runtime,
+because a stylesheet that is present when the document is parsed applies on the first frame rather
+than the second, and because the runtime then has nothing to do but create elements and set
+attributes those rules already describe.
+
+`Page.addScriptToEvaluateOnNewDocument` genuinely is accepted and never runs, which is why the
+probe that watches `addEventListener` is injected into the served HTML instead.
+
+### There is no `Emulation` domain, and clips must be on screen
+
+No `setDefaultBackgroundColorOverride`, no `deviceScaleFactor`, no `captureBeyondViewport`, and
+`clip.scale` is silently ignored. In exchange:
+
+- Transparent captures need no override at all - a transparent page background is enough, and
+  the screenshot comes back with real alpha.
+- Supersampling is done by transforming the element, not by asking the capture to scale.
+- The viewport is a hard ceiling on how large one asset can be, so the Player is launched with
+  `--enable-gui=false` (which makes the content viewport match `--width`/`--height` exactly, even
+  past the physical screen) and the window is grown to fit the largest planned bake.
+
+## Ink overflow and slicing
+
+A decoration reaches past the border box - blur, spread, offsets. The planner predicts that
+reach only well enough to size the capture generously; the fully transparent margins are then
+trimmed away, and *that* trim is what defines the recorded overflow. The underlay is positioned
+with negative insets equal to it, so layout never shifts by a pixel.
+
+For 9-slicing, the corner regions have to contain every non-uniform pixel. That is the corner
+radius **plus** the ink reach, not the larger of the two: a shadow around a rounded corner stays
+curved for its whole blur radius past where the element's own corner ends. Getting this wrong is
+what makes an otherwise fine decoration fail its uniformity check.
+
+Slices are emitted as `border-image`, which cohtml 3.2 renders correctly - corners, stretched
+edges and the `fill` centre all verified. A nine-div fallback is available via
+`sliceImpl: "divs"` for engine builds where that stops being true.

@@ -1,0 +1,90 @@
+---
+title: How to use
+sidebar:
+    order: 3
+---
+
+## Mark an element
+
+```html
+<div class="panel" data-rasterize>
+    <h2 class="panel__title">Squad status</h2>
+    <p class="panel__body">Still text, still live.</p>
+</div>
+```
+
+That is the whole opt-in. The plugin picks a mode, captures the panel's shadow, gradient and
+rounded fill, and leaves the heading and paragraph alone.
+
+## Choose a mode when you need to
+
+```html
+<!-- fixed size: one image, no slicing -->
+<div class="badge" data-rasterize data-rasterize-mode="flat">A+</div>
+
+<!-- whole subtree flattened into one image -->
+<div class="nameplate" data-rasterize data-rasterize-mode="element">…</div>
+```
+
+`auto` (the default) picks `flat` when the CSS declares a fixed width and height, and `slice`
+otherwise. Whichever it picks is printed in the build summary and recorded in the manifest, so
+the decision is never a mystery.
+
+| Mode | Description |
+|------|-------------|
+| `auto` | Default mode. Picks `flat` for fixed width/height elements, `slice` otherwise. |
+| `flat` | Fixed size. Captures the entire element as a single image with no slicing. |
+| `slice` | Slices the element into multiple images for flexible sizing. |
+| `element` | Flattens the entire subtree into one image. |
+
+## Bake hover and press states
+
+```html
+<button class="cta" data-rasterize data-rasterize-states="hover,active">Deploy</button>
+```
+
+Each state is captured as its own texture and all of them are in the DOM from the first frame,
+hidden behind `opacity: 0`. Swapping them is an opacity change, so the first hover never stalls
+waiting for a texture upload.
+
+Allowed states are `hover`, `active`, `focus`, `disabled`, and `class:<name>` for anything the
+app toggles itself:
+
+```html
+<div class="slot" data-rasterize data-rasterize-states="class:selected">…</div>
+```
+
+State variants are an instant swap, not a transition. If a baked property is under a
+`transition`, the plugin says so (RZ002).
+
+## Keep something live inside a flattened subtree
+
+```html
+<div data-rasterize data-rasterize-mode="element">
+    <div class="frame">…</div>
+    <span data-rasterize-live>{whatever the game writes here}</span>
+</div>
+```
+
+Bindings (`data-bind-*`), animated elements, and anything interactable are detected and kept
+live automatically - `data-rasterize-live` is for declaring intent about something the detector
+cannot see, and it silences the "these were excluded" warning for that node.
+
+## Check before you build
+
+```shell
+npx gameface-rasterize check --url http://localhost:5173
+```
+
+Runs the whole planning pass against your dev server and prints exactly what would be baked and
+every diagnostic, without capturing anything.
+
+## Verify after you build
+
+```shell
+npx gameface-rasterize verify dist
+```
+
+Renders each baked element against the original live CSS in the Player and compares them. Use it
+in CI: it exits non-zero when anything drifts, with a side-by-side diff written next to the
+assets.

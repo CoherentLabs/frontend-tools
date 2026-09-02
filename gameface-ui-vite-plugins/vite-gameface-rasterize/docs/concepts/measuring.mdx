@@ -1,0 +1,56 @@
+---
+title: Measuring what the bake bought
+---
+
+```shell
+npx gameface-rasterize measure dist
+```
+
+```
+gameface-rasterize measure - 3 alternating pairs
+
+  live CSS  GPU p50 3.29 ms +/- 0.01    baked  GPU p50 2.19 ms +/- 0.00   -33.4% (n=4)
+            Paint p50 0.165 ms             Paint p50 0.148 ms
+```
+
+## Why you need a command for this
+
+The obvious measurement returns nothing, and the reasonable conclusion from it is that this plugin
+does nothing.
+
+The Player paces frames at a fixed cap of roughly 31 ms. An empty page reads 31 ms. A page with
+three hundred blurred, drop-shadowed, gradient-filled boxes also reads 31 ms. Frame time - `rAF`
+deltas, wall-clock, anything that measures how often a frame arrives - cannot distinguish them,
+because the pacing is not what the work is affecting.
+
+What does move is the engine's own accounting. `Coherent_GPU`, from a CDP trace, is the per-frame
+GPU time: on that same pair of pages it reads effectively zero against 13.6 ms. That is the number
+this command reports.
+
+## What it does
+
+- **Alternates which variant runs first.** Otherwise a second-position advantage - caches warm, the
+  process settled - cannot be told apart from the effect being measured.
+- **Repeats, and reports a spread.** Absolute levels drift between runs while the gap holds steady,
+  so a single pair proves nothing. If the gap is smaller than the run-to-run spread, the command
+  says so rather than letting you quote it.
+- **Puts a deadline on the trace.** The Player ships an entire trace as one message when tracing
+  ends; past a few seconds of a heavy scene that message never arrives. Runs that time out report
+  partial results instead of hanging and leaving a multi-gigabyte Player behind.
+- **Invalidates the page every frame.** cohtml repaints dirty regions only, so a static page settles
+  into presenting the same frame and measures nothing. The whole document is nudged one pixel per
+  frame, which is also what a real UI does whenever a list scrolls or a panel slides.
+
+```shell
+npx gameface-rasterize measure dist --repetitions 5 --trace-seconds 6
+```
+
+## Reading the result
+
+The interesting number is the difference, not the level. Levels depend on the machine, the driver,
+what else is running; the gap between two variants measured minutes apart on the same machine is
+the thing that transfers.
+
+A shadow that nothing disturbs is close to free on this engine, because it is not being redrawn.
+The win appears where the work is: when the UI moves. If your page is static, `measure` will
+correctly report that baking it changed very little.

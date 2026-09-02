@@ -1,0 +1,66 @@
+---
+title: The attribute contract
+---
+
+The contract between your markup and the build pipeline is plain HTML attributes. Nothing about
+it is specific to a framework - it works the same on hand-written HTML, Solid JSX, React JSX, or
+anything else whose rendered output the Player can load.
+
+| Attribute | Values | Meaning |
+|---|---|---|
+| `data-rasterize` | *(presence)* | Bake this element's decoration. Says nothing about its descendants. |
+| `data-rasterize-mode` | `auto` \| `slice` \| `flat` \| `element` | How to bake it. Default `auto`. |
+| `data-rasterize-states` | `hover,active,focus,disabled,class:<name>` | Extra variants to capture. |
+| `data-rasterize-id` | any string | A stable name for the asset. Otherwise one is derived. |
+| `data-rasterize-scale` | number | Per-element override of the bake scale. |
+| `data-rasterize-live` | *(presence)* | Inside an element-mode subtree: keep this node as live DOM. |
+
+## What counts as decoration
+
+Baked and stripped when present:
+
+`box-shadow`, gradient and image backgrounds, `background-color` when it is part of a rounded or
+shadowed fill, `border-color` (the width stays - it is layout), `border-radius` when paired with
+something expensive, `border-image`, `filter`, `mask-image`.
+
+Never baked:
+
+- **`mix-blend-mode` and `backdrop-filter`** - they do not composite source-over, so no texture
+  can stand in for them against an arbitrary backdrop. This is arithmetic, not a heuristic, and
+  there is no approximation mode.
+- **`opacity`** - cheap, and usually animated.
+- **`transform`** - never decoration.
+- **`border-radius` on its own** - a radius with nothing painted behind it costs nothing.
+- **`border-radius` when the element clips its content** - then it is doing layout work, and
+  removing it would let children spill out of the corners.
+
+
+### filter and mask are treated carefully
+
+Both apply to an element's *content* as well as its decoration, so whether they can be baked comes
+down to whether any content is still live afterwards.
+
+| Situation | What happens |
+|---|---|
+| No content of its own | Part of the decoration. Baked in and stripped. |
+| Decoration mode, with children | The children stay live and need the effect, so it stays live and the capture is taken without it. The shadows underneath are still baked. |
+| Element mode, nothing left live | The subtree became pixels, so there is nothing for the effect to apply to. Baked in and stripped. |
+| Element mode, with live parts | The live parts would lose the effect, so it stays live. |
+
+The third row is the one worth designing for. A masked or filtered panel that never changes costs
+the engine a pass every frame for a picture that never moves; marking it `element` when its whole
+subtree is static removes that pass entirely, not just the shadow underneath it.
+
+When an effect does survive the bake, the build says so and why (RZ025), because it is a per-frame
+cost you may be able to design away.
+
+## How an element is identified
+
+An explicit `data-rasterize-id` wins. Otherwise the id is derived from a hash of the decoration
+values, the mode, the size, the scale, the state list, the engine version and the contract
+version - so an unchanged decoration is a cache hit, and a changed one is naturally a new asset.
+
+At runtime, elements are matched to assets by tag and class list rather than by position in the
+document. That is deliberate: twenty identical cards share one texture, one upload and twenty
+draws. When two elements share a tag and classes but baked differently, those particular
+matchers fall back to document position.

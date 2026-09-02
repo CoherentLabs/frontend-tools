@@ -1,0 +1,78 @@
+---
+title: Element mode
+---
+
+Decoration mode bakes one element's own shadows and fills. Element mode goes further: it takes a
+whole subtree - wrappers, backgrounds, frames, static labels - and turns it into a single image,
+keeping only the parts that genuinely have to stay live and pinning them on top.
+
+A nameplate is the motivating case. The portrait, the frame, the rank icon and the "OPERATIVE"
+label are all static. The player's name, the HP bar fill and the report button are not. Twenty
+nested wrappers become one container, one image, and three live leaves.
+
+```html
+<div class="nameplate" data-rasterize data-rasterize-mode="element">
+    <div class="nameplate__frame">
+        <div class="nameplate__portrait"></div>
+        <div class="nameplate__info">
+            <div class="nameplate__label">OPERATIVE</div>
+            <div class="nameplate__name" data-bind-value="{{player.name}}">Vasquez</div>
+            <div class="nameplate__bar"><div class="nameplate__fill"></div></div>
+        </div>
+        <button class="nameplate__report">!</button>
+    </div>
+</div>
+```
+
+## What stays live
+
+A node inside the subtree is kept as live DOM when it is:
+
+1. **Data-bound** - it carries any `data-bind-*` attribute. Its content comes from the game and
+   must never be frozen into a picture.
+2. **Animated** - it or its subtree has a running `transition` or `animation`.
+3. **Interactable** - a `button`, `input`, `a`, `select`, `textarea`, anything with `tabindex`,
+   an inline handler, a framework-delegated handler, or anything that called `addEventListener`.
+   Baked pixels cannot receive events.
+4. **Declared** - it carries `data-rasterize-live`.
+
+Detection preserves those automatically and then tells you what it preserved and why (RZ012), so
+a partial flattening is never silent. `data-rasterize-live` both forces the exclusion and
+silences the warning for that node, because at that point you have said it on purpose.
+
+Note that a `:hover` *look* on the marked element itself is not an exclusion - that is a state
+variant. Exclusion is for elements that need their own event behaviour.
+
+## Position pinning
+
+The tool does not re-implement layout. During capture the original subtree is loaded in the
+Player and the layout engine places everything exactly as it always did; the resolved geometry
+of each live part is then read back and written into the generated stylesheet as an absolute
+position inside the flattened container. The wrapper hierarchy is used once, at build time, and
+then deleted.
+
+Live parts are captured *around*, not composited over: they are hidden for the capture, so the
+image contains no frozen copy of a name that is about to change.
+
+## The fixed-box contract
+
+> Things inside a flattened element can change **what they show**, but not **how much space they
+> take**. A number can tick, a name can update, a bar can fill - but nothing can appear,
+> disappear, grow, or shrink in a way that pushes its neighbours. There are no neighbours to push
+> any more; everything's position was fixed at build time.
+
+Mechanically, every live part gets a fixed-size box with `overflow: hidden`. Text that outgrows
+its box clips. Layout-affecting dynamism inside the subtree - `data-bind-for`, `data-bind-if`,
+conditional mounting that shifts siblings - is an error (RZ011), because it would silently break
+this contract. Content-only dynamism is exactly what the mode is for.
+
+## Limits
+
+- Element-mode bakes are always flat captures; a flattened subtree has a design-time size by
+  definition.
+- If layout-affecting `@media` rules apply inside the subtree, the pinned positions would only
+  be valid at one breakpoint, so the element is skipped with a warning (RZ013).
+- A decoration-mode marker nested inside an element-mode subtree is subsumed by the outer bake
+  and reported as redundant (RZ014).
+- The DOM flattening happens at runtime, when the runtime module attaches. The per-frame
+  rendering win is real; the one-off cost of constructing the original tree is not saved.

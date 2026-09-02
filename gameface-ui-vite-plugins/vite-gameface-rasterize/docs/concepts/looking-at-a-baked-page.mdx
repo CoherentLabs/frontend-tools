@@ -1,0 +1,54 @@
+---
+title: Looking at a baked page
+---
+
+Open your page in the Gameface Player, then open **`localhost:9444`** in Chrome. The Player runs
+its debugger on that port by default and serves a full devtools frontend from it - no flags and
+nothing to set up.
+
+You get the real computed styles for the page as the engine sees it, which turns most of the
+remaining silent failures into things you can look at directly.
+
+## What to look for
+
+**Did this element get a texture?** A baked element carries `data-rz-id`. If it is missing, the
+runtime did not match it - the build's coverage line and RZ022 will have said so, and the reason
+is usually its class list.
+
+```js
+document.querySelectorAll('[data-rasterize]').length     // marked
+document.querySelectorAll('[data-rz-underlay]').length   // textured
+```
+
+**What was actually captured?** The texture is the `background-image` (or `border-image-source`) on
+the `<i data-rz-underlay>` child. Open that URL on its own to see the picture the pipeline took. An
+asset that looks blank, clipped or rotated tells you what went wrong at capture time.
+
+**Which declarations came from the plugin?** They are all in `dist/rz/rasterize.css`, and they show
+up in the computed-styles panel against their generated selector, so you can see exactly what was
+stripped from your element and what replaced it.
+
+## The build's own output
+
+Three files are written next to the textures:
+
+| File | What it holds |
+|---|---|
+| `rz/rasterize.manifest.json` | every asset: mode, size, ink overflow, slice insets, live parts, hash |
+| `rz/rasterize.diagnostics.json` | every diagnostic in full, with every element it applies to |
+| `rz/report/<route>.png` | the page as shipped, the page without the bake, and their difference |
+
+The diagnostics file is the one to reach for when the console summary groups something you need to
+see element by element. Nothing in it is truncated.
+
+## Reproducing a capture by hand
+
+`--debug` writes every capture, before and after trimming, plus the geometry that produced it:
+
+```shell
+npx gameface-rasterize bake dist --debug
+```
+
+They land in `node_modules/.cache/rasterize/debug/`, one PNG per asset per state and a JSON beside
+each with the plan, the measured ink overflow, and the placement the isolation computed. If an
+asset looks wrong in the page, this says whether it was captured wrong or placed wrong.

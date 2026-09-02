@@ -1,0 +1,170 @@
+---
+title: Authoring for the bake
+---
+
+Five rules decide whether a real UI gets much out of this tool. They are not style preferences -
+each one follows from something the pipeline mechanically has to do, so knowing the mechanism is
+enough to predict the rule.
+
+Most of the work each rule describes is done for you. What is left is stated under each one, so
+you know where the tool stops and you start.
+
+There is a sixth thing that is not a rule but costs more textures than any of them:
+[pause JavaScript-driven motion for the bake](../getting-started/pausing-motion.mdx).
+
+## 1. Split state off the decoration
+
+**The mechanism.** A bake is one picture of one element, taken once. The pipeline captures what
+the cascade resolves to at that moment and strips those properties from the live CSS. Anything
+that would have changed the resolved value later is now unreachable: the picture is what ships.
+
+**What this means in practice.** "Only bake what never changes" is easy to hear as "elements with
+shadows". It actually means *elements with shadows and no runtime-variable branch anywhere in
+their cascade*. A nameplate frame that is static except for
+
+```css
+.nameplate.is-low .np__plate { border-color: #f43; }
+```
+
+is not static. The modifier fires when health drops, the baked texture does not change, and the
+frame is wrong for the rest of the match.
+
+**What to do.** Put the changing part on a sibling, not a modifier:
+
+```html
+<div class="np__plate" data-rasterize></div>
+<div class="np__alarm"></div>   <!-- the state-driven border and glow live here, unbaked -->
+```
+
+The decoration underneath becomes genuinely constant, and the overlay in dev will start calling
+it bakeable. Without this pattern most real UIs have very little that qualifies, so it is worth
+doing before anything else.
+
+The tool can detect a `transition` or `animation` targeting a baked property (RZ002) but it
+cannot know that `.is-low` will be added by the game three minutes from now. This one stays
+yours.
+
+## 2. Make the element self-identifying
+
+**The mechanism.** The runtime finds a texture by the marked element's own tag and class list,
+because that is what lets sixty identical cards share one texture instead of sixty.
+
+**The case to know about.** A variant selected through an ancestor makes every marked element
+present the same key:
+
+```css
+.marker--hostile  .marker__frame { box-shadow: 0 6px 20px 3px rgba(220, 60, 60, .75); }
+.marker--friendly .marker__frame { box-shadow: 0 6px 20px 3px rgba(60, 200, 120, .75); }
+```
+
+Every `.marker__frame` looks identical to the matcher, even though three different decorations were
+baked. When several bakes share a key like this, the build records the nearest ancestor class that
+separates them and the runtime resolves by walking up from the element, so the example above works
+as written.
+
+**What is left for you.** If nothing separates them - two elements with identical tags, identical
+classes, identical ancestry, and different decoration - the build says so (RZ020) and only one of
+them gets a texture. And an element that never has a class and never has `data-rasterize-id` has
+no key at all; the runtime retries when a class arrives, but if one never does, it cannot match.
+
+## 3. Keep transforms off it and above it
+
+**The mechanism.** The bake key includes the element's size, so that two elements which are
+genuinely different sizes do not share one texture.
+
+**The case to know about.** Sizes are measured in layout units rather than as painted, so a
+transform above an element - a per-element depth scale on a row of panels, say - does not change
+the key, and forty identical panels under forty slightly different scales still share one texture.
+**CSS** animations are switched off for the duration of the capture, so a spinning frame is
+captured square and spins at runtime as it did before.
+
+**What is left for you.** A transform on the marked element is baked *around*, not into: the
+texture is the un-transformed decoration, and the element's transform applies to it at runtime
+exactly as it applied to the live CSS. That is correct, and nothing needs splitting any more.
+
+What still costs you textures is genuine variation. Four panels at four different pixel sizes are
+four textures, because they are four different pictures.
+
+And motion driven by your own JavaScript is *not* stopped and cannot be, which is a much larger
+effect than any of this - see [pausing motion](../getting-started/pausing-motion.mdx).
+
+## 4. Diff against a baseline, always
+
+**The mechanism.** Everything above can go wrong without producing an error, because a texture in
+the wrong place, a texture of nothing, and a texture nobody matched all render as a page that
+loads.
+
+**What the tool does.** Every build renders itself twice - as shipped, and with the generated tags
+stripped - and writes both plus their difference to `rz/report/`. The same pass counts how many
+marked elements actually received a texture and names the ones that did not, so a build that is
+green and wrong still prints a percentage and a picture.
+
+**What is left for you.** Looking at it. The threshold catches gross breakage; a shadow that is
+subtly the wrong colour on one panel is a few hundred pixels and will not trip it. The picture
+will show you in a second what a description cannot.
+
+Add `verify: true` in CI on top of that: it compares each unique asset against its live CSS inside
+the engine and fails the build on a real difference. The same check is available as
+`gameface-rasterize verify` when you want it without a build.
+
+## 5. Keep the marked element's class list constant
+
+**The mechanism.** Rule 2's matcher works on the element's own classes. Any class your app adds or
+removes at runtime therefore changes what the runtime is looking for.
+
+**What this means in practice.** This is rule 2 from the other direction, and it is the one that
+bites on real UIs, because state classes usually live on the same node as the decoration:
+
+```html
+<div class="row" data-rasterize></div>          <!-- baked as div.row -->
+<div class="row status-dead" data-rasterize></div>  <!-- a longer class list -->
+```
+
+**What the tool does.** A baked class list that is a *subset* of the element's classes matches, the
+longest match winning - the same way a CSS class selector works. The row above resolves to the
+`div.row` texture, and a variant genuinely baked with `status-dead` is a longer match and still
+beats it. When matching does fail, the build names the case and quotes both class lists.
+
+**What is left for you.** If the class *does* change the decoration, declare it:
+`data-rasterize-states="class:status-dead"`, which bakes a variant and swaps it at runtime. If it
+does not change the decoration - an `opacity`, a `transform`, a marker class with no CSS behind
+it - there is nothing to declare and nothing to fix; it costs you nothing either way.
+
+Do not reach for `data-rasterize-states` to fix a *matching* problem. It bakes another texture per
+state, which costs VRAM for no visual difference, and RZ016 will tell you the variant was
+pointless.
+
+## Two things that are not rules but will cost you an afternoon
+
+### Size your UI in something the bake window cannot change
+
+The capture window grows to fit the largest planned asset. If your layout is sized in `vh` - or in
+`rem` derived from `vh`, which is what the Gameface scaling guidance recommends - a taller window
+makes every element bigger, which makes the next asset bigger, which grows the window again. It
+converges at about 1.5x the design scale, and the only symptom is a larger VRAM number.
+
+The build now notices this and says so, but the fix is yours: pin the scale in the route's setup
+hook, so the bake measures the size the game will actually draw.
+
+```ts
+rasterize({
+    routes: [{ path: 'index.html', setup: "document.documentElement.style.setProperty('font-size', '10px')" }],
+});
+```
+
+Underlays are drawn with `background-size: 100% 100%`, so the texture still maps correctly at
+whatever size the element ends up.
+
+### In dev, import your CSS from JavaScript
+
+Vite's dev server serves a `<link rel="stylesheet">` target as a JavaScript module. A browser is
+fine with this because Vite rewrites the HTML around it; loaded straight into the Player, the link
+resolves to JavaScript and no rules apply, so the page renders unstyled and the overlay will
+correctly report that there is nothing worth baking.
+
+Importing the stylesheet from a module - which is what a framework project does anyway - avoids it
+entirely.
+
+```js
+import './styles.css';
+```

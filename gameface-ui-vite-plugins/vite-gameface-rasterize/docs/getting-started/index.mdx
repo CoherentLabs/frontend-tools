@@ -1,0 +1,62 @@
+---
+title: Overview
+sidebar:
+    order: 1
+---
+
+A Vite plugin that turns expensive static CSS decorations into pre-rendered textures, using the
+Gameface Player as the renderer.
+
+cohtml re-evaluates `box-shadow`, `filter`, gradients and rounded fills per pixel, which is why
+the guide tells you to avoid them. This plugin lets you write them anyway: on `vite build` it
+loads your built UI in the Player, reads each marked element's real computed decoration and
+geometry out of the engine, captures it, and replaces the expensive properties with an image the
+engine draws as a textured quad.
+
+Nothing about your content changes. Text stays text, children stay children, `data-bind-*`
+attributes keep binding, and event handlers keep firing. Only the decoration becomes pixels.
+
+### What gets baked
+
+Only what you mark, and only what composites normally over its backdrop:
+
+```html
+<div class="panel" data-rasterize>…</div>
+```
+
+`mix-blend-mode` and `backdrop-filter` are never baked - they do not composite source-over, so a
+texture cannot reproduce them. The plugin refuses and tells you why rather than approximating.
+
+### Installation
+
+```shell
+npm install -D vite-gameface-rasterize
+```
+
+```ts
+// vite.config.ts
+import rasterize from 'vite-gameface-rasterize';
+
+export default defineConfig({
+    plugins: [rasterize()],
+});
+```
+
+```shell
+# .env
+GAMEFACE_PATH=D:/gameface/Player/Player.exe
+```
+
+### What happens when
+
+| Command | Behaviour |
+|---|---|
+| `vite dev` | Nothing to your visuals. Live CSS renders untouched, and F9 shows what the build would decide. |
+| `vite build` | Launches the Player, captures, writes the textures, stylesheet, runtime and manifest, then renders the result against the unbaked page and reports what was lost. |
+| `vite build` with `verify: true` | The same, plus an SSIM check of every asset against its live CSS, failing the build on a real difference. |
+| `gameface-rasterize check` | Plans and reports without capturing anything - works against a dev server too. |
+| `gameface-rasterize measure` | Compares GPU time per frame, live against baked. |
+
+Everything the plugin can do during a build, it does during the build - including the advisory
+pass that points at unmarked elements worth marking. The command line is only for the things a
+build cannot do: planning without building, and measuring an output that already exists.
