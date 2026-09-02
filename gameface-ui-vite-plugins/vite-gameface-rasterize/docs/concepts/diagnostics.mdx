@@ -1,0 +1,149 @@
+---
+title: Diagnostics
+---
+
+Every diagnostic names the element it is about, the route it was found on, and links here.
+Errors fail the build; warnings do not.
+
+| Code | Level | Condition |
+|---|---|---|
+| RZ001 | error | `mix-blend-mode` or `backdrop-filter` on a marked element |
+| RZ002 | warn* | a transition or animation targets a baked property |
+| RZ003 | warn | a baked value comes from a custom property that JS writes at runtime |
+| RZ004 | error | `flat` mode but the size is not statically resolvable |
+| RZ005 | error | a 9-slice stretch zone is not uniform |
+| RZ006 | warn | texture budget exceeded, or a bake needs a bigger viewport than allowed |
+| RZ007 | warn | the marked element has nothing worth baking |
+| RZ008 | error | verification SSIM below the threshold |
+| RZ009 | warn | the requested format cannot carry the alpha this asset needs |
+| RZ010 | error | element mode, but nothing bakeable remains after exclusions |
+| RZ011 | error | layout-affecting dynamism inside an element-mode subtree |
+| RZ012 | warn | element mode: live parts were excluded (lists each one and why) |
+| RZ013 | warn | layout-affecting media queries apply to this element |
+| RZ014 | warn | a redundant nested marker, subsumed by an element-mode bake |
+| RZ015 | info | an unmarked element uses expensive properties |
+| RZ016 | warn | a state variant looks identical to the base bake |
+| RZ017 | warn | the capture pass hit a problem with this element |
+| RZ018 | warn | the element was `display: none` when it was captured |
+| RZ019 | warn | the capture came back empty; nothing was baked and the live CSS was left alone |
+| RZ020 | warn | lookalike elements baked differently and cannot all be matched at runtime |
+| RZ021 | warn | several assets are byte-identical images under different ids |
+| RZ022 | warn | marked elements have no texture in the built page |
+| RZ023 | warn | the baked page differs from the live one by more than the threshold |
+| RZ024 | warn | too small to 9-slice, so it was baked flat at its measured size |
+| RZ025 | warn | a filter or mask survived the bake and still costs a pass every frame |
+
+\* an error when `strictTransitions: true`.
+
+Several diagnostics arise from one decoration used by many elements. Identical ones collapse into
+a single line with a count, so a page with six hundred marked elements still prints a report you
+can read.
+
+## RZ001 - not source-over
+
+An effect can be baked if and only if it composites with plain source-over blending against
+whatever is behind it. Shadows, gradients, rounded fills and static filters all do, so a
+transparent PNG alpha-composited by cohtml is mathematically identical to the live effect.
+
+`mix-blend-mode` uses different blend maths, and `backdrop-filter` samples the runtime backdrop -
+neither can be reproduced by a texture that was rendered before that backdrop existed. There is
+no approximation mode, because any approximation would be wrong in a way that only shows up on
+some backgrounds. Remove the marker, or remove the property.
+
+## RZ002 - transitioned decoration
+
+Baked state variants are an instant swap. If the element transitions a property that got baked,
+the animation disappears. The escape hatch is removing the marker and keeping it live - that is
+your call, which is why this is a warning by default.
+
+## RZ005 - the stretch zone is not uniform
+
+A 9-slice stretches its edges and centre. Anything that varies along the axis it is stretched on
+comes apart when it is stretched. A gradient fill is the usual cause: it varies along one axis,
+and the edge strips on that axis have to be uniform.
+
+Fixed-size elements can use `data-rasterize-mode="flat"` and keep the gradient. Otherwise make
+the fill uniform and keep the gradient for something that does not need to stretch.
+
+## RZ011 - the fixed box was broken
+
+See [element mode](./element-mode.mdx). Inside a flattened subtree, content can change what it
+shows but not how much space it takes. `data-bind-for` and `data-bind-if` add and remove nodes,
+which moves everything after them, so they cannot live inside a flattened subtree.
+
+## RZ019 - the capture came back empty
+
+The element painted nothing at the moment it was captured: it or an ancestor was transparent,
+clipped away, or not displayed. The bake is refused rather than shipped, because an empty texture
+is the worst thing this pipeline can produce - the emitted CSS also strips the live decoration, so
+the element would lose its decoration entirely instead of falling back to the CSS that worked.
+
+An element that is transparent until the game reveals it is handled: isolation forces the target's
+own `opacity` and `display`, so `opacity: 0` alone does not produce a blank. What remains are
+elements whose decoration is painted by a descendant - which is what element mode is for - and
+elements inside a container that is not displayed at capture time, which the setup hook can open.
+
+## RZ020 - lookalikes that cannot all be matched
+
+The runtime finds a texture by the element's own tag and class list. When several bakes share a
+key, the build records an ancestor class that separates them; this fires when no ancestor class
+does. Only the element at the recorded position gets a texture and its twins keep live CSS.
+
+Put the variant on the marked element itself - `.wm__frame--hostile` rather than
+`.wm--hostile .wm__frame` - and every element resolves.
+
+## RZ021 - the same image under different ids
+
+Two assets are byte-identical, so one decoration was baked twice. The message names which part of
+the bake key differs. Usually it is the measured size, and usually the cause is genuine variation:
+four panels at four sizes are four pictures. If the sizes should be equal, make them equal and the
+assets collapse into one.
+
+## RZ022 - marked but not textured
+
+Counted in the finished build, in the Player, by asking the page how many `[data-rasterize]`
+elements ended up with a texture. Each one that did not is named with the reason: nothing was
+baked for it, its key is shared and unresolvable, or it had no classes at runtime.
+
+This is the check that catches a build being green while two thirds of the page still runs live
+CSS.
+
+## RZ023 - the baked page does not match the live one
+
+Every build renders the finished output twice - as shipped, and with the generated tags stripped -
+and compares them. Above the threshold this fires, and the picture it points at has three panels
+keyed by a colour stripe: green is live CSS, blue is what shipped, red marks where they disagree.
+
+Small differences are normal. A rounded edge rendered from a texture and the same edge rendered by
+the engine differ by a pixel of antialiasing, which is why the default threshold is half a percent
+rather than zero.
+
+## RZ024 - too small to 9-slice
+
+A 9-slice keeps its corners at a fixed size and stretches what is between them. When the element
+is smaller than its two corners put together there is nothing between them, and `border-image`
+squashes the corner artwork instead - which looks almost right, which is the worst way for it to
+look. A wide soft glow on a small element is the usual shape.
+
+The bake is taken flat at the measured size instead. That is exact at that size and stretches if
+the element is resized at runtime; a smaller blur or radius would let it slice properly.
+
+## RZ025 - a filter or mask survived the bake
+
+`filter` and `mask-image` apply to an element's content as well as its decoration, so they can only
+be baked in when nothing is left live to need them. This fires when one had to stay, and says which
+of the two cases you are in:
+
+- **Decoration mode with children.** The children are live by definition. If the whole subtree is
+  actually static, `data-rasterize-mode="element"` bakes the children in as well and the effect
+  goes with them.
+- **Element mode with live parts.** Those parts would lose the effect if it were baked into the
+  image, so it stays. Everything else in the subtree still became a texture.
+
+Worth acting on because it is a per-frame cost: a masked panel that never changes has the engine
+re-evaluating a mask for a picture that never moves.
+
+## RZ015 - the advisor
+
+A separate, advisory-only pass listing elements that use expensive properties without a marker.
+It never marks anything: detection advises, the marker decides.

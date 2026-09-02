@@ -1,0 +1,69 @@
+---
+title: Changelog
+---
+
+## 1.0.0
+
+First release.
+
+**Baking.**
+
+- Decoration baking in `flat` and `slice` modes, captured in the Gameface Player against the real
+  page rather than a reconstruction of it.
+- `element` mode: whole-subtree flattening, with data-bound, animated and interactable descendants
+  detected automatically, kept live, and pinned at the geometry the layout engine gave them.
+- State variants (`hover`, `active`, `focus`, `disabled`, `class:<name>`), driven by real input,
+  because `CSS.forcePseudoState` reports success on this engine and then does nothing.
+- `filter` and `mask-image` are baked in when nothing is left live to need them, and kept live when
+  something is (RZ025).
+- Content-addressed cache keyed on decoration, size, scale, states, engine version and contract
+  version. Sizes are measured in layout units, so a transform above an element does not split one
+  decoration into a texture per element.
+- Optional WebP companions, texture budget accounting, and a build summary that prints the VRAM
+  trade.
+
+**Checking, because the failures here are silent.**
+
+- Every build renders the finished output twice - as shipped, and with the bake stripped out - and
+  writes both plus their difference to `rz/report/` (RZ023). It captures the unbaked page twice as
+  well, so a page that does not render identically twice says so instead of blaming the bake.
+- It counts how many marked elements actually received a texture in the built page and names the
+  ones that did not, with the reason (RZ022).
+- An empty or clipped capture is refused rather than shipped, so the element keeps the live CSS
+  that was working instead of losing its decoration entirely (RZ019).
+- Byte-identical assets under different ids are reported, naming which part of the bake key split
+  them (RZ021).
+- Every build ends with what was lost:
+
+```
+8 planned, 7 emitted, 1 dropped - see RZ019
+17 marked, 16 textured, 1 unmatched - see RZ022
+```
+
+- `rz/rasterize.diagnostics.json` holds every diagnostic and every element it applies to; nothing
+  in the console is truncated either.
+- `verify: true` runs the SSIM check as part of the build and fails on a real difference.
+
+**Matching.**
+
+- Elements are matched by tag and class list, so identical decorations share one texture.
+- Variants selected through an ancestor resolve: the build records the ancestor class that
+  separates lookalike bakes and the runtime walks up from the element (RZ020 when nothing does).
+- A baked class list that is a subset of the element's classes matches, longest match winning, so a
+  state class the app adds at runtime does not cost the element its texture.
+- An element whose class arrives after mount is retried rather than skipped for good.
+
+**Feedback loops.**
+
+- A dev overlay classifies every marked element the way the build would - shared, own, unmatched,
+  nothing - in the page, with no Player launch and no bake. Press F9.
+- `gameface-rasterize check` plans and reports without capturing anything, against a built output
+  or a running dev server.
+- `gameface-rasterize verify` compares each unique asset against its live CSS inside the engine,
+  per asset rather than per element, loading each page once per route.
+- `gameface-rasterize measure` compares GPU time per frame, live against baked - alternating which
+  variant runs first, repeating, and reporting a spread. It exists because frame time cannot see
+  this plugin at all: the Player paces frames at a fixed cap, so the obvious measurement returns
+  "no change" for every page.
+- Diagnostics RZ001-RZ025, including an advisory pass over unmarked elements that use expensive
+  properties.

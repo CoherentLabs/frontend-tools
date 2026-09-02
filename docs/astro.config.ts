@@ -13,8 +13,9 @@ async function getConfig() {
     'e2e', 
     'gameface-vite-plugin', 
     'vite-solid-style-to-css-plugin', 
-    'vite-gameface-style-transformer', 
-    'interaction-manager', 
+    'vite-gameface-style-transformer',
+    'vite-gameface-rasterize',
+    'interaction-manager',
     'data-binding-autocomplete', 
     'eslint-plugin-gameface', 
     'create-gameface-app', 
@@ -134,6 +135,32 @@ async function getConfig() {
           autogenerate: { directory: 'vite-gameface-style-transformer/concepts' },
         },
         generateMultipleDocsChangelog('vite-gameface-style-transformer', path.join(__dirname, `./src/content/docs/vite-gameface-style-transformer/changelog/index.mdx`)),
+      ],
+    },
+    {
+      link: '/vite-gameface-rasterize/getting-started',
+      label: 'Vite Rasterize',
+      id: 'vite-gameface-rasterize',
+      icon: 'seti:image',
+      items: [
+        await generateVersionWithPackageJSON(
+          '../gameface-ui-vite-plugins/vite-gameface-rasterize/package.json',
+          'https://npmjs.org/vite-gameface-rasterize'
+        ),
+        {
+          label: 'Getting Started',
+          autogenerate: { directory: 'vite-gameface-rasterize/getting-started' },
+        },
+        {
+          label: 'Concepts',
+          autogenerate: { directory: 'vite-gameface-rasterize/concepts' },
+        },
+        generateMultipleDocsChangelog('vite-gameface-rasterize', path.join(__dirname, `./src/content/docs/vite-gameface-rasterize/changelog/index.mdx`)),
+        {
+          label: 'API Reference',
+          collapsed: true,
+          autogenerate: { directory: 'vite-gameface-rasterize/api', collapsed: true },
+        },
       ],
     },
     {

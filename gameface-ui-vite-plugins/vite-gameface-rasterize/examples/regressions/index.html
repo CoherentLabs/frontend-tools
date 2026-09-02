@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>rasterize regressions</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <!-- 1. Variants selected through an ancestor.
+         Nine elements, three decorations, and every element presents the identical tag and class
+         list `div.wm__frame`. Expected: 3 assets, 9 of 9 textured. -->
+    <div class="row">
+        <div class="wm wm--hostile"><div class="wm__frame" data-rasterize></div></div>
+        <div class="wm wm--hostile"><div class="wm__frame" data-rasterize></div></div>
+        <div class="wm wm--hostile"><div class="wm__frame" data-rasterize></div></div>
+        <div class="wm wm--friendly"><div class="wm__frame" data-rasterize></div></div>
+        <div class="wm wm--friendly"><div class="wm__frame" data-rasterize></div></div>
+        <div class="wm wm--friendly"><div class="wm__frame" data-rasterize></div></div>
+        <div class="wm wm--neutral"><div class="wm__frame" data-rasterize></div></div>
+        <div class="wm wm--neutral"><div class="wm__frame" data-rasterize></div></div>
+        <div class="wm wm--neutral"><div class="wm__frame" data-rasterize></div></div>
+    </div>
+
+    <!-- 2. Identical decorations under per-element depth scales.
+         The transform belongs to the wrapper, so the measured size used to differ per element and
+         each got a private copy of one identical texture. Expected: 1 asset, 4 of 4 textured. -->
+    <div class="row">
+        <div class="depth" style="transform: scale(1.03)"><div class="plate" data-rasterize></div></div>
+        <div class="depth" style="transform: scale(1.07)"><div class="plate" data-rasterize></div></div>
+        <div class="depth" style="transform: scale(0.94)"><div class="plate" data-rasterize></div></div>
+        <div class="depth" style="transform: scale(1.11)"><div class="plate" data-rasterize></div></div>
+    </div>
+
+    <!-- 3. Transparent until the game shows it, and a spinning decoration.
+         The first used to bake to nothing and ship anyway; the second used to bake mid-rotation.
+         Expected: both produce a real texture. -->
+    <div class="row">
+        <div class="ghost" data-rasterize></div>
+        <div class="spinner" data-rasterize></div>
+    </div>
+
+    <!-- 4. Genuinely uncapturable: inside a display:none container.
+         Expected: RZ019, no asset, and the live CSS left alone. -->
+    <div class="offstage">
+        <div class="offstage__panel" data-rasterize></div>
+    </div>
+
+    <!-- 5. Class arrives after mount, the way a framework signal delivers one.
+         Expected: textured anyway, because the runtime retries when a class appears. -->
+    <div class="row">
+        <div id="late" data-rasterize></div>
+    </div>
+
+    <!-- 6. A mask and a filter over a subtree that never changes.
+         Nothing here has to stay live, so both should be baked into the image and stripped -
+         a mask the engine re-evaluates every frame for a picture that never moves is the work
+         this tool exists to remove. Expected: strips include mask-image and filter, no RZ025. -->
+    <div class="row">
+        <div class="masked" data-rasterize data-rasterize-mode="element">
+            <div class="masked__bar"></div>
+            <div class="masked__bar masked__bar--short"></div>
+            <div class="masked__bar"></div>
+        </div>
+    </div>
+
+    <!-- 7. The same effects over a subtree with one live part.
+         The bound value would lose the mask if it were baked in, so both stay live.
+         Expected: RZ025 naming what survived and why. -->
+    <div class="row">
+        <div class="masked masked--live" data-rasterize data-rasterize-mode="element">
+            <div class="masked__bar"></div>
+            <div class="masked__bar" data-bind-value="{{player.score}}">1250</div>
+        </div>
+    </div>
+
+    <script>
+        setTimeout(function () {
+            document.getElementById('late').className = 'late-panel';
+        }, 100);
+    </script>
+</body>
+</html>

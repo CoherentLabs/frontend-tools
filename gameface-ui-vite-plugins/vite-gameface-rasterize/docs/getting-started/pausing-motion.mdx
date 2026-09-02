@@ -1,0 +1,78 @@
+---
+title: If your UI is driven by JavaScript, pause it for the bake
+sidebar:
+    order: 4
+---
+
+The pipeline stops CSS animations and transitions during capture. It cannot stop a
+`requestAnimationFrame` loop or a `setInterval` - those are your code, and on a game HUD they are
+what moves nearly everything.
+
+Isolating an element takes two frames: one to apply the isolation, one to measure and place it,
+because this engine does not lay out synchronously. An element that your own loop moves in
+between is photographed where it no longer is. The capture comes back empty, the bake is refused
+(RZ019), the element keeps its live CSS, and the build stays green.
+
+Three things make this worth a page of its own:
+
+- **It fails exactly the elements worth baking.** The win from this plugin appears when the UI
+  moves; the elements that move are the ones your loop is driving.
+- **It is not reproducible.** The same source can bake ten assets on one build and fifteen on the
+  next, because whether a given element was mid-move is a matter of timing.
+- **It is invisible.** Nothing is wrong with the page. It simply is not accelerated.
+
+## The fix
+
+Stop your update loop in the route's `setup` hook. What that looks like depends entirely on how
+your UI is built - the hook is just JavaScript evaluated in the page, so anything you can reach
+from the page you can use:
+
+```ts
+rasterize({
+    routes: [{ path: 'index.html', setup: 'myApp.stopUpdates()', settleMs: 400 }],
+});
+```
+
+If there is no such entry point, cancel the loop directly. Replacing `requestAnimationFrame` with
+a no-op stops any loop that reschedules itself, whatever created it:
+
+```ts
+setup: 'window.requestAnimationFrame = () => 0;'
+```
+
+Timer-driven updates need the same treatment:
+
+```ts
+setup: 'window.setInterval = () => 0; window.setTimeout = () => 0;'
+```
+
+`settleMs` gives whatever was already in flight a chance to finish before anything is captured.
+
+In the cases this was measured on, stopping the update loop roughly doubled the number of elements
+that could be baked and removed RZ019 entirely. It is usually the difference between baking part of
+a UI and baking all of it.
+
+## Anything decided before setup can run
+
+`setup` runs once the page has loaded. If your UI decides something at module-initialisation time -
+a randomised starting state, a seed, a layout chosen from a random value - that has already
+happened by then. `preload` is injected before the page's own scripts run:
+
+```ts
+rasterize({
+    routes: [{ path: 'index.html', preload: 'Math.random = () => 0.5;', setup: 'myApp.stopUpdates()' }],
+});
+```
+
+The same two hooks make the build's visual audit meaningful, since it needs the page to render the
+same way twice.
+
+## Anything else that moves
+
+The same two-frame window applies to anything that changes an element's position or size from
+JavaScript: a layout that settles asynchronously, a font swap that reflows, a list that populates
+from a fetch. If a bake is refused and the element is plainly visible on screen, this is the first
+thing to check.
+
+Captures that come back *clipped* rather than empty are refused too, and the message says which
+it was.
