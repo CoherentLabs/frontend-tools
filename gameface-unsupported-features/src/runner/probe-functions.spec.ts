@@ -19,8 +19,9 @@ import * as path from 'node:path';
 import { CSS_FUNCTIONS } from '../static/css-functions';
 import type { CssFunctionEntry } from '../static/css-functions';
 
-import { parseLogSync } from '../log/log-parser';
+import { parseLogSync, findActiveLogPath } from '../log/log-parser';
 import { reconcile, partitionBySurface } from '../merge/reconciler';
+import { canonicalizeCatalogRows, writeJsonFile } from '../write/catalog-writer';
 
 // ── Configuration ─────────────────────────────────────────────────────────────
 
@@ -42,11 +43,13 @@ const INTERMEDIATE_DIR = path.resolve(OUTPUT_DIR, 'intermediate');
 export const FUNCTION_INTERMEDIATE_PATH = path.resolve(INTERMEDIATE_DIR, 'function-data.json');
 
 function resolveLogPath(): string {
-    if (config.logPath) return config.logPath;
-    if (config.gamefacePath) {
-        return path.resolve(path.dirname(config.gamefacePath), 'CohtmlApplication.log');
+    let preferred = '';
+    if (config.logPath) {
+        preferred = path.resolve(config.logPath);
+    } else if (config.gamefacePath) {
+        preferred = path.resolve(path.dirname(config.gamefacePath), 'CohtmlApplication.log');
     }
-    return '';
+    return findActiveLogPath(preferred);
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -171,16 +174,16 @@ describe('Gameface CSS Function Probe', function () {
         const partitioned = partitionBySurface({ supported, partial, unsupported, summary });
 
         const write = (filePath: string, data: unknown): void => {
-            fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+            writeJsonFile(filePath, data);
             console.log(`[writer] Wrote ${filePath}`);
         };
 
         const fnDir = path.join(OUTPUT_DIR, 'functions');
         fs.mkdirSync(fnDir, { recursive: true });
         const fn = partitioned.functions;
-        write(path.join(fnDir, 'supported.json'), fn.supported);
-        write(path.join(fnDir, 'partial.json'), fn.partial);
-        write(path.join(fnDir, 'unsupported.json'), fn.unsupported);
+        write(path.join(fnDir, 'supported.json'), canonicalizeCatalogRows(fn.supported));
+        write(path.join(fnDir, 'partial.json'), canonicalizeCatalogRows(fn.partial));
+        write(path.join(fnDir, 'unsupported.json'), canonicalizeCatalogRows(fn.unsupported));
         write(path.join(fnDir, 'summary.json'), fn.summary);
 
         // Write intermediate data for probe-runner.spec.js.

@@ -1,4 +1,5 @@
 import * as fs from 'node:fs';
+import * as path from 'node:path';
 import * as readline from 'node:readline';
 
 /**
@@ -88,6 +89,14 @@ export interface LogParseResults {
 
     /** True if the log file was found and successfully opened. */
     logFound: boolean;
+
+    /**
+     * Engine version parsed from the Player's own startup line:
+     *   "Info: Initializing COHTML ver. 3.1.0.25"
+     * Null if the log was found but this line was never seen (e.g. a truncated
+     * partial-offset parse, or a build that logs differently).
+     */
+    engineVersion: string | null;
 }
 
 // ── Pattern table ─────────────────────────────────────────────────────────────
@@ -156,6 +165,12 @@ interface ProcessingState {
      */
     pendingAtRuleError: boolean;
 }
+
+/**
+ * The Player's own startup line, e.g. "Info: Initializing COHTML ver. 3.1.0.25".
+ * Checked independently of LOG_PATTERNS (it's not a warning) — see processLine.
+ */
+const ENGINE_VERSION_PATTERN = /Initializing COHTML ver\.\s*(?<version>[\d.]+)/i;
 
 /**
  * Actual Gameface log patterns derived from CohtmlApplication.log.
@@ -417,10 +432,21 @@ function emptyResults(): LogParseResults {
         unsupportedAtRules: new Set(),
         rawWarnings: [],
         logFound: false,
+        engineVersion: null,
     };
 }
 
 function processLine(line: string, results: LogParseResults, state: ProcessingState): void {
+    // Checked unconditionally (not gated behind the Warning:/Info: prefix check
+    // below) since it only needs to run once and there's no reason to couple it
+    // to that gate.
+    if (results.engineVersion === null) {
+        const versionMatch = line.match(ENGINE_VERSION_PATTERN);
+        if (versionMatch?.groups?.version) {
+            results.engineVersion = versionMatch.groups.version;
+        }
+    }
+
     // Gameface emits the "Unsupported CSS property detected: <name>" line at
     // INFO level, not WARNING — but it's the strongest signal we have that a
     // property name was rejected by the parser.  Accept both prefixes so the
@@ -495,6 +521,81 @@ export function parseLogFromOffset(logPath: string, byteOffset: number): LogPars
         processLine(line, results, state);
     }
     return results;
+}
+
+// ── Locating the active log file ────────────────────────────────────────────
+
+/** Captures the version out of Cohtml's own startup banner line. */
+const STARTUP_SIGNATURE = /Initializing COHTML ver\.\s*(?<version>[\d.]+)/i;
+
+/**
+ * Cohtml's log filename is not stable across launches — observed as both
+ * "CohtmlApplication.log" and "TestApp.log" in the same working directory,
+ * apparently depending on an app-identifier baked into the specific Player
+ * build/sample (outside this project's control). The Player path is NOT a
+ * trustworthy way to disambiguate this: it can point anywhere, with no
+ * guarantee the folder name reflects what's actually installed there — so
+ * this deliberately does not try to infer or match against an "expected"
+ * version. Instead, pair this with `clean-cohtml-logs.js`, run before every
+ * probe to delete all `*.log` files up front: whatever log(s) exist after
+ * the Player launches must have been written by THIS run, whatever they're
+ * named, which is what actually makes this reliable.
+ *
+ * Scans `preferredPath`'s directory for `*.log` files (excluding
+ * `*Performance.log`, a separate log stream Cohtml also writes) that start
+ * with Cohtml's own startup banner, and returns the most-recently-modified
+ * match. Warns if more than one candidate matches — expected to be rare
+ * once stale logs are cleaned up front, and worth surfacing if it still
+ * happens. Falls back to `preferredPath` unchanged if nothing matches.
+ * @param {string} preferredPath the configured/computed log path (e.g. from `config.logPath`)
+ * @returns {string}
+ */
+export function findActiveLogPath(preferredPath: string): string {
+    if (!preferredPath) return preferredPath;
+
+    const dir = path.dirname(preferredPath);
+    let entries: string[];
+    try {
+        entries = fs.readdirSync(dir);
+    } catch {
+        return preferredPath;
+    }
+
+    const candidates = entries
+        .filter((entry) => /\.log$/i.test(entry) && !/performance/i.test(entry))
+        .map((entry) => path.join(dir, entry))
+        .map((full) => {
+            try {
+                return { path: full, mtimeMs: fs.statSync(full).mtimeMs };
+            } catch {
+                return null;
+            }
+        })
+        .filter((c): c is { path: string; mtimeMs: number } => c !== null)
+        .sort((a, b) => b.mtimeMs - a.mtimeMs);
+
+    const signatureMatches: string[] = [];
+    for (const candidate of candidates) {
+        let head: string;
+        try {
+            head = fs.readFileSync(candidate.path, 'utf-8').slice(0, 2048);
+        } catch {
+            continue;
+        }
+        if (STARTUP_SIGNATURE.test(head)) {
+            signatureMatches.push(candidate.path);
+        }
+    }
+
+    if (signatureMatches.length > 1) {
+        console.warn(
+            `[findActiveLogPath] Found ${signatureMatches.length} log files with a valid Cohtml startup ` +
+                `banner in "${dir}" — expected at most one after cleaning stale logs before launch. ` +
+                `Using the most recently modified: ${signatureMatches[0]}. All candidates: ${signatureMatches.join(', ')}`,
+        );
+    }
+
+    return signatureMatches[0] ?? preferredPath;
 }
 
 // ── Convenience: build a flat selector-name lookup from log results ────────────

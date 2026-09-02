@@ -19,11 +19,11 @@
         "normal"
       ],
       "logRejectedValues": [
+        "end",
+        "normal",
         "space-around",
         "space-between",
-        "end",
-        "start",
-        "normal"
+        "start"
       ]
     }
   },
@@ -46,11 +46,11 @@
         "normal"
       ],
       "logRejectedValues": [
-        "start",
         "anchor-center",
-        "normal",
+        "baseline",
         "end",
-        "baseline"
+        "normal",
+        "start"
       ]
     }
   },
@@ -73,10 +73,10 @@
         "end"
       ],
       "logRejectedValues": [
-        "baseline",
-        "start",
         "anchor-center",
-        "end"
+        "baseline",
+        "end",
+        "start"
       ]
     }
   },
@@ -173,10 +173,14 @@
         "image-set"
       ],
       "logRejectedValues": [
+        "element",
         "gradients",
-        "image-set",
         "image-rect",
-        "element"
+        "image-set",
+        "linear-gradient(90deg,red 0 10px,blue 10px 20px)",
+        "radial-gradient(red 0 10px,blue 10px 20px)",
+        "repeating-linear-gradient(red 0 10px,blue 10px 20px)",
+        "repeating-radial-gradient(red 0 10px,blue 10px 20px)"
       ]
     }
   },
@@ -263,13 +267,13 @@
         "outset"
       ],
       "logRejectedValues": [
-        "double",
-        "ridge",
-        "outset",
-        "inset",
-        "groove",
         "dashed",
-        "dotted"
+        "dotted",
+        "double",
+        "groove",
+        "inset",
+        "outset",
+        "ridge"
       ]
     }
   },
@@ -342,13 +346,13 @@
         "outset"
       ],
       "logRejectedValues": [
+        "dashed",
+        "dotted",
         "double",
         "groove",
-        "outset",
         "inset",
-        "ridge",
-        "dashed",
-        "dotted"
+        "outset",
+        "ridge"
       ]
     }
   },
@@ -371,13 +375,13 @@
         "outset"
       ],
       "logRejectedValues": [
+        "dashed",
+        "dotted",
         "double",
-        "ridge",
+        "groove",
         "inset",
         "outset",
-        "groove",
-        "dashed",
-        "dotted"
+        "ridge"
       ]
     }
   },
@@ -455,13 +459,13 @@
         "outset"
       ],
       "logRejectedValues": [
-        "outset",
+        "dashed",
+        "dotted",
         "double",
         "groove",
-        "ridge",
         "inset",
-        "dashed",
-        "dotted"
+        "outset",
+        "ridge"
       ]
     }
   },
@@ -478,8 +482,8 @@
         "anchor-size"
       ],
       "logRejectedValues": [
-        "anchor-size",
-        "anchor"
+        "anchor",
+        "anchor-size"
       ],
       "supportedUnits": [
         "px",
@@ -541,8 +545,40 @@
       "logRejectedValues": [
         "fill-box",
         "path",
+        "rect(0 100% 100% 0)",
         "stroke-box",
-        "view-box"
+        "view-box",
+        "xywh(0 0 100% 100%)"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-partitioned",
+    "evidence": {
+      "logRejectedValues": [
+        "1"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-rendering-option",
+    "evidence": {
+      "logRejectedValues": [
+        "0"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "coh-simple-opacity",
+    "evidence": {
+      "logRejectedValues": [
+        "1"
       ]
     }
   },
@@ -552,7 +588,15 @@
     "name": "color",
     "evidence": {
       "logRejectedValues": [
-        "initial"
+        "color-mix(in srgb,red,blue)",
+        "hsl(0,100%,50%)",
+        "hsla(0,100%,50%,0.5)",
+        "hwb(0 0% 0%)",
+        "initial",
+        "lab(50% 40 59.5)",
+        "lch(50% 70 30)",
+        "oklab(0.5 0.1 0.1)",
+        "oklch(0.5 0.1 30)"
       ]
     }
   },
@@ -593,9 +637,12 @@
         "url"
       ],
       "logRejectedValues": [
-        "url",
+        "attr(data-gf)",
+        "counter(item)",
+        "counters(item,\".\")",
         "gradient",
-        "image-set"
+        "image-set",
+        "url"
       ]
     }
   },
@@ -666,29 +713,29 @@
         "table-row-group"
       ],
       "logRejectedValues": [
-        "flow-root",
-        "inline-flex",
-        "table-cell",
-        "table-column-group",
-        "table-row-group",
-        "inline-table",
         "contents",
-        "inline-grid",
-        "table-footer-group",
-        "table-caption",
-        "ruby-base-container",
-        "ruby-text-container",
+        "flow-root",
         "grid",
-        "list-item",
-        "table",
-        "ruby",
-        "table-row",
-        "math",
-        "table-header-group",
         "inline-block",
+        "inline-flex",
+        "inline-grid",
+        "inline-table",
+        "list-item",
+        "math",
+        "ruby",
         "ruby-base",
+        "ruby-base-container",
         "ruby-text",
-        "table-column"
+        "ruby-text-container",
+        "table",
+        "table-caption",
+        "table-cell",
+        "table-column",
+        "table-column-group",
+        "table-footer-group",
+        "table-header-group",
+        "table-row",
+        "table-row-group"
       ]
     }
   },
@@ -740,10 +787,10 @@
         "min-content"
       ],
       "logRejectedValues": [
-        "min-content",
         "content",
+        "fit-content",
         "max-content",
-        "fit-content"
+        "min-content"
       ],
       "supportedUnits": [
         "px",
@@ -797,7 +844,19 @@
         "math"
       ],
       "logRejectedValues": [
-        "math"
+        "clamp(100px,20vw,200px)",
+        "clamp(12px,14px,16px)",
+        "math",
+        "max(12px,16px)",
+        "max(12px,1vw)",
+        "min(12px,16px)",
+        "min(12px,1vw)",
+        "mod(20px,1vw)",
+        "mod(20px,6px)",
+        "rem(20px,1vw)",
+        "rem(20px,6px)",
+        "round(14px,1vw)",
+        "round(14px,2px)"
       ],
       "supportedUnits": [
         "px",
@@ -851,14 +910,14 @@
         "traditional"
       ],
       "logRejectedValues": [
+        "full-width",
         "jis04",
+        "jis78",
         "jis83",
+        "jis90",
         "ruby",
         "simplified",
-        "jis90",
-        "traditional",
-        "full-width",
-        "jis78"
+        "traditional"
       ]
     }
   },
@@ -897,11 +956,11 @@
         "stretch"
       ],
       "logRejectedValues": [
-        "min-content",
-        "fit-content",
         "anchor-size",
-        "stretch",
-        "max-content"
+        "fit-content",
+        "max-content",
+        "min-content",
+        "stretch"
       ],
       "supportedUnits": [
         "px",
@@ -934,8 +993,8 @@
       ],
       "logRejectedValues": [
         "optimizequality",
-        "smooth",
-        "optimizespeed"
+        "optimizespeed",
+        "smooth"
       ]
     }
   },
@@ -959,10 +1018,10 @@
         "normal"
       ],
       "logRejectedValues": [
-        "start",
-        "stretch",
+        "end",
         "normal",
-        "end"
+        "start",
+        "stretch"
       ]
     }
   },
@@ -979,8 +1038,8 @@
         "anchor-size"
       ],
       "logRejectedValues": [
-        "anchor-size",
-        "anchor"
+        "anchor",
+        "anchor-size"
       ],
       "supportedUnits": [
         "px",
@@ -1121,10 +1180,10 @@
         "text"
       ],
       "logRejectedValues": [
-        "text",
         "border",
         "content",
-        "padding"
+        "padding",
+        "text"
       ]
     }
   },
@@ -1152,8 +1211,8 @@
     "name": "mask-repeat",
     "evidence": {
       "logRejectedValues": [
-        "space",
-        "initial"
+        "initial",
+        "space"
       ]
     }
   },
@@ -1172,12 +1231,12 @@
         "stretch"
       ],
       "logRejectedValues": [
+        "anchor-size",
+        "fit-content",
         "max-content",
         "min-content",
-        "fit-content",
         "none",
-        "stretch",
-        "anchor-size"
+        "stretch"
       ],
       "supportedUnits": [
         "px",
@@ -1208,12 +1267,12 @@
         "stretch"
       ],
       "logRejectedValues": [
+        "anchor-size",
         "fit-content",
-        "min-content",
         "max-content",
+        "min-content",
         "none",
-        "stretch",
-        "anchor-size"
+        "stretch"
       ],
       "supportedUnits": [
         "px",
@@ -1245,9 +1304,9 @@
         "stretch"
       ],
       "logRejectedValues": [
+        "anchor-size",
         "fit-content",
         "max-content",
-        "anchor-size",
         "min-content",
         "stretch"
       ],
@@ -1283,9 +1342,9 @@
       "logRejectedValues": [
         "anchor-size",
         "fit-content",
-        "stretch",
         "max-content",
-        "min-content"
+        "min-content",
+        "stretch"
       ],
       "supportedUnits": [
         "px",
@@ -1486,37 +1545,6 @@
   {
     "status": "partial",
     "surface": "css-property",
-    "name": "pointer-events",
-    "evidence": {
-      "supportedValues": [
-        "none",
-        "auto",
-        "visiblePainted",
-        "visibleFill",
-        "visibleStroke"
-      ],
-      "unsupportedValues": [
-        "all",
-        "visible",
-        "painted",
-        "fill",
-        "stroke"
-      ],
-      "logRejectedValues": [
-        "visiblepainted",
-        "visible",
-        "painted",
-        "visiblestroke",
-        "stroke",
-        "visiblefill",
-        "all",
-        "fill"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
     "name": "position",
     "evidence": {
       "supportedValues": [
@@ -1556,8 +1584,8 @@
         "anchor-size"
       ],
       "logRejectedValues": [
-        "anchor-size",
-        "anchor"
+        "anchor",
+        "anchor-size"
       ],
       "supportedUnits": [
         "px",
@@ -1719,8 +1747,8 @@
         "start"
       ],
       "logRejectedValues": [
-        "match-parent",
         "end",
+        "match-parent",
         "start"
       ]
     }
@@ -1762,9 +1790,9 @@
         "spelling-error"
       ],
       "logRejectedValues": [
-        "spelling-error",
         "blink",
-        "grammar-error"
+        "grammar-error",
+        "spelling-error"
       ]
     }
   },
@@ -1783,10 +1811,10 @@
         "dashed"
       ],
       "logRejectedValues": [
-        "double",
-        "wavy",
         "dashed",
-        "dotted"
+        "dotted",
+        "double",
+        "wavy"
       ]
     }
   },
@@ -1828,6 +1856,26 @@
   {
     "status": "partial",
     "surface": "css-property",
+    "name": "text-stroke-color",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
+    "name": "text-stroke-width",
+    "evidence": {
+      "logRejectedValues": [
+        "initial"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "css-property",
     "name": "text-transform",
     "evidence": {
       "supportedValues": [
@@ -1842,9 +1890,9 @@
         "math-auto"
       ],
       "logRejectedValues": [
+        "full-size-kana",
         "full-width",
-        "math-auto",
-        "full-size-kana"
+        "math-auto"
       ]
     }
   },
@@ -1879,9 +1927,9 @@
         "right"
       ],
       "logRejectedValues": [
-        "right",
         "from-font",
-        "left"
+        "left",
+        "right"
       ]
     }
   },
@@ -1898,8 +1946,8 @@
         "anchor-size"
       ],
       "logRejectedValues": [
-        "anchor-size",
-        "anchor"
+        "anchor",
+        "anchor-size"
       ],
       "supportedUnits": [
         "px",
@@ -1921,7 +1969,13 @@
     "name": "transform",
     "evidence": {
       "logRejectedValues": [
-        "initial"
+        "initial",
+        "perspective(500px)",
+        "rotate(acos(1))",
+        "rotate(asin(1))",
+        "rotate(atan(1))",
+        "rotate(atan2(1,1))",
+        "skew(10deg)"
       ]
     }
   },
@@ -1971,7 +2025,8 @@
         "jump"
       ],
       "logRejectedValues": [
-        "jump"
+        "jump",
+        "linear(0,0.25,0.5,0.75,1)"
       ]
     }
   },
@@ -1990,8 +2045,8 @@
         "contain"
       ],
       "logRejectedValues": [
-        "contain",
-        "all"
+        "all",
+        "contain"
       ]
     }
   },
@@ -2013,9 +2068,9 @@
         "top"
       ],
       "logRejectedValues": [
-        "super",
         "bottom",
         "sub",
+        "super",
         "top"
       ]
     }
@@ -2074,11 +2129,13 @@
         "stretch"
       ],
       "logRejectedValues": [
+        "abs(-100px)",
         "anchor-size",
-        "stretch",
+        "env(safe-area-inset-top,100px)",
         "fit-content",
         "max-content",
-        "min-content"
+        "min-content",
+        "stretch"
       ],
       "supportedUnits": [
         "px",
@@ -2111,56 +2168,6 @@
     "evidence": {
       "logRejectedValues": [
         "initial"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "text-stroke-width",
-    "evidence": {
-      "logRejectedValues": [
-        "initial"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "text-stroke-color",
-    "evidence": {
-      "logRejectedValues": [
-        "initial"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-simple-opacity",
-    "evidence": {
-      "logRejectedValues": [
-        "1"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-partitioned",
-    "evidence": {
-      "logRejectedValues": [
-        "1"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "css-property",
-    "name": "coh-rendering-option",
-    "evidence": {
-      "logRejectedValues": [
-        "0"
       ]
     }
   }

@@ -1,0 +1,32 @@
+---
+import fs from "node:fs";
+
+interface Props {
+    /**
+     * Path to a gameface-features/versions/manifest.json file, resolved
+     * relative to the site's build working directory — same convention as
+     * generateVersionWithPackageJSON in this package's index.ts.
+     */
+    manifestPath: string;
+}
+
+const { manifestPath } = Astro.props;
+
+if (!fs.existsSync(manifestPath)) {
+    throw new Error(`[SupportedVersions Component] Manifest not found at ${manifestPath}`);
+}
+const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8"));
+const chain: string[] = Array.isArray(manifest.chain) && manifest.chain.length > 0 ? manifest.chain : [manifest.base];
+const latest = chain[0];
+---
+
+<p>
+    Supported values: <code>"latest"</code> (default, currently <code>{latest}</code>), or one of the
+    bundled versions below. Any other string still works — it resolves to the nearest bundled version
+    with a console warning instead of failing.
+</p>
+<ul>
+    {chain.map((version) => (
+        <li><code>{version}</code>{version === latest ? " (latest)" : ""}</li>
+    ))}
+</ul>
