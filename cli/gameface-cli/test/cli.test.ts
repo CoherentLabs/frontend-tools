@@ -165,6 +165,31 @@ describe('update', () => {
     expect(code).toBe(0);
     expect(readInstalled(dir)).toMatchObject({ Icon: '1.0.0' });
   });
+
+  test('--hard reinstalls a component whose version already matches', async () => {
+    const dir = project({ installed: { Scroll: '1.0.3' } });
+    const file = path.join(dir, 'src/components/Layout/Scroll/Scroll.tsx');
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, 'edited by hand\n');
+
+    const { code } = await run(dir, 'update', 'Scroll', '--hard');
+
+    expect(code).toBe(0);
+    // The fixture server invents file bodies, so the contract worth asserting
+    // is that the local edit is gone — not what replaced it.
+    expect(fs.readFileSync(file, 'utf-8')).not.toBe('edited by hand\n');
+  });
+
+  test('leaves an up-to-date component alone without --hard', async () => {
+    const dir = project({ installed: { Scroll: '1.0.3' } });
+    const file = path.join(dir, 'src/components/Layout/Scroll/Scroll.tsx');
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, 'edited by hand\n');
+
+    await run(dir, 'update', 'Scroll');
+
+    expect(fs.readFileSync(file, 'utf-8')).toBe('edited by hand\n');
+  });
 });
 
 describe('recipes', () => {
