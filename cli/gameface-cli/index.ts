@@ -252,7 +252,7 @@ async function resolve(ctx: Context, rootIds: string[]) {
         ? `Wrote ${writtenPaths.length} file${plural(writtenPaths.length)}`
         : `Everything already up to date`);
   } catch (err) {
-    spin.stop(`Failed to fetch component files`);
+    spin.error(`Failed to fetch component files`);
     throw err;
   }
 
@@ -511,14 +511,15 @@ async function handleTrack(ctx: Context) {
     return 1;
   }
 
-  // Record the component versions to package.json
-  fs.writeFileSync(pkgPath, JSON.stringify(packageJson, null, indent) + '\n');
-
   if (action === 'update') {
     return handleInstall({ ...ctx, command: 'update', names: needUpdate });
   }
-  
-  log.success(`Tracking complete. ${needUpdate.length} component${plural(needUpdate.length)} to update.`);
+
+  // Record the component versions to package.json
+  fs.writeFileSync(pkgPath, JSON.stringify(packageJson, null, indent) + '\n');
+  log.success(needUpdate.length > 0
+    ? `Tracking complete. ${needUpdate.length} component${plural(needUpdate.length)} need update · run \`gameface-cli update\` to update.`
+    : 'Tracking complete.');
   outro(`${upToDate} component${plural(upToDate)} up to date.`);
 
   return 0;
