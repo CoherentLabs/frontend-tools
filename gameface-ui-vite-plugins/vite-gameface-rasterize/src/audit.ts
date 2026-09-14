@@ -1,12 +1,13 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
-import type { RasterizeManifest } from './contract.js';
+import type { AssetMatcher, RasterizeManifest } from './contract.js';
 import type { ResolvedOptions, RasterizeRoute } from './config.js';
 import type { DiagnosticBag } from './diagnostics.js';
 import type { PlayerSession } from './capture/session.js';
 import { headInjector, serveDirectory, type StaticServer } from './capture/server.js';
 import { decode, type RawImage } from './image.js';
+import { matchSelectorsFor } from './emit/css.js';
 
 export interface UnresolvedElement {
     tag: string;
@@ -35,6 +36,27 @@ export interface AuditOptions {
     manifest: RasterizeManifest;
     bag: DiagnosticBag;
     log: (message: string) => void;
+    /**
+     * Each HTML file as it was before the underlays were written into it.
+     *
+     * Stripping the generated tags out of what shipped no longer reconstructs the unbaked page:
+     * element mode's flattening is a change to the markup itself, and a page missing both the
+     * wrappers and the stylesheet that pinned their replacements is not what the site looked like
+     * before the bake. Where an original exists it is served instead, so the comparison is against
+     * the real thing rather than against a half-dismantled page.
+     */
+    originals?: Map<string, string>;
+}
+
+/**
+ * Every selector the stylesheet paints through, in one list.
+ *
+ * With the decoration drawn by a `::before`, "did this element get a texture" is exactly "does a
+ * generated selector match it", and that is a question the page can answer about itself.
+ */
+function coverageSelectors(manifest: RasterizeManifest): string {
+    const all = Object.keys(manifest.assets).flatMap((id) => matchSelectorsFor(id, manifest));
+    return [...new Set(all)].join(',');
 }
 
 /** Below this the two renders are the same picture as far as anyone looking at it is concerned. */
@@ -53,7 +75,7 @@ const CHANNEL_TOLERANCE = 8;
  * question a green build cannot currently answer.
  */
 export async function auditBuild(input: AuditOptions): Promise<RouteAudit[]> {
-    const { session, options, outDir, routes, manifest, bag, log } = input;
+    const { session, options, outDir, routes, manifest, bag, log, originals } = input;
 
     const reportDir = path.join(outDir, options.outDir, 'report');
     await fs.mkdir(reportDir, { recursive: true });
@@ -65,11 +87,14 @@ export async function auditBuild(input: AuditOptions): Promise<RouteAudit[]> {
     try {
         const injectHead = headInjector(routes);
         bakedServer = await serveDirectory(outDir, { injectHead });
-        liveServer = await serveDirectory(outDir, { injectHead, transformHtml: stripGeneratedTags });
+        liveServer = await serveDirectory(outDir, {
+            injectHead,
+            transformHtml: (html, pathname) => stripGeneratedTags(originals?.get(pathname.replace(/^\//, '')) ?? html),
+        });
 
         for (const route of routes) {
             const baked = await renderRoute(session, `${bakedServer.origin}/${route.path}`, route);
-            const resolution = await countResolved(session);
+            const resolution = await countResolved(session, coverageSelectors(manifest));
             const live = await renderRoute(session, `${liveServer.origin}/${route.path}`, route);
 
             // The same page rendered twice, so the comparison can tell "the bake changed this"
@@ -146,16 +171,16 @@ function report(audit: RouteAudit, manifest: RasterizeManifest, options: Resolve
                     return `${selector}${times}: matched by document position only, so its lookalikes stayed live`;
                 }
 
-                // The common near miss: a runtime class on the marked element changed its key.
-                // The build knows both class lists, so it can say which class did it.
-                const nearMiss = findNearMiss(group.classes, group.tag, manifest);
-                if (nearMiss) {
+                // A baked selector that does match the element it missed leaves exactly one
+                // explanation: the element was not in the document when the runtime swept at
+                // load. Extra classes are not it - the emitted selector is a class selector, so
+                // it matches an element that *has* those classes, whatever else it carries.
+                const covering = findCoveringBake(group.classes, group.tag, manifest);
+                if (covering) {
                     return (
-                        `${selector}${times}: no texture. One exists for <${group.tag}${nearMiss.classes
-                            .map((c) => `.${c}`)
-                            .join('')}>, but these carry an extra class (${nearMiss.extra.join(', ')}), ` +
-                        'so the matcher does not apply. If that class does not change the decoration, keep it off ' +
-                        'the marked element'
+                        `${selector}${times}: a texture exists and its selector matches, so this was mounted ` +
+                        'after the page loaded. Set runtime: "observe" to attach late subtrees, or mount it ' +
+                        'before DOMContentLoaded'
                     );
                 }
 
@@ -205,21 +230,20 @@ function report(audit: RouteAudit, manifest: RasterizeManifest, options: Resolve
  * commonest miss: a state class the app adds at runtime - `status-dead`, a marker class with no
  * CSS behind it - lengthens the key and costs the element its texture.
  */
-function findNearMiss(
-    classes: string[],
-    tag: string,
-    manifest: RasterizeManifest
-): { classes: string[]; extra: string[] } | null {
+/**
+ * The bake whose emitted selector would match an element with this tag and class list, if any.
+ *
+ * A class selector matches on the baked classes being *present*, not on the class list being
+ * identical, so this is a subset test - the same rule the engine applies when it paints.
+ */
+function findCoveringBake(classes: string[], tag: string, manifest: RasterizeManifest): AssetMatcher | null {
     const owned = new Set(classes);
-    let best: { classes: string[]; extra: string[] } | null = null;
+    let best: AssetMatcher | null = null;
 
     for (const matcher of manifest.matchers) {
-        if (matcher.tag !== tag || !matcher.classes.length) continue;
+        if (matcher.tag !== tag || !matcher.classes.length || matcher.ambiguous) continue;
         if (!matcher.classes.every((c) => owned.has(c))) continue;
-
-        const extra = classes.filter((c) => !matcher.classes.includes(c));
-        if (!extra.length) continue;
-        if (!best || matcher.classes.length > best.classes.length) best = { classes: matcher.classes, extra };
+        if (!best || matcher.classes.length > best.classes.length) best = matcher;
     }
 
     return best;
@@ -258,8 +282,13 @@ async function renderRoute(session: PlayerSession, url: string, route: Rasterize
 }
 
 /** Asks the shipped page how many marked elements actually ended up with a texture. */
-async function countResolved(session: PlayerSession): Promise<{ marked: number; resolved: number; unresolved: UnresolvedElement[] }> {
+async function countResolved(
+    session: PlayerSession,
+    selectors: string
+): Promise<{ marked: number; resolved: number; unresolved: UnresolvedElement[] }> {
     return session.evaluateRaw(`(function () {
+        var SELECTORS = ${JSON.stringify(selectors)};
+
         function classesOf(el) {
             var raw = el.getAttribute('class');
             return raw ? raw.split(/\\s+/).filter(Boolean) : [];
@@ -287,7 +316,14 @@ async function countResolved(session: PlayerSession): Promise<{ marked: number; 
 
         for (var i = 0; i < marked.length; i++) {
             var el = marked[i];
+            // An underlay child is what makes the texture appear, so that is the test. The
+            // stamped id only exists on elements the HTML injector or the runtime reached; one
+            // whose underlays came from the source transform has the texture and no stamp.
+            // A decoration is drawn by a ::before, which getComputedStyle cannot see on this
+            // engine, so coverage is measured the way the stylesheet decides it: does any
+            // generated selector match this element. Element mode also carries a stamped id.
             if (el.getAttribute('data-rz-id')) continue;
+            if (SELECTORS && el.matches(SELECTORS)) continue;
             if (unresolved.length < 200) {
                 unresolved.push({ tag: el.tagName.toLowerCase(), classes: classesOf(el), selectorPath: selectorPath(el) });
             }

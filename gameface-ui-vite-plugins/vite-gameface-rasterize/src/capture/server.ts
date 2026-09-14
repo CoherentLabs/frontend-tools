@@ -43,8 +43,14 @@ export interface ServeOptions {
      * this. A function receives the request path, so different routes can be seeded differently.
      */
     injectHead?: string | ((pathname: string) => string | undefined);
-    /** Rewrites HTML before it is served; verification uses it to serve the pre-bake page. */
-    transformHtml?: (html: string) => string;
+    /**
+     * Rewrites HTML before it is served; verification uses it to serve the pre-bake page.
+     *
+     * It receives the request path as well, because "the page without the bake" is no longer
+     * something that can always be reached by editing what shipped: element mode rewrites the
+     * markup itself, so the audit substitutes the file it saved before injection.
+     */
+    transformHtml?: (html: string, pathname: string) => string;
 }
 
 export async function serveDirectory(root: string, serveOptions: ServeOptions = {}): Promise<StaticServer> {
@@ -71,7 +77,7 @@ export async function serveDirectory(root: string, serveOptions: ServeOptions = 
             if (ext === '.html' && (injectHead || transformHtml)) {
                 const head = typeof injectHead === 'function' ? injectHead(url.pathname) : injectHead;
                 let html = await fs.readFile(filePath, 'utf8');
-                if (transformHtml) html = transformHtml(html);
+                if (transformHtml) html = transformHtml(html, url.pathname);
                 if (head) html = insertIntoHead(html, head);
                 res.writeHead(200, { 'content-type': type, 'cache-control': 'no-store' }).end(html);
                 return;

@@ -7,7 +7,7 @@ Every option is optional.
 ```ts
 rasterize({
     playerPath: process.env.GAMEFACE_PATH,
-    routes: ['index.html', { path: 'index.html', setup: "document.querySelector('.tab-2').click()" }],
+    routes: ['index.html'],
     bakeScale: 2,
     transcode: false,
     textureBudgetMB: 32,
@@ -18,7 +18,7 @@ rasterize({
     diffThreshold: 0.005,
     overlay: undefined,
     overlayKey: 'F9',
-    sliceImpl: 'border-image',
+    runtime: 'auto',
     advisor: true,
     outDir: 'rz/',
     cacheDir: 'node_modules/.cache/rasterize',
@@ -35,16 +35,16 @@ rasterize({
 | `playerPath` | `string` | `$GAMEFACE_PATH` | The Gameface Player executable. |
 | `routes` | `(string \| RasterizeRoute)[]` | `['index.html']` | Pages to visit during capture. |
 | `bakeScale` | `number` | `2` | Supersampling factor. |
-| `transcode` | `'webp' \| false` | `false` | Emit a WebP companion beside each PNG. |
+| `transcode` | `'webp' \| false` | `false` | Emit a WebP companion beside each PNG. Saves disk, not VRAM. |
 | `textureBudgetMB` | `number` | `32` | VRAM budget; exceeding it warns with the worst offenders. |
 | `strictTransitions` | `boolean` | `false` | Promote RZ002 from warning to error. |
 | `ssimThreshold` | `number` | `0.995` | SSIM floor for verification. |
 | `verify` | `boolean` | `false` | Verify after baking and fail the build on a real difference. |
 | `audit` | `boolean` | `true` | Render the finished build against itself-without-the-bake and write the comparison. |
 | `diffThreshold` | `number` | `0.005` | Share of differing pixels above which the audit warns. |
-| `overlay` | `boolean` | *(hidden)* | Dev overlay: `true` draws it at once, `false` disables it, default injects it behind the toggle key. |
+| `overlay` | `boolean` | *(hidden)* | Dev overlay: `true` draws it at once, `false` disables it, default hides it behind the toggle key. |
 | `overlayKey` | `string` | `'F9'` | Key that shows and hides the dev overlay. |
-| `sliceImpl` | `'border-image' \| 'divs'` | `'border-image'` | How 9-slices are drawn. |
+| `runtime` | `'auto' \| 'observe' \| 'off'` | `'auto'` | Whether a script is emitted for element-mode subtrees the build could not flatten. |
 | `advisor` | `boolean` | `true` | Report unmarked elements using expensive properties. |
 | `outDir` | `string` | `'rz/'` | Asset directory inside the build output. |
 | `cacheDir` | `string` | `'node_modules/.cache/rasterize'` | Where bakes are cached. |
@@ -56,9 +56,9 @@ rasterize({
 
 ## routes
 
-A route is a page to load, plus optional JavaScript to run before introspecting it. Use the
-setup hook for anything that is not on screen when the page finishes loading - a menu to open, a
-modal to mount, a tab to switch to.
+A route is a page to load plus optional JavaScript to run before capture. Use it to reach anything
+that is not on screen when the page finishes loading, and to stop your update loop — which is
+[the single largest source of un-baked elements](../concepts/authoring.mdx).
 
 ```ts
 routes: [
@@ -66,114 +66,60 @@ routes: [
     {
         path: 'index.html',
         preload: 'Math.random = () => 0.5;',
-        setup: "document.querySelector('#settings-button').click(); await new Promise(r => setTimeout(r, 200));",
+        setup: "document.querySelector('#settings').click(); await new Promise(r => setTimeout(r, 200));",
         settleMs: 400,
     },
 ];
 ```
 
-Anything that never renders during the capture pass is never baked. The setup hook is how you
-reach it.
+| Field | Meaning |
+|---|---|
+| `path` | Page to load, relative to the build output. May include a hash route. |
+| `preload` | JavaScript injected **before** the page's own scripts run. For anything decided at module init, such as a random seed. |
+| `setup` | JavaScript run **after** the page has loaded. For opening menus and stopping loops. May return a promise. |
+| `settleMs` | Extra wait after `setup` resolves. |
 
-`preload` is injected into the served HTML *before* the page's own scripts run, which `setup`
-cannot be: by the time `setup` executes, a UI that randomised its starting state on import has
-already done so. Use `preload` to seed anything decided at module-initialisation time, and `setup`
-for anything you do to a page that has finished loading - including pausing your simulation, which
-is [the single largest source of un-baked elements](../getting-started/pausing-motion.mdx).
+Anything that never renders during capture is never baked.
 
 ## bakeScale
 
-Bakes are captured at twice the authored size by default. Blurs downscale forgivingly; crisp
-gradients and radii do not survive being upscaled, so 2x covers a 1080p-authored design up to
-4K. Individual elements can override it with `data-rasterize-scale`.
+Bakes are captured at twice the authored size by default, which covers a 1080p-authored design up
+to 4K. Individual elements can override it with `data-rasterize-scale`.
 
-The scale multiplies into texture memory - doubling it quadruples the VRAM - so the build
-summary reports the total against `textureBudgetMB` every time.
+Scale multiplies into texture memory: doubling it quadruples the VRAM.
 
-## verify and ssimThreshold
+## verify and audit
 
-```ts
-rasterize({ verify: process.env.CI === 'true' });
-```
+`audit` is on by default and costs two extra page loads per route. It renders the finished build
+against itself-without-the-bake and writes both plus their difference to `rz/report/`. It is the
+only check that sees the page as a whole, and it is what catches a texture that landed in the wrong
+place or never matched anything.
 
-Renders every baked asset twice in the Player - once with the bake active, once with the generated
-tags stripped from the page - compares them with SSIM plus a visible-delta guard, and **fails the
-build** on a real difference. Slice assets are checked stretched to three sizes. A diff image is
-written for each failure, and a machine-readable summary lands at `<outDir>/verify.json`.
+`verify` is a stricter per-asset SSIM check intended for CI. It currently **cannot check decoration
+assets** and refuses to run when any are present — see
+[things to watch out for](../concepts/limitations.mdx).
 
-It is off by default because it launches the Player a second time after the bake, which is a cost
-worth paying in CI and not on every local build. Turning it on is the difference between the tool
-claiming its output is pixel-identical and your pipeline checking that it is.
+## runtime
 
-The same check runs standalone against an existing build, when you want it without rebuilding:
+A decoration is drawn by a `::before`, so nothing is added to your markup and no script is needed,
+including for state variants. Most builds ship no JavaScript and get no `<script>` tag.
 
-```shell
-npx gameface-rasterize verify dist --json rz/verify.json
-```
+Element mode is the exception, because flattening removes nodes and CSS cannot.
 
-## audit and diffThreshold
-
-After the textures are written, the build loads the finished output twice in the Player - once as
-shipped, once with the two generated tags stripped out - screenshots both, and writes them plus
-their difference to `<outDir>/report/`. Two extra page loads per route.
-
-It is the only check that sees the page as a whole. Verification compares elements in isolation
-and will report a perfect score for a texture that never reached the DOM, landed in the wrong
-place, or replaced a decoration with nothing.
-
-The same pass counts how many marked elements actually received a texture and names the ones that
-did not, which is the other question a green build cannot otherwise answer.
-
-`diffThreshold` is the share of pixels that may differ before the build warns. Zero is not a
-useful setting: a rounded edge drawn from a texture and the same edge drawn by the engine differ
-by a pixel of antialiasing.
-
-### Pages that do not render identically twice
-
-The comparison only means something if the page draws the same thing both times, and a game HUD
-usually does not - a simulation tick, a randomised starting state, a clock. So the audit captures
-the *unbaked* page twice as well, and judges the bake by what it added on top of that baseline.
-
-If the page differs from itself by more than the threshold, the audit says so and stops blaming
-the bake:
-
-```
-27.35% of pixels differ, but two renders of the *unbaked* page differ by 26.9% - so this page
-does not render identically twice and the comparison cannot say anything about the bake.
-```
-
-The fix is to make the page deterministic for the capture: `setup` to pause it, `preload` to seed
-whatever it decided before `setup` could run. That is worth doing rather than raising the
-threshold, because a threshold large enough to swallow a moving HUD is also large enough to
-swallow a wrongly-coloured shadow, which is a few hundred pixels.
-
-Note that a scene with hundreds of baked elements sits a little above zero on antialiased edges
-alone. That is what the baseline subtraction is for; if you still need to raise the threshold,
-raise it to just above what a correct build reports rather than to a round number.
-
-## overlay and overlayKey
-
-In dev the plugin injects an overlay that classifies every marked element the way the build would:
-green shares a texture, amber gets its own with the reason it is not sharing, red will not match
-at runtime, grey has nothing worth baking. It runs in the page, so it needs no Player launch and
-no bake, and it updates as you edit.
-
-It is injected hidden and costs nothing until you press the toggle key. `overlay: true` starts it
-visible; `overlay: false` leaves it out entirely. From the console, `__rzOverlay.report()` returns
-the same classification as data.
-
-What it cannot see is the declared cascade - `auto` mode's flat/slice choice and media-query
-detection need the rules themselves, which only CDP can enumerate on this engine - so those are
-approximated and the legend says so.
-
-## transcode
-
-`'webp'` writes a lossless WebP beside each PNG. Worth knowing: WebP saves disk, not VRAM - it
-decodes to raw RGBA on the GPU exactly like the PNG does.
+| Value | Behaviour |
+|---|---|
+| `'auto'` | Default. Emits a script only for element-mode subtrees no HTML file contained, flattens them at `DOMContentLoaded`, then stops. Reported as RZ026. |
+| `'observe'` | Also watches for element-mode subtrees mounted after load. |
+| `'off'` | Never emits a script. Anything unreached keeps its original DOM. |
 
 ## viewport and maxViewport
 
-The Player supports neither `captureBeyondViewport` nor the `Emulation` domain, so a capture
-clip has to be on screen and the viewport caps the largest single asset. The plugin sizes the
-window to fit the largest planned bake, up to `maxViewport`. If a bake needs more than that, it
-says so and names the two ways out: a smaller `bakeScale`, or a larger `maxViewport`.
+The capture window is a hard ceiling on how large one asset can be, and grows automatically to fit
+the largest planned bake up to `maxViewport`. If your layout is sized in `vh`, pin the root font
+size in `setup` so the window cannot inflate your whole UI — see
+[preparing your UI](../concepts/authoring.mdx).
+
+## overlay
+
+In dev the plugin injects an overlay that classifies every marked element the way the build would,
+without launching the Player. Press **F9**. It costs nothing until you press it.

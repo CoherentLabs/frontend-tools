@@ -318,7 +318,16 @@ export async function runPipeline(input: PipelineInput): Promise<PipelineOutcome
         let audits: RouteAudit[] = [];
         if (options.audit && results.length) {
             audits = await retryOnDisconnect('the visual audit', () =>
-                auditBuild({ session: session!, options, outDir, routes: options.routes, manifest: written.manifest, bag, log })
+                auditBuild({
+                    session: session!,
+                    options,
+                    outDir,
+                    routes: options.routes,
+                    manifest: written.manifest,
+                    bag,
+                    log,
+                    originals: written.originals,
+                })
             );
         }
 
@@ -343,6 +352,8 @@ export async function runPipeline(input: PipelineInput): Promise<PipelineOutcome
             audits,
             planned: plans.size,
             diagnosticsPath,
+            injectedElements: written.injectedElements,
+            runtimeAssets: written.runtimeAssets,
         });
 
         return { bag, report, assetCount: results.length, hadErrors: bag.errors.length > 0 };

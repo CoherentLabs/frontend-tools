@@ -1,5 +1,7 @@
 ---
-title: Measuring what the bake bought
+title: Measuring the result
+sidebar:
+    order: 7
 ---
 
 ```shell
@@ -13,44 +15,31 @@ gameface-rasterize measure - 3 alternating pairs
             Paint p50 0.165 ms             Paint p50 0.148 ms
 ```
 
-## Why you need a command for this
+## Why frame time cannot tell you
 
-The obvious measurement returns nothing, and the reasonable conclusion from it is that this plugin
-does nothing.
+The Player paces frames at a fixed cap of roughly 31 ms. An empty page reads 31 ms, and so does a
+page with hundreds of blurred, shadowed, gradient-filled boxes. Anything that measures only frame
+arrival cannot separate them.
 
-The Player paces frames at a fixed cap of roughly 31 ms. An empty page reads 31 ms. A page with
-three hundred blurred, drop-shadowed, gradient-filled boxes also reads 31 ms. Frame time - `rAF`
-deltas, wall-clock, anything that measures how often a frame arrives - cannot distinguish them,
-because the pacing is not what the work is affecting.
+What changes is the engine's own `Coherent_GPU` counter from a CDP trace, which is per-frame GPU
+time. That is what this command reports.
 
-What does move is the engine's own accounting. `Coherent_GPU`, from a CDP trace, is the per-frame
-GPU time: on that same pair of pages it reads effectively zero against 13.6 ms. That is the number
-this command reports.
+## What it does for you
 
-## What it does
-
-- **Alternates which variant runs first.** Otherwise a second-position advantage - caches warm, the
-  process settled - cannot be told apart from the effect being measured.
-- **Repeats, and reports a spread.** Absolute levels drift between runs while the gap holds steady,
-  so a single pair proves nothing. If the gap is smaller than the run-to-run spread, the command
-  says so rather than letting you quote it.
-- **Puts a deadline on the trace.** The Player ships an entire trace as one message when tracing
-  ends; past a few seconds of a heavy scene that message never arrives. Runs that time out report
-  partial results instead of hanging and leaving a multi-gigabyte Player behind.
-- **Invalidates the page every frame.** cohtml repaints dirty regions only, so a static page settles
-  into presenting the same frame and measures nothing. The whole document is nudged one pixel per
-  frame, which is also what a real UI does whenever a list scrolls or a panel slides.
+- Alternates which variant runs first, so a first-run advantage cannot be mistaken for the effect.
+- Repeats the run and reports the spread. If the gap is smaller than the run-to-run variation, it
+  says so instead of letting you quote a meaningless number.
+- Invalidates the page every frame, because cohtml repaints dirty regions only and a settled static
+  page measures almost nothing.
 
 ```shell
 npx gameface-rasterize measure dist --repetitions 5 --trace-seconds 6
 ```
 
-## Reading the result
+## Reading it
 
-The interesting number is the difference, not the level. Levels depend on the machine, the driver,
-what else is running; the gap between two variants measured minutes apart on the same machine is
-the thing that transfers.
+The delta is the number that matters, not the absolute level. Levels depend on the machine, driver,
+and what else is running.
 
-A shadow that nothing disturbs is close to free on this engine, because it is not being redrawn.
-The win appears where the work is: when the UI moves. If your page is static, `measure` will
-correctly report that baking it changed very little.
+A decoration that nothing disturbs is close to free on this engine, because it is not being redrawn.
+If your page is static, `measure` will correctly report that baking it changed very little.

@@ -1,0 +1,74 @@
+---
+title: Things to watch out for
+sidebar:
+    order: 4
+---
+
+Everything here is known and either handled or refused. It is listed so that when you meet it, you
+recognise it instead of debugging it.
+
+## The bake is one picture
+
+Whatever the cascade resolved to at capture time is what ships. A modifier class added later cannot
+change it. See [preparing your UI](./authoring.mdx).
+
+## State variants swap in instantly
+
+A baked `hover` replaces the base texture the moment the state changes. If the property was under a
+`transition`, that transition is gone. The build warns with RZ002; set `strictTransitions: true` to
+make it an error.
+
+## Some effects can never be baked
+
+`mix-blend-mode` and `backdrop-filter` do not composite source-over, so no texture can reproduce
+them against an arbitrary backdrop. There is no approximation mode. The build refuses with RZ001;
+remove the marker or remove the property.
+
+## `filter` and `mask-image` may survive the bake
+
+If anything inside the element is still live, the effect has to stay live too, and it still costs a
+pass every frame. The build tells you which case you are in (RZ025). Marking a fully static subtree
+as `element` mode is usually the fix.
+
+## Gradients and 9-slicing do not mix
+
+A 9-slice stretches its edges and centre, so anything that varies along the stretched axis comes
+apart (RZ005). Fixed-size elements can use `flat` mode and keep the gradient.
+
+Very small elements cannot slice either: when the element is narrower than its two corners put
+together, there is nothing between them to stretch. Those are baked flat at their measured size
+(RZ024).
+
+## Textures cost VRAM
+
+Every state is a separate texture. Four panels at four different pixel sizes are four textures,
+because they are four different pictures. The build reports the total against `textureBudgetMB` and
+names the worst offenders (RZ006).
+
+Do not use `data-rasterize-states` to fix a matching problem: it bakes another texture for no visual
+benefit, and RZ016 will say the variant was pointless.
+
+## `getComputedStyle` cannot see the decoration
+
+The decoration is a `::before`, and `getComputedStyle(el, '::before')` returns `none` on this engine
+even while it is painting. Read `rz/rasterize.css` or inspect the rendered output instead.
+
+## Verification does not cover decorations yet
+
+`verify: true` isolates each asset by toggling a node, which no longer exists now that decorations are
+pseudo-elements. Rather than report a pass it did not earn, it refuses to run when any decoration
+asset is present.
+
+The build audit still compares the whole page on every build (RZ023), which is the check that matters
+most.
+
+## Engine quirks the plugin works around
+
+You should not normally see these, but they explain what is in the generated CSS:
+
+- **`z-index: -1` and a forced stacking context.** An absolutely positioned pseudo-element would
+  otherwise paint after in-flow content and cover your text.
+- **A `translateX` on `<button>` decorations only.** cohtml places a pseudo-element's left edge at
+  the button's own edge regardless of the offset. Vertical offsets and width are fine.
+- **State variants are captured with real input**, because `CSS.forcePseudoState` is accepted by this
+  engine and does nothing.

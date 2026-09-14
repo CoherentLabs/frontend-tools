@@ -69,6 +69,22 @@ export async function verify(input: VerifyOptions): Promise<VerifyOutcome> {
 
     await fs.mkdir(input.reportDir, { recursive: true });
 
+    // This pass finds its targets by the stamped id and isolates them by toggling the underlay
+    // child on and off. Neither exists for a decoration any more: it is a `::before`, which has
+    // no id to find and no node to hide, so the pass would quietly check only the element-mode
+    // assets and report a pass for a build it never looked at. Refusing is the honest outcome
+    // until it is reworked to render each asset against the same page without the stylesheet,
+    // which is what the audit already does at page level.
+    const unsupported = Object.entries(manifest.assets).filter(([, asset]) => asset.mode !== 'element');
+    if (unsupported.length) {
+        throw new Error(
+            `gameface-rasterize: verification cannot check decoration assets yet. ${unsupported.length} of ` +
+                `${Object.keys(manifest.assets).length} assets are drawn by a ::before, which this pass cannot ` +
+                'isolate, so it would report a pass without having compared them. The build audit (on by ' +
+                'default) does compare the whole page and is unaffected.'
+        );
+    }
+
     const server = await serveDirectory(outDir);
     const referenceServer = await serveDirectory(outDir, { transformHtml: stripGeneratedTags });
 

@@ -24,6 +24,10 @@ export interface ReportInput {
     planned: number;
     /** Where the full diagnostics were written. */
     diagnosticsPath?: string;
+    /** Underlays written straight into the HTML, which need no script at all. */
+    injectedElements: number;
+    /** Assets no HTML file contained, which the emitted runtime attaches at load. */
+    runtimeAssets: number;
 }
 
 /**
@@ -144,6 +148,22 @@ export function formatReport(input: ReportInput): string {
             `  ${BOLD}${marked} marked, ${textured} textured${RESET}` +
                 (unmatched ? `, ${YELLOW}${unmatched} unmatched${RESET} ${DIM}- see RZ022${RESET}` : '')
         );
+    }
+
+    // The thing worth knowing about the shipped page is whether it runs any of our JavaScript at
+    // all, so say it plainly rather than leaving it to be inferred from a file listing.
+    const flattened = input.injectedElements;
+    const shipped = input.runtimeAssets;
+
+    if (flattened || shipped) {
+        lines.push(
+            `  ${BOLD}${flattened} subtree${flattened === 1 ? '' : 's'} flattened in the markup${RESET}` +
+                (shipped
+                    ? `, ${YELLOW}${shipped} left to a runtime${RESET} ${DIM}- see RZ026${RESET}`
+                    : `, ${GREEN}no runtime shipped${RESET}`)
+        );
+    } else {
+        lines.push(`  ${GREEN}no runtime shipped${RESET}`);
     }
 
     if (input.diagnosticsPath) {

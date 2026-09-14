@@ -5,6 +5,7 @@ import {
     type AssetEntry,
     type AssetMatcher,
     type RasterizeManifest,
+    type ResolvedMode,
     type StateAsset,
 } from '../contract.js';
 import type { BakeResult } from '../bake.js';
@@ -12,13 +13,23 @@ import type { ResolvedOptions } from '../config.js';
 import { CODES, type DiagnosticBag } from '../diagnostics.js';
 import type { AdvisorGroup } from './report.js';
 import { encodePng, encodeWebp, imageDigest, needsAlpha, vramBytes } from '../image.js';
-import { emitStylesheet } from './css.js';
-import { buildRuntime, type RuntimeAsset, type RuntimePayload } from './runtime.js';
+import { emitStylesheet, matchSelectorsFor, matchSpecificity } from './css.js';
+import { injectFlattening } from './inject.js';
+import { buildRuntime, type RuntimePayload } from './runtime.js';
 
 export interface WriteResult {
     manifest: RasterizeManifest;
     stylesheetPath: string;
-    runtimePath: string;
+    /** Absent when every underlay went into the markup and no script was emitted. */
+    runtimePath?: string;
+    /** How many element-mode subtrees were flattened in the HTML at build time. */
+    injectedElements: number;
+    /** HTML files the injection rewrote. */
+    injectedFiles: string[];
+    /** Assets no file contained, which the emitted runtime has to attach at load. */
+    runtimeAssets: number;
+    /** Each rewritten HTML file as it was before injection, for the audit's reference render. */
+    originals: Map<string, string>;
     patchedHtml: string[];
 }
 
@@ -44,9 +55,12 @@ export async function writeOutput(
 
     const assets: Record<string, AssetEntry> = {};
     const matchers: AssetMatcher[] = [];
-    const runtimeAssets: Record<string, RuntimeAsset> = {};
+    const runtimeAssets: Record<string, { id: string; sel: string; mode: ResolvedMode; liveParts?: number[][] }> = {};
     const ancestries = new Map<string, { tag: string; classes: string[] }[]>();
     const digests = new Map<string, string[]>();
+    // Which file each asset was introspected in, so a position-based match is only ever applied
+    // to the document that position was recorded from.
+    const routeFiles = new Map<string, string>();
 
     let totalVram = 0;
     let removedNodes = 0;
@@ -124,12 +138,15 @@ export async function writeOutput(
         });
 
         ancestries.set(plan.assetId, plan.mark.ancestry ?? []);
+        routeFiles.set(plan.assetId, (plan.route ?? routes[0] ?? 'index.html').split(/[?#]/)[0]);
 
         runtimeAssets[plan.assetId] = {
+            id: plan.assetId,
+            // Filled in below: the selectors depend on the disambiguation pass, which needs
+            // every matcher in hand before it can decide what separates one bake from another.
+            sel: '',
             mode: plan.mode,
-            states: result.states.map((s) => s.state),
             liveParts: liveParts?.map((p) => p.path),
-            nineDiv: plan.mode === 'slice' && options.sliceImpl === 'divs',
         };
     }
 
@@ -161,21 +178,80 @@ export async function writeOutput(
         totals: { vramEstBytes: totalVram, budgetBytes, assetCount: results.length, removedNodes },
     };
 
-    const stylesheet = emitStylesheet(manifest, { assetDir: './', sliceImpl: options.sliceImpl });
-    const payload: RuntimePayload = { assets: runtimeAssets, matchers };
+    const stylesheet = emitStylesheet(manifest, { assetDir: './' });
+
+    // Most specific first: an element matching both `div.panel.is-selected` and `div.panel` is
+    // claimed by the longer class list, which is the rule the old runtime matcher spelled out by
+    // hand. Both the build-time flattening and the fallback runtime rely on this ordering.
+    const ordered = Object.values(runtimeAssets)
+        .map((asset) => ({ ...asset, sel: matchSelectorsFor(asset.id, manifest).join(',') }))
+        .filter((asset) => {
+            if (asset.sel) return true;
+            // No class, no author id and no recorded position leaves nothing to find it by.
+            bag.add('RZ022', asset.id, 'no selector can find this element, so it gets no texture');
+            return false;
+        })
+        .sort((a, b) => matchSpecificity(b.id, manifest) - matchSpecificity(a.id, manifest));
 
     await fs.writeFile(path.join(assetDir, STYLESHEET), stylesheet);
-    await fs.writeFile(path.join(assetDir, RUNTIME), buildRuntime(payload));
     await fs.writeFile(path.join(assetDir, MANIFEST), JSON.stringify(manifest, null, 2));
 
-    const patchedHtml = await patchHtmlFiles(outDir, options.outDir);
+    // Only element mode touches the markup. A decoration is a `::before` on the marked element,
+    // so the stylesheet is its whole delivery mechanism - there is nothing to inject and nothing
+    // to run.
+    const flattenable = ordered.filter((asset) => asset.mode === 'element');
+    const injection = await injectFlattening(
+        outDir,
+        flattenable.map((asset) => ({
+            assetId: asset.id,
+            sel: asset.sel,
+            liveParts: asset.liveParts ?? [],
+            positional: isPositional(asset.id, manifest),
+            file: routeFiles.get(asset.id) ?? routes[0] ?? 'index.html',
+        }))
+    );
+
+    // An element-mode subtree that no HTML file contained is one a framework builds when the app
+    // runs. It is the only thing left that needs script in the page, and it is worth saying so
+    // out loud rather than letting a script appear in the output unexplained.
+    const unreached = flattenable
+        .filter((asset) => !injection.counts.get(asset.id))
+        .map((asset) => ({ id: asset.id, sel: asset.sel, liveParts: asset.liveParts ?? [] }));
+
+    if (unreached.length) {
+        bag.add(
+            'RZ026',
+            unreached[0].id,
+            `${unreached.length} element-mode subtree${unreached.length === 1 ? '' : 's'} ` +
+                `(${unreached.map((a) => a.id).join(', ')}) ${unreached.length === 1 ? 'was' : 'were'} not in any ` +
+                'HTML file, so the build could not flatten them and the page ships a small script that does it ' +
+                'at load. Decorations never need this; only element mode does, because flattening deletes nodes'
+        );
+    }
+
+    const payload: RuntimePayload = { assets: unreached, observe: options.runtime === 'observe' };
+    const needsRuntime = options.runtime !== 'off' && (unreached.length > 0 || options.runtime === 'observe');
+
+    if (needsRuntime) await fs.writeFile(path.join(assetDir, RUNTIME), buildRuntime(payload));
+
+    const patchedHtml = await patchHtmlFiles(outDir, options.outDir, needsRuntime);
 
     return {
         manifest,
         stylesheetPath: path.join(options.outDir, STYLESHEET),
-        runtimePath: path.join(options.outDir, RUNTIME),
+        runtimePath: needsRuntime ? path.join(options.outDir, RUNTIME) : undefined,
+        injectedElements: [...injection.counts.values()].reduce((sum, n) => sum + n, 0),
+        injectedFiles: injection.files,
+        originals: injection.originals,
+        runtimeAssets: unreached.length,
         patchedHtml,
     };
+}
+
+/** True when the only thing that finds this asset is where it sits in one document. */
+function isPositional(assetId: string, manifest: RasterizeManifest): boolean {
+    const mine = manifest.matchers.filter((m) => m.assetId === assetId);
+    return mine.length > 0 && mine.every((m) => !m.authorId && (m.ambiguous || !m.classes.length));
 }
 
 /**
@@ -345,8 +421,13 @@ export async function writeDiagnostics(
     return path.join(assetDir, 'rasterize.diagnostics.json').replace(/\\/g, '/');
 }
 
-/** Adds the stylesheet and runtime to every HTML entry in the build output. */
-async function patchHtmlFiles(outDir: string, assetDir: string): Promise<string[]> {
+/**
+ * Adds the stylesheet to every HTML entry, and the runtime only if one was emitted.
+ *
+ * A build whose underlays all went into the markup ships no script tag at all - not an empty one,
+ * not a no-op one. There is nothing left for it to do.
+ */
+async function patchHtmlFiles(outDir: string, assetDir: string, withRuntime: boolean): Promise<string[]> {
     const patched: string[] = [];
 
     for (const file of await findHtml(outDir)) {
@@ -357,15 +438,17 @@ async function patchHtmlFiles(outDir: string, assetDir: string): Promise<string[
         const base = prefix ? `${prefix}/` : '';
 
         const link = `<link rel="stylesheet" href="${base}${STYLESHEET}">`;
-        const script = `<script src="${base}${RUNTIME}"></script>`;
 
         let updated = html.includes('</head>')
             ? html.replace('</head>', `    ${link}\n</head>`)
             : `${link}\n${html}`;
 
-        updated = updated.includes('</body>')
-            ? updated.replace('</body>', `    ${script}\n</body>`)
-            : `${updated}\n${script}`;
+        if (withRuntime) {
+            const script = `<script src="${base}${RUNTIME}"></script>`;
+            updated = updated.includes('</body>')
+                ? updated.replace('</body>', `    ${script}\n</body>`)
+                : `${updated}\n${script}`;
+        }
 
         await fs.writeFile(file, updated);
         patched.push(path.relative(outDir, file));

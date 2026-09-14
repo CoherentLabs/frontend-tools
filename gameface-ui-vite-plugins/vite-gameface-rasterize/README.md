@@ -96,14 +96,17 @@ Alongside it, three assertions that need no extra work:
 
 ## Verification
 
+Every build already renders the finished page against itself-without-the-bake and writes both plus
+their difference to `rz/report/`. That is the check that matters, it is on by default, and it sees
+the page as a whole.
+
 ```shell
 npx gameface-rasterize verify dist --json rz/verify.json
 ```
 
-Renders every baked asset twice in the Player and compares them with SSIM plus a maximum-delta
-guard, slice assets stretched to three sizes. The work is per unique asset rather than per element
-using one - sixty cards sharing a texture ask one question, not sixty - and each page is loaded
-once per route, which is what makes it usable on a real UI.
+`verify` is a stricter per-asset SSIM check for CI. It currently **cannot check decoration assets**
+- it isolates each one by toggling a node, and a decoration is now a `::before` - so it refuses to
+run when any are present rather than reporting a pass it did not earn.
 
 ## Dev tells you what the build would do
 
@@ -125,7 +128,7 @@ are in the CSS rather than two minutes later. `__rzOverlay.report()` returns the
 npx gameface-rasterize bake dist        # capture and write textures into a built output
 npx gameface-rasterize check dist       # plan and report only; no captures, no writes
 npx gameface-rasterize check --url http://localhost:5173   # same, against a running dev server
-npx gameface-rasterize verify dist      # baked vs live, in the engine
+npx gameface-rasterize verify dist      # per-asset SSIM; element mode only, see above
 npx gameface-rasterize measure dist     # GPU time per frame, live against baked
 ```
 

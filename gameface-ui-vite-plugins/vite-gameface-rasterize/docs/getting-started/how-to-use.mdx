@@ -13,29 +13,24 @@ sidebar:
 </div>
 ```
 
-That is the whole opt-in. The plugin picks a mode, captures the panel's shadow, gradient and
+That is the whole opt-in. The plugin picks a mode, captures the panel's shadow, gradient, and
 rounded fill, and leaves the heading and paragraph alone.
 
-## Choose a mode when you need to
+## Pick a mode when you need to
 
 ```html
-<!-- fixed size: one image, no slicing -->
 <div class="badge" data-rasterize data-rasterize-mode="flat">A+</div>
-
-<!-- whole subtree flattened into one image -->
 <div class="nameplate" data-rasterize data-rasterize-mode="element">…</div>
 ```
 
-`auto` (the default) picks `flat` when the CSS declares a fixed width and height, and `slice`
-otherwise. Whichever it picks is printed in the build summary and recorded in the manifest, so
-the decision is never a mystery.
+| Mode | What it does |
+|---|---|
+| `auto` | Default. Uses `flat` when the CSS declares a fixed width and height, `slice` otherwise. |
+| `flat` | One image at a fixed size. |
+| `slice` | A 9-slice so the element can be any size. |
+| `element` | Flattens the whole subtree into one image. See [element mode](../concepts/element-mode.mdx). |
 
-| Mode | Description |
-|------|-------------|
-| `auto` | Default mode. Picks `flat` for fixed width/height elements, `slice` otherwise. |
-| `flat` | Fixed size. Captures the entire element as a single image with no slicing. |
-| `slice` | Slices the element into multiple images for flexible sizing. |
-| `element` | Flattens the entire subtree into one image. |
+The chosen mode is printed in the build summary and recorded in the manifest.
 
 ## Bake hover and press states
 
@@ -43,19 +38,16 @@ the decision is never a mystery.
 <button class="cta" data-rasterize data-rasterize-states="hover,active">Deploy</button>
 ```
 
-Each state is captured as its own texture and all of them are in the DOM from the first frame,
-hidden behind `opacity: 0`. Swapping them is an opacity change, so the first hover never stalls
-waiting for a texture upload.
-
-Allowed states are `hover`, `active`, `focus`, `disabled`, and `class:<name>` for anything the
+Allowed states are `hover`, `active`, `focus`, `disabled`, and `class:<name>` for anything your
 app toggles itself:
 
 ```html
 <div class="slot" data-rasterize data-rasterize-states="class:selected">…</div>
 ```
 
-State variants are an instant swap, not a transition. If a baked property is under a
-`transition`, the plugin says so (RZ002).
+Each state is a separate texture, swapped by a CSS rule on the element's own state. No JavaScript
+runs. The swap is instant, not a transition; if a baked property is under a `transition`, the build
+warns with RZ002.
 
 ## Keep something live inside a flattened subtree
 
@@ -66,25 +58,22 @@ State variants are an instant swap, not a transition. If a baked property is und
 </div>
 ```
 
-Bindings (`data-bind-*`), animated elements, and anything interactable are detected and kept
-live automatically - `data-rasterize-live` is for declaring intent about something the detector
-cannot see, and it silences the "these were excluded" warning for that node.
+Bindings, animated elements, and anything interactable are detected and kept live automatically.
+`data-rasterize-live` declares intent for something the detector cannot see and silences the
+"these were excluded" warning (RZ012) for that node.
 
-## Check before you build
+## Commands
+
+| Command | What it does |
+|---|---|
+| `vite dev` | Nothing to your visuals. Press **F9** for an overlay showing what the build would decide. |
+| `vite build` | Captures, writes the output, then renders the result against the unbaked page and reports what was lost. |
+| `gameface-rasterize check --url <dev url>` | Plans and reports without capturing anything. |
+| `gameface-rasterize bake dist` | Bakes an existing build. `--debug` keeps every capture. |
+| `gameface-rasterize measure dist` | Compares GPU time per frame, live against baked. See [measuring](../concepts/measuring.mdx). |
+
+Check your work before committing to a build:
 
 ```shell
 npx gameface-rasterize check --url http://localhost:5173
 ```
-
-Runs the whole planning pass against your dev server and prints exactly what would be baked and
-every diagnostic, without capturing anything.
-
-## Verify after you build
-
-```shell
-npx gameface-rasterize verify dist
-```
-
-Renders each baked element against the original live CSS in the Player and compares them. Use it
-in CI: it exits non-zero when anything drifts, with a side-by-side diff written next to the
-assets.

@@ -39,6 +39,7 @@ export default function rasterize(options: RasterizeOptions = {}): Plugin {
             buildFailed = false;
         },
 
+
         buildEnd(error) {
             // closeBundle runs whether or not the build succeeded. Baking after a failure spends
             // a minute and a half capturing whatever dist happened to contain and then reports
@@ -117,6 +118,7 @@ export default function rasterize(options: RasterizeOptions = {}): Plugin {
                 );
                 return;
             }
+
 
             const outcome = await runPipeline({
                 outDir,

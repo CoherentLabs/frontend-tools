@@ -1,66 +1,68 @@
 ---
-title: The attribute contract
+title: Attributes
+sidebar:
+    order: 2
 ---
 
-The contract between your markup and the build pipeline is plain HTML attributes. Nothing about
-it is specific to a framework - it works the same on hand-written HTML, Solid JSX, React JSX, or
-anything else whose rendered output the Player can load.
+The contract between markup and the build is just HTML attributes. It is framework-agnostic: the
+plugin reads the rendered output whether the page was written in plain HTML, JSX, Vue, or Svelte.
 
 | Attribute | Values | Meaning |
 |---|---|---|
-| `data-rasterize` | *(presence)* | Bake this element's decoration. Says nothing about its descendants. |
-| `data-rasterize-mode` | `auto` \| `slice` \| `flat` \| `element` | How to bake it. Default `auto`. |
+| `data-rasterize` | *(presence)* | Bake this element's decoration. It does not affect descendants. |
+| `data-rasterize-mode` | `auto` \| `slice` \| `flat` \| `element` | How to bake it. Default is `auto`. |
 | `data-rasterize-states` | `hover,active,focus,disabled,class:<name>` | Extra variants to capture. |
-| `data-rasterize-id` | any string | A stable name for the asset. Otherwise one is derived. |
-| `data-rasterize-scale` | number | Per-element override of the bake scale. |
+| `data-rasterize-id` | any string | Stable asset name. Without it, one is derived. |
+| `data-rasterize-scale` | number | Per-element override for the bake scale. |
 | `data-rasterize-live` | *(presence)* | Inside an element-mode subtree: keep this node as live DOM. |
 
 ## What counts as decoration
 
-Baked and stripped when present:
+Baked and stripped:
 
-`box-shadow`, gradient and image backgrounds, `background-color` when it is part of a rounded or
-shadowed fill, `border-color` (the width stays - it is layout), `border-radius` when paired with
-something expensive, `border-image`, `filter`, `mask-image`.
+- `box-shadow`
+- gradient and image backgrounds
+- `background-color` when it is part of a rounded or shadowed fill
+- `border-color` (the width stays because it is layout)
+- `border-radius` when paired with something expensive
+- `border-image`
+- `filter`
+- `mask-image`
 
 Never baked:
 
-- **`mix-blend-mode` and `backdrop-filter`** - they do not composite source-over, so no texture
-  can stand in for them against an arbitrary backdrop. This is arithmetic, not a heuristic, and
-  there is no approximation mode.
-- **`opacity`** - cheap, and usually animated.
-- **`transform`** - never decoration.
-- **`border-radius` on its own** - a radius with nothing painted behind it costs nothing.
-- **`border-radius` when the element clips its content** - then it is doing layout work, and
-  removing it would let children spill out of the corners.
+- `mix-blend-mode` and `backdrop-filter` — they do not composite source-over, so no texture can replace them. The build refuses them with RZ001.
+- `opacity` — cheap and commonly animated.
+- `transform` — not decoration. A transform on the marked element still applies to the texture at runtime, just as it did to the live CSS.
+- `border-radius` on its own, or when the element clips its content.
 
+## `filter` and `mask-image`
 
-### filter and mask are treated carefully
+Both affect an element's content as well as its decoration, so whether they can be baked depends on
+whether any content remains live after the bake.
 
-Both apply to an element's *content* as well as its decoration, so whether they can be baked comes
-down to whether any content is still live afterwards.
-
-| Situation | What happens |
+| Situation | Result |
 |---|---|
-| No content of its own | Part of the decoration. Baked in and stripped. |
-| Decoration mode, with children | The children stay live and need the effect, so it stays live and the capture is taken without it. The shadows underneath are still baked. |
-| Element mode, nothing left live | The subtree became pixels, so there is nothing for the effect to apply to. Baked in and stripped. |
-| Element mode, with live parts | The live parts would lose the effect, so it stays live. |
+| No content of its own | Baked in and stripped. |
+| Decoration mode, with children | Stays live; the shadows underneath are still baked. |
+| Element mode, nothing left live | Baked in and stripped. |
+| Element mode, with live parts | Stays live, so the live parts keep the effect. |
 
-The third row is the one worth designing for. A masked or filtered panel that never changes costs
-the engine a pass every frame for a picture that never moves; marking it `element` when its whole
-subtree is static removes that pass entirely, not just the shadow underneath it.
+When one survives the bake, the build reports RZ025 because it is a per-frame cost. A masked panel
+whose entire subtree is static can often be marked `element` to remove it completely.
 
-When an effect does survive the bake, the build says so and why (RZ025), because it is a per-frame
-cost you may be able to design away.
+## How the decoration is drawn
+
+The generated decoration is painted as a `::before` on the marked element. There is no child node,
+no script, and no extra attribute to carry it — the generated stylesheet is the whole delivery
+mechanism, including state variants. Those are rules on the element's own `:hover`, `:active`,
+`:focus`, `[disabled]`, or class.
 
 ## How an element is identified
 
-An explicit `data-rasterize-id` wins. Otherwise the id is derived from a hash of the decoration
-values, the mode, the size, the scale, the state list, the engine version and the contract
-version - so an unchanged decoration is a cache hit, and a changed one is naturally a new asset.
+An explicit `data-rasterize-id` wins. Otherwise the id is a hash of the decoration values, mode,
+size, scale, state list, engine version, and contract version. An unchanged decoration becomes a cache
+hit; a changed one produces a new asset.
 
-At runtime, elements are matched to assets by tag and class list rather than by position in the
-document. That is deliberate: twenty identical cards share one texture, one upload and twenty
-draws. When two elements share a tag and classes but baked differently, those particular
-matchers fall back to document position.
+Elements are matched to assets by tag and class list, not by position, so twenty identical cards can
+share one texture. See [preparing your UI](./authoring.mdx) for the rules that keep that matching stable.

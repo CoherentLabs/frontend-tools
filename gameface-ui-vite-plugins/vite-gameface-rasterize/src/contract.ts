@@ -29,12 +29,6 @@ export const ATTR = {
 export const RUNTIME_ATTR = {
     /** Set on the marked element itself: `[data-rz-id="<assetId>"]`. */
     id: 'data-rz-id',
-    /** Set on the generated underlay child: `[data-rz-underlay="<assetId>"]`. */
-    underlay: 'data-rz-underlay',
-    /** Which state variant an underlay represents ("base", "hover", ...). */
-    state: 'data-rz-state',
-    /** Present on the underlay whose state is currently showing. */
-    active: 'data-rz-active',
     /** Set on a pinned live part in element mode: `[data-rz-live="<assetId>:<index>"]`. */
     livePart: 'data-rz-live',
 } as const;

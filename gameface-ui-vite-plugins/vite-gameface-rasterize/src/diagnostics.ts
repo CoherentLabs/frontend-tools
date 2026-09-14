@@ -60,6 +60,11 @@ export const CODES = {
         docs: `${DOCS}#rz020`,
     },
     RZ021: { level: 'warn', message: 'several assets are the same image under different ids', docs: `${DOCS}#rz021` },
+    RZ026: {
+        level: 'warn',
+        message: 'an element-mode subtree could not be flattened at build time, so a script ships',
+        docs: `${DOCS}#rz026`,
+    },
     RZ022: { level: 'warn', message: 'marked elements did not receive a texture in the built page', docs: `${DOCS}#rz022` },
     RZ023: { level: 'warn', message: 'the baked page does not match the live one', docs: `${DOCS}#rz023` },
     RZ024: {

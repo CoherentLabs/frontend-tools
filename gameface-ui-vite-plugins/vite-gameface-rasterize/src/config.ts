@@ -59,6 +59,27 @@ export interface RasterizeOptions {
     diffThreshold?: number;
     /** How 9-slices are drawn. cohtml 3.2 renders border-image correctly; "divs" is the escape hatch. */
     sliceImpl?: 'border-image' | 'divs';
+    /**
+     * Whether any JavaScript ships at all, and how hard it works if it does.
+     *
+     * Underlays are written into the HTML at build time wherever the build can find the element,
+     * which for markup that lives in a file is all of them. Such a build ships no script: there
+     * is nothing left to run.
+     *
+     * `"auto"`, the default, emits a runtime only for assets no HTML file contained - elements a
+     * framework creates when the app runs, which no build-time rewrite can reach. That runtime
+     * attaches them once, at DOMContentLoaded, and then stops.
+     *
+     * `"observe"` additionally watches the document for inserted subtrees, for an app that mounts
+     * marked elements after load. It costs a mutation record per insertion, so reach for it only
+     * when the build reports elements that load-time attachment missed (RZ022).
+     *
+     * `"off"` never emits a runtime. Anything injection could not reach keeps its live CSS.
+     *
+     * Attributes are never watched in any mode: a class arriving late already re-paints through
+     * the emitted stylesheet, with nothing entering script.
+     */
+    runtime?: 'auto' | 'observe' | 'off';
     /** Run the advisory pass that lists unmarked elements using expensive properties. */
     advisor?: boolean;
     /** Asset output directory, relative to the build output directory. */
@@ -103,6 +124,7 @@ export const DEFAULTS = {
     audit: true,
     diffThreshold: 0.005,
     sliceImpl: 'border-image' as const,
+    runtime: 'auto' as const,
     advisor: true,
     outDir: 'rz/',
     cacheDir: 'node_modules/.cache/rasterize',
