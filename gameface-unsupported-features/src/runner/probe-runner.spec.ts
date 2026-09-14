@@ -40,9 +40,16 @@ import {
     inputTypeProbe,
 } from '../probes/html-probe';
 
-import { parseLogSync, parseLogFromOffset, getLogByteOffset } from '../log/log-parser';
+import { parseLogSync, parseLogFromOffset, getLogByteOffset, findActiveLogPath } from '../log/log-parser';
 import type { LogParseResults } from '../log/log-parser';
+import { resolveEngineVersion } from '../log/engine-version';
 import { reconcile, partitionBySurface } from '../merge/reconciler';
+import { canonicalizeCatalogRows, writeJsonFile } from '../write/catalog-writer';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { version: bcdVersion } = require('@mdn/browser-compat-data/package.json') as { version: string };
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { version: typescriptVersion } = require('typescript/package.json') as { version: string };
 
 import type { JsProbeResults } from '../probes/js-probe';
 import { probeValueReadback } from '../probes/css-probe';
@@ -80,11 +87,13 @@ const customPropsJson: Record<string, { testValue: string; description?: string 
         : {};
 
 function resolveLogPath(): string {
-    if (config.logPath) return config.logPath;
-    if (config.gamefacePath) {
-        return path.resolve(path.dirname(config.gamefacePath), 'CohtmlApplication.log');
+    let preferred = '';
+    if (config.logPath) {
+        preferred = path.resolve(config.logPath);
+    } else if (config.gamefacePath) {
+        preferred = path.resolve(path.dirname(config.gamefacePath), 'CohtmlApplication.log');
     }
-    return '';
+    return findActiveLogPath(preferred);
 }
 
 // ── Accumulated results ───────────────────────────────────────────────────────
@@ -903,6 +912,7 @@ describe('Gameface Feature Inventory', function () {
                 unsupportedAtRules: new Set(raw.unsupportedAtRules ?? []),
                 rawWarnings: [],
                 logFound: true,
+                engineVersion: null,
             };
             console.log(
                 `[selector-intermediate] Loaded ${Object.keys(cssSelectorResults).length} selector results, ` +
@@ -959,8 +969,14 @@ describe('Gameface Feature Inventory', function () {
 
         const partitioned = partitionBySurface({ supported, partial, unsupported, summary });
 
+        // Resolve the engine version BEFORE writing anything: an unversioned
+        // catalog can't be safely merged into gameface-features/versions/ later,
+        // so fail loudly here rather than silently writing unattributed results.
+        const engineVersion = resolveEngineVersion(logResults.engineVersion);
+        console.log(`[engine-version] Probing Gameface ${engineVersion}.`);
+
         const write = (filePath: string, data: unknown): void => {
-            fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+            writeJsonFile(filePath, data);
             console.log(`[writer] Wrote ${filePath}`);
         };
 
@@ -968,11 +984,18 @@ describe('Gameface Feature Inventory', function () {
             const dir = path.join(OUTPUT_DIR, folder);
             fs.mkdirSync(dir, { recursive: true });
             const { supported: s, partial: p, unsupported: u, summary: sum } = partitioned[folder];
-            write(path.join(dir, 'supported.json'), s);
-            write(path.join(dir, 'partial.json'), p);
-            write(path.join(dir, 'unsupported.json'), u);
+            write(path.join(dir, 'supported.json'), canonicalizeCatalogRows(s));
+            write(path.join(dir, 'partial.json'), canonicalizeCatalogRows(p));
+            write(path.join(dir, 'unsupported.json'), canonicalizeCatalogRows(u));
             write(path.join(dir, 'summary.json'), sum);
         }
+
+        write(path.join(OUTPUT_DIR, 'meta.json'), {
+            version: engineVersion,
+            generatedAt: new Date().toISOString(),
+            bcdVersion,
+            typescriptVersion,
+        });
     });
 
 });

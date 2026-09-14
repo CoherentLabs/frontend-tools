@@ -506,6 +506,126 @@
   {
     "status": "missing",
     "surface": "css-property",
+    "name": "coh-custom-effect-float-param1",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param10",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param11",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param12",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param2",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param3",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param4",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param5",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param6",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param7",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param8",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-float-param9",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-string-param1",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-custom-effect-string-param2",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "coh-sdf",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
     "name": "color-adjust",
     "evidence": {
       "logWarning": "Unsupported CSS property detected (stylesheet parser)"
@@ -1035,6 +1155,14 @@
     "status": "missing",
     "surface": "css-property",
     "name": "grid-column-start",
+    "evidence": {
+      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
+    }
+  },
+  {
+    "status": "missing",
+    "surface": "css-property",
+    "name": "grid-gap",
     "evidence": {
       "logWarning": "Unsupported CSS property detected (stylesheet parser)"
     }
@@ -2603,134 +2731,6 @@
     "status": "missing",
     "surface": "css-property",
     "name": "zoom",
-    "evidence": {
-      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-property",
-    "name": "coh-sdf",
-    "evidence": {
-      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param1",
-    "evidence": {
-      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param2",
-    "evidence": {
-      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param3",
-    "evidence": {
-      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param4",
-    "evidence": {
-      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param5",
-    "evidence": {
-      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param6",
-    "evidence": {
-      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param7",
-    "evidence": {
-      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param8",
-    "evidence": {
-      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param9",
-    "evidence": {
-      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param10",
-    "evidence": {
-      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param11",
-    "evidence": {
-      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-property",
-    "name": "coh-custom-effect-float-param12",
-    "evidence": {
-      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-property",
-    "name": "coh-custom-effect-string-param1",
-    "evidence": {
-      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-property",
-    "name": "coh-custom-effect-string-param2",
-    "evidence": {
-      "logWarning": "Unsupported CSS property detected (stylesheet parser)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-property",
-    "name": "grid-gap",
     "evidence": {
       "logWarning": "Unsupported CSS property detected (stylesheet parser)"
     }
