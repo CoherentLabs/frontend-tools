@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>rasterize demo</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="stage">
+        <!-- slice: a shadowed, rounded panel whose size is not known at build time -->
+        <div class="panel" data-rasterize data-rasterize-id="hud-panel">
+            <h2 class="panel__title">Squad status</h2>
+            <p class="panel__body">Children, text and bindings all stay live DOM. Only the panel's own
+               shadow, gradient and rounded fill became a texture.</p>
+        </div>
+
+        <!-- flat: fixed size, so the whole decoration is one image -->
+        <div class="badge" data-rasterize data-rasterize-mode="flat" data-rasterize-id="rank-badge">
+            <span class="badge__value">A+</span>
+        </div>
+
+        <!-- state variants: base and hover are both baked, swapped by the runtime -->
+        <button class="cta" data-rasterize data-rasterize-states="hover,active" data-rasterize-id="cta">
+            Deploy
+        </button>
+
+        <!-- element mode: the frame, portrait and labels bake into one image; the name,
+             the bar fill and the report button stay live and get pinned on top -->
+        <div class="nameplate" data-rasterize data-rasterize-mode="element" data-rasterize-id="nameplate">
+            <div class="nameplate__frame">
+                <div class="nameplate__portrait"></div>
+                <div class="nameplate__info">
+                    <div class="nameplate__label">OPERATIVE</div>
+                    <div class="nameplate__name" data-bind-value="{{player.name}}">Vasquez</div>
+                    <div class="nameplate__bar">
+                        <div class="nameplate__fill" data-bind-style-width="{{player.hp}}"></div>
+                    </div>
+                </div>
+                <button class="nameplate__report">!</button>
+            </div>
+        </div>
+
+        <!-- RZ001: mix-blend-mode does not composite source-over, so it can never be baked -->
+        <div class="blended" data-rasterize data-rasterize-id="blended">blend</div>
+
+        <!-- RZ002: the shadow is under a transition, so a baked variant would swap instantly -->
+        <div class="animated" data-rasterize data-rasterize-id="animated">transition</div>
+
+        <!-- unmarked but expensive: the advisor should mention this one -->
+        <div class="unmarked">unmarked</div>
+    </div>
+</body>
+</html>

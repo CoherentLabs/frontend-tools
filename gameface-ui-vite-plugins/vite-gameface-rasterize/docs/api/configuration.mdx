@@ -1,0 +1,125 @@
+---
+title: Configuration
+---
+
+Every option is optional.
+
+```ts
+rasterize({
+    playerPath: process.env.GAMEFACE_PATH,
+    routes: ['index.html'],
+    bakeScale: 2,
+    transcode: false,
+    textureBudgetMB: 32,
+    strictTransitions: false,
+    ssimThreshold: 0.995,
+    verify: false,
+    audit: true,
+    diffThreshold: 0.005,
+    overlay: undefined,
+    overlayKey: 'F9',
+    runtime: 'auto',
+    advisor: true,
+    outDir: 'rz/',
+    cacheDir: 'node_modules/.cache/rasterize',
+    port: 9444,
+    viewport: { width: 1920, height: 1080 },
+    maxViewport: { width: 4096, height: 4096 },
+    headed: false,
+    debug: false,
+});
+```
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `playerPath` | `string` | `$GAMEFACE_PATH` | The Gameface Player executable. |
+| `routes` | `(string \| RasterizeRoute)[]` | `['index.html']` | Pages to visit during capture. |
+| `bakeScale` | `number` | `2` | Supersampling factor. |
+| `transcode` | `'webp' \| false` | `false` | Emit a WebP companion beside each PNG. Saves disk, not VRAM. |
+| `textureBudgetMB` | `number` | `32` | VRAM budget; exceeding it warns with the worst offenders. |
+| `strictTransitions` | `boolean` | `false` | Promote RZ002 from warning to error. |
+| `ssimThreshold` | `number` | `0.995` | SSIM floor for verification. |
+| `verify` | `boolean` | `false` | Verify after baking and fail the build on a real difference. |
+| `audit` | `boolean` | `true` | Render the finished build against itself-without-the-bake and write the comparison. |
+| `diffThreshold` | `number` | `0.005` | Share of differing pixels above which the audit warns. |
+| `overlay` | `boolean` | *(hidden)* | Dev overlay: `true` draws it at once, `false` disables it, default hides it behind the toggle key. |
+| `overlayKey` | `string` | `'F9'` | Key that shows and hides the dev overlay. |
+| `runtime` | `'auto' \| 'observe' \| 'off'` | `'auto'` | Whether a script is emitted for element-mode subtrees the build could not flatten. |
+| `advisor` | `boolean` | `true` | Report unmarked elements using expensive properties. |
+| `outDir` | `string` | `'rz/'` | Asset directory inside the build output. |
+| `cacheDir` | `string` | `'node_modules/.cache/rasterize'` | Where bakes are cached. |
+| `port` | `number` | `9444` | Starting debug port; the first free one at or after it is used. |
+| `viewport` | `{width, height}` | `1920x1080` | Bake viewport, grown automatically to fit the largest asset. |
+| `maxViewport` | `{width, height}` | `4096x4096` | Ceiling for that automatic growth. |
+| `headed` | `boolean` | `false` | Show the Player window while baking. |
+| `debug` | `boolean` | `false` | Dump every capture and its geometry into the cache directory. |
+
+## routes
+
+A route is a page to load plus optional JavaScript to run before capture. Use it to reach anything
+that is not on screen when the page finishes loading, and to stop your update loop — which is
+[the single largest source of un-baked elements](../concepts/authoring.mdx).
+
+```ts
+routes: [
+    'index.html',
+    {
+        path: 'index.html',
+        preload: 'Math.random = () => 0.5;',
+        setup: "document.querySelector('#settings').click(); await new Promise(r => setTimeout(r, 200));",
+        settleMs: 400,
+    },
+];
+```
+
+| Field | Meaning |
+|---|---|
+| `path` | Page to load, relative to the build output. May include a hash route. |
+| `preload` | JavaScript injected **before** the page's own scripts run. For anything decided at module init, such as a random seed. |
+| `setup` | JavaScript run **after** the page has loaded. For opening menus and stopping loops. May return a promise. |
+| `settleMs` | Extra wait after `setup` resolves. |
+
+Anything that never renders during capture is never baked.
+
+## bakeScale
+
+Bakes are captured at twice the authored size by default, which covers a 1080p-authored design up
+to 4K. Individual elements can override it with `data-rasterize-scale`.
+
+Scale multiplies into texture memory: doubling it quadruples the VRAM.
+
+## verify and audit
+
+`audit` is on by default and costs two extra page loads per route. It renders the finished build
+against itself-without-the-bake and writes both plus their difference to `rz/report/`. It is the
+only check that sees the page as a whole, and it is what catches a texture that landed in the wrong
+place or never matched anything.
+
+`verify` is a stricter per-asset SSIM check intended for CI. It currently **cannot check decoration
+assets** and refuses to run when any are present — see
+[things to watch out for](../concepts/limitations.mdx).
+
+## runtime
+
+A decoration is drawn by a `::before`, so nothing is added to your markup and no script is needed,
+including for state variants. Most builds ship no JavaScript and get no `<script>` tag.
+
+Element mode is the exception, because flattening removes nodes and CSS cannot.
+
+| Value | Behaviour |
+|---|---|
+| `'auto'` | Default. Emits a script only for element-mode subtrees no HTML file contained, flattens them at `DOMContentLoaded`, then stops. Reported as RZ026. |
+| `'observe'` | Also watches for element-mode subtrees mounted after load. |
+| `'off'` | Never emits a script. Anything unreached keeps its original DOM. |
+
+## viewport and maxViewport
+
+The capture window is a hard ceiling on how large one asset can be, and grows automatically to fit
+the largest planned bake up to `maxViewport`. If your layout is sized in `vh`, pin the root font
+size in `setup` so the window cannot inflate your whole UI — see
+[preparing your UI](../concepts/authoring.mdx).
+
+## overlay
+
+In dev the plugin injects an overlay that classifies every marked element the way the build would,
+without launching the Player. Press **F9**. It costs nothing until you press it.

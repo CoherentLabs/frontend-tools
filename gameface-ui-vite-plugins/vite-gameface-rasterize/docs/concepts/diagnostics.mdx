@@ -1,0 +1,72 @@
+---
+title: Diagnostics
+sidebar:
+    order: 5
+---
+
+Every diagnostic names the element, the route, and a link to the relevant location. Errors fail the
+build; warnings do not. Identical diagnostics collapse into a single line with a count.
+
+The full list is written to `rz/rasterize.diagnostics.json` on every build.
+
+| Code | Level | Condition |
+|---|---|---|
+| RZ001 | error | `mix-blend-mode` or `backdrop-filter` on a marked element |
+| RZ002 | warn* | a transition or animation targets a baked property |
+| RZ003 | warn | a baked value comes from a custom property written at runtime |
+| RZ004 | error | `flat` mode but the size is not statically resolvable |
+| RZ005 | error | a 9-slice stretch zone is not uniform |
+| RZ006 | warn | texture budget exceeded, or the bake needs a bigger viewport |
+| RZ007 | warn | the marked element has nothing worth baking |
+| RZ008 | error | verification SSIM below the threshold |
+| RZ009 | warn | the requested format cannot carry the alpha this asset needs |
+| RZ010 | error | element mode, but nothing bakeable remains after exclusions |
+| RZ011 | error | layout-affecting dynamism inside an element-mode subtree |
+| RZ012 | warn | element mode: live parts were excluded (lists each one and why) |
+| RZ013 | warn | layout-affecting media queries apply to this element |
+| RZ014 | warn | a redundant nested marker, subsumed by an element-mode bake |
+| RZ015 | info | an unmarked element uses expensive properties |
+| RZ016 | warn | a state variant looks identical to the base bake |
+| RZ017 | warn | the capture pass hit a problem with this element |
+| RZ018 | warn | the element was `display: none` when it was captured |
+| RZ019 | warn | the capture came back empty; nothing was baked and the live CSS stayed |
+| RZ020 | warn | lookalike elements baked differently and cannot all be matched |
+| RZ021 | warn | several assets are byte-identical images under different ids |
+| RZ022 | warn | marked elements have no texture in the built page |
+| RZ023 | warn | the baked page differs from the live one by more than the threshold |
+| RZ024 | warn | too small to 9-slice, so it was baked flat at its measured size |
+| RZ025 | warn | a filter or mask survived the bake and still costs a pass every frame |
+| RZ026 | warn | an element-mode subtree could not be flattened at build time, so a script ships |
+
+\* an error when `strictTransitions: true`.
+
+## The ones worth acting on
+
+**RZ019 — empty capture.** The element painted nothing during capture. This is usually a
+`requestAnimationFrame` loop moving it mid-capture; see [preparing your UI](./authoring.mdx). The
+bake is refused rather than shipped, because the emitted CSS also strips the live decoration. An
+empty texture would leave the element with nothing.
+
+**RZ022 — marked but not textured.** The finished build checks whether a generated selector matches
+each marked element. This catches cases where the build is technically green but most of the page is
+still running live CSS. The message names the reason for each miss.
+
+**RZ023 — baked page differs from live page.** Every build renders twice: once as shipped and once
+with the bake stripped. Both versions and their difference are written to `rz/report/`. Look at the
+picture: green is live CSS, blue is what shipped, and red is where they disagree. Small differences
+are normal, because a rounded edge drawn from a texture and the same edge drawn by the engine can
+differ by a pixel of antialiasing.
+
+**RZ020 — lookalikes.** Several elements share the same tag and class list but baked differently,
+and no ancestor class separates them. Only one gets a texture. Move the state onto the marked
+element itself.
+
+**RZ021 — duplicate images.** One decoration was baked twice. The message names which part of the
+bake key differs, usually the measured size. If the sizes should be equal, make them equal.
+
+**RZ026 — a script ships.** An element-mode subtree is created at runtime by a framework and not by
+an HTML file. It gets a small script that flattens it once at load. Move the subtree into the HTML
+entry if you can.
+
+**RZ015 — the advisor.** This is informational only. It lists elements using expensive properties
+without a marker and never marks anything itself.

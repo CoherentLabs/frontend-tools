@@ -1,0 +1,43 @@
+---
+title: Inspecting the output
+sidebar:
+    order: 6
+---
+
+## What the build writes
+
+| File | What it holds |
+|---|---|
+| `rz/rasterize.css` | every generated rule: what was stripped and the `::before` that replaced it |
+| `rz/<asset>.<state>.png` | the textures |
+| `rz/rasterize.manifest.json` | every asset: mode, size, ink overflow, slice insets, live parts, hash |
+| `rz/rasterize.diagnostics.json` | every diagnostic in full, with every element it applies to |
+| `rz/report/<route>.png` | the page as shipped, the page without the bake, and their difference |
+
+Start with `rz/report/<route>.png`. It is a three-panel comparison: green is live CSS, blue is what
+shipped, and red marks where they disagree.
+
+## Looking at the live page
+
+Open the page in the Player, then open **`localhost:9444`** in Chrome. The Player serves a full
+DevTools frontend from that port with no flags to set.
+
+- **Did this element get a texture?** There is no node or attribute to inspect, because the
+decoration is a `::before`. The deciding factor is whether a generated selector matches the element.
+Paste a selector from `rz/rasterize.css` into the console to see what it hits. Note that
+`getComputedStyle(el, '::before')` reports `none` here even while it is painting.
+- **Which variant is showing?** Read the `::before` rules. The base rule carries the box and the
+base texture; each variant rule changes only the image under `:hover`, `:active`, `:focus`,
+`[disabled]`, or a class. Later rules win, so a pressed button that is also hovered reads as active.
+- **What was captured?** Open the texture URL from the rule on its own. Blank, clipped, or rotated
+content tells you what went wrong at capture time.
+
+## Reproducing a capture
+
+```shell
+npx gameface-rasterize bake dist --debug
+```
+
+This writes every capture, before and after trimming, to `node_modules/.cache/rasterize/debug/`.
+Each file has a JSON sidecar with the plan, measured ink overflow, and computed placement. That tells
+you whether the asset was captured wrong or placed wrong.

@@ -1,0 +1,79 @@
+---
+title: How to use
+sidebar:
+    order: 3
+---
+
+## Mark an element
+
+```html
+<div class="panel" data-rasterize>
+    <h2 class="panel__title">Squad status</h2>
+    <p class="panel__body">Still text, still live.</p>
+</div>
+```
+
+That is the whole opt-in. The plugin picks a mode, captures the panel's shadow, gradient, and
+rounded fill, and leaves the heading and paragraph alone.
+
+## Pick a mode when you need to
+
+```html
+<div class="badge" data-rasterize data-rasterize-mode="flat">A+</div>
+<div class="nameplate" data-rasterize data-rasterize-mode="element">…</div>
+```
+
+| Mode | What it does |
+|---|---|
+| `auto` | Default. Uses `flat` when the CSS declares a fixed width and height, `slice` otherwise. |
+| `flat` | One image at a fixed size. |
+| `slice` | A 9-slice so the element can be any size. |
+| `element` | Flattens the whole subtree into one image. See [element mode](../concepts/element-mode.mdx). |
+
+The chosen mode is printed in the build summary and recorded in the manifest.
+
+## Bake hover and press states
+
+```html
+<button class="cta" data-rasterize data-rasterize-states="hover,active">Deploy</button>
+```
+
+Allowed states are `hover`, `active`, `focus`, `disabled`, and `class:<name>` for anything your
+app toggles itself:
+
+```html
+<div class="slot" data-rasterize data-rasterize-states="class:selected">…</div>
+```
+
+Each state is a separate texture, swapped by a CSS rule on the element's own state. No JavaScript
+runs. The swap is instant, not a transition; if a baked property is under a `transition`, the build
+warns with RZ002.
+
+## Keep something live inside a flattened subtree
+
+```html
+<div data-rasterize data-rasterize-mode="element">
+    <div class="frame">…</div>
+    <span data-rasterize-live>{whatever the game writes here}</span>
+</div>
+```
+
+Bindings, animated elements, and anything interactable are detected and kept live automatically.
+`data-rasterize-live` declares intent for something the detector cannot see and silences the
+"these were excluded" warning (RZ012) for that node.
+
+## Commands
+
+| Command | What it does |
+|---|---|
+| `vite dev` | Nothing to your visuals. Press **F9** for an overlay showing what the build would decide. |
+| `vite build` | Captures, writes the output, then renders the result against the unbaked page and reports what was lost. |
+| `gameface-rasterize check --url <dev url>` | Plans and reports without capturing anything. |
+| `gameface-rasterize bake dist` | Bakes an existing build. `--debug` keeps every capture. |
+| `gameface-rasterize measure dist` | Compares GPU time per frame, live against baked. See [measuring](../concepts/measuring.mdx). |
+
+Check your work before committing to a build:
+
+```shell
+npx gameface-rasterize check --url http://localhost:5173
+```

@@ -1,0 +1,63 @@
+---
+title: Changelog
+---
+
+## 1.0.0
+
+First release.
+
+**Baking**
+
+- Decoration baking in `flat` and `slice` modes, captured in the Gameface Player against the real
+  page rather than a reconstruction of it.
+- `element` mode: whole-subtree flattening, with data-bound, animated and interactable descendants
+  detected automatically, kept live, and pinned at the geometry the layout engine gave them.
+- State variants: `hover`, `active`, `focus`, `disabled` and `class:<name>`.
+- `filter` and `mask-image` are baked in when nothing is left live to need them, and kept live when
+  something is (RZ025).
+- Content-addressed cache keyed on decoration, size, scale, states, engine version and contract
+  version. Sizes are measured in layout units, so a transform above an element does not split one
+  decoration into a texture per element.
+- Optional WebP companions, texture budget accounting, and a build summary that prints the VRAM
+  trade.
+
+**What ships to the page**
+
+- Decorations are drawn by a `::before` on the marked element. No child nodes, no attributes and
+  **no JavaScript** — including hover, press, focus and class variants, which the generated
+  stylesheet swaps by itself.
+- Element mode is flattened directly into the built HTML. A subtree a framework builds at runtime
+  is in no file, so it keeps a small script that flattens it once at load; RZ026 names it, and
+  `runtime: 'off'` refuses to emit one at all.
+- Matching is a selector in the generated stylesheet, so the engine resolves it during style
+  solving. A class added at runtime does not cost an element its texture.
+
+**Checking, because the failures here are silent**
+
+- Every build renders the finished output twice, as shipped and with the bake stripped, and writes
+  both plus their difference to `rz/report/` (RZ023). It renders the unbaked page twice as well, so
+  a page that does not draw identically twice says so instead of blaming the bake.
+- It counts how many marked elements actually received a texture and names the ones that did not
+  (RZ022).
+- An empty or clipped capture is refused rather than shipped, so the element keeps the live CSS
+  that was working (RZ019).
+- Byte-identical assets under different ids are reported, naming which part of the bake key split
+  them (RZ021).
+- `rz/rasterize.diagnostics.json` holds every diagnostic and every element it applies to.
+
+**Feedback loops**
+
+- A dev overlay classifying every marked element the way the build would, with no Player launch and
+  no bake. Press F9.
+- `gameface-rasterize check` plans and reports without capturing, against a build or a dev server.
+- `gameface-rasterize measure` compares GPU time per frame, live against baked, alternating order
+  and reporting a spread. It exists because frame time cannot see this plugin at all: the Player
+  paces frames at a fixed cap.
+- Diagnostics RZ001–RZ026, including an advisory pass over unmarked elements using expensive
+  properties.
+
+**Known limitations**
+
+- `verify` cannot check decoration assets and refuses to run when any are present, rather than
+  reporting a pass it did not earn. The build audit is unaffected.
+- `mix-blend-mode` and `backdrop-filter` can never be baked (RZ001).

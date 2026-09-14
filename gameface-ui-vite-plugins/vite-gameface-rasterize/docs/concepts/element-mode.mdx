@@ -1,0 +1,63 @@
+---
+title: Element mode
+sidebar:
+    order: 3
+---
+
+Decoration mode bakes one element's own shadows and fills. Element mode takes a whole subtree —
+wrappers, frames, static labels — turns it into one image, and keeps only the parts that truly need
+to stay live.
+
+```html
+<div class="nameplate" data-rasterize data-rasterize-mode="element">
+    <div class="nameplate__frame">
+        <div class="nameplate__portrait"></div>
+        <div class="nameplate__info">
+            <div class="nameplate__label">OPERATIVE</div>
+            <div class="nameplate__name" data-bind-value="{{player.name}}">Vasquez</div>
+            <div class="nameplate__bar"><div class="nameplate__fill"></div></div>
+        </div>
+        <button class="nameplate__report">!</button>
+    </div>
+</div>
+```
+
+Twenty nested wrappers become one container, one image, and a few live leaves. This is where the
+plugin removes the most work: it drops nodes from layout and paint, not just a shadow.
+
+## What stays live
+
+A node stays live when it is:
+
+1. **Data-bound** — it carries any `data-bind-*` attribute.
+2. **Animated** — it or its subtree has a running `transition` or `animation`.
+3. **Interactable** — `button`, `input`, `a`, `select`, `textarea`, anything with `tabindex`, an
+   inline handler, or anything that called `addEventListener`. Baked pixels cannot receive events.
+4. **Declared** — it carries `data-rasterize-live`.
+
+The build detects all of these automatically and lists what it kept and why (RZ012).
+`data-rasterize-live` forces the exclusion and silences that warning for that node.
+
+A `:hover` look on the marked element is not an exclusion; that is a state variant.
+
+## The fixed-box contract
+
+> Inside a flattened element, content can change what it shows, but not how much space it takes.
+
+A number can tick, a name can update, a bar can fill. Nothing can appear, disappear, grow, or shrink
+in a way that pushes its neighbours, because there are no neighbours left to push — every position
+was fixed at build time.
+
+Each live part gets a fixed-size box with `overflow: hidden`, so text that outgrows its box clips.
+`data-bind-for`, `data-bind-if`, and conditional mounting add or remove nodes, which breaks the
+contract, so they are treated as an error (RZ011).
+
+## Limits
+
+- Element-mode bakes are always flat captures. A flattened subtree has a design-time size.
+- Layout-affecting `@media` rules inside the subtree make the pinned positions valid at one
+  breakpoint only, so the element is skipped (RZ013).
+- A decoration marker nested inside the subtree is subsumed by the outer bake (RZ014).
+- The flattening is written into the HTML at build time, so the wrappers are not in the shipped file
+  at all. A subtree a framework builds at runtime is not in any file, so it keeps a small script
+  that flattens it at load — the only JavaScript this plugin ships, reported as RZ026.
