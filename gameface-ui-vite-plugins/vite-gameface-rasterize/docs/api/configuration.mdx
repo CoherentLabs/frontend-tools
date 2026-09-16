@@ -86,7 +86,9 @@ Anything that never renders during capture is never baked.
 Bakes are captured at twice the authored size by default, which covers a 1080p-authored design up
 to 4K. Individual elements can override it with `data-rasterize-scale`.
 
+:::note
 Scale multiplies into texture memory: doubling it quadruples the VRAM.
+:::
 
 ## verify and audit
 
