@@ -31,7 +31,7 @@ Baked and stripped:
 
 Never baked:
 
-- `mix-blend-mode` and `backdrop-filter` — they do not composite source-over, so no texture can replace them. The build refuses them with [RZ001](./diagnostics.mdx#rz001).
+- `mix-blend-mode` and `backdrop-filter` — they do not composite source-over, so no texture can replace them. The build refuses them with [RZ001](/vite-gameface-rasterize/concepts/diagnostics/#rz001).
 - `opacity` — cheap and commonly animated.
 - `transform` — not decoration. A transform on the marked element still applies to the texture at runtime, just as it did to the live CSS.
 - `border-radius` on its own, or when the element clips its content.
@@ -48,7 +48,7 @@ whether any content remains live after the bake.
 | Element mode, nothing left live | Baked in and stripped. |
 | Element mode, with live parts | Stays live, so the live parts keep the effect. |
 
-When one survives the bake, the build reports [RZ025](./diagnostics.mdx#rz025) because it is a per-frame cost. A masked panel
+When one survives the bake, the build reports [RZ025](/vite-gameface-rasterize/concepts/diagnostics/#rz025) because it is a per-frame cost. A masked panel
 whose entire subtree is static can often be marked `element` to remove it completely.
 
 ## How the decoration is drawn
@@ -65,4 +65,4 @@ size, scale, state list, engine version, and contract version. An unchanged deco
 hit; a changed one produces a new asset.
 
 Elements are matched to assets by tag and class list, not by position, so twenty identical cards can
-share one texture. See [preparing your UI](./authoring.mdx) for the rules that keep that matching stable.
+share one texture. See [preparing your UI](/vite-gameface-rasterize/concepts/authoring/) for the rules that keep that matching stable.

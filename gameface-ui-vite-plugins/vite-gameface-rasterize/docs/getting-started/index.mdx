@@ -23,7 +23,7 @@ handlers keep firing. Only the decoration becomes pixels.
   properties the Gameface guide tells you to avoid. This lets you use them.
 - **UI that moves.** cohtml only repaints dirty regions, so a decoration nothing disturbs is
   already close to free. The win shows up when panels slide, lists scroll, or a HUD redraws.
-- **Deep static subtrees.** [Element mode](../concepts/element-mode.mdx) collapses a whole
+- **Deep static subtrees.** [Element mode](/vite-gameface-rasterize/concepts/element-mode/) collapses a whole
   nameplate or card into one image and a few live leaves, removing nodes from layout and paint,
   not just the shadow.
 
@@ -43,5 +43,5 @@ summary. Trading per-frame GPU work for VRAM is the point, so the summary prints
 
 For `flat` and `slice` bakes, the output is a stylesheet and the textures. No markup changes and
 **no JavaScript** — including hover, press, focus, and class variants, which the stylesheet swaps by
-itself. Only [element mode](../concepts/element-mode.mdx) in a framework-rendered subtree ships a
+itself. Only [element mode](/vite-gameface-rasterize/concepts/element-mode/) in a framework-rendered subtree ships a
 small script, and the build tells you when it does.

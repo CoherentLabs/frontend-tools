@@ -37,7 +37,7 @@ rasterize({
 | `bakeScale` | `number` | `2` | Supersampling factor. |
 | `transcode` | `'webp' \| false` | `false` | Emit a WebP companion beside each PNG. Saves disk, not VRAM. |
 | `textureBudgetMB` | `number` | `32` | VRAM budget; exceeding it warns with the worst offenders. |
-| `strictTransitions` | `boolean` | `false` | Promote [RZ002](../concepts/diagnostics.mdx#rz002) from warning to error. |
+| `strictTransitions` | `boolean` | `false` | Promote [RZ002](/vite-gameface-rasterize/concepts/diagnostics/#rz002) from warning to error. |
 | `ssimThreshold` | `number` | `0.995` | SSIM floor for verification. |
 | `verify` | `boolean` | `false` | Verify after baking and fail the build on a real difference. |
 | `audit` | `boolean` | `true` | Render the finished build against itself-without-the-bake and write the comparison. |
@@ -58,7 +58,7 @@ rasterize({
 
 A route is a page to load plus optional JavaScript to run before capture. Use it to reach anything
 that is not on screen when the page finishes loading, and to stop your update loop — which is
-[the single largest source of un-baked elements](../concepts/authoring.mdx).
+[the single largest source of un-baked elements](/vite-gameface-rasterize/concepts/authoring/).
 
 ```ts
 routes: [
@@ -97,7 +97,7 @@ place or never matched anything.
 
 `verify` is a stricter per-asset SSIM check intended for CI. It currently **cannot check decoration
 assets** and refuses to run when any are present — see
-[things to watch out for](../concepts/limitations.mdx).
+[things to watch out for](/vite-gameface-rasterize/concepts/limitations/).
 
 ## runtime
 
@@ -108,7 +108,7 @@ Element mode is the exception, because flattening removes nodes and CSS cannot.
 
 | Value | Behaviour |
 |---|---|
-| `'auto'` | Default. Emits a script only for element-mode subtrees no HTML file contained, flattens them at `DOMContentLoaded`, then stops. Reported as [RZ026](../concepts/diagnostics.mdx#rz026). |
+| `'auto'` | Default. Emits a script only for element-mode subtrees no HTML file contained, flattens them at `DOMContentLoaded`, then stops. Reported as [RZ026](/vite-gameface-rasterize/concepts/diagnostics/#rz026). |
 | `'observe'` | Also watches for element-mode subtrees mounted after load. |
 | `'off'` | Never emits a script. Anything unreached keeps its original DOM. |
 
@@ -117,7 +117,7 @@ Element mode is the exception, because flattening removes nodes and CSS cannot.
 The capture window is a hard ceiling on how large one asset can be, and grows automatically to fit
 the largest planned bake up to `maxViewport`. If your layout is sized in `vh`, pin the root font
 size in `setup` so the window cannot inflate your whole UI — see
-[preparing your UI](../concepts/authoring.mdx).
+[preparing your UI](/vite-gameface-rasterize/concepts/authoring/).
 
 ## overlay
 

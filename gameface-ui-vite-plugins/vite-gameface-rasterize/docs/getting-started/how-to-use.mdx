@@ -28,7 +28,7 @@ rounded fill, and leaves the heading and paragraph alone.
 | `auto` | Default. Uses `flat` when the CSS declares a fixed width and height, `slice` otherwise. |
 | `flat` | One image at a fixed size. |
 | `slice` | A 9-slice so the element can be any size. |
-| `element` | Flattens the whole subtree into one image. See [element mode](../concepts/element-mode.mdx). |
+| `element` | Flattens the whole subtree into one image. See [element mode](/vite-gameface-rasterize/concepts/element-mode/). |
 
 The chosen mode is printed in the build summary and recorded in the manifest.
 
@@ -47,7 +47,7 @@ app toggles itself:
 
 Each state is a separate texture, swapped by a CSS rule on the element's own state. No JavaScript
 runs. The swap is instant, not a transition; if a baked property is under a `transition`, the build
-warns with [RZ002](../concepts/diagnostics.mdx#rz002).
+warns with [RZ002](/vite-gameface-rasterize/concepts/diagnostics/#rz002).
 
 ## Keep something live inside a flattened subtree
 
@@ -60,7 +60,7 @@ warns with [RZ002](../concepts/diagnostics.mdx#rz002).
 
 Bindings, animated elements, and anything interactable are detected and kept live automatically.
 `data-rasterize-live` declares intent for something the detector cannot see and silences the
-"these were excluded" warning ([RZ012](../concepts/diagnostics.mdx#rz012)) for that node.
+"these were excluded" warning ([RZ012](/vite-gameface-rasterize/concepts/diagnostics/#rz012)) for that node.
 
 ## Commands
 
@@ -70,7 +70,7 @@ Bindings, animated elements, and anything interactable are detected and kept liv
 | `vite build` | Captures, writes the output, then renders the result against the unbaked page and reports what was lost. |
 | `gameface-rasterize check --url <dev url>` | Plans and reports without capturing anything. |
 | `gameface-rasterize bake dist` | Bakes an existing build. `--debug` keeps every capture. |
-| `gameface-rasterize measure dist` | Compares GPU time per frame, live against baked. See [measuring](../concepts/measuring.mdx). |
+| `gameface-rasterize measure dist` | Compares GPU time per frame, live against baked. See [measuring](/vite-gameface-rasterize/concepts/measuring/). |
 
 Check your work before committing to a build:
 

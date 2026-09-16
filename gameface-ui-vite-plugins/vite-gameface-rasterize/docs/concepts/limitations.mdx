@@ -10,43 +10,43 @@ recognise it instead of debugging it.
 ## The bake is one picture
 
 Whatever the cascade resolved to at capture time is what ships. A modifier class added later cannot
-change it. See [preparing your UI](./authoring.mdx).
+change it. See [preparing your UI](/vite-gameface-rasterize/concepts/authoring/).
 
 ## State variants swap in instantly
 
 A baked `hover` replaces the base texture the moment the state changes. If the property was under a
-`transition`, that transition is gone. The build warns with [RZ002](./diagnostics.mdx#rz002); set `strictTransitions: true` to
+`transition`, that transition is gone. The build warns with [RZ002](/vite-gameface-rasterize/concepts/diagnostics/#rz002); set `strictTransitions: true` to
 make it an error.
 
 ## Some effects can never be baked
 
 `mix-blend-mode` and `backdrop-filter` do not composite source-over, so no texture can reproduce
-them against an arbitrary backdrop. There is no approximation mode. The build refuses with [RZ001](./diagnostics.mdx#rz001);
+them against an arbitrary backdrop. There is no approximation mode. The build refuses with [RZ001](/vite-gameface-rasterize/concepts/diagnostics/#rz001);
 remove the marker or remove the property.
 
 ## `filter` and `mask-image` may survive the bake
 
 If anything inside the element is still live, the effect has to stay live too, and it still costs a
-pass every frame. The build tells you which case you are in ([RZ025](./diagnostics.mdx#rz025)). Marking a fully static subtree
+pass every frame. The build tells you which case you are in ([RZ025](/vite-gameface-rasterize/concepts/diagnostics/#rz025)). Marking a fully static subtree
 as `element` mode is usually the fix.
 
 ## Gradients and 9-slicing do not mix
 
 A 9-slice stretches its edges and centre, so anything that varies along the stretched axis comes
-apart ([RZ005](./diagnostics.mdx#rz005)). Fixed-size elements can use `flat` mode and keep the gradient.
+apart ([RZ005](/vite-gameface-rasterize/concepts/diagnostics/#rz005)). Fixed-size elements can use `flat` mode and keep the gradient.
 
 Very small elements cannot slice either: when the element is narrower than its two corners put
 together, there is nothing between them to stretch. Those are baked flat at their measured size
-([RZ024](./diagnostics.mdx#rz024)).
+([RZ024](/vite-gameface-rasterize/concepts/diagnostics/#rz024)).
 
 ## Textures cost VRAM
 
 Every state is a separate texture. Four panels at four different pixel sizes are four textures,
 because they are four different pictures. The build reports the total against `textureBudgetMB` and
-names the worst offenders ([RZ006](./diagnostics.mdx#rz006)).
+names the worst offenders ([RZ006](/vite-gameface-rasterize/concepts/diagnostics/#rz006)).
 
 Do not use `data-rasterize-states` to fix a matching problem: it bakes another texture for no visual
-benefit, and [RZ016](./diagnostics.mdx#rz016) will say the variant was pointless.
+benefit, and [RZ016](/vite-gameface-rasterize/concepts/diagnostics/#rz016) will say the variant was pointless.
 
 ## `getComputedStyle` cannot see the decoration
 
@@ -59,7 +59,7 @@ even while it is painting. Read `rz/rasterize.css` or inspect the rendered outpu
 pseudo-elements. Rather than report a pass it did not earn, it refuses to run when any decoration
 asset is present.
 
-The build audit still compares the whole page on every build ([RZ023](./diagnostics.mdx#rz023)), which is the check that matters
+The build audit still compares the whole page on every build ([RZ023](/vite-gameface-rasterize/concepts/diagnostics/#rz023)), which is the check that matters
 most.
 
 ## Engine quirks the plugin works around

@@ -52,7 +52,7 @@ the property.
 ### RZ002
 
 A baked state variant is an instant swap, so a transition on a baked property disappears. Keep the
-element live, or accept the swap. See [things to watch out for](./limitations.mdx).
+element live, or accept the swap. See [things to watch out for](/vite-gameface-rasterize/concepts/limitations/).
 
 ### RZ005
 
@@ -64,13 +64,13 @@ keep the gradient.
 
 Either the total texture memory passed `textureBudgetMB`, and the message names the worst
 offenders, or one asset needs a capture window larger than `maxViewport`. If your layout is sized
-in `vh`, pin the root font size first — see [preparing your UI](./authoring.mdx).
+in `vh`, pin the root font size first — see [preparing your UI](/vite-gameface-rasterize/concepts/authoring/).
 
 ### RZ011
 
 Inside a flattened subtree, content can change what it shows but not how much space it takes.
 `data-bind-for` and `data-bind-if` add and remove nodes, which moves everything after them. See
-[element mode](./element-mode.mdx).
+[element mode](/vite-gameface-rasterize/concepts/element-mode/).
 
 ### RZ015
 
@@ -84,7 +84,7 @@ sign that `data-rasterize-states` was reached for to fix a matching problem, whi
 ### RZ019
 
 The element painted nothing when it was captured. Almost always a `requestAnimationFrame` loop
-moving it mid-capture — see [preparing your UI](./authoring.mdx). The bake is refused rather than
+moving it mid-capture — see [preparing your UI](/vite-gameface-rasterize/concepts/authoring/). The bake is refused rather than
 shipped, because the emitted CSS also strips the live decoration, so an empty texture would leave
 the element with nothing at all.
 
@@ -123,7 +123,7 @@ size instead. A smaller blur or radius would let it slice properly.
 `filter` and `mask-image` apply to content as well as decoration, so they can only be baked in when
 nothing is left live to need them. This is a per-frame cost. If the whole subtree is static,
 `data-rasterize-mode="element"` bakes it in and removes the pass — see
-[attributes](./attribute-contract.mdx).
+[attributes](/vite-gameface-rasterize/concepts/attribute-contract/).
 
 ### RZ026
 
