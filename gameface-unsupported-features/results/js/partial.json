@@ -72,6 +72,102 @@
   {
     "status": "partial",
     "surface": "js",
+    "name": "CanvasPattern",
+    "evidence": {
+      "missing": [
+        "setTransform"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CanvasRenderingContext2D",
+    "evidence": {
+      "missing": [
+        "createImageData",
+        "direction",
+        "ellipse",
+        "filter",
+        "fontKerning",
+        "fontStretch",
+        "fontVariantCaps",
+        "getContextAttributes",
+        "getImageData",
+        "getLineDash",
+        "getTransform",
+        "imageSmoothingEnabled",
+        "imageSmoothingQuality",
+        "isContextLost",
+        "isPointInPath",
+        "isPointInStroke",
+        "lang",
+        "letterSpacing",
+        "lineDashOffset",
+        "putImageData",
+        "reset",
+        "resetTransform",
+        "roundRect",
+        "setLineDash",
+        "textRendering",
+        "wordSpacing"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CaretPosition",
+    "evidence": {
+      "missing": [
+        "getClientRect"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "CharacterData",
+    "evidence": {
+      "missing": [
+        "replaceWith"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "Comment",
+    "evidence": {
+      "missing": [
+        "Comment"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "Console",
+    "evidence": {
+      "missing": [
+        "clear",
+        "count",
+        "countReset",
+        "dir",
+        "dirxml",
+        "group",
+        "groupCollapsed",
+        "groupEnd",
+        "table",
+        "timeLog",
+        "timeStamp",
+        "trace"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
     "name": "CSS",
     "evidence": {
       "missing": [
@@ -608,102 +704,6 @@
   {
     "status": "partial",
     "surface": "js",
-    "name": "CanvasPattern",
-    "evidence": {
-      "missing": [
-        "setTransform"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
-    "name": "CanvasRenderingContext2D",
-    "evidence": {
-      "missing": [
-        "createImageData",
-        "direction",
-        "ellipse",
-        "filter",
-        "fontKerning",
-        "fontStretch",
-        "fontVariantCaps",
-        "getContextAttributes",
-        "getImageData",
-        "getLineDash",
-        "getTransform",
-        "imageSmoothingEnabled",
-        "imageSmoothingQuality",
-        "isContextLost",
-        "isPointInPath",
-        "isPointInStroke",
-        "lang",
-        "letterSpacing",
-        "lineDashOffset",
-        "putImageData",
-        "reset",
-        "resetTransform",
-        "roundRect",
-        "setLineDash",
-        "textRendering",
-        "wordSpacing"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
-    "name": "CaretPosition",
-    "evidence": {
-      "missing": [
-        "getClientRect"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
-    "name": "CharacterData",
-    "evidence": {
-      "missing": [
-        "replaceWith"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
-    "name": "Comment",
-    "evidence": {
-      "missing": [
-        "Comment"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
-    "name": "Console",
-    "evidence": {
-      "missing": [
-        "clear",
-        "count",
-        "countReset",
-        "dir",
-        "dirxml",
-        "group",
-        "groupCollapsed",
-        "groupEnd",
-        "table",
-        "timeLog",
-        "timeStamp",
-        "trace"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
     "name": "CustomElementRegistry",
     "evidence": {
       "missing": [
@@ -721,61 +721,6 @@
     "evidence": {
       "missing": [
         "CustomEvent"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
-    "name": "DOMMatrix",
-    "evidence": {
-      "missing": [
-        "invertSelf",
-        "multiplySelf",
-        "preMultiplySelf",
-        "rotateAxisAngleSelf",
-        "rotateFromVectorSelf",
-        "rotateSelf",
-        "scale3dSelf",
-        "scaleSelf",
-        "setMatrixValue",
-        "skewXSelf",
-        "skewYSelf",
-        "translateSelf",
-        "DOMMatrix"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
-    "name": "DOMRect",
-    "evidence": {
-      "missing": [
-        "DOMRect"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
-    "name": "DOMRectReadOnly",
-    "evidence": {
-      "missing": [
-        "toJSON",
-        "DOMRectReadOnly"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
-    "name": "DOMStringMap",
-    "evidence": {
-      "missing": [
-        "itemDeleter",
-        "itemGetter",
-        "itemSetter"
       ]
     }
   },
@@ -909,6 +854,61 @@
     "evidence": {
       "missing": [
         "replaceWith"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "DOMMatrix",
+    "evidence": {
+      "missing": [
+        "invertSelf",
+        "multiplySelf",
+        "preMultiplySelf",
+        "rotateAxisAngleSelf",
+        "rotateFromVectorSelf",
+        "rotateSelf",
+        "scale3dSelf",
+        "scaleSelf",
+        "setMatrixValue",
+        "skewXSelf",
+        "skewYSelf",
+        "translateSelf",
+        "DOMMatrix"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "DOMRect",
+    "evidence": {
+      "missing": [
+        "DOMRect"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "DOMRectReadOnly",
+    "evidence": {
+      "missing": [
+        "toJSON",
+        "DOMRectReadOnly"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "DOMStringMap",
+    "evidence": {
+      "missing": [
+        "itemDeleter",
+        "itemGetter",
+        "itemSetter"
       ]
     }
   },
@@ -1078,6 +1078,16 @@
     "evidence": {
       "missing": [
         "subtree"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "History",
+    "evidence": {
+      "missing": [
+        "scrollRestoration"
       ]
     }
   },
@@ -1557,16 +1567,6 @@
   {
     "status": "partial",
     "surface": "js",
-    "name": "History",
-    "evidence": {
-      "missing": [
-        "scrollRestoration"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
     "name": "KeyboardEvent",
     "evidence": {
       "missing": [
@@ -1816,6 +1816,108 @@
   {
     "status": "partial",
     "surface": "js",
+    "name": "Screen",
+    "evidence": {
+      "missing": [
+        "orientation",
+        "availLeft",
+        "availTop",
+        "isExtended",
+        "left",
+        "lockOrientation",
+        "mozBrightness",
+        "mozEnabled",
+        "top",
+        "unlockOrientation"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "Selection",
+    "evidence": {
+      "missing": [
+        "direction",
+        "isCollapsed",
+        "rangeCount",
+        "type",
+        "addRange",
+        "collapse",
+        "collapseToEnd",
+        "collapseToStart",
+        "containsNode",
+        "deleteFromDocument",
+        "extend",
+        "getComposedRanges",
+        "getRangeAt",
+        "modify",
+        "removeRange",
+        "selectAllChildren",
+        "setPosition"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "ShadowRoot",
+    "evidence": {
+      "missing": [
+        "serializable",
+        "getHTML",
+        "setHTMLUnsafe",
+        "adoptedStyleSheets",
+        "fullscreenElement",
+        "getAnimations",
+        "getSelection",
+        "pictureInPictureElement",
+        "pointerLockElement"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "StylePropertyMap",
+    "evidence": {
+      "missing": [
+        "append"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "StylePropertyMapReadOnly",
+    "evidence": {
+      "missing": [
+        "getAll",
+        "forEach",
+        "entries",
+        "keys",
+        "values"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
+    "name": "StyleSheet",
+    "evidence": {
+      "missing": [
+        "disabled",
+        "href",
+        "parentStyleSheet",
+        "title",
+        "type",
+        "media"
+      ]
+    }
+  },
+  {
+    "status": "partial",
+    "surface": "js",
     "name": "SVGAnimatedLength",
     "evidence": {
       "missing": [
@@ -1972,108 +2074,6 @@
         "insertItemBefore",
         "removeItem",
         "replaceItem"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
-    "name": "Screen",
-    "evidence": {
-      "missing": [
-        "orientation",
-        "availLeft",
-        "availTop",
-        "isExtended",
-        "left",
-        "lockOrientation",
-        "mozBrightness",
-        "mozEnabled",
-        "top",
-        "unlockOrientation"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
-    "name": "Selection",
-    "evidence": {
-      "missing": [
-        "direction",
-        "isCollapsed",
-        "rangeCount",
-        "type",
-        "addRange",
-        "collapse",
-        "collapseToEnd",
-        "collapseToStart",
-        "containsNode",
-        "deleteFromDocument",
-        "extend",
-        "getComposedRanges",
-        "getRangeAt",
-        "modify",
-        "removeRange",
-        "selectAllChildren",
-        "setPosition"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
-    "name": "ShadowRoot",
-    "evidence": {
-      "missing": [
-        "serializable",
-        "getHTML",
-        "setHTMLUnsafe",
-        "adoptedStyleSheets",
-        "fullscreenElement",
-        "getAnimations",
-        "getSelection",
-        "pictureInPictureElement",
-        "pointerLockElement"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
-    "name": "StylePropertyMap",
-    "evidence": {
-      "missing": [
-        "append"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
-    "name": "StylePropertyMapReadOnly",
-    "evidence": {
-      "missing": [
-        "getAll",
-        "forEach",
-        "entries",
-        "keys",
-        "values"
-      ]
-    }
-  },
-  {
-    "status": "partial",
-    "surface": "js",
-    "name": "StyleSheet",
-    "evidence": {
-      "missing": [
-        "disabled",
-        "href",
-        "parentStyleSheet",
-        "title",
-        "type",
-        "media"
       ]
     }
   },

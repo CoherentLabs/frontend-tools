@@ -4,6 +4,8 @@ sidebar:
   order: 3
 ---
 
+import SupportedVersions from "@components/SupportedVersions.astro";
+
 ## Recommended setup
 
 Add this to `eslint.config.js` in your project root:
@@ -63,19 +65,19 @@ settings: {
 },
 ```
 
-<Internal>
 ## Pin checks to a Gameface version
 
-By default, rules use the **latest** support data shipped with the plugin. If your team targets a specific Gameface release and you have matching version data installed, set:
+By default, rules use the **latest** support data shipped with the plugin. If your team targets an older Gameface release, pin it:
 
 ```json
 settings: {
   gameface: {
-    version: "1.2.3",
+    version: "3.1.2.1",
   },
 },
 ```
-</Internal>
+
+<SupportedVersions manifestPath="src/content/docs/eslint-plugin-gameface/supported-versions.json" />
 
 Only set this when your project actually depends on that version’s support tables. Most teams can leave the default.
 

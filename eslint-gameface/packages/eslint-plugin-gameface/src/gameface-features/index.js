@@ -1,39 +1,25 @@
-import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { DEFAULT_CATALOG_WHITELISTS } from "../data/catalog-whitelists.js";
 import { applyCatalogWhitelists } from "../utils/catalog-whitelist.js";
 import { normalizeCssPropertyName } from "../utils/css-property-name.js";
 import { DEFAULT_GAMEFACE_VERSION, getGamefaceVersionFromContext, normalizeGamefaceVersionSetting } from "../utils/eslint-gameface-settings.js";
+import { loadCatalogs, readManifest } from "./catalog-loader.js";
+import { resolveVersion } from "./delta.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-/** gameface-features/ at package root (sibling of src/) */
+/** gameface-features/ at package root (sibling of src/): the "latest" snapshot, plus versions/ deltas */
 const FEATURES_ROOT = join(__dirname, "..", "..", "gameface-features");
 
 /**
- * @param {string} version normalized setting (no path separators)
- * @returns {string} absolute directory containing css/, functions/, html/, selectors/, js/
+ * Always the directory holding the base ("latest") catalogs. Older versions are
+ * reconstructed in memory from `gameface-features/versions/*.json` deltas
+ * (see {@link loadCatalogs}) rather than read from a per-version directory.
+ * @param {string} [_version] unused; kept for backward compatibility
+ * @returns {string}
  */
-export function resolveGamefaceFeaturesRoot(version) {
-  const v = version || DEFAULT_GAMEFACE_VERSION;
-  if (v === DEFAULT_GAMEFACE_VERSION) {
-    return FEATURES_ROOT;
-  }
-  const underVersions = join(FEATURES_ROOT, "versions", v);
-  if (existsSync(underVersions)) {
-    return underVersions;
-  }
+export function resolveGamefaceFeaturesRoot(_version) {
   return FEATURES_ROOT;
-}
-
-/**
- * @param {string} featuresRoot
- * @param {string} relativePath
- * @returns {unknown}
- */
-function readFeatureJson(featuresRoot, relativePath) {
-  const full = join(featuresRoot, relativePath);
-  return JSON.parse(readFileSync(full, "utf8"));
 }
 
 /**
@@ -109,15 +95,15 @@ function shouldApplyInternalCatalogWhitelist(options) {
 }
 
 /**
- * @param {string} featuresRoot
+ * @param {Map<string, unknown>} catalogs relative path -> parsed JSON (from {@link loadCatalogs})
  * @returns {GamefaceFeatureIndex}
  */
-function buildFeatureIndex(featuresRoot) {
-  const cssSupported = asFeatureRows(readFeatureJson(featuresRoot, "css/supported.json"));
-  const cssPartial = asFeatureRows(readFeatureJson(featuresRoot, "css/partial.json"));
-  const cssUnsupported = asFeatureRows(readFeatureJson(featuresRoot, "css/unsupported.json"));
-  const functionsSupported = asFeatureRows(readFeatureJson(featuresRoot, "functions/supported.json"));
-  const functionsUnsupported = asFeatureRows(readFeatureJson(featuresRoot, "functions/unsupported.json"));
+function buildFeatureIndex(catalogs) {
+  const cssSupported = asFeatureRows(catalogs.get("css/supported.json"));
+  const cssPartial = asFeatureRows(catalogs.get("css/partial.json"));
+  const cssUnsupported = asFeatureRows(catalogs.get("css/unsupported.json"));
+  const functionsSupported = asFeatureRows(catalogs.get("functions/supported.json"));
+  const functionsUnsupported = asFeatureRows(catalogs.get("functions/unsupported.json"));
 
   /** @type {Set<string>} */
   const cssPropertiesUnsupported = new Set();
@@ -145,9 +131,9 @@ function buildFeatureIndex(featuresRoot) {
     }
   }
 
-  const htmlSupported = asFeatureRows(readFeatureJson(featuresRoot, "html/supported.json"));
-  const htmlPartial = asFeatureRows(readFeatureJson(featuresRoot, "html/partial.json"));
-  const htmlUnsupported = asFeatureRows(readFeatureJson(featuresRoot, "html/unsupported.json"));
+  const htmlSupported = asFeatureRows(catalogs.get("html/supported.json"));
+  const htmlPartial = asFeatureRows(catalogs.get("html/partial.json"));
+  const htmlUnsupported = asFeatureRows(catalogs.get("html/unsupported.json"));
 
   /** @type {Set<string>} */
   const htmlTagsSupported = new Set();
@@ -177,9 +163,9 @@ function buildFeatureIndex(featuresRoot) {
     }
   }
 
-  const selectorsSupported = asFeatureRows(readFeatureJson(featuresRoot, "selectors/supported.json"));
-  const selectorsPartial = asFeatureRows(readFeatureJson(featuresRoot, "selectors/partial.json"));
-  const selectorsUnsupported = asFeatureRows(readFeatureJson(featuresRoot, "selectors/unsupported.json"));
+  const selectorsSupported = asFeatureRows(catalogs.get("selectors/supported.json"));
+  const selectorsPartial = asFeatureRows(catalogs.get("selectors/partial.json"));
+  const selectorsUnsupported = asFeatureRows(catalogs.get("selectors/unsupported.json"));
 
   /** @type {Set<string>} */
   const selectorNamesUnsupported = new Set();
@@ -205,9 +191,9 @@ function buildFeatureIndex(featuresRoot) {
     }
   }
 
-  const jsSupported = asFeatureRows(readFeatureJson(featuresRoot, "js/supported.json"));
-  const jsPartial = asFeatureRows(readFeatureJson(featuresRoot, "js/partial.json"));
-  const jsUnsupported = asFeatureRows(readFeatureJson(featuresRoot, "js/unsupported.json"));
+  const jsSupported = asFeatureRows(catalogs.get("js/supported.json"));
+  const jsPartial = asFeatureRows(catalogs.get("js/partial.json"));
+  const jsUnsupported = asFeatureRows(catalogs.get("js/unsupported.json"));
 
   /** @type {Set<string>} */
   const jsApisUnsupported = new Set();
@@ -287,9 +273,28 @@ function buildFeatureIndex(featuresRoot) {
   };
 }
 
+/** Requested version strings already warned about (nearest-known fallback was used). */
+const warnedVersions = new Set();
+
 /**
- * Loads and indexes JSON under the resolved features root. Memoized per version + whitelist set.
- * @param {string} [version] ESLint `settings.gameface.version`, or omit / `"latest"` for shipped catalogs.
+ * @param {string} requested
+ * @param {string} resolved
+ */
+function warnUnknownVersion(requested, resolved) {
+  if (warnedVersions.has(requested)) {
+    return;
+  }
+  warnedVersions.add(requested);
+  console.warn(
+    `[eslint-plugin-gameface] settings.gameface.version "${requested}" has no bundled feature data; using nearest known version "${resolved}" instead.`
+  );
+}
+
+/**
+ * Loads and indexes catalogs for a version. When the resolved version isn't the base
+ * ("latest") snapshot, it's reconstructed in memory from `gameface-features/versions/*.json`
+ * deltas (see {@link loadCatalogs}). Memoized per resolved version + whitelist set.
+ * @param {string} [version] ESLint `settings.gameface.version`, or omit / `"latest"` for the base snapshot.
  * @param {GetFeatureIndexOptions} [options]
  * @returns {GamefaceFeatureIndex}
  */
@@ -298,14 +303,26 @@ export function getFeatureIndex(version, options) {
     version === undefined || version === null
       ? DEFAULT_GAMEFACE_VERSION
       : normalizeGamefaceVersionSetting(String(version));
+
+  const manifest = readManifest(FEATURES_ROOT);
+  let resolvedVersion = manifest?.base ?? null;
+  if (manifest) {
+    const resolution = resolveVersion(versionKey, manifest);
+    resolvedVersion = resolution.version;
+    if (!resolution.exact) {
+      warnUnknownVersion(versionKey, resolvedVersion);
+    }
+  }
+
   const applyWhitelist = shouldApplyInternalCatalogWhitelist(options);
-  const cacheKey = applyWhitelist ? versionKey : `${versionKey}${RAW_CATALOG_CACHE_SUFFIX}`;
+  const cacheVersionKey = resolvedVersion ?? DEFAULT_GAMEFACE_VERSION;
+  const cacheKey = applyWhitelist ? cacheVersionKey : `${cacheVersionKey}${RAW_CATALOG_CACHE_SUFFIX}`;
   const hit = cache.get(cacheKey);
   if (hit) {
     return hit;
   }
-  const root = resolveGamefaceFeaturesRoot(versionKey);
-  const index = buildFeatureIndex(root);
+  const catalogs = loadCatalogs(FEATURES_ROOT, manifest, resolvedVersion);
+  const index = buildFeatureIndex(catalogs);
   if (applyWhitelist) {
     applyCatalogWhitelists(index, DEFAULT_CATALOG_WHITELISTS);
   }
@@ -326,4 +343,5 @@ export function getFeatureIndexForContext(context) {
  */
 export function clearFeatureIndexCache() {
   cache.clear();
+  warnedVersions.clear();
 }
