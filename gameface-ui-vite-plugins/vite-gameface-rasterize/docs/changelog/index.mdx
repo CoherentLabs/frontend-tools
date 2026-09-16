@@ -19,16 +19,16 @@ title: Changelog
   when needed.
 - Selector-based matching so runtime class changes do not break a stable texture match.
 - `filter` and `mask-image` baked in when nothing live remains, and kept live when they still need
-  to affect content or the subtree ([RZ025](../concepts/diagnostics.mdx#rz025)).
+  to affect content or the subtree ([RZ025](/vite-gameface-rasterize/concepts/diagnostics#rz025)).
 - Full build validation that compares the shipped page to the unbaked version and writes the result
-  to `rz/report/` ([RZ023](../concepts/diagnostics.mdx#rz023)).
-- Marked elements that never received a texture are reported ([RZ022](../concepts/diagnostics.mdx#rz022)).
-- Empty or clipped captures are refused instead of shipped ([RZ019](../concepts/diagnostics.mdx#rz019)).
-- Duplicate byte-identical assets under different ids are reported ([RZ021](../concepts/diagnostics.mdx#rz021)).
+  to `rz/report/` ([RZ023](/vite-gameface-rasterize/concepts/diagnostics#rz023)).
+- Marked elements that never received a texture are reported ([RZ022](/vite-gameface-rasterize/concepts/diagnostics#rz022)).
+- Empty or clipped captures are refused instead of shipped ([RZ019](/vite-gameface-rasterize/concepts/diagnostics#rz019)).
+- Duplicate byte-identical assets under different ids are reported ([RZ021](/vite-gameface-rasterize/concepts/diagnostics#rz021)).
 - `rz/rasterize.diagnostics.json` containing the full diagnostic set for every affected element.
 - `verify` support for CI runs, with decoration assets intentionally refusing validation rather than
   reporting a false pass.
 - Rejection of unsupported combinations such as `mix-blend-mode` and `backdrop-filter`
-  ([RZ001](../concepts/diagnostics.mdx#rz001)).
+  ([RZ001](/vite-gameface-rasterize/concepts/diagnostics#rz001)).
 - Diagnostics coverage for known compatibility and runtime edge cases
-  ([RZ001](../concepts/diagnostics.mdx#rz001)–[RZ026](../concepts/diagnostics.mdx#rz026)).
+  ([RZ001](/vite-gameface-rasterize/concepts/diagnostics#rz001)–[RZ026](/vite-gameface-rasterize/concepts/diagnostics#rz026)).
