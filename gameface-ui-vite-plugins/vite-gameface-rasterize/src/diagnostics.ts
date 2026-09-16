@@ -9,73 +9,69 @@ export type Level = 'error' | 'warn' | 'info';
 export interface DiagnosticSpec {
     level: Level;
     message: string;
-    docs: string;
 }
 
-const DOCS = 'https://docs.coherent-labs.com/vite-gameface-rasterize/diagnostics';
+const DOCS = 'https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/concepts/diagnostics';
+
+/**
+ * Where a code is explained. Every code has an entry on that page anchored by its own name in
+ * lower case, so this is derived rather than written out per code and cannot drift from it.
+ */
+export const docsFor = (code: string): string => `${DOCS}#${code.toLowerCase()}`;
 
 export const CODES = {
     RZ001: {
         level: 'error',
         message: 'mix-blend-mode / backdrop-filter cannot be baked: they do not composite source-over',
-        docs: `${DOCS}#rz001`,
     },
     RZ002: {
         level: 'warn',
         message: 'a transition or animation targets a baked property; the baked variants swap instantly',
-        docs: `${DOCS}#rz002`,
     },
     RZ003: {
         level: 'warn',
         message: 'a baked value comes from a custom property that is written from JS; the value is frozen at build time',
-        docs: `${DOCS}#rz003`,
     },
-    RZ004: { level: 'error', message: 'flat mode requires a statically resolvable size', docs: `${DOCS}#rz004` },
-    RZ005: { level: 'error', message: 'decoration cannot be 9-sliced: a stretch zone is not uniform', docs: `${DOCS}#rz005` },
-    RZ006: { level: 'warn', message: 'texture budget exceeded', docs: `${DOCS}#rz006` },
-    RZ007: { level: 'warn', message: 'marked element has no bakeable properties', docs: `${DOCS}#rz007` },
-    RZ008: { level: 'error', message: 'verification SSIM below threshold', docs: `${DOCS}#rz008` },
-    RZ009: { level: 'warn', message: 'requested format cannot carry the alpha this asset needs', docs: `${DOCS}#rz009` },
-    RZ010: { level: 'error', message: 'element mode: nothing bakeable remains after live exclusions', docs: `${DOCS}#rz010` },
+    RZ004: { level: 'error', message: 'flat mode requires a statically resolvable size' },
+    RZ005: { level: 'error', message: 'decoration cannot be 9-sliced: a stretch zone is not uniform' },
+    RZ006: { level: 'warn', message: 'texture budget exceeded' },
+    RZ007: { level: 'warn', message: 'marked element has no bakeable properties' },
+    RZ008: { level: 'error', message: 'verification SSIM below threshold' },
+    RZ009: { level: 'warn', message: 'requested format cannot carry the alpha this asset needs' },
+    RZ010: { level: 'error', message: 'element mode: nothing bakeable remains after live exclusions' },
     RZ011: {
         level: 'error',
         message: 'element mode: layout-affecting dynamism inside the subtree; contents may change what they show, not how much space they take',
-        docs: `${DOCS}#rz011`,
     },
-    RZ012: { level: 'warn', message: 'element mode: live parts were excluded from the bake', docs: `${DOCS}#rz012` },
-    RZ013: { level: 'warn', message: 'element skipped: layout-affecting media queries apply inside the subtree', docs: `${DOCS}#rz013` },
-    RZ014: { level: 'warn', message: 'redundant nested rasterize marker, subsumed by the enclosing element-mode bake', docs: `${DOCS}#rz014` },
-    RZ015: { level: 'info', message: 'unmarked element uses expensive properties; add data-rasterize if it is static', docs: `${DOCS}#rz015` },
-    RZ016: { level: 'warn', message: 'state variant produced no visual difference from the base bake', docs: `${DOCS}#rz016` },
-    RZ017: { level: 'warn', message: 'the capture pass reported a problem with this element', docs: `${DOCS}#rz017` },
-    RZ018: { level: 'warn', message: 'the element was not displayed when it was captured', docs: `${DOCS}#rz018` },
+    RZ012: { level: 'warn', message: 'element mode: live parts were excluded from the bake' },
+    RZ013: { level: 'warn', message: 'element skipped: layout-affecting media queries apply inside the subtree' },
+    RZ014: { level: 'warn', message: 'redundant nested rasterize marker, subsumed by the enclosing element-mode bake' },
+    RZ015: { level: 'info', message: 'unmarked element uses expensive properties; add data-rasterize if it is static' },
+    RZ016: { level: 'warn', message: 'state variant produced no visual difference from the base bake' },
+    RZ017: { level: 'warn', message: 'the capture pass reported a problem with this element' },
+    RZ018: { level: 'warn', message: 'the element was not displayed when it was captured' },
     RZ019: {
         level: 'warn',
         message: 'the capture came back empty, so nothing was baked and the live CSS was left in place',
-        docs: `${DOCS}#rz019`,
     },
     RZ020: {
         level: 'warn',
         message: 'elements that look alike baked differently and cannot all be matched at runtime',
-        docs: `${DOCS}#rz020`,
     },
-    RZ021: { level: 'warn', message: 'several assets are the same image under different ids', docs: `${DOCS}#rz021` },
+    RZ021: { level: 'warn', message: 'several assets are the same image under different ids' },
     RZ026: {
         level: 'warn',
         message: 'an element-mode subtree could not be flattened at build time, so a script ships',
-        docs: `${DOCS}#rz026`,
     },
-    RZ022: { level: 'warn', message: 'marked elements did not receive a texture in the built page', docs: `${DOCS}#rz022` },
-    RZ023: { level: 'warn', message: 'the baked page does not match the live one', docs: `${DOCS}#rz023` },
+    RZ022: { level: 'warn', message: 'marked elements did not receive a texture in the built page' },
+    RZ023: { level: 'warn', message: 'the baked page does not match the live one' },
     RZ024: {
         level: 'warn',
         message: 'too small to 9-slice, so it was baked flat at its measured size',
-        docs: `${DOCS}#rz024`,
     },
     RZ025: {
         level: 'warn',
         message: 'a filter or mask survived the bake and still costs a pass every frame',
-        docs: `${DOCS}#rz025`,
     },
 } satisfies Record<string, DiagnosticSpec>;
 
@@ -137,6 +133,6 @@ export class DiagnosticBag {
         const detail = d.detail ? ` - ${d.detail}` : '';
         const route = d.route ? ` [${d.route}]` : '';
         const where = d.count > 1 ? `${d.where} and ${d.count - 1} more` : d.where;
-        return `${d.code} ${where}${route}: ${spec.message}${detail}\n      ${spec.docs}`;
+        return `${d.code} ${where}${route}: ${spec.message}${detail}\n      ${docsFor(d.code)}`;
     }
 }

@@ -47,7 +47,7 @@ app toggles itself:
 
 Each state is a separate texture, swapped by a CSS rule on the element's own state. No JavaScript
 runs. The swap is instant, not a transition; if a baked property is under a `transition`, the build
-warns with RZ002.
+warns with [RZ002](../concepts/diagnostics.mdx#rz002).
 
 ## Keep something live inside a flattened subtree
 
@@ -60,7 +60,7 @@ warns with RZ002.
 
 Bindings, animated elements, and anything interactable are detected and kept live automatically.
 `data-rasterize-live` declares intent for something the detector cannot see and silences the
-"these were excluded" warning (RZ012) for that node.
+"these were excluded" warning ([RZ012](../concepts/diagnostics.mdx#rz012)) for that node.
 
 ## Commands
 

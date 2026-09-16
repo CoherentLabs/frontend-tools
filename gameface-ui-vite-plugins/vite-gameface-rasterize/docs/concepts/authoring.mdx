@@ -14,7 +14,7 @@ The pipeline pauses CSS animations and transitions during capture, but it cannot
 want to freeze.
 
 A capture takes two frames. If an element moves between them, it is photographed where it no longer
-is. The capture comes back empty, the bake is refused (RZ019), and the live CSS stays in place.
+is. The capture comes back empty, the bake is refused ([RZ019](./diagnostics.mdx#rz019)), and the live CSS stays in place.
 
 Use the route `setup` hook to stop the loop:
 
@@ -54,7 +54,7 @@ Put the changing part on a sibling instead of a modifier:
 <div class="np__alarm"></div>
 ```
 
-The tool flags a `transition` or `animation` on a baked property (RZ002). It cannot know that
+The tool flags a `transition` or `animation` on a baked property ([RZ002](./diagnostics.mdx#rz002)). It cannot know that
 `.is-low` will be added three minutes into a match. That part is your responsibility.
 
 ## 3. Give each element a stable identity
@@ -66,7 +66,7 @@ one texture.
   regardless of any extra classes it carries.
 - Removing a baked class breaks the match, and the element loses its texture.
 - Variants selected through an ancestor such as `.marker--hostile .marker__frame` are qualified with
-  the ancestor class that separates them. If nothing separates them, it reports RZ020 and only one
+  the ancestor class that separates them. If nothing separates them, it reports [RZ020](./diagnostics.mdx#rz020) and only one
   element gets a texture. Put the variant on the marked element itself, for example
   `.marker__frame--hostile`.
 - An element with no class and no `data-rasterize-id` falls back to its position in the document,

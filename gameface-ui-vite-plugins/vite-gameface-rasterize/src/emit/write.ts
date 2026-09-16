@@ -10,7 +10,7 @@ import {
 } from '../contract.js';
 import type { BakeResult } from '../bake.js';
 import type { ResolvedOptions } from '../config.js';
-import { CODES, type DiagnosticBag } from '../diagnostics.js';
+import { CODES, docsFor, type DiagnosticBag } from '../diagnostics.js';
 import type { AdvisorGroup } from './report.js';
 import { encodePng, encodeWebp, imageDigest, needsAlpha, vramBytes } from '../image.js';
 import { emitStylesheet, matchSelectorsFor, matchSpecificity } from './css.js';
@@ -400,7 +400,7 @@ export async function writeDiagnostics(
             level: item.level,
             message: CODES[item.code].message,
             detail: item.detail,
-            docs: CODES[item.code].docs,
+            docs: docsFor(item.code),
             route: item.route,
             elements: [item.where, ...item.others],
         })),

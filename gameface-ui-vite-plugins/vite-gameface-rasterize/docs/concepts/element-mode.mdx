@@ -35,7 +35,7 @@ A node stays live when it is:
    inline handler, or anything that called `addEventListener`. Baked pixels cannot receive events.
 4. **Declared** — it carries `data-rasterize-live`.
 
-The build detects all of these automatically and lists what it kept and why (RZ012).
+The build detects all of these automatically and lists what it kept and why ([RZ012](./diagnostics.mdx#rz012)).
 `data-rasterize-live` forces the exclusion and silences that warning for that node.
 
 A `:hover` look on the marked element is not an exclusion; that is a state variant.
@@ -50,14 +50,14 @@ was fixed at build time.
 
 Each live part gets a fixed-size box with `overflow: hidden`, so text that outgrows its box clips.
 `data-bind-for`, `data-bind-if`, and conditional mounting add or remove nodes, which breaks the
-contract, so they are treated as an error (RZ011).
+contract, so they are treated as an error ([RZ011](./diagnostics.mdx#rz011)).
 
 ## Limits
 
 - Element-mode bakes are always flat captures. A flattened subtree has a design-time size.
 - Layout-affecting `@media` rules inside the subtree make the pinned positions valid at one
-  breakpoint only, so the element is skipped (RZ013).
-- A decoration marker nested inside the subtree is subsumed by the outer bake (RZ014).
+  breakpoint only, so the element is skipped ([RZ013](./diagnostics.mdx#rz013)).
+- A decoration marker nested inside the subtree is subsumed by the outer bake ([RZ014](./diagnostics.mdx#rz014)).
 - The flattening is written into the HTML at build time, so the wrappers are not in the shipped file
   at all. A subtree a framework builds at runtime is not in any file, so it keeps a small script
-  that flattens it at load — the only JavaScript this plugin ships, reported as RZ026.
+  that flattens it at load — the only JavaScript this plugin ships, reported as [RZ026](./diagnostics.mdx#rz026).
