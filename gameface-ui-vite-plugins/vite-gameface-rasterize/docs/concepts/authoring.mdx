@@ -1,0 +1,97 @@
+---
+title: Preparing your UI
+sidebar:
+    order: 1
+---
+
+Most failed bakes come from a few recurring patterns. Keep these five rules in mind and the result is
+much more predictable.
+
+## 1. Stop motion before capture
+
+The pipeline pauses CSS animations and transitions during capture, but it cannot stop
+`requestAnimationFrame` or `setInterval` loops in your app. Those loops often move the elements you
+want to freeze.
+
+A capture takes two frames. If an element moves between them, it is photographed where it no longer
+is. The capture comes back empty, the bake is refused ([RZ019](/vite-gameface-rasterize/concepts/diagnostics/#rz019)), and the live CSS stays in place.
+
+Use the route `setup` hook to stop the loop:
+
+```ts
+rasterize({
+    routes: [{ path: 'index.html', setup: 'myApp.stopUpdates()', settleMs: 400 }],
+});
+```
+
+If there is no central entry point, neutralise the scheduler directly:
+
+```ts
+setup: 'window.requestAnimationFrame = () => 0; window.setInterval = () => 0;'
+```
+
+Anything decided at module initialisation time — a random seed, a randomised starting state — has
+already happened before `setup` runs. Use `preload` for that, because it executes before your page
+scripts:
+
+```ts
+routes: [{ path: 'index.html', preload: 'Math.random = () => 0.5;', setup: 'myApp.stopUpdates()' }]
+```
+
+## 2. Keep state out of the baked decoration
+
+A bake is one static picture. Anything that changes later is no longer stable.
+
+```css
+/* this frame is not static: it changes when health drops */
+.nameplate.is-low .np__plate { border-color: #f43; }
+```
+
+Put the changing part on a sibling instead of a modifier:
+
+```html
+<div class="np__plate" data-rasterize></div>
+<div class="np__alarm"></div>
+```
+
+The tool flags a `transition` or `animation` on a baked property ([RZ002](/vite-gameface-rasterize/concepts/diagnostics/#rz002)). It cannot know that
+`.is-low` will be added three minutes into a match. That part is your responsibility.
+
+## 3. Give each element a stable identity
+
+A texture is matched by the element's tag and classes. That is what lets sixty identical cards share
+one texture.
+
+- Adding classes at runtime is safe. A class selector matches an element that has those classes,
+  regardless of any extra classes it carries.
+- Removing a baked class breaks the match, and the element loses its texture.
+- Variants selected through an ancestor such as `.marker--hostile .marker__frame` are qualified with
+  the ancestor class that separates them. If nothing separates them, it reports [RZ020](/vite-gameface-rasterize/concepts/diagnostics/#rz020) and only one
+  element gets a texture. Put the variant on the marked element itself, for example
+  `.marker__frame--hostile`.
+- An element with no class and no `data-rasterize-id` falls back to its position in the document,
+  which resolves to exactly one element and cannot be shared.
+
+If a class genuinely changes the decoration, declare it as a state instead:
+`data-rasterize-states="class:is-low"`.
+
+## 4. Fix the root font size when using `vh`
+
+The capture window grows to fit the largest planned asset. If your layout is sized in `vh`, or in
+`rem` derived from `vh`, a taller window makes each element bigger, which makes the window grow
+again. It tends to settle at roughly 1.5x design scale, and the only visible symptom is a larger
+VRAM number.
+
+```ts
+routes: [{ path: 'index.html', setup: "document.documentElement.style.setProperty('font-size', '10px')" }]
+```
+
+## 5. Import CSS from JavaScript in dev
+
+Vite serves a `<link rel="stylesheet">` as a JavaScript module in dev. If you load that link
+directly into the Player, it resolves to JavaScript, no rules apply, and the overlay correctly reports
+that there is nothing worth baking.
+
+```js
+import './styles.css';
+```

@@ -1,0 +1,47 @@
+---
+title: Overview
+sidebar:
+    order: 1
+---
+
+A Vite plugin that turns expensive static CSS decoration into pre-rendered textures.
+
+cohtml re-evaluates `box-shadow`, `filter`, gradients, and rounded fills per pixel. On `vite build`,
+this plugin loads your built UI in the Gameface Player, captures each marked element's decoration as
+an image, and replaces those properties with a texture the engine draws as a quad.
+
+```html
+<div class="panel" data-rasterize>…</div>
+```
+
+Your content stays live. Text stays text, children stay children, `data-bind-*` keeps binding, and
+handlers keep firing. Only the decoration becomes pixels.
+
+## When it helps
+
+- **Shadows, gradients, rounded fills, filters, and masks that never change.** These are the
+  properties the Gameface guide tells you to avoid. This lets you use them.
+- **UI that moves.** cohtml only repaints dirty regions, so a decoration nothing disturbs is
+  already close to free. The win shows up when panels slide, lists scroll, or a HUD redraws.
+- **Deep static subtrees.** [Element mode](/vite-gameface-rasterize/concepts/element-mode/) collapses a whole
+  nameplate or card into one image and a few live leaves, removing nodes from layout and paint,
+  not just the shadow.
+
+## When it will not help
+
+- A page that is static and never repaints. `measure` will correctly report almost no change.
+- Decoration that changes at runtime. A bake is one picture taken once.
+- `mix-blend-mode` and `backdrop-filter`. They do not composite source-over, so no texture can
+  stand in for them. The build refuses rather than approximating.
+
+## What it costs
+
+Texture memory. Every bake is an image resident in VRAM, reported against a budget in the build
+summary. Trading per-frame GPU work for VRAM is the point, so the summary prints both.
+
+## What ships
+
+For `flat` and `slice` bakes, the output is a stylesheet and the textures. No markup changes and
+**no JavaScript** — including hover, press, focus, and class variants, which the stylesheet swaps by
+itself. Only [element mode](/vite-gameface-rasterize/concepts/element-mode/) in a framework-rendered subtree ships a
+small script, and the build tells you when it does.

@@ -1,0 +1,133 @@
+---
+title: Diagnostics
+sidebar:
+    order: 5
+---
+
+Every diagnostic names the element it is about, the route it was found on, and prints a link to its
+entry on this page. Errors fail the build; warnings do not. Identical ones collapse into a single
+line with a count.
+
+The full, untruncated list is written to `rz/rasterize.diagnostics.json` on every build.
+
+| Code | Level | Condition |
+|---|---|---|
+| [RZ001](#rz001) | error | `mix-blend-mode` or `backdrop-filter` on a marked element |
+| [RZ002](#rz002) | warn* | a transition or animation targets a baked property |
+| <a id="rz003"></a>RZ003 | warn | a baked value comes from a custom property that JS writes at runtime |
+| <a id="rz004"></a>RZ004 | error | `flat` mode but the size is not statically resolvable |
+| [RZ005](#rz005) | error | a 9-slice stretch zone is not uniform |
+| [RZ006](#rz006) | warn | texture budget exceeded, or a bake needs a bigger viewport than allowed |
+| <a id="rz007"></a>RZ007 | warn | the marked element has nothing worth baking |
+| <a id="rz008"></a>RZ008 | error | verification SSIM below the threshold |
+| <a id="rz009"></a>RZ009 | warn | the requested format cannot carry the alpha this asset needs |
+| <a id="rz010"></a>RZ010 | error | element mode, but nothing bakeable remains after exclusions |
+| [RZ011](#rz011) | error | layout-affecting dynamism inside an element-mode subtree |
+| <a id="rz012"></a>RZ012 | warn | element mode: live parts were excluded (lists each one and why) |
+| <a id="rz013"></a>RZ013 | warn | layout-affecting media queries apply to this element |
+| <a id="rz014"></a>RZ014 | warn | a redundant nested marker, subsumed by an element-mode bake |
+| [RZ015](#rz015) | info | an unmarked element uses expensive properties |
+| [RZ016](#rz016) | warn | a state variant looks identical to the base bake |
+| <a id="rz017"></a>RZ017 | warn | the capture pass hit a problem with this element |
+| <a id="rz018"></a>RZ018 | warn | the element was `display: none` when it was captured |
+| [RZ019](#rz019) | warn | the capture came back empty; nothing was baked and the live CSS was left alone |
+| [RZ020](#rz020) | warn | lookalike elements baked differently and cannot all be matched |
+| [RZ021](#rz021) | warn | several assets are byte-identical images under different ids |
+| [RZ022](#rz022) | warn | marked elements have no texture in the built page |
+| [RZ023](#rz023) | warn | the baked page differs from the live one by more than the threshold |
+| [RZ024](#rz024) | warn | too small to 9-slice, so it was baked flat at its measured size |
+| [RZ025](#rz025) | warn | a filter or mask survived the bake and still costs a pass every frame |
+| [RZ026](#rz026) | warn | an element-mode subtree could not be flattened at build time, so a script ships |
+
+\* an error when `strictTransitions: true`.
+
+## What to do about them
+
+### RZ001
+
+`mix-blend-mode` and `backdrop-filter` do not composite source-over, so no texture can reproduce
+them against an arbitrary backdrop. There is no approximation mode. Remove the marker, or remove
+the property.
+
+### RZ002
+
+A baked state variant is an instant swap, so a transition on a baked property disappears. Keep the
+element live, or accept the swap. See [things to watch out for](/vite-gameface-rasterize/concepts/limitations/).
+
+### RZ005
+
+A 9-slice stretches its edges and centre, so anything varying along the stretched axis comes apart.
+A gradient fill is the usual cause. Fixed-size elements can use `data-rasterize-mode="flat"` and
+keep the gradient.
+
+### RZ006
+
+Either the total texture memory passed `textureBudgetMB`, and the message names the worst
+offenders, or one asset needs a capture window larger than `maxViewport`. If your layout is sized
+in `vh`, pin the root font size first — see [preparing your UI](/vite-gameface-rasterize/concepts/authoring/).
+
+### RZ011
+
+Inside a flattened subtree, content can change what it shows but not how much space it takes.
+`data-bind-for` and `data-bind-if` add and remove nodes, which moves everything after them. See
+[element mode](/vite-gameface-rasterize/concepts/element-mode/).
+
+### RZ015
+
+Advisory only. Lists elements using expensive properties without a marker. It never marks anything.
+
+### RZ016
+
+The variant renders the same as the base bake, so it costs VRAM for no visual difference. Usually a
+sign that `data-rasterize-states` was reached for to fix a matching problem, which it cannot do.
+
+### RZ019
+
+The element painted nothing when it was captured. Almost always a `requestAnimationFrame` loop
+moving it mid-capture — see [preparing your UI](/vite-gameface-rasterize/concepts/authoring/). The bake is refused rather than
+shipped, because the emitted CSS also strips the live decoration, so an empty texture would leave
+the element with nothing at all.
+
+### RZ020
+
+Several elements share a tag and class list but baked differently, and no ancestor class separates
+them. Only one gets a texture. Move the variant onto the marked element itself —
+`.marker__frame--hostile` rather than `.marker--hostile .marker__frame`.
+
+### RZ021
+
+One decoration baked twice. The message names which part of the bake key differs, usually the
+measured size. If the sizes should be equal, make them equal and the assets collapse into one.
+
+### RZ022
+
+Counted in the finished build by asking whether a generated selector matches each marked element.
+This is the check that catches a build being green while most of the page still runs live CSS. The
+message names the reason for each miss.
+
+### RZ023
+
+Every build renders itself twice, as shipped and with the bake stripped, and writes both plus their
+difference to `rz/report/`. Look at the picture: green is live CSS, blue is what shipped, red is
+where they disagree. Small differences are normal, since a rounded edge drawn from a texture and
+the same edge drawn by the engine differ by a pixel of antialiasing.
+
+### RZ024
+
+When the element is narrower than its two corners put together there is nothing between them to
+stretch, and `border-image` squashes the corner artwork. The bake is taken flat at the measured
+size instead. A smaller blur or radius would let it slice properly.
+
+### RZ025
+
+`filter` and `mask-image` apply to content as well as decoration, so they can only be baked in when
+nothing is left live to need them. This is a per-frame cost. If the whole subtree is static,
+`data-rasterize-mode="element"` bakes it in and removes the pass — see
+[attributes](/vite-gameface-rasterize/concepts/attribute-contract/).
+
+### RZ026
+
+An element-mode subtree that no HTML file contains, because a framework builds it at runtime. It
+gets a small script that flattens it once at load. Move the subtree into the HTML entry if you can;
+otherwise this is the cost of element mode in a framework, and it is one pass at load rather than
+anything per frame.

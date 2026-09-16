@@ -1,0 +1,4 @@
+# The Player writes these into whatever directory it is launched from. The pipeline points it
+# at the cache directory, but a stray CLI run from here still leaves them behind.
+CohtmlApplication*.log
+PlayerConfig.ini

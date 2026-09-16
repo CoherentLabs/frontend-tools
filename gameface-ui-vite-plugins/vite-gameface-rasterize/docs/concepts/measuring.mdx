@@ -1,0 +1,45 @@
+---
+title: Measuring the result
+sidebar:
+    order: 7
+---
+
+```shell
+npx gameface-rasterize measure dist
+```
+
+```
+gameface-rasterize measure - 3 alternating pairs
+
+  live CSS  GPU p50 3.29 ms +/- 0.01    baked  GPU p50 2.19 ms +/- 0.00   -33.4% (n=4)
+            Paint p50 0.165 ms             Paint p50 0.148 ms
+```
+
+## Why frame time cannot tell you
+
+The Player paces frames at a fixed cap of roughly 60 ms. An empty page reads 60 ms, and so does a
+page with hundreds of blurred, shadowed, gradient-filled boxes. Anything that measures only frame
+arrival cannot separate them.
+
+What changes is the engine's own `Coherent_GPU` counter from a CDP trace, which is per-frame GPU
+time. That is what this command reports.
+
+## What it does for you
+
+- Alternates which variant runs first, so a first-run advantage cannot be mistaken for the effect.
+- Repeats the run and reports the spread. If the gap is smaller than the run-to-run variation, it
+  says so instead of letting you quote a meaningless number.
+- Invalidates the page every frame, because cohtml repaints dirty regions only and a settled static
+  page measures almost nothing.
+
+```shell
+npx gameface-rasterize measure dist --repetitions 5 --trace-seconds 6
+```
+
+## Reading it
+
+The delta is the number that matters, not the absolute level. Levels depend on the machine, driver,
+and what else is running.
+
+A decoration that nothing disturbs is close to free on this engine, because it is not being redrawn.
+If your page is static, `measure` will correctly report that baking it changed very little.
