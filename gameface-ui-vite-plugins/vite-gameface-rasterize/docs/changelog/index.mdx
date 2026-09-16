@@ -4,60 +4,31 @@ title: Changelog
 
 ## 1.0.0
 
-First release.
-
-**Baking**
-
-- Decoration baking in `flat` and `slice` modes, captured in the Gameface Player against the real
-  page rather than a reconstruction of it.
-- `element` mode: whole-subtree flattening, with data-bound, animated and interactable descendants
-  detected automatically, kept live, and pinned at the geometry the layout engine gave them.
-- State variants: `hover`, `active`, `focus`, `disabled` and `class:<name>`.
-- `filter` and `mask-image` are baked in when nothing is left live to need them, and kept live when
-  something is ([RZ025](/vite-gameface-rasterize/concepts/diagnostics/#rz025)).
-- Content-addressed cache keyed on decoration, size, scale, states, engine version and contract
-  version. Sizes are measured in layout units, so a transform above an element does not split one
-  decoration into a texture per element.
-- Optional WebP companions, texture budget accounting, and a build summary that prints the VRAM
-  trade.
-
-**What ships to the page**
-
-- Decorations are drawn by a `::before` on the marked element. No child nodes, no attributes and
-  **no JavaScript** — including hover, press, focus and class variants, which the generated
-  stylesheet swaps by itself.
-- Element mode is flattened directly into the built HTML. A subtree a framework builds at runtime
-  is in no file, so it keeps a small script that flattens it once at load; [RZ026](/vite-gameface-rasterize/concepts/diagnostics/#rz026) names it, and
-  `runtime: 'off'` refuses to emit one at all.
-- Matching is a selector in the generated stylesheet, so the engine resolves it during style
-  solving. A class added at runtime does not cost an element its texture.
-
-**Checking, because the failures here are silent**
-
-- Every build renders the finished output twice, as shipped and with the bake stripped, and writes
-  both plus their difference to `rz/report/` ([RZ023](/vite-gameface-rasterize/concepts/diagnostics/#rz023)). It renders the unbaked page twice as well, so
-  a page that does not draw identically twice says so instead of blaming the bake.
-- It counts how many marked elements actually received a texture and names the ones that did not
-  ([RZ022](/vite-gameface-rasterize/concepts/diagnostics/#rz022)).
-- An empty or clipped capture is refused rather than shipped, so the element keeps the live CSS
-  that was working ([RZ019](/vite-gameface-rasterize/concepts/diagnostics/#rz019)).
-- Byte-identical assets under different ids are reported, naming which part of the bake key split
-  them ([RZ021](/vite-gameface-rasterize/concepts/diagnostics/#rz021)).
-- `rz/rasterize.diagnostics.json` holds every diagnostic and every element it applies to.
-
-**Feedback loops**
-
-- A dev overlay classifying every marked element the way the build would, with no Player launch and
-  no bake. Press F9.
-- `gameface-rasterize check` plans and reports without capturing, against a build or a dev server.
-- `gameface-rasterize measure` compares GPU time per frame, live against baked, alternating order
-  and reporting a spread. It exists because frame time cannot see this plugin at all: the Player
-  paces frames at a fixed cap.
-- Diagnostics [RZ001](/vite-gameface-rasterize/concepts/diagnostics/#rz001)–[RZ026](/vite-gameface-rasterize/concepts/diagnostics/#rz026), including an advisory pass over unmarked elements using expensive
-  properties.
-
-**Known limitations**
-
-- `verify` cannot check decoration assets and refuses to run when any are present, rather than
-  reporting a pass it did not earn. The build audit is unaffected.
-- `mix-blend-mode` and `backdrop-filter` can never be baked ([RZ001](/vite-gameface-rasterize/concepts/diagnostics/#rz001)).
+- Decoration baking for `flat` and `slice` modes in the Gameface Player.
+- `element` mode for flattening a whole subtree into one image while keeping data-bound,
+  animated, and interactable descendants live.
+- State variants for `hover`, `active`, `focus`, `disabled`, and `class:<name>`.
+- Content-addressed caching keyed by decoration, size, scale, state list, engine version, and
+  contract version.
+- Optional WebP companions, texture budget reporting, and a build summary showing the VRAM trade.
+- A dev overlay for classifying marked elements without a full bake, plus `check` and `measure`
+  commands for planning and benchmarking.
+- Decorations are drawn as a `::before` on the marked element, with no child nodes, no attributes,
+  and no JavaScript required for standard bakes.
+- Element mode flattened directly into the built HTML, with runtime subtree flattening supported
+  when needed.
+- Selector-based matching so runtime class changes do not break a stable texture match.
+- `filter` and `mask-image` baked in when nothing live remains, and kept live when they still need
+  to affect content or the subtree ([RZ025](../concepts/diagnostics.mdx#rz025)).
+- Full build validation that compares the shipped page to the unbaked version and writes the result
+  to `rz/report/` ([RZ023](../concepts/diagnostics.mdx#rz023)).
+- Marked elements that never received a texture are reported ([RZ022](../concepts/diagnostics.mdx#rz022)).
+- Empty or clipped captures are refused instead of shipped ([RZ019](../concepts/diagnostics.mdx#rz019)).
+- Duplicate byte-identical assets under different ids are reported ([RZ021](../concepts/diagnostics.mdx#rz021)).
+- `rz/rasterize.diagnostics.json` containing the full diagnostic set for every affected element.
+- `verify` support for CI runs, with decoration assets intentionally refusing validation rather than
+  reporting a false pass.
+- Rejection of unsupported combinations such as `mix-blend-mode` and `backdrop-filter`
+  ([RZ001](../concepts/diagnostics.mdx#rz001)).
+- Diagnostics coverage for known compatibility and runtime edge cases
+  ([RZ001](../concepts/diagnostics.mdx#rz001)–[RZ026](../concepts/diagnostics.mdx#rz026)).
