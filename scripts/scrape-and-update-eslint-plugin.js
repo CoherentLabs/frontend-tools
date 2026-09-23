@@ -64,7 +64,11 @@ function main() {
     const args = process.argv.slice(2);
     const dryRun = args.includes('--dry-run');
     const skipTests = args.includes('--skip-tests');
-    const deltaVersionArg = args.find((a) => a.startsWith('--version'));
+    const deltaVersion = readFlagValue(args, '--version');
+    if (args.includes('--version') && !deltaVersion) {
+        throw new Error('--version requires a value (e.g. --version 3.1.2.1 or --version=3.1.2.1).');
+    }
+    const deltaVersionArg = deltaVersion ? `--version=${deltaVersion}` : undefined;
 
     // Path to the Gameface Player executable, in priority order: --player-path
     // flag, then GAMEFACE_PATH if already set in the environment, then

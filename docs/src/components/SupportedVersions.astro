@@ -1,5 +1,6 @@
 ---
 import fs from "node:fs";
+import { Badge } from '@astrojs/starlight/components';
 
 interface Props {
     /**
@@ -27,6 +28,6 @@ const latest = chain[0];
 </p>
 <ul>
     {chain.map((version) => (
-        <li><code>{version}</code>{version === latest ? " (latest)" : ""}</li>
+        <li><code>{version}</code> {version === latest ? <Badge text="Latest" variant="note" size="small" /> : ""}</li>
     ))}
 </ul>

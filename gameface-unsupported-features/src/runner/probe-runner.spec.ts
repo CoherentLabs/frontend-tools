@@ -46,10 +46,32 @@ import { resolveEngineVersion } from '../log/engine-version';
 import { reconcile, partitionBySurface } from '../merge/reconciler';
 import { canonicalizeCatalogRows, writeJsonFile } from '../write/catalog-writer';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { version: bcdVersion } = require('@mdn/browser-compat-data/package.json') as { version: string };
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { version: typescriptVersion } = require('typescript/package.json') as { version: string };
+/**
+ * Reads an installed package's own version without `require("pkg/package.json")`,
+ * which breaks the moment a package's "exports" map stops allowing that subpath
+ * (as @mdn/browser-compat-data's now does — this used to work, then a dependency
+ * bump added a stricter exports map and it started throwing ERR_PACKAGE_PATH_NOT_EXPORTED).
+ * require.resolve(pkgName) resolves the package's main entry, which is always
+ * exported, then this walks up from there to find package.json directly on disk —
+ * a plain fs read, not a module resolution, so no package's exports policy applies.
+ */
+function readInstalledPackageVersion(pkgName: string): string {
+    let dir = path.dirname(require.resolve(pkgName));
+    while (true) {
+        const pkgJsonPath = path.join(dir, 'package.json');
+        if (fs.existsSync(pkgJsonPath)) {
+            const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf-8'));
+            if (pkgJson.name === pkgName) return pkgJson.version;
+        }
+        const parent = path.dirname(dir);
+        if (parent === dir) break;
+        dir = parent;
+    }
+    throw new Error(`Could not locate package.json for "${pkgName}" starting from ${require.resolve(pkgName)}`);
+}
+
+const bcdVersion = readInstalledPackageVersion('@mdn/browser-compat-data');
+const typescriptVersion = readInstalledPackageVersion('typescript');
 
 import type { JsProbeResults } from '../probes/js-probe';
 import { probeValueReadback } from '../probes/css-probe';
