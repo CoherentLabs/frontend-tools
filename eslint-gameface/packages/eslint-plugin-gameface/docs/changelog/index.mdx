@@ -4,7 +4,39 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 1.1.0 :badge[Latest]{variant="note"}
+## 1.2.0 :badge[Latest]{variant="note"}
+
+<Badge text="Feature" variant="success" size="small" /> Added a config option to set specific Gameface target version.
+
+This can be done by adding the `version` field under the `gameface` settings in your ESLint configuration, as shown below:
+
+```diff lang="js"
+import gameface from "eslint-plugin-gameface";
+
+export default [
+  {
+    ignores: ["**/node_modules/**"],
+  },
+  ...gameface.configs["flat/recommended"],
+  {
+    settings: {
+      gameface: {
++        version: "3.1.2.1",
+      }
+    },
+    files: ["examples/**/*"],
+    rules: {
+      "css/use-baseline": "off",
+    },
+  },
+];
+
+```
+
+For more information about the supported version check the following section in the documentation: [Enabling linter for a specific Gameface version](/eslint-plugin-gameface/getting-started/configuration/#gf-versions).
+
+
+## 1.1.0
 
 <Badge text="Feature" variant="success" size="small" /> Added support for linting `.vue` files.
 

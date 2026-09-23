@@ -40,9 +40,38 @@ import {
     inputTypeProbe,
 } from '../probes/html-probe';
 
-import { parseLogSync, parseLogFromOffset, getLogByteOffset } from '../log/log-parser';
+import { parseLogSync, parseLogFromOffset, getLogByteOffset, findActiveLogPath } from '../log/log-parser';
 import type { LogParseResults } from '../log/log-parser';
+import { resolveEngineVersion } from '../log/engine-version';
 import { reconcile, partitionBySurface } from '../merge/reconciler';
+import { canonicalizeCatalogRows, writeJsonFile } from '../write/catalog-writer';
+
+/**
+ * Reads an installed package's own version without `require("pkg/package.json")`,
+ * which breaks the moment a package's "exports" map stops allowing that subpath
+ * (as @mdn/browser-compat-data's now does — this used to work, then a dependency
+ * bump added a stricter exports map and it started throwing ERR_PACKAGE_PATH_NOT_EXPORTED).
+ * require.resolve(pkgName) resolves the package's main entry, which is always
+ * exported, then this walks up from there to find package.json directly on disk —
+ * a plain fs read, not a module resolution, so no package's exports policy applies.
+ */
+function readInstalledPackageVersion(pkgName: string): string {
+    let dir = path.dirname(require.resolve(pkgName));
+    while (true) {
+        const pkgJsonPath = path.join(dir, 'package.json');
+        if (fs.existsSync(pkgJsonPath)) {
+            const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf-8'));
+            if (pkgJson.name === pkgName) return pkgJson.version;
+        }
+        const parent = path.dirname(dir);
+        if (parent === dir) break;
+        dir = parent;
+    }
+    throw new Error(`Could not locate package.json for "${pkgName}" starting from ${require.resolve(pkgName)}`);
+}
+
+const bcdVersion = readInstalledPackageVersion('@mdn/browser-compat-data');
+const typescriptVersion = readInstalledPackageVersion('typescript');
 
 import type { JsProbeResults } from '../probes/js-probe';
 import { probeValueReadback } from '../probes/css-probe';
@@ -80,11 +109,13 @@ const customPropsJson: Record<string, { testValue: string; description?: string 
         : {};
 
 function resolveLogPath(): string {
-    if (config.logPath) return config.logPath;
-    if (config.gamefacePath) {
-        return path.resolve(path.dirname(config.gamefacePath), 'CohtmlApplication.log');
+    let preferred = '';
+    if (config.logPath) {
+        preferred = path.resolve(config.logPath);
+    } else if (config.gamefacePath) {
+        preferred = path.resolve(path.dirname(config.gamefacePath), 'CohtmlApplication.log');
     }
-    return '';
+    return findActiveLogPath(preferred);
 }
 
 // ── Accumulated results ───────────────────────────────────────────────────────
@@ -903,6 +934,7 @@ describe('Gameface Feature Inventory', function () {
                 unsupportedAtRules: new Set(raw.unsupportedAtRules ?? []),
                 rawWarnings: [],
                 logFound: true,
+                engineVersion: null,
             };
             console.log(
                 `[selector-intermediate] Loaded ${Object.keys(cssSelectorResults).length} selector results, ` +
@@ -959,8 +991,14 @@ describe('Gameface Feature Inventory', function () {
 
         const partitioned = partitionBySurface({ supported, partial, unsupported, summary });
 
+        // Resolve the engine version BEFORE writing anything: an unversioned
+        // catalog can't be safely merged into gameface-features/versions/ later,
+        // so fail loudly here rather than silently writing unattributed results.
+        const engineVersion = resolveEngineVersion(logResults.engineVersion);
+        console.log(`[engine-version] Probing Gameface ${engineVersion}.`);
+
         const write = (filePath: string, data: unknown): void => {
-            fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+            writeJsonFile(filePath, data);
             console.log(`[writer] Wrote ${filePath}`);
         };
 
@@ -968,11 +1006,18 @@ describe('Gameface Feature Inventory', function () {
             const dir = path.join(OUTPUT_DIR, folder);
             fs.mkdirSync(dir, { recursive: true });
             const { supported: s, partial: p, unsupported: u, summary: sum } = partitioned[folder];
-            write(path.join(dir, 'supported.json'), s);
-            write(path.join(dir, 'partial.json'), p);
-            write(path.join(dir, 'unsupported.json'), u);
+            write(path.join(dir, 'supported.json'), canonicalizeCatalogRows(s));
+            write(path.join(dir, 'partial.json'), canonicalizeCatalogRows(p));
+            write(path.join(dir, 'unsupported.json'), canonicalizeCatalogRows(u));
             write(path.join(dir, 'summary.json'), sum);
         }
+
+        write(path.join(OUTPUT_DIR, 'meta.json'), {
+            version: engineVersion,
+            generatedAt: new Date().toISOString(),
+            bcdVersion,
+            typescriptVersion,
+        });
     });
 
 });

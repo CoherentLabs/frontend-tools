@@ -2,6 +2,259 @@
   {
     "status": "parser-only",
     "surface": "css-selector",
+    "name": "::backdrop",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::backdrop"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::checkmark",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::checkmark"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::cue",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::cue"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::details-content",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::details-content"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::file-selector-button",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::file-selector-button"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::first-letter",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::first-letter"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::first-line",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::first-line"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::grammar-error",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::grammar-error"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::highlight(custom)",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :highlight"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::marker",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::marker"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::picker-icon",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::picker-icon"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::picker(select)",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :picker"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::placeholder",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::placeholder"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::scroll-button(down)",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :scroll-button"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::scroll-marker",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::scroll-marker"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::scroll-marker-group",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::scroll-marker-group"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::spelling-error",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::spelling-error"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::target-text",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::target-text"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::view-transition",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: ::view-transition"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::view-transition-group(*)",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :view-transition-group"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::view-transition-image-pair(*)",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :view-transition-image-pair"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::view-transition-new(*)",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :view-transition-new"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": "::view-transition-old(*)",
+    "evidence": {
+      "group": "pseudo-element",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :view-transition-old"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
     "name": ":active-view-transition",
     "evidence": {
       "group": "pseudo-class",
@@ -46,17 +299,6 @@
   {
     "status": "parser-only",
     "surface": "css-selector",
-    "name": "::backdrop",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: ::backdrop"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
     "name": ":buffering",
     "evidence": {
       "group": "pseudo-class",
@@ -79,34 +321,12 @@
   {
     "status": "parser-only",
     "surface": "css-selector",
-    "name": "::checkmark",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: ::checkmark"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
     "name": ":closed",
     "evidence": {
       "group": "pseudo-class",
       "probeA": false,
       "probeB": false,
       "logWarning": "unsupported pseudo: :closed"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": "::cue",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: ::cue"
     }
   },
   {
@@ -129,17 +349,6 @@
       "probeA": false,
       "probeB": false,
       "logWarning": "unsupported pseudo: :defined"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": "::details-content",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: ::details-content"
     }
   },
   {
@@ -189,45 +398,12 @@
   {
     "status": "parser-only",
     "surface": "css-selector",
-    "name": "::file-selector-button",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: ::file-selector-button"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
     "name": ":first",
     "evidence": {
       "group": "page-pseudo",
       "probeA": false,
       "probeB": false,
       "logWarning": "unsupported pseudo: :first"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": "::first-letter",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: ::first-letter"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": "::first-line",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: ::first-line"
     }
   },
   {
@@ -288,12 +464,12 @@
   {
     "status": "parser-only",
     "surface": "css-selector",
-    "name": "::grammar-error",
+    "name": ":has-slotted",
     "evidence": {
-      "group": "pseudo-element",
+      "group": "pseudo-class",
       "probeA": false,
       "probeB": false,
-      "logWarning": "unsupported pseudo: ::grammar-error"
+      "logWarning": "unsupported pseudo: :has-slotted"
     }
   },
   {
@@ -310,23 +486,12 @@
   {
     "status": "parser-only",
     "surface": "css-selector",
-    "name": ":has-slotted",
+    "name": ":has(> .child)",
     "evidence": {
-      "group": "pseudo-class",
+      "group": "pseudo-relational-direct",
       "probeA": false,
       "probeB": false,
-      "logWarning": "unsupported pseudo: :has-slotted"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": "::highlight(custom)",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: :highlight"
+      "logWarning": "unsupported pseudo: :has"
     }
   },
   {
@@ -335,6 +500,17 @@
     "name": ":host-context",
     "evidence": {
       "group": "pseudo-class",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :host-context"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":host-context(.foo)",
+    "evidence": {
+      "group": "pseudo-shadow",
       "probeA": false,
       "probeB": false,
       "logWarning": "unsupported pseudo: :host-context"
@@ -371,6 +547,17 @@
       "probeA": false,
       "probeB": false,
       "logWarning": "unsupported pseudo: :invalid"
+    }
+  },
+  {
+    "status": "parser-only",
+    "surface": "css-selector",
+    "name": ":is(:hover)",
+    "evidence": {
+      "group": "pseudo-logical-compound",
+      "probeA": false,
+      "probeB": false,
+      "logWarning": "unsupported pseudo: :is"
     }
   },
   {
@@ -426,17 +613,6 @@
       "probeA": false,
       "probeB": false,
       "logWarning": "unsupported pseudo: :link"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": "::marker",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: ::marker"
     }
   },
   {
@@ -541,45 +717,12 @@
   {
     "status": "parser-only",
     "surface": "css-selector",
-    "name": "::picker(select)",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: :picker"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": "::picker-icon",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: ::picker-icon"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
     "name": ":picture-in-picture",
     "evidence": {
       "group": "pseudo-class",
       "probeA": false,
       "probeB": false,
       "logWarning": "unsupported pseudo: :picture-in-picture"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": "::placeholder",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: ::placeholder"
     }
   },
   {
@@ -673,56 +816,12 @@
   {
     "status": "parser-only",
     "surface": "css-selector",
-    "name": "::scroll-button(down)",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: :scroll-button"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": "::scroll-marker",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: ::scroll-marker"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": "::scroll-marker-group",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: ::scroll-marker-group"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
     "name": ":seeking",
     "evidence": {
       "group": "pseudo-class",
       "probeA": false,
       "probeB": false,
       "logWarning": "unsupported pseudo: :seeking"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": "::spelling-error",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: ::spelling-error"
     }
   },
   {
@@ -772,17 +871,6 @@
   {
     "status": "parser-only",
     "surface": "css-selector",
-    "name": "::target-text",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: ::target-text"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
     "name": ":user-invalid",
     "evidence": {
       "group": "pseudo-class",
@@ -811,61 +899,6 @@
       "probeA": false,
       "probeB": false,
       "logWarning": "unsupported pseudo: :valid"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": "::view-transition",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: ::view-transition"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": "::view-transition-group(*)",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: :view-transition-group"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": "::view-transition-image-pair(*)",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: :view-transition-image-pair"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": "::view-transition-new(*)",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: :view-transition-new"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": "::view-transition-old(*)",
-    "evidence": {
-      "group": "pseudo-element",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: :view-transition-old"
     }
   },
   {
@@ -915,17 +948,6 @@
   {
     "status": "missing",
     "surface": "css-selector",
-    "name": "@supports (display: flex)",
-    "evidence": {
-      "group": "at-rule",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported at-rule: @supports (sentinel-detected)"
-    }
-  },
-  {
-    "status": "missing",
-    "surface": "css-selector",
     "name": "@container (min-width: 300px)",
     "evidence": {
       "group": "at-rule",
@@ -946,36 +968,14 @@
     }
   },
   {
-    "status": "parser-only",
+    "status": "missing",
     "surface": "css-selector",
-    "name": ":is(:hover)",
+    "name": "@supports (display: flex)",
     "evidence": {
-      "group": "pseudo-logical-compound",
+      "group": "at-rule",
       "probeA": false,
       "probeB": false,
-      "logWarning": "unsupported pseudo: :is"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": ":has(> .child)",
-    "evidence": {
-      "group": "pseudo-relational-direct",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: :has"
-    }
-  },
-  {
-    "status": "parser-only",
-    "surface": "css-selector",
-    "name": ":host-context(.foo)",
-    "evidence": {
-      "group": "pseudo-shadow",
-      "probeA": false,
-      "probeB": false,
-      "logWarning": "unsupported pseudo: :host-context"
+      "logWarning": "unsupported at-rule: @supports (sentinel-detected)"
     }
   }
 ]

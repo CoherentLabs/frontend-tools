@@ -1,4 +1,6 @@
+import { Buffer } from 'node:buffer';
 import * as fs from 'node:fs';
+import * as path from 'node:path';
 import * as readline from 'node:readline';
 
 /**
@@ -88,6 +90,14 @@ export interface LogParseResults {
 
     /** True if the log file was found and successfully opened. */
     logFound: boolean;
+
+    /**
+     * Engine version parsed from the Player's own startup line:
+     *   "Info: Initializing COHTML ver. 3.1.0.25"
+     * Null if the log was found but this line was never seen (e.g. a truncated
+     * partial-offset parse, or a build that logs differently).
+     */
+    engineVersion: string | null;
 }
 
 // ── Pattern table ─────────────────────────────────────────────────────────────
@@ -158,6 +168,12 @@ interface ProcessingState {
 }
 
 /**
+ * The Player's own startup line, e.g. "Info: Initializing COHTML ver. 3.1.0.25".
+ * Checked independently of LOG_PATTERNS (it's not a warning) — see processLine.
+ */
+const ENGINE_VERSION_PATTERN = /Initializing COHTML ver\.\s*(?<version>[\d.]+)/i;
+
+/**
  * Actual Gameface log patterns derived from CohtmlApplication.log.
  * Order matters: more specific patterns first.
  */
@@ -165,188 +181,188 @@ const LOG_PATTERNS: Array<{
     re: RegExp;
     handler: (match: RegExpMatchArray, line: string, results: LogParseResults, state: ProcessingState) => void;
 }> = [
-    // "Warning: Unsupported CSS property detected: float"
-    // Only emitted when CSS is parsed from a stylesheet, NOT from JS el.style writes.
-    //
-    // Properties whose names start with "at-" are SENTINEL markers used by the
-    // CSS selector probe to detect unsupported at-rules.  Each at-rule probe
-    // embeds `at-{name}: ''` in its body; when the at-rule IS supported the
-    // sentinel is merely an unknown property and is logged here.  When the
-    // at-rule is NOT supported, a "CSS parsing error near text: @" line
-    // appears BEFORE the sentinel (state.pendingAtRuleError = true).
-    //
-    // Sentinel properties are consumed here and NOT forwarded to
-    // `unsupportedProperties` (they are not real CSS properties).
-    {
-        re: /Unsupported CSS property detected:\s*(?<prop>[\w-]+)/i,
-        handler: (m, _line, r, state) => {
-            const prop = m.groups?.prop;
-            if (!prop) return;
-            if (prop.toLowerCase().startsWith('at-')) {
-                // Sentinel for at-rule support detection.
-                const atRuleName = prop.slice(3).toLowerCase();
-                if (state.pendingAtRuleError) {
-                    r.unsupportedAtRules.add(atRuleName);
+        // "Warning: Unsupported CSS property detected: float"
+        // Only emitted when CSS is parsed from a stylesheet, NOT from JS el.style writes.
+        //
+        // Properties whose names start with "at-" are SENTINEL markers used by the
+        // CSS selector probe to detect unsupported at-rules.  Each at-rule probe
+        // embeds `at-{name}: ''` in its body; when the at-rule IS supported the
+        // sentinel is merely an unknown property and is logged here.  When the
+        // at-rule is NOT supported, a "CSS parsing error near text: @" line
+        // appears BEFORE the sentinel (state.pendingAtRuleError = true).
+        //
+        // Sentinel properties are consumed here and NOT forwarded to
+        // `unsupportedProperties` (they are not real CSS properties).
+        {
+            re: /Unsupported CSS property detected:\s*(?<prop>[\w-]+)/i,
+            handler: (m, _line, r, state) => {
+                const prop = m.groups?.prop;
+                if (!prop) return;
+                if (prop.toLowerCase().startsWith('at-')) {
+                    // Sentinel for at-rule support detection.
+                    const atRuleName = prop.slice(3).toLowerCase();
+                    if (state.pendingAtRuleError) {
+                        r.unsupportedAtRules.add(atRuleName);
+                    }
+                    state.pendingAtRuleError = false;
+                    return; // Do not add to unsupportedProperties.
                 }
-                state.pendingAtRuleError = false;
-                return; // Do not add to unsupportedProperties.
-            }
-            r.unsupportedProperties.add(normalizePropName(prop));
+                r.unsupportedProperties.add(normalizePropName(prop));
+            },
         },
-    },
 
-    // "Warning: Trying to set "filter" property to invalid value: initial"
-    // "Warning: Trying to set "alignItems" property to invalid value: anchor-center"
-    // The property name may be either kebab-case (stylesheet origin) or
-    // camelCase (JS el.style.<name> origin) — normalise to kebab.
-    {
-        re: /Trying to set "(?<prop>[^"]+)" property to invalid value:\s*(?<value>.+)/i,
-        handler: (m, _line, r, _state) => {
-            const prop = m.groups?.prop;
-            const value = m.groups?.value ?? '';
-            if (prop) recordInvalidValue(r, prop, value);
+        // "Warning: Trying to set "filter" property to invalid value: initial"
+        // "Warning: Trying to set "alignItems" property to invalid value: anchor-center"
+        // The property name may be either kebab-case (stylesheet origin) or
+        // camelCase (JS el.style.<name> origin) — normalise to kebab.
+        {
+            re: /Trying to set "(?<prop>[^"]+)" property to invalid value:\s*(?<value>.+)/i,
+            handler: (m, _line, r, _state) => {
+                const prop = m.groups?.prop;
+                const value = m.groups?.value ?? '';
+                if (prop) recordInvalidValue(r, prop, value);
+            },
         },
-    },
 
-    // "Warning: Unable to parse declaration: align-content - baseline"
-    // Emitted by the stylesheet parser when a property recognises the name but
-    // not the supplied value.  The property is always kebab-case here.
-    //
-    // The separator MUST be whitespace + dash + whitespace.  Greedy/lazy
-    // backtracking would otherwise match the `<prop>: <value>` form below
-    // by consuming part of a hyphenated property name as a separator (e.g.
-    // `font-size: clamp(…)` → prop=`font`, sep=`-`, value=`size: clamp(…)`).
-    {
-        re: /Unable to parse declaration:\s*(?<prop>[\w-]+?)\s+-\s+(?<value>.+)/i,
-        handler: (m, _line, r, _state) => {
-            const prop = m.groups?.prop;
-            const value = m.groups?.value ?? '';
-            if (prop) recordInvalidValue(r, prop, value);
+        // "Warning: Unable to parse declaration: align-content - baseline"
+        // Emitted by the stylesheet parser when a property recognises the name but
+        // not the supplied value.  The property is always kebab-case here.
+        //
+        // The separator MUST be whitespace + dash + whitespace.  Greedy/lazy
+        // backtracking would otherwise match the `<prop>: <value>` form below
+        // by consuming part of a hyphenated property name as a separator (e.g.
+        // `font-size: clamp(…)` → prop=`font`, sep=`-`, value=`size: clamp(…)`).
+        {
+            re: /Unable to parse declaration:\s*(?<prop>[\w-]+?)\s+-\s+(?<value>.+)/i,
+            handler: (m, _line, r, _state) => {
+                const prop = m.groups?.prop;
+                const value = m.groups?.value ?? '';
+                if (prop) recordInvalidValue(r, prop, value);
+            },
         },
-    },
 
-    // "Warning: Unable to parse declaration: font-size: clamp(100px, 20vw, 200px);"
-    // Same warning class as above, but Gameface uses the canonical
-    // `<prop>: <value>;` form when the value is structurally complex
-    // (function calls, multi-token shorthands, …) instead of the bare
-    // `<prop> - <value>` form used for keyword rejections.
-    // The semicolon is optional in the recorded value so the function probe
-    // can compare against the unterminated form it generated.
-    {
-        re: /Unable to parse declaration:\s*(?<prop>[\w-]+)\s*:\s*(?<value>.+?)\s*;?\s*$/i,
-        handler: (m, _line, r, _state) => {
-            const prop = m.groups?.prop;
-            const value = m.groups?.value ?? '';
-            if (prop) recordInvalidValue(r, prop, value);
+        // "Warning: Unable to parse declaration: font-size: clamp(100px, 20vw, 200px);"
+        // Same warning class as above, but Gameface uses the canonical
+        // `<prop>: <value>;` form when the value is structurally complex
+        // (function calls, multi-token shorthands, …) instead of the bare
+        // `<prop> - <value>` form used for keyword rejections.
+        // The semicolon is optional in the recorded value so the function probe
+        // can compare against the unterminated form it generated.
+        {
+            re: /Unable to parse declaration:\s*(?<prop>[\w-]+)\s*:\s*(?<value>.+?)\s*;?\s*$/i,
+            handler: (m, _line, r, _state) => {
+                const prop = m.groups?.prop;
+                const value = m.groups?.value ?? '';
+                if (prop) recordInvalidValue(r, prop, value);
+            },
         },
-    },
 
-    // "Warning: Unable to evaluate calc() expression: calc(sign(-1)*-100px)"
-    // Emitted when calc() itself parses but contains an inner math
-    // function Gameface cannot evaluate (sign, pow, sqrt, …).  No
-    // property name is included, so we stash the bare expression and let
-    // the reconciler match by canonicalised value against the function
-    // catalogue (see reconcileCssFunctions).
-    {
-        re: /^Warning:\s*Unable to evaluate calc\(\) expression:\s*(?<expr>.+?)\s*;?\s*$/i,
-        handler: (m, _line, r, _state) => {
-            const expr = m.groups?.expr?.trim();
-            if (expr) r.unsupportedCalcExpressions.add(expr.toLowerCase());
+        // "Warning: Unable to evaluate calc() expression: calc(sign(-1)*-100px)"
+        // Emitted when calc() itself parses but contains an inner math
+        // function Gameface cannot evaluate (sign, pow, sqrt, …).  No
+        // property name is included, so we stash the bare expression and let
+        // the reconciler match by canonicalised value against the function
+        // catalogue (see reconcileCssFunctions).
+        {
+            re: /^Warning:\s*Unable to evaluate calc\(\) expression:\s*(?<expr>.+?)\s*;?\s*$/i,
+            handler: (m, _line, r, _state) => {
+                const expr = m.groups?.expr?.trim();
+                if (expr) r.unsupportedCalcExpressions.add(expr.toLowerCase());
+            },
         },
-    },
 
-    // "Warning: Space repeat type is not supported falling back to round"
-    // The engine doesn't name the concrete property — fan out to every
-    // repeat-family property so whichever one the reconciler is testing
-    // against will pick the value up.
-    // Anchored to the start of the warning body to avoid sub-string matches
-    // inside longer messages; must be checked BEFORE the generic
-    // "is not supported for" pattern below.
-    {
-        re: /^Warning:\s*(?<value>\S+)\s+repeat type is not supported falling back to\b/i,
-        handler: (m, _line, r, _state) => {
-            const value = m.groups?.value ?? '';
-            if (!value) return;
-            for (const prop of REPEAT_FAMILY_PROPERTIES) {
-                recordInvalidValue(r, prop, value);
-            }
+        // "Warning: Space repeat type is not supported falling back to round"
+        // The engine doesn't name the concrete property — fan out to every
+        // repeat-family property so whichever one the reconciler is testing
+        // against will pick the value up.
+        // Anchored to the start of the warning body to avoid sub-string matches
+        // inside longer messages; must be checked BEFORE the generic
+        // "is not supported for" pattern below.
+        {
+            re: /^Warning:\s*(?<value>\S+)\s+repeat type is not supported falling back to\b/i,
+            handler: (m, _line, r, _state) => {
+                const value = m.groups?.value ?? '';
+                if (!value) return;
+                for (const prop of REPEAT_FAMILY_PROPERTIES) {
+                    recordInvalidValue(r, prop, value);
+                }
+            },
         },
-    },
 
-    // "Warning: dashed is not supported for border-style"
-    // Engine-level rejection where the value is named first, then the property.
-    // Anchored to the start of the warning body so multi-clause messages
-    // ("X failed because Y is not supported for Z") don't false-positive.
-    {
-        re: /^Warning:\s*(?<value>\S+)\s+is not supported for\s+(?<prop>[\w-]+)\b/i,
-        handler: (m, _line, r, _state) => {
-            const prop = m.groups?.prop;
-            const value = m.groups?.value ?? '';
-            if (prop) recordInvalidValue(r, prop, value);
+        // "Warning: dashed is not supported for border-style"
+        // Engine-level rejection where the value is named first, then the property.
+        // Anchored to the start of the warning body so multi-clause messages
+        // ("X failed because Y is not supported for Z") don't false-positive.
+        {
+            re: /^Warning:\s*(?<value>\S+)\s+is not supported for\s+(?<prop>[\w-]+)\b/i,
+            handler: (m, _line, r, _state) => {
+                const prop = m.groups?.prop;
+                const value = m.groups?.value ?? '';
+                if (prop) recordInvalidValue(r, prop, value);
+            },
         },
-    },
 
-    // "Warning: mask-mode Luminance currently not supported falling back to alpha"
-    // Property-then-value form with an explicit fallback value.
-    {
-        re: /^Warning:\s*(?<prop>[\w-]+)\s+(?<value>\S+)\s+currently not supported falling back to\b/i,
-        handler: (m, _line, r, _state) => {
-            const prop = m.groups?.prop;
-            const value = m.groups?.value ?? '';
-            if (prop) recordInvalidValue(r, prop, value);
+        // "Warning: mask-mode Luminance currently not supported falling back to alpha"
+        // Property-then-value form with an explicit fallback value.
+        {
+            re: /^Warning:\s*(?<prop>[\w-]+)\s+(?<value>\S+)\s+currently not supported falling back to\b/i,
+            handler: (m, _line, r, _state) => {
+                const prop = m.groups?.prop;
+                const value = m.groups?.value ?? '';
+                if (prop) recordInvalidValue(r, prop, value);
+            },
         },
-    },
 
-    // "Warning: Unsupported CSS pseudo class selector encountered: focus-within"
-    // Also covers functional pseudo-classes: "Unsupported CSS pseudo class selector encountered: not"
-    {
-        re: /Unsupported CSS pseudo class selector encountered:\s*(?<name>[\w-]+)/i,
-        handler: (m, _line, r, _state) => {
-            const name = m.groups?.name?.trim();
-            if (name) r.unsupportedPseudoClasses.add(name);
+        // "Warning: Unsupported CSS pseudo class selector encountered: focus-within"
+        // Also covers functional pseudo-classes: "Unsupported CSS pseudo class selector encountered: not"
+        {
+            re: /Unsupported CSS pseudo class selector encountered:\s*(?<name>[\w-]+)/i,
+            handler: (m, _line, r, _state) => {
+                const name = m.groups?.name?.trim();
+                if (name) r.unsupportedPseudoClasses.add(name);
+            },
         },
-    },
 
-    // "Warning: Unsupported CSS pseudo element encountered: first-line"
-    {
-        re: /Unsupported CSS pseudo element encountered:\s*(?<name>[\w-]+)/i,
-        handler: (m, _line, r, _state) => {
-            const name = m.groups?.name?.trim();
-            if (name) r.unsupportedPseudoElements.add(name);
+        // "Warning: Unsupported CSS pseudo element encountered: first-line"
+        {
+            re: /Unsupported CSS pseudo element encountered:\s*(?<name>[\w-]+)/i,
+            handler: (m, _line, r, _state) => {
+                const name = m.groups?.name?.trim();
+                if (name) r.unsupportedPseudoElements.add(name);
+            },
         },
-    },
 
-    // "Warning: The all shorthand doesn't support:"
-    {
-        re: /The (?<prop>[\w-]+) shorthand doesn'?t support/i,
-        handler: (m, _line, r, _state) => {
-            const prop = m.groups?.prop?.toLowerCase().trim();
-            if (prop) r.shorthandsWithLimitations.add(prop);
+        // "Warning: The all shorthand doesn't support:"
+        {
+            re: /The (?<prop>[\w-]+) shorthand doesn'?t support/i,
+            handler: (m, _line, r, _state) => {
+                const prop = m.groups?.prop?.toLowerCase().trim();
+                if (prop) r.shorthandsWithLimitations.add(prop);
+            },
         },
-    },
 
-    // "Warning: CSS parsing error "syntax error" near text: @"
-    // Specific pattern for at-rule failures.  Sets the pendingAtRuleError flag so
-    // that the next at-rule sentinel property (`at-{name}: ''`) is recognised as
-    // evidence of a rejected at-rule.  Must appear BEFORE the general CSS parsing
-    // error pattern below so it takes priority.
-    {
-        re: /CSS parsing error "syntax error" near text:\s*@/i,
-        handler: (_m, _line, _r, state) => {
-            state.pendingAtRuleError = true;
+        // "Warning: CSS parsing error "syntax error" near text: @"
+        // Specific pattern for at-rule failures.  Sets the pendingAtRuleError flag so
+        // that the next at-rule sentinel property (`at-{name}: ''`) is recognised as
+        // evidence of a rejected at-rule.  Must appear BEFORE the general CSS parsing
+        // error pattern below so it takes priority.
+        {
+            re: /CSS parsing error "syntax error" near text:\s*@/i,
+            handler: (_m, _line, _r, state) => {
+                state.pendingAtRuleError = true;
+            },
         },
-    },
 
-    // "Warning: CSS parsing error "syntax error" near text: TOKEN"
-    // General sub-token parse failures — too granular for individual feature mapping.
-    // The at-rule failure case is caught by the more specific pattern above.
-    {
-        re: /CSS parsing error "syntax error" near text:/i,
-        handler: (_m, _line, _r, _state) => {
-            // Intentionally not mapped.
+        // "Warning: CSS parsing error "syntax error" near text: TOKEN"
+        // General sub-token parse failures — too granular for individual feature mapping.
+        // The at-rule failure case is caught by the more specific pattern above.
+        {
+            re: /CSS parsing error "syntax error" near text:/i,
+            handler: (_m, _line, _r, _state) => {
+                // Intentionally not mapped.
+            },
         },
-    },
-];
+    ];
 
 // ── Public API ────────────────────────────────────────────────────────────────
 
@@ -417,10 +433,21 @@ function emptyResults(): LogParseResults {
         unsupportedAtRules: new Set(),
         rawWarnings: [],
         logFound: false,
+        engineVersion: null,
     };
 }
 
 function processLine(line: string, results: LogParseResults, state: ProcessingState): void {
+    // Checked unconditionally (not gated behind the Warning:/Info: prefix check
+    // below) since it only needs to run once and there's no reason to couple it
+    // to that gate.
+    if (results.engineVersion === null) {
+        const versionMatch = line.match(ENGINE_VERSION_PATTERN);
+        if (versionMatch?.groups?.version) {
+            results.engineVersion = versionMatch.groups.version;
+        }
+    }
+
     // Gameface emits the "Unsupported CSS property detected: <name>" line at
     // INFO level, not WARNING — but it's the strongest signal we have that a
     // property name was rejected by the parser.  Accept both prefixes so the
@@ -495,6 +522,88 @@ export function parseLogFromOffset(logPath: string, byteOffset: number): LogPars
         processLine(line, results, state);
     }
     return results;
+}
+
+// ── Locating the active log file ────────────────────────────────────────────
+
+/** Captures the version out of Cohtml's own startup banner line. */
+const STARTUP_SIGNATURE = /Initializing COHTML ver\.\s*(?<version>[\d.]+)/i;
+
+/**
+ * Cohtml's log filename is not stable across launches — observed as both
+ * "CohtmlApplication.log" and "TestApp.log" in the same working directory,
+ * apparently depending on an app-identifier baked into the specific Player
+ * build/sample (outside this project's control). The Player path is NOT a
+ * trustworthy way to disambiguate this: it can point anywhere, with no
+ * guarantee the folder name reflects what's actually installed there — so
+ * this deliberately does not try to infer or match against an "expected"
+ * version. Instead, pair this with `clean-cohtml-logs.js`, run before every
+ * probe to delete all `*.log` files up front: whatever log(s) exist after
+ * the Player launches must have been written by THIS run, whatever they're
+ * named, which is what actually makes this reliable.
+ *
+ * Scans `preferredPath`'s directory for `*.log` files (excluding
+ * `*Performance.log`, a separate log stream Cohtml also writes) that start
+ * with Cohtml's own startup banner, and returns the most-recently-modified
+ * match. Warns if more than one candidate matches — expected to be rare
+ * once stale logs are cleaned up front, and worth surfacing if it still
+ * happens. Falls back to `preferredPath` unchanged if nothing matches.
+ * @param {string} preferredPath the configured/computed log path (e.g. from `config.logPath`)
+ * @returns {string}
+ */
+export function findActiveLogPath(preferredPath: string): string {
+    if (!preferredPath) return preferredPath;
+
+    const dir = path.dirname(preferredPath);
+    let entries: string[];
+    try {
+        entries = fs.readdirSync(dir);
+    } catch {
+        return preferredPath;
+    }
+
+    const candidates = entries
+        .filter((entry) => /\.log$/i.test(entry) && !/performance/i.test(entry))
+        .map((entry) => path.join(dir, entry))
+        .map((full) => {
+            try {
+                return { path: full, mtimeMs: fs.statSync(full).mtimeMs };
+            } catch {
+                return null;
+            }
+        })
+        .filter((c): c is { path: string; mtimeMs: number } => c !== null)
+        .sort((a, b) => b.mtimeMs - a.mtimeMs);
+
+    const signatureMatches: string[] = [];
+    for (const candidate of candidates) {
+        let head: string;
+        try {
+            const fd = fs.openSync(candidate.path, 'r');
+            try {
+                const buf = Buffer.alloc(2048);
+                const bytesRead = fs.readSync(fd, buf, 0, buf.length, 0);
+                head = buf.toString('utf-8', 0, bytesRead);
+            } finally {
+                fs.closeSync(fd);
+            }
+        } catch {
+            continue;
+        }
+        if (STARTUP_SIGNATURE.test(head)) {
+            signatureMatches.push(candidate.path);
+        }
+    }
+
+    if (signatureMatches.length > 1) {
+        console.warn(
+            `[findActiveLogPath] Found ${signatureMatches.length} log files with a valid Cohtml startup ` +
+            `banner in "${dir}" — expected at most one after cleaning stale logs before launch. ` +
+            `Using the most recently modified: ${signatureMatches[0]}. All candidates: ${signatureMatches.join(', ')}`,
+        );
+    }
+
+    return signatureMatches[0] ?? preferredPath;
 }
 
 // ── Convenience: build a flat selector-name lookup from log results ────────────
