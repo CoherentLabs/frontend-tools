@@ -15,7 +15,7 @@ The recommended preset runs **Gameface-specific** rules on top of normal HTML an
 - Documented limits: `var()` / `calc()` inside `@keyframes`, `var()` with a fallback argument, `calc()` mixing `%` with px and similar units
 - SVG-related animation rules in CSS (units in keyframes, stroke dash on non-path elements, and similar)
 
-SCSS files are parsed in a tolerant mode so Sass variables and nesting do not block the run; lines that still use unresolved `$variables` may skip some value checks.
+SCSS files are parsed in a tolerant mode so Sass variables and nesting do not block the run; lines that still use unresolved `$variables` may skip some value checks. Rules nested under SCSS suffix selectors such as `&-option`, `&__item` and `&--active` are linted the same as any other nested rule.
 
 ## HTML (`.html`)
 

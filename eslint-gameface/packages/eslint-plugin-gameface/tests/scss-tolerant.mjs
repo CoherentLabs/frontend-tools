@@ -13,6 +13,11 @@ const scssBadPath = path.join(
   "packages/eslint-plugin-gameface/tests/fixtures/sample-user-bad.scss",
 );
 
+const scssSuffixBadPath = path.join(
+  root,
+  "packages/eslint-plugin-gameface/tests/fixtures/sample-user-suffix-bad.scss",
+);
+
 const eslint = new ESLint({
   cwd: root,
   overrideConfig: [...gameface.configs["flat/recommended"]],
@@ -32,6 +37,22 @@ const unsupported = (badResult.messages || []).filter(
 );
 if (unsupported.length === 0) {
   throw new Error("expected gameface/css-no-unsupported-properties in sample-user-bad.scss");
+}
+
+// SCSS suffix selectors (`&-x`, `&__x`, `&--x`) must not swallow their blocks as Raw nodes.
+const [suffixResult] = await eslint.lintFiles([scssSuffixBadPath]);
+const suffixFatal = (suffixResult.messages || []).filter((m) => m.fatal || m.ruleId === null);
+if (suffixFatal.length > 0) {
+  throw new Error(`unexpected parse errors: ${suffixFatal.map((m) => m.message).join("; ")}`);
+}
+const gridLines = (suffixResult.messages || [])
+  .filter((m) => m.ruleId === "gameface/css-partial-property-values")
+  .map((m) => `${m.line}:${m.column}`);
+const expectedGridLines = ["6:18", "11:18", "14:22", "20:18"];
+if (gridLines.join(",") !== expectedGridLines.join(",")) {
+  throw new Error(
+    `expected display:grid reports at ${expectedGridLines.join(", ")} in sample-user-suffix-bad.scss, got ${gridLines.join(", ") || "none"}`,
+  );
 }
 
 console.log("scss-tolerant: ok");
