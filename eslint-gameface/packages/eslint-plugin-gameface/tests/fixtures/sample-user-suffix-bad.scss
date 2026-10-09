@@ -1,0 +1,22 @@
+.dropdown {
+    position: relative;
+
+    &-disabled {
+        opacity: 0.8;
+        display: grid;
+    }
+
+    &__option {
+        padding: 0.8rem;
+        display: grid;
+
+        &:hover {
+            display: grid;
+        }
+    }
+
+    &--active,
+    & > &-selector {
+        display: grid;
+    }
+}

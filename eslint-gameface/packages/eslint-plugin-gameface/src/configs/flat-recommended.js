@@ -192,6 +192,9 @@ export function createFlatRecommended(gamefacePlugin) {
         // recover and still run gameface/* rules on parsed declarations.
         tolerant: true,
       },
+      // Rewrites SCSS suffix selectors (`&-option`, `&__item`) the CSS parser cannot handle;
+      // otherwise the whole enclosing block becomes a Raw node and is not linted.
+      processor: gamefacePlugin.processors.scss,
       plugins: {
         css,
         gameface: gamefacePlugin,

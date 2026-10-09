@@ -1,5 +1,6 @@
 import { allRules } from "./rules/index.js";
 import { createFlatRecommended } from "./configs/flat-recommended.js";
+import scssProcessor from "./processors/scss.js";
 
 const plugin = {
   meta: {
@@ -7,6 +8,9 @@ const plugin = {
     version: "1.0.0",
   },
   rules: allRules,
+  processors: {
+    scss: scssProcessor,
+  },
   configs: {},
 };
 

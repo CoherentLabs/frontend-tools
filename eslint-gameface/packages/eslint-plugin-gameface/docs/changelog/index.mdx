@@ -4,7 +4,29 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 1.2.0 :badge[Latest]{variant="note"}
+## 1.3.1 :badge[Latest]{variant="note"}
+
+<Badge text="Fix" variant="caution" size="small" /> Fixed declarations inside SCSS suffix selectors (`&-option`, `&__item`, `&--active`) not being linted in `.scss` files.
+
+Previously the CSS parser could not read these selectors, so the whole enclosing block—including any nested `&:hover` rules and following sibling blocks—was skipped and no Gameface errors were reported for it:
+
+```scss
+.dropdown {
+    display: grid; // reported
+
+    &-option {
+        display: grid; // was not reported, now reported
+
+        &:hover {
+            display: grid; // was not reported, now reported
+        }
+    }
+}
+```
+
+This works automatically with the `flat/recommended` preset—no configuration changes are needed.
+
+## 1.3.0
 
 <Badge text="Feature" variant="success" size="small" /> Added a config option to set specific Gameface target version.
 
