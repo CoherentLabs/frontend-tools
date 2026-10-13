@@ -94,7 +94,7 @@ export class GamefaceCommandsBase {
     }
 
     /**
-    * Will send mutiple DevTools commands to the player
+    * Will send multiple DevTools commands to the player
     */
     async sendCommands(commands: (string | { method: string; params: any })[]): Promise<any[]> {
         const responses = [];
@@ -127,6 +127,7 @@ export class GamefaceCommands extends GamefaceCommandsBase {
         this.getParent = this.getParent.bind(this);
         this.children = this.children.bind(this);
         this.navigate = this.navigate.bind(this);
+        this.triggerNavigation = this.triggerNavigation.bind(this);
         this.isHidden = this.isHidden.bind(this);
         this.isVisible = this.isVisible.bind(this);
         this.isScrollable = this.isScrollable.bind(this);
@@ -332,6 +333,10 @@ export class GamefaceCommands extends GamefaceCommandsBase {
         });
         await this.sendCommand('Page.loadEventFired');
 
+        await this.handleNavigation();
+    }
+
+    private async handleNavigation() {
         const { root: { nodeId } } = await this.sendCommand('DOM.getDocument');
         this.rootNodeId = nodeId;
 
@@ -351,6 +356,20 @@ export class GamefaceCommands extends GamefaceCommandsBase {
             };
         });
     }
+
+    /**
+     * Execute code that will trigger navigation and wait for it to complete
+     * @param trigger The function that will trigger navigation once executed
+     * @return A promise that resolves when the navigation is complete and the document root node ID is retrieved.
+     */
+    async triggerNavigation(trigger: () => Promise<void>): Promise<void> {
+        global.log.debug(`\n[GamefaceCommands] Triggering navigation.`);
+        await waitDevtoolsEvent('DOM.documentUpdated', async () => {
+            await trigger();
+        });
+        return await this.handleNavigation();
+    }
+
     /**
      * Checks if the element matching the given selector is hidden.
      *
