@@ -42,6 +42,10 @@
                 box-sizing: border-box;
             }
 
+            .square[disabled] {
+                background-color: lightgray;
+            }
+
             .square1 {
                 background-color: cornflowerblue;
             }
@@ -61,7 +65,9 @@
     </head>
     <body>
         <h2>Move the focus around by using the keyboard arrow keys</h2>
-        <h2>Press Spacebar to change areas</h2>
+        <!-- <h2>Press Spacebar to change areas</h2> -->
+        <h2>With onNavigationEdge callback:</h2>
+        <h3>Last arrow key: <span class="last-key">-</span></h3>
         <div class="area-container">
             <div class="area-containers">
                 <div class="container">
@@ -85,7 +91,7 @@
             </div>
             <div class="area-containers">
                 <div class="container">
-                    <div class="square square2">1</div>
+                    <div class="square square2" disabled>1</div>
                     <div class="square square2">2</div>
                     <div class="square square2">3</div>
                     <div class="square square2">4</div>
@@ -117,11 +123,34 @@
 
             spatialNavigation.focusFirst('square-1');
 
+            spatialNavigation.onNavigationEdge = ({direction, area}) => {
+                if (area === 'square-1' && direction === 'right') {
+                    spatialNavigation.switchArea('square-2', { direction });
+                    return false;
+                } else if (area === 'square-2' && direction === 'left') {
+                    spatialNavigation.switchArea('square-1', { direction });
+                    return false;
+                }
+            };
+
             document.addEventListener('keydown', (e) => {
                 if (e.keyCode === KEYS.SPACEBAR && !e.repeat) {
                     counter++;
                     spatialNavigation.switchArea(`square-${(counter % 2) + 1}`);
                 }
+            });
+
+            // Test ideas:
+            // Area is disabled
+            // element from the other area is disabled
+        </script>
+        <script>
+            const ARROW_NAMES = { 37: 'Left', 38: 'Up', 39: 'Right', 40: 'Down' };
+            const lastKeyEl = document.querySelector('.last-key');
+
+            document.addEventListener('keydown', (e) => {
+                const name = ARROW_NAMES[e.keyCode];
+                if (name) lastKeyEl.textContent = name;
             });
         </script>
     </body>

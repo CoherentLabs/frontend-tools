@@ -46,6 +46,17 @@ class SpatialNavigation {
     lastFocusedElement: HTMLElement | undefined | null = null;
     paused = false;
     activeKeys!: {[K in Direction]: KeyName[]};
+    /**
+     * Called when navigation hits the edge of an area. Return `false` to prevent looping.
+     * @example
+     * spatialNavigation.onNavigationEdge = ({ direction, area }) => {
+     *     if (area === 'menu' && direction === 'right') {
+     *         spatialNavigation.switchArea('content', { direction });
+     *         return false;
+     *     }
+     * };
+     */
+    onNavigationEdge?: (e: { direction: Direction, area: string, element: HTMLElement }) => boolean | void
 
     /**
      * Initializes the spatial navigation
@@ -255,12 +266,11 @@ class SpatialNavigation {
     /**
      * Checks if the passed element is within a group and returns the rest of the elements in the group
      * @param {HTMLElement} targetElement
-     * @returns {NavigationObject[]}
      */
     private getCurrentArea(targetElement: HTMLElement) {
-        return Object.values(this.areas).find((area) => {
-            if (area.elements.includes(targetElement)) return true;
-        });
+        return Object
+            .entries(this.areas)
+            .find(([_, area]) => area.elements.includes(targetElement))
     }
 
     /**
@@ -275,16 +285,16 @@ class SpatialNavigation {
         return elements.reduce((acc, el) => {
             switch (direction) {
                 case 'down':
-                    // Wrapping down to the top edge: find the element with the SMALLEST y
+                    // Looping down to the top edge: find the element with the SMALLEST y
                     return el.y < acc.y ? el : acc;
                 case 'up':
-                    // Wrapping up to the bottom edge: find the element with the LARGEST y
+                    // Looping up to the bottom edge: find the element with the LARGEST y
                     return el.y > acc.y ? el : acc;
                 case 'right':
-                    // Wrapping right to the left edge: find the element with the SMALLEST x
+                    // Looping right to the left edge: find the element with the SMALLEST x
                     return el.x < acc.x ? el : acc;
                 case 'left':
-                    // Wrapping left to the right edge: find the element with the LARGEST x
+                    // Looping left to the right edge: find the element with the LARGEST x
                     return el.x > acc.x ? el : acc;
                 default:
                     return acc;
@@ -304,30 +314,27 @@ class SpatialNavigation {
         const currentArea = this.getCurrentArea(activeElement as HTMLElement);
         if (!currentArea) return console.error('The active element is not in a focusable area!');
 
-        const { elements } = currentArea;
+        const [areaName, areaState] = currentArea;
+
+        const { elements } = areaState;
         const focusableGroup = this.getFocusableGroup(activeElement as HTMLElement, elements);
-
-        const { x, y, width, height } = activeElement!.getBoundingClientRect();
-
-        const dimensions = { x, y, width, height };
-
-        if (focusableGroup.length === 0) return;
-
+        const dimensions = activeElement!.getBoundingClientRect();
         const currentAxisGroup = this.filterGroupByCurrentAxis(direction, focusableGroup, dimensions);
-
-        if (!currentAxisGroup.length) return;
 
         let nextFocusableElement = this.findNextElement(
             direction, currentAxisGroup, dimensions.x, dimensions.y);
 
         if (!nextFocusableElement) {
+            const loop = this.onNavigationEdge?.({direction, area: areaName, element: activeElement as HTMLElement });
+            if (loop === false || !currentAxisGroup.length) return;
+
             nextFocusableElement = this.getClosestToEdge(direction, currentAxisGroup);
         }
 
         if (nextFocusableElement) {
             nextFocusableElement.element.focus();
             this.lastFocusedElement = nextFocusableElement.element;
-            currentArea.lastFocusedElement = this.lastFocusedElement;
+            areaState.lastFocusedElement = this.lastFocusedElement;
         }
     }
 
@@ -536,10 +543,45 @@ class SpatialNavigation {
 
     /**
      * Changes focus to another area by focusing on the last focused element in that area. If no element has previously been focused, it will focus the first available element.
+     * If a direction is provided, focuses the element closest to the edge the navigation enters from, on the same axis as the currently focused element.
+     * @param {string} area - The name of the area to switch to
+     * @param {Object} [options]
+     * @param {string} options.direction - The direction of navigation into the area
+     * @example
+     * spatialNavigation.switchArea('content');
+     * spatialNavigation.switchArea('content', { direction: 'right' });
      */
-    switchArea(area: string) {
+    switchArea(area: string, options?: { direction: Direction }) {
         if (!this.enabled) return;
+
+        if (!this.areas[area]) {
+            return console.warn(`${area} is not a valid navigable area!`);
+        }
+
+        // If options are provided, attempt to focus the closest element in the specified direction within the area
+        if (options) {
+            const { direction } = options;
+            const { elements } = this.areas[area];
+
+            const activeElement = document.activeElement as HTMLElement;
+            if (!activeElement) return;
+            
+            const dimensions = activeElement.getBoundingClientRect();
+
+            const focusableGroup = this.getFocusableGroup(activeElement, elements);
+            const currentAxisGroup = this.filterGroupByCurrentAxis(direction, focusableGroup, dimensions);
+
+            if (currentAxisGroup.length === 0) {
+                return console.warn(`No focusable elements found in the direction '${direction}'`);
+            }            
+            const closestToEdge = this.getClosestToEdge(direction, currentAxisGroup);
+
+            closestToEdge.element.focus();
+            this.lastFocusedElement = closestToEdge.element;
+            return;
+        }
         
+        // If no direction is specified, focus the last focused element in the area
         const lastFocusedInArea = this.getLastFocused(area);
         if (!lastFocusedInArea || lastFocusedInArea.hasAttribute('disabled')) {
             return this.focusFirst(area);
