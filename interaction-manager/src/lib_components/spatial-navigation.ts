@@ -12,7 +12,7 @@ import { KeyName } from '../utils/keyboard-mappings';
 const directions = ['down', 'up', 'left', 'right'] as const;
 const defaultKeysState = { up: ['arrow_up'], down: ['arrow_down'], right: ['arrow_right'], left: ['arrow_left'] };
 
-type Direction = typeof directions[number];
+export type Direction = typeof directions[number];
 type CustomKeysInput = Partial<Record<Direction, KeyName | KeyName[]>>;
 
 interface AreaState {
@@ -34,6 +34,16 @@ interface NavigationObject {
 }
 
 type NavigationInput = (string | HTMLElement)[] | NavigableArea[];
+
+// TS trick to show the full type structure in IDEs without altering the original type
+type Prettify<T> = { [K in keyof T]: T[K] } & {};
+export type NavigationEdgeEvent = {
+    direction: Direction,
+    area: string,
+    element: HTMLElement
+};
+export type NavigationEdgeHandler = (e: Prettify<NavigationEdgeEvent>) => boolean | void;
+
 /**
  * Spatial Navigation for keyboard and controller
  */
@@ -56,7 +66,7 @@ class SpatialNavigation {
      *     }
      * };
      */
-    onNavigationEdge?: (e: { direction: Direction, area: string, element: HTMLElement }) => boolean | void
+    onNavigationEdge?: NavigationEdgeHandler
 
     /**
      * Initializes the spatial navigation
