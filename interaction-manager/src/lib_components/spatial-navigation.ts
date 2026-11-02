@@ -554,51 +554,76 @@ class SpatialNavigation {
     /**
      * Changes focus to another area by focusing on the last focused element in that area. If no element has previously been focused, it will focus the first available element.
      * If a direction is provided, focuses the element closest to the edge the navigation enters from, on the same axis as the currently focused element.
+     * If no such element exists, the fallback is used. Without a fallback, focus doesn't change.
      * @param {string} area - The name of the area to switch to
      * @param {Object} [options]
      * @param {string} options.direction - The direction of navigation into the area
+     * @param {'first'|'last'|'lastFocused'} [options.fallback] - What to focus if no element is found in the direction. 'lastFocused' falls back to the first element if none was focused
      * @example
      * spatialNavigation.switchArea('content');
      * spatialNavigation.switchArea('content', { direction: 'right' });
+     * spatialNavigation.switchArea('content', { direction: 'right', fallback: 'lastFocused' });
      */
-    switchArea(area: string, options?: { direction: Direction }) {
+    switchArea(area: string, options?: { direction: Direction, fallback?: 'first' | 'lastFocused' | 'last' }) {
         if (!this.enabled) return;
 
         if (!this.areas[area]) {
             return console.warn(`${area} is not a valid navigable area!`);
         }
 
-        // If options are provided, attempt to focus the closest element in the specified direction within the area
-        if (options) {
-            const { direction } = options;
+        const focusByDirection = () => {
+            const { direction } = options!;
             const { elements } = this.areas[area];
 
             const activeElement = document.activeElement as HTMLElement;
-            if (!activeElement) return;
+            if (!activeElement) return false;
             
             const dimensions = activeElement.getBoundingClientRect();
 
             const focusableGroup = this.getFocusableGroup(activeElement, elements);
             const currentAxisGroup = this.filterGroupByCurrentAxis(direction, focusableGroup, dimensions);
 
-            if (currentAxisGroup.length === 0) {
-                return console.warn(`No focusable elements found in the direction '${direction}'`);
-            }            
-            const closestToEdge = this.getClosestToEdge(direction, currentAxisGroup);
+            if (currentAxisGroup.length === 0) return false;
 
+            const closestToEdge = this.getClosestToEdge(direction, currentAxisGroup);
             closestToEdge.element.focus();
             this.lastFocusedElement = closestToEdge.element;
-            return;
+            
+            return true
         }
         
-        // If no direction is specified, focus the last focused element in the area
-        const lastFocusedInArea = this.getLastFocused(area);
-        if (!lastFocusedInArea || lastFocusedInArea.hasAttribute('disabled')) {
-            return this.focusFirst(area);
+        const focusLastFocused = () => {
+            const lastFocusedInArea = this.getLastFocused(area);
+            if (!lastFocusedInArea || lastFocusedInArea.hasAttribute('disabled')) {
+                return this.focusFirst(area);
+            }
+
+            lastFocusedInArea.focus();
+            this.lastFocusedElement = lastFocusedInArea;
         }
 
-        lastFocusedInArea.focus();
-        this.lastFocusedElement = lastFocusedInArea;
+        // Default behavior
+        if (!options) return focusLastFocused();
+        // with options
+        if (!options.direction) return console.warn(`You must provide a direction.`);
+        // focus was successful
+        if (focusByDirection()) return
+
+        if (!options.fallback) {
+            return console.warn(`No focusable elements found in the direction ${options.direction}. Please provide a fallback.`);
+        }
+
+        switch (options.fallback) {
+            case 'first': 
+                this.focusFirst(area) 
+                break;
+            case 'last': 
+                this.focusLast(area)
+                break;
+            case 'lastFocused': 
+                focusLastFocused();
+                break;
+        }
     }
 
     /**
