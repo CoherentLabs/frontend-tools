@@ -1,39 +1,14 @@
 const assert = require('assert');
-
-async function setup() {
-    await gf.navigate('http://localhost:54321/tests/');
-    // Seems that the page has been loaded but the injected scripts are not.
-    // Because of that we need wait them with the following hack
-    await gf.retryIfFails(async () => {
-        await gf.executeScript(() => cleanTestPage);
-    })
-    await gf.executeScript(() => {
-        window.setupTestPage = async () => {
-            const square = i => `<div class="square square-${i}">${i}</div>`;
-
-            const el = document.createElement('div');
-            el.className = 'test-container';
-            el.innerHTML = `<div class="square-container" style="width: 307px; display: flex; flex-wrap: wrap;">
-                    ${Array.from({ length: 6 }, (_, i) => square(i + 1)).join('\n')}
-                </div>`;
-
-            cleanTestPage('.test-container');
-
-            document.body.appendChild(el);
-
-            return new Promise((resolve) => {
-                waitForStyles(resolve);
-            });
-        }
-    });
-}
-
-async function isElementFocused(selector) {
-    const targetEl = await gf.get(selector);
-    await gf.retryIfFails(async () => {
-        assert(await targetEl.isFocused());
-    });
-}
+const {
+    setup,
+    isElementFocused,
+    setupAreas,
+    teardownAreas,
+    disableSquares,
+    focusSquare,
+    setupAreaCycling,
+    switchArea,
+} = require('./helpers');
 
 describe('Spatial navigation', () => {
     before(setup);
@@ -449,77 +424,6 @@ describe('Spatial navigation - Overflowing Containers and Edge Looping', () => {
         await isElementFocused('.item-1');
     });
 });
-
-// Two 3x2 grids side by side:
-// area-1: 1  2  3  |  area-2: 7  8  9
-//         4  5  6  |          10 11 12
-async function setupAreas() {
-    await gf.executeScript(async () => {
-        const square = i => `<div class="square square-${i}">${i}</div>`;
-        const grid = (area, from) => `<div class="square-container ${area}" style="width: 307px; margin-right: 50px; display: flex; flex-wrap: wrap;">
-                ${Array.from({ length: 6 }, (_, i) => square(from + i)).join('\n')}
-            </div>`;
-
-        const el = document.createElement('div');
-        el.className = 'test-container';
-        el.style.cssText = 'display: flex;';
-        el.innerHTML = grid('area-1', 1) + grid('area-2', 7);
-
-        cleanTestPage('.test-container');
-        document.body.appendChild(el);
-
-        await new Promise((resolve) => {
-            waitForStyles(resolve);
-        });
-
-        interactionManager.spatialNavigation.init([
-            { area: 'area-1', elements: ['.area-1 .square'] },
-            { area: 'area-2', elements: ['.area-2 .square'] },
-        ]);
-    });
-}
-
-async function teardownAreas() {
-    await gf.executeScript(() => {
-        cleanTestPage('.test-container');
-        interactionManager.spatialNavigation.onNavigationEdge = undefined;
-        interactionManager.spatialNavigation.deinit();
-    });
-}
-
-async function disableSquares(...ids) {
-    await gf.executeScript((ids) => {
-        ids.forEach(id => document.querySelector(`.square-${id}`).setAttribute('disabled', ''));
-    }, ids);
-}
-
-async function focusSquare(id) {
-    await gf.executeScript((id) => document.querySelector(`.square-${id}`).focus(), id);
-    await isElementFocused(`.square-${id}`);
-}
-
-// Moving left/right past the edge of an area enters the other area instead of looping
-async function setupAreaCycling() {
-    await gf.executeScript(() => {
-        const sn = interactionManager.spatialNavigation;
-        const nextArea = { 'area-1': 'area-2', 'area-2': 'area-1' };
-
-        sn.onNavigationEdge = ({ direction, area }) => {
-            if (direction !== 'left' && direction !== 'right') return;
-
-            sn.switchArea(nextArea[area], { direction });
-            return false;
-        };
-    });
-}
-
-// Runs switchArea and returns the text of the returned element (the square number) or null
-async function switchArea(area, options) {
-    return gf.executeScript((area, options) => {
-        const element = interactionManager.spatialNavigation.switchArea(area, options);
-        return element ? element.textContent : null;
-    }, area, options);
-}
 
 describe('Spatial navigation - onNavigationEdge', () => {
     before(setup);
