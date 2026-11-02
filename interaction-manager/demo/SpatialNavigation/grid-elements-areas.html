@@ -65,9 +65,7 @@
     </head>
     <body>
         <h2>Move the focus around by using the keyboard arrow keys</h2>
-        <!-- <h2>Press Spacebar to change areas</h2> -->
-        <h2>With onNavigationEdge callback:</h2>
-        <h3>Last arrow key: <span class="last-key">-</span></h3>
+        <h2>Press Spacebar to change areas</h2>
         <div class="area-container">
             <div class="area-containers">
                 <div class="container">
@@ -121,7 +119,11 @@
                 { area: 'square-2', elements: ['.square2'] },
             ]);
 
-            spatialNavigation.focusFirst('square-1');
+            if (window.top === window) {
+                spatialNavigation.focusFirst('square-1');
+            } else {
+                document.documentElement.addEventListener('mouseenter', () => spatialNavigation.focusFirst('square-1'));
+            }
 
             spatialNavigation.onNavigationEdge = ({direction, area}) => {
                 if (area === 'square-1' && direction === 'right') {
@@ -140,9 +142,6 @@
                 }
             });
 
-            // Test ideas:
-            // Area is disabled
-            // element from the other area is disabled
         </script>
         <script>
             const ARROW_NAMES = { 37: 'Left', 38: 'Up', 39: 'Right', 40: 'Down' };
