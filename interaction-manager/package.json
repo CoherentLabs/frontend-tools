@@ -11,7 +11,7 @@
     "build:esm": "vite build",
     "build:umd": "node scripts/build-umd.mjs",
     "typecheck": "tsc --noEmit",
-    "run-test": "node ./tests/interaction-manager/index.js --port=54321",
+    "run-test": "npm run build && node ./tests/interaction-manager/index.js --port=54321",
     "dev:host": "http-server -p 54321",
     "test": "start-server-and-test dev:host http://localhost:54321/ run-test"
   },

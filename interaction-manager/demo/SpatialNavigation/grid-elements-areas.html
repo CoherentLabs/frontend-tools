@@ -125,31 +125,11 @@
                 document.documentElement.addEventListener('mouseenter', () => spatialNavigation.focusFirst('square-1'));
             }
 
-            spatialNavigation.onNavigationEdge = ({direction, area}) => {
-                if (area === 'square-1' && direction === 'right') {
-                    spatialNavigation.switchArea('square-2', { direction });
-                    return false;
-                } else if (area === 'square-2' && direction === 'left') {
-                    spatialNavigation.switchArea('square-1', { direction });
-                    return false;
-                }
-            };
-
             document.addEventListener('keydown', (e) => {
                 if (e.keyCode === KEYS.SPACEBAR && !e.repeat) {
                     counter++;
                     spatialNavigation.switchArea(`square-${(counter % 2) + 1}`);
                 }
-            });
-
-        </script>
-        <script>
-            const ARROW_NAMES = { 37: 'Left', 38: 'Up', 39: 'Right', 40: 'Down' };
-            const lastKeyEl = document.querySelector('.last-key');
-
-            document.addEventListener('keydown', (e) => {
-                const name = ARROW_NAMES[e.keyCode];
-                if (name) lastKeyEl.textContent = name;
             });
         </script>
     </body>
