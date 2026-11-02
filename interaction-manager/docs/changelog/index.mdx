@@ -4,7 +4,15 @@ title: Changelog
 
 import { Badge } from '@astrojs/starlight/components'
 
-## 3.0.1 :badge[Latest]{variant="note"}
+## 3.1.1 :badge[Latest]{variant="note"}
+
+<Badge text="New" variant="note" size="small" /> Added an `onNavigationEdge` callback in [Spatial Navigation](/interaction-manager/features/spatial-navigation/#onnavigationedge) that is called when the navigation reaches the edge of an area. Return `false` from it to prevent the focus from looping to the opposite edge.
+
+<Badge text="Feature" variant="success" size="small" /> `switchArea` in [Spatial Navigation](/interaction-manager/features/spatial-navigation/#switchareaarea-options) now accepts an optional `options` object with a `direction` and a `fallback` to focus the closest element in the navigation direction when switching areas.
+
+<Badge text="Feature" variant="success" size="small" /> `switchArea`, `focusFirst` and `focusLast` in [Spatial Navigation](/interaction-manager/features/spatial-navigation/) now return the focused element, or `null` if nothing was focused.
+
+## 3.0.1
 
 <Badge text="Fix" variant="caution" size="small" /> Fixed a bug in [Spatial Navigation](/interaction-manager/features/spatial-navigation/) where wrap-around navigation failed in tall, scrollable lists. Previously, 
 pressing UP from the first item (or DOWN from the last) in an overflowing container would incorrectly focus on an arbitrary middle or visible item. 
@@ -12,7 +20,7 @@ It now reliably targets the true opposite edge of the list regardless of scroll 
 
 ## 3.0.0
 
-<Badge text="Breaking Change" variant="danger" size="small" /> Changed `switchArea` method in [Spatial Navigation](/interaction-manager/features/spatial-navigation/#switchareaarea) to no longer focus the first element in the specified area 
+<Badge text="Breaking Change" variant="danger" size="small" /> Changed `switchArea` method in [Spatial Navigation](/interaction-manager/features/spatial-navigation/#switchareaarea-options) to no longer focus the first element in the specified area 
 but instead attempt to focus the last focused element in that area. If no element was previously focused in that area, or if that element has been removed from the DOM, it falls back to `focusFirst()`. 
 This change allows for a more intuitive navigation experience when switching between areas.
 

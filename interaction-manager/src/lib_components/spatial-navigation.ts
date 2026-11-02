@@ -43,6 +43,10 @@ export type NavigationEdgeEvent = {
     element: HTMLElement
 };
 export type NavigationEdgeHandler = (e: Prettify<NavigationEdgeEvent>) => boolean | void;
+export type SwitchAreaOptions = {
+    direction: Direction,
+    fallback?: 'first' | 'last' | 'lastFocused'
+};
 
 /**
  * Spatial Navigation for keyboard and controller
@@ -572,7 +576,7 @@ class SpatialNavigation {
      * spatialNavigation.switchArea('content', { direction: 'right' });
      * spatialNavigation.switchArea('content', { direction: 'right', fallback: 'lastFocused' });
      */
-    switchArea(area: string, options?: { direction: Direction, fallback?: 'first' | 'lastFocused' | 'last' }): HTMLElement | null {
+    switchArea(area: string, options?: Prettify<SwitchAreaOptions>): HTMLElement | null {
         if (!this.enabled) return null;
 
         if (!this.areas[area]) {
