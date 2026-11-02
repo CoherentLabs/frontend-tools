@@ -508,31 +508,36 @@ class SpatialNavigation {
     /**
      * Focuses on the first element in a focusable area
      */
-    focusFirst(area = 'default') {
-        if (!this.enabled) return;
-        
+    focusFirst(area = 'default'): HTMLElement | null {
+        if (!this.enabled) return null;
+
         const navigableElements = this.areas[area].elements;
         if (!navigableElements || navigableElements.length === 0) {
-            return console.error(`The area '${area}' you are trying to focus doesn't exist or the spatial navigation hasn't been initialized`);
+            console.error(`The area '${area}' you are trying to focus doesn't exist or the spatial navigation hasn't been initialized`);
+            return null;
         }
 
         this.lastFocusedElement = navigableElements.find(el => !el.hasAttribute('disabled'));
         if (!this.lastFocusedElement) {
-            return console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
+            console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
+            return null;
         }
         this.lastFocusedElement.focus();
         this.areas[area].lastFocusedElement = this.lastFocusedElement;
+
+        return this.lastFocusedElement;
     }
 
     /**
      * Focuses on the last element in a focusable area
      */
-    focusLast(area = 'default') {
-        if (!this.enabled) return;
+    focusLast(area = 'default'): HTMLElement | null {
+        if (!this.enabled) return null;
 
         const navigableElements = this.areas[area].elements;
         if (!navigableElements || navigableElements.length === 0) {
-            return console.error(`The area '${area}' you are trying to focus doesn't exist or the spatial navigation hasn't been initialized`);
+            console.error(`The area '${area}' you are trying to focus doesn't exist or the spatial navigation hasn't been initialized`);
+            return null;
         }
 
         let element;
@@ -545,10 +550,13 @@ class SpatialNavigation {
 
         this.lastFocusedElement = element;
         if (!this.lastFocusedElement) {
-            return console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
+            console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
+            return null;
         }
         this.lastFocusedElement.focus();
         this.areas[area].lastFocusedElement = this.lastFocusedElement;
+
+        return this.lastFocusedElement;
     }
 
     /**
@@ -564,35 +572,36 @@ class SpatialNavigation {
      * spatialNavigation.switchArea('content', { direction: 'right' });
      * spatialNavigation.switchArea('content', { direction: 'right', fallback: 'lastFocused' });
      */
-    switchArea(area: string, options?: { direction: Direction, fallback?: 'first' | 'lastFocused' | 'last' }) {
-        if (!this.enabled) return;
+    switchArea(area: string, options?: { direction: Direction, fallback?: 'first' | 'lastFocused' | 'last' }): HTMLElement | null {
+        if (!this.enabled) return null;
 
         if (!this.areas[area]) {
-            return console.warn(`${area} is not a valid navigable area!`);
+            console.warn(`${area} is not a valid navigable area!`);
+            return null;
         }
 
-        const focusByDirection = () => {
+        const focusByDirection = (): HTMLElement | null => {
             const { direction } = options!;
             const { elements } = this.areas[area];
 
             const activeElement = document.activeElement as HTMLElement;
-            if (!activeElement) return false;
-            
+            if (!activeElement) return null;
+
             const dimensions = activeElement.getBoundingClientRect();
 
             const focusableGroup = this.getFocusableGroup(activeElement, elements);
             const currentAxisGroup = this.filterGroupByCurrentAxis(direction, focusableGroup, dimensions);
 
-            if (currentAxisGroup.length === 0) return false;
+            if (currentAxisGroup.length === 0) return null;
 
             const closestToEdge = this.getClosestToEdge(direction, currentAxisGroup);
             closestToEdge.element.focus();
             this.lastFocusedElement = closestToEdge.element;
-            
-            return true
+
+            return closestToEdge.element;
         }
-        
-        const focusLastFocused = () => {
+
+        const focusLastFocused = (): HTMLElement | null => {
             const lastFocusedInArea = this.getLastFocused(area);
             if (!lastFocusedInArea || lastFocusedInArea.hasAttribute('disabled')) {
                 return this.focusFirst(area);
@@ -600,29 +609,33 @@ class SpatialNavigation {
 
             lastFocusedInArea.focus();
             this.lastFocusedElement = lastFocusedInArea;
+
+            return lastFocusedInArea;
         }
 
         // Default behavior
         if (!options) return focusLastFocused();
         // with options
-        if (!options.direction) return console.warn(`You must provide a direction.`);
+        if (!options.direction) {
+            console.warn(`You must provide a direction.`);
+            return null;
+        }
         // focus was successful
-        if (focusByDirection()) return
+        const focused = focusByDirection();
+        if (focused) return focused;
 
         if (!options.fallback) {
-            return console.warn(`No focusable elements found in the direction ${options.direction}. Please provide a fallback.`);
+            console.warn(`No focusable elements found in the direction ${options.direction}. Please provide a fallback.`);
+            return null;
         }
 
         switch (options.fallback) {
-            case 'first': 
-                this.focusFirst(area) 
-                break;
-            case 'last': 
-                this.focusLast(area)
-                break;
-            case 'lastFocused': 
-                focusLastFocused();
-                break;
+            case 'first': return this.focusFirst(area);
+            case 'last': return this.focusLast(area);
+            case 'lastFocused': return focusLastFocused();
+            default: 
+                console.warn(`Invalid fallback option: ${options.fallback}`);
+                return null;
         }
     }
 
