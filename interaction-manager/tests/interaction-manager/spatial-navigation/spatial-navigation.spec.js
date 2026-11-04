@@ -480,6 +480,18 @@ describe('Spatial navigation - onNavigationEdge', () => {
 
         await isElementFocused('.square-1');
     });
+
+    it('Should clear the callback on deinit', async () => {
+        const isCleared = await gf.executeScript(() => {
+            const sn = interactionManager.spatialNavigation;
+            sn.onNavigationEdge = () => false;
+            sn.deinit();
+
+            return sn.onNavigationEdge === undefined;
+        });
+
+        assert(isCleared, 'onNavigationEdge was not cleared on deinit');
+    });
 });
 
 describe('Spatial navigation - Area switching', () => {

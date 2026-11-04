@@ -115,6 +115,7 @@ class SpatialNavigation {
         this.removeKeyActions();
         this.overlapPercentage = 0.5;
         this.lastFocusedElement = null;
+        this.onNavigationEdge = undefined;
         window.removeEventListener('focusin', this.syncLastFocused);
     }
     /**

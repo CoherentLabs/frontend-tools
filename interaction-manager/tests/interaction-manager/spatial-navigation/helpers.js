@@ -76,12 +76,11 @@ async function setupAreas() {
 }
 
 /**
- * Removes the grids, clears the onNavigationEdge callback and deinitializes spatial navigation.
+ * Removes the grids and deinitializes spatial navigation (which also clears the onNavigationEdge callback).
  */
 async function teardownAreas() {
     await gf.executeScript(() => {
         cleanTestPage('.test-container');
-        interactionManager.spatialNavigation.onNavigationEdge = undefined;
         interactionManager.spatialNavigation.deinit();
     });
 }

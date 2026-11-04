@@ -187,7 +187,7 @@ Returns the last focused element from a specific area. If no element has been fo
 spatialNavigation.getLastFocused(area: string = 'default'): HTMLElement | undefined;
 ```
 
-### switchArea(area, options) :badge[3.1.1]{variant="success"}
+### switchArea(area, options) :badge[3.1.0]{variant="success"}
 
 Switches focus to the specified area. 
 It will attempt to focus the last focused element in that area. If no element was previously focused in that area, or if that element has been removed from the DOM, or is unavailable (disabled), it falls back to `focusFirst()`.
@@ -305,7 +305,7 @@ Type: `Record<string, { elements: HTMLElement[], lastFocusedElement: HTMLElement
 
 Returns an object with all the registered areas.
 
-### onNavigationEdge :badge[3.1.1]{variant="success"}
+### onNavigationEdge :badge[3.1.0]{variant="success"}
 
 Type: `(e: { direction: Direction, area: string, element: HTMLElement }) => boolean | void`
 
