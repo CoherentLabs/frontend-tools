@@ -12,7 +12,7 @@ import { KeyName } from '../utils/keyboard-mappings';
 const directions = ['down', 'up', 'left', 'right'] as const;
 const defaultKeysState = { up: ['arrow_up'], down: ['arrow_down'], right: ['arrow_right'], left: ['arrow_left'] };
 
-type Direction = typeof directions[number];
+export type Direction = typeof directions[number];
 type CustomKeysInput = Partial<Record<Direction, KeyName | KeyName[]>>;
 
 interface AreaState {
@@ -34,6 +34,20 @@ interface NavigationObject {
 }
 
 type NavigationInput = (string | HTMLElement)[] | NavigableArea[];
+
+// TS trick to show the full type structure in IDEs without altering the original type
+type Prettify<T> = { [K in keyof T]: T[K] } & {};
+export type NavigationEdgeEvent = {
+    direction: Direction,
+    area: string,
+    element: HTMLElement
+};
+export type NavigationEdgeHandler = (e: Prettify<NavigationEdgeEvent>) => boolean | void;
+export type SwitchAreaOptions = {
+    direction: Direction,
+    fallback?: 'first' | 'last' | 'lastFocused'
+};
+
 /**
  * Spatial Navigation for keyboard and controller
  */
@@ -46,6 +60,17 @@ class SpatialNavigation {
     lastFocusedElement: HTMLElement | undefined | null = null;
     paused = false;
     activeKeys!: {[K in Direction]: KeyName[]};
+    /**
+     * Called when navigation hits the edge of an area. Return `false` to prevent looping.
+     * @example
+     * spatialNavigation.onNavigationEdge = ({ direction, area }) => {
+     *     if (area === 'menu' && direction === 'right') {
+     *         spatialNavigation.switchArea('content', { direction });
+     *         return false;
+     *     }
+     * };
+     */
+    onNavigationEdge?: NavigationEdgeHandler
 
     /**
      * Initializes the spatial navigation
@@ -90,6 +115,7 @@ class SpatialNavigation {
         this.removeKeyActions();
         this.overlapPercentage = 0.5;
         this.lastFocusedElement = null;
+        this.onNavigationEdge = undefined;
         window.removeEventListener('focusin', this.syncLastFocused);
     }
     /**
@@ -255,12 +281,11 @@ class SpatialNavigation {
     /**
      * Checks if the passed element is within a group and returns the rest of the elements in the group
      * @param {HTMLElement} targetElement
-     * @returns {NavigationObject[]}
      */
     private getCurrentArea(targetElement: HTMLElement) {
-        return Object.values(this.areas).find((area) => {
-            if (area.elements.includes(targetElement)) return true;
-        });
+        return Object
+            .entries(this.areas)
+            .find(([_, area]) => area.elements.includes(targetElement))
     }
 
     /**
@@ -275,16 +300,16 @@ class SpatialNavigation {
         return elements.reduce((acc, el) => {
             switch (direction) {
                 case 'down':
-                    // Wrapping down to the top edge: find the element with the SMALLEST y
+                    // Looping down to the top edge: find the element with the SMALLEST y
                     return el.y < acc.y ? el : acc;
                 case 'up':
-                    // Wrapping up to the bottom edge: find the element with the LARGEST y
+                    // Looping up to the bottom edge: find the element with the LARGEST y
                     return el.y > acc.y ? el : acc;
                 case 'right':
-                    // Wrapping right to the left edge: find the element with the SMALLEST x
+                    // Looping right to the left edge: find the element with the SMALLEST x
                     return el.x < acc.x ? el : acc;
                 case 'left':
-                    // Wrapping left to the right edge: find the element with the LARGEST x
+                    // Looping left to the right edge: find the element with the LARGEST x
                     return el.x > acc.x ? el : acc;
                 default:
                     return acc;
@@ -304,30 +329,27 @@ class SpatialNavigation {
         const currentArea = this.getCurrentArea(activeElement as HTMLElement);
         if (!currentArea) return console.error('The active element is not in a focusable area!');
 
-        const { elements } = currentArea;
+        const [areaName, areaState] = currentArea;
+
+        const { elements } = areaState;
         const focusableGroup = this.getFocusableGroup(activeElement as HTMLElement, elements);
-
-        const { x, y, width, height } = activeElement!.getBoundingClientRect();
-
-        const dimensions = { x, y, width, height };
-
-        if (focusableGroup.length === 0) return;
-
+        const dimensions = activeElement!.getBoundingClientRect();
         const currentAxisGroup = this.filterGroupByCurrentAxis(direction, focusableGroup, dimensions);
-
-        if (!currentAxisGroup.length) return;
 
         let nextFocusableElement = this.findNextElement(
             direction, currentAxisGroup, dimensions.x, dimensions.y);
 
         if (!nextFocusableElement) {
+            const loop = this.onNavigationEdge?.({direction, area: areaName, element: activeElement as HTMLElement });
+            if (loop === false || !currentAxisGroup.length) return;
+
             nextFocusableElement = this.getClosestToEdge(direction, currentAxisGroup);
         }
 
         if (nextFocusableElement) {
             nextFocusableElement.element.focus();
             this.lastFocusedElement = nextFocusableElement.element;
-            currentArea.lastFocusedElement = this.lastFocusedElement;
+            areaState.lastFocusedElement = this.lastFocusedElement;
         }
     }
 
@@ -491,31 +513,36 @@ class SpatialNavigation {
     /**
      * Focuses on the first element in a focusable area
      */
-    focusFirst(area = 'default') {
-        if (!this.enabled) return;
-        
+    focusFirst(area = 'default'): HTMLElement | null {
+        if (!this.enabled) return null;
+
         const navigableElements = this.areas[area].elements;
         if (!navigableElements || navigableElements.length === 0) {
-            return console.error(`The area '${area}' you are trying to focus doesn't exist or the spatial navigation hasn't been initialized`);
+            console.error(`The area '${area}' you are trying to focus doesn't exist or the spatial navigation hasn't been initialized`);
+            return null;
         }
 
         this.lastFocusedElement = navigableElements.find(el => !el.hasAttribute('disabled'));
         if (!this.lastFocusedElement) {
-            return console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
+            console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
+            return null;
         }
         this.lastFocusedElement.focus();
         this.areas[area].lastFocusedElement = this.lastFocusedElement;
+
+        return this.lastFocusedElement;
     }
 
     /**
      * Focuses on the last element in a focusable area
      */
-    focusLast(area = 'default') {
-        if (!this.enabled) return;
+    focusLast(area = 'default'): HTMLElement | null {
+        if (!this.enabled) return null;
 
         const navigableElements = this.areas[area].elements;
         if (!navigableElements || navigableElements.length === 0) {
-            return console.error(`The area '${area}' you are trying to focus doesn't exist or the spatial navigation hasn't been initialized`);
+            console.error(`The area '${area}' you are trying to focus doesn't exist or the spatial navigation hasn't been initialized`);
+            return null;
         }
 
         let element;
@@ -528,25 +555,93 @@ class SpatialNavigation {
 
         this.lastFocusedElement = element;
         if (!this.lastFocusedElement) {
-            return console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
+            console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
+            return null;
         }
         this.lastFocusedElement.focus();
         this.areas[area].lastFocusedElement = this.lastFocusedElement;
+
+        return this.lastFocusedElement;
     }
 
     /**
      * Changes focus to another area by focusing on the last focused element in that area. If no element has previously been focused, it will focus the first available element.
+     * If a direction is provided, focuses the element closest to the edge the navigation enters from, on the same axis as the currently focused element.
+     * If no such element exists, the fallback is used. Without a fallback, focus doesn't change.
+     * @param {string} area - The name of the area to switch to
+     * @param {Object} [options]
+     * @param {string} options.direction - The direction of navigation into the area
+     * @param {'first'|'last'|'lastFocused'} [options.fallback] - What to focus if no element is found in the direction. 'lastFocused' falls back to the first element if none was focused
+     * @example
+     * spatialNavigation.switchArea('content');
+     * spatialNavigation.switchArea('content', { direction: 'right' });
+     * spatialNavigation.switchArea('content', { direction: 'right', fallback: 'lastFocused' });
      */
-    switchArea(area: string) {
-        if (!this.enabled) return;
-        
-        const lastFocusedInArea = this.getLastFocused(area);
-        if (!lastFocusedInArea || lastFocusedInArea.hasAttribute('disabled')) {
-            return this.focusFirst(area);
+    switchArea(area: string, options?: Prettify<SwitchAreaOptions>): HTMLElement | null {
+        if (!this.enabled) return null;
+
+        if (!this.areas[area]) {
+            console.warn(`${area} is not a valid navigable area!`);
+            return null;
         }
 
-        lastFocusedInArea.focus();
-        this.lastFocusedElement = lastFocusedInArea;
+        const focusByDirection = (): HTMLElement | null => {
+            const { direction } = options!;
+            const { elements } = this.areas[area];
+
+            const activeElement = document.activeElement as HTMLElement;
+            if (!activeElement) return null;
+
+            const dimensions = activeElement.getBoundingClientRect();
+
+            const focusableGroup = this.getFocusableGroup(activeElement, elements);
+            const currentAxisGroup = this.filterGroupByCurrentAxis(direction, focusableGroup, dimensions);
+
+            if (currentAxisGroup.length === 0) return null;
+
+            const closestToEdge = this.getClosestToEdge(direction, currentAxisGroup);
+            closestToEdge.element.focus();
+            this.lastFocusedElement = closestToEdge.element;
+
+            return closestToEdge.element;
+        }
+
+        const focusLastFocused = (): HTMLElement | null => {
+            const lastFocusedInArea = this.getLastFocused(area);
+            if (!lastFocusedInArea || lastFocusedInArea.hasAttribute('disabled')) {
+                return this.focusFirst(area);
+            }
+
+            lastFocusedInArea.focus();
+            this.lastFocusedElement = lastFocusedInArea;
+
+            return lastFocusedInArea;
+        }
+
+        // Default behavior
+        if (!options) return focusLastFocused();
+        // with options
+        if (!options.direction) {
+            console.warn(`You must provide a direction.`);
+            return null;
+        }
+        // focus was successful
+        const focused = focusByDirection();
+        if (focused) return focused;
+
+        if (!options.fallback) {
+            console.warn(`No focusable elements found in the direction ${options.direction}. Please provide a fallback.`);
+            return null;
+        }
+
+        switch (options.fallback) {
+            case 'first': return this.focusFirst(area);
+            case 'last': return this.focusLast(area);
+            case 'lastFocused': return focusLastFocused();
+            default: 
+                console.warn(`Invalid fallback option: ${options.fallback}`);
+                return null;
+        }
     }
 
     /**
