@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "gameface-frontend-tools-docs",
+      "type": "skill-md",
+      "description": "Look up the Gameface Frontend Tools documentation (https://frontend-tools.coherent-labs.com/) and read it as Markdown. Covers E2e, Interaction manager, Eslint plugin gameface, Vite gameface rasterize, Vite solid style to css plugin, Data binding autocomplete. Use when the user asks how to use, configure or troubleshoot anything Gameface Frontend Tools documents.",
+      "url": "https://frontend-tools.coherent-labs.com/.well-known/agent-skills/gameface-frontend-tools-docs/SKILL.md",
+      "digest": "sha256:e7a6085c4a6403461b7a37e89a8f62362f204c4780c37a695f0d42dddbec3b79"
+    }
+  ]
+}

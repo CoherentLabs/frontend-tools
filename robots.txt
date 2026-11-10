@@ -18,3 +18,4 @@ Allow: /
 Content-Signal: search=yes, ai-input=yes, ai-train=yes
 
 Sitemap: https://frontend-tools.coherent-labs.com/sitemap-index.xml
+Agentmap: https://frontend-tools.coherent-labs.com/.well-known/ai-catalog.json

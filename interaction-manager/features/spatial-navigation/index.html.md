@@ -209,7 +209,7 @@ The method accepts an optional options object as a last argument. The available 
 
 ### resetKeys()
 
-Resets the navigation keys to their default settings, restoring the key bindings to the standard navigation keys (arrow\_up, arrow\_down, arrow\_left, arrow\_right).
+Resets the navigation keys to their default settings, restoring the key bindings to the standard navigation keys (arrow_up, arrow_down, arrow_left, arrow_right).
 
 ```ts
 spatialNavigation.resetKeys();

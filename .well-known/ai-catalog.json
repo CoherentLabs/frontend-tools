@@ -1,0 +1,25 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "Gameface Frontend Tools",
+    "identifier": "did:web:frontend-tools.coherent-labs.com",
+    "documentationUrl": "https://frontend-tools.coherent-labs.com/"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:frontend-tools.coherent-labs.com:skill:gameface-frontend-tools-docs",
+      "displayName": "Gameface Frontend Tools documentation",
+      "type": "application/agent-skills+md",
+      "url": "https://frontend-tools.coherent-labs.com/.well-known/agent-skills/gameface-frontend-tools-docs/SKILL.md",
+      "description": "Look up the Gameface Frontend Tools documentation (https://frontend-tools.coherent-labs.com/) and read it as Markdown. Covers E2e, Interaction manager, Eslint plugin gameface, Vite gameface rasterize, Vite solid style to css plugin, Data binding autocomplete. Use when the user asks how to use, configure or troubleshoot anything Gameface Frontend Tools documents.",
+      "digest": "sha256:e7a6085c4a6403461b7a37e89a8f62362f204c4780c37a695f0d42dddbec3b79",
+      "representativeQueries": [
+        "E2e in Gameface Frontend Tools",
+        "Interaction manager in Gameface Frontend Tools",
+        "Eslint plugin gameface in Gameface Frontend Tools",
+        "Vite gameface rasterize in Gameface Frontend Tools",
+        "Vite solid style to css plugin in Gameface Frontend Tools"
+      ]
+    }
+  ]
+}

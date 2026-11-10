@@ -1,9 +1,9 @@
 {
   "format": 1,
-  "version": "7e481db41bba",
-  "updated": "2026-11-10T09:02:48.258Z",
+  "version": "3b1dd7ad9a37",
+  "updated": "2026-11-10T10:17:46.742Z",
   "pages": 196,
-  "bytes": 347923,
-  "sha256": "7e481db41bba632f3b3211ee51ccaa8f255de26cd42542087ea9c99735c4051d",
+  "bytes": 347920,
+  "sha256": "3b1dd7ad9a37350c73592eb2e343970b4513a93bace497a5cd9cb6e347f8462d",
   "file": "llms-full.txt"
 }

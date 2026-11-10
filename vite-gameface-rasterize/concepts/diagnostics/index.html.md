@@ -8,7 +8,7 @@ The full, untruncated list is written to `rz/rasterize.diagnostics.json` on ever
 
 Code | Level | Condition
 RZ001 | error | `mix-blend-mode` or `backdrop-filter` on a marked element
-RZ002 | warn* | a transition or animation targets a baked property
+RZ002 | warn\* | a transition or animation targets a baked property
 RZ003 | warn | a baked value comes from a custom property that JS writes at runtime
 RZ004 | error | `flat` mode but the size is not statically resolvable
 RZ005 | error | a 9-slice stretch zone is not uniform
