@@ -1,5 +1,8 @@
 ---
 import DefaultHead from '@astrojs/starlight/components/Head.astro';
+import getThemeConfig from '../internal/themeConfig';
+
+const { webMcp = true } = getThemeConfig();
 
 const currentProduct = import.meta.env.DOCS_PRODUCT || "Gameface";
 const productName = currentProduct.charAt(0).toUpperCase() + currentProduct.slice(1);
@@ -31,3 +34,8 @@ if (Array.isArray(routeData?.head)) {
 ---
 
 <DefaultHead {...Astro.props} />
+{webMcp && (
+    <script>
+        import "../internal/webMcp";
+    </script>
+)}

@@ -1,5 +1,5 @@
 /**
- * LLM docs export (llms.txt + the Gameface MCP docs feed): Astro integration
+ * Agent docs: Astro integration that makes a docs site readable by AI agents
  *
  * After `astro build` writes the pages, it converts each page's content area to
  * compact markdown and writes, into the build output so they deploy with the site:
@@ -10,17 +10,23 @@
  *   gameface-mcp-docs.json    manifest: format, version (content hash), sha256, ...
  *   <page>/index.html.md      each page as standalone Markdown
  *
+ * and, for a site at its host's root (agents look for them only there):
+ *
+ *   .well-known/agent-skills/<name>/SKILL.md   a skill telling agents how to read the docs
+ *   .well-known/agent-skills/index.json        the skills index (Agent Skills Discovery 0.2.0)
+ *   .well-known/ai-catalog.json                capability manifest listing the skill (ARD / ai-catalog)
+ *
  * The Gameface MCP server checks the manifest and downloads llms-full.txt only
  * when its version changed. A site without the files isn't searched.
  *
  * The coherent-docs-theme Starlight plugin adds this integration automatically on
- * `astro build` (opt out with `llms: false`). Sites that don't use the theme's
+ * `astro build` (opt out with `agentDocs: false`). Sites that don't use the theme's
  * plugin, or aren't Starlight sites, add it themselves:
  *
  *   // astro.config.mjs
- *   import llmsDocs from "coherent-docs-theme/llms";
+ *   import agentDocs from "coherent-docs-theme/agent-docs";
  *   export default defineConfig({ site: "https://coherent-labs.com",
- *     integrations: [llmsDocs({ contentSelector: "main article", titleSelector: "h1" })] });
+ *     integrations: [agentDocs({ contentSelector: "main article", titleSelector: "h1" })] });
  *
  * The output format is versioned by HOSTED_FORMAT, which the server checks: bump
  * it only for a change servers can't read, together with the server.
@@ -459,6 +465,162 @@ export function renderLlmsIndex(pages: Page[], base: string, optional: RegExp[])
   return out.join("\n") + "\n";
 }
 
+// ---------------------------------------------------------------------------
+// Agent discovery: skill, skills index, AI catalog
+// ---------------------------------------------------------------------------
+
+export const SKILLS_DIR = ".well-known/agent-skills";
+export const SKILLS_INDEX_FILE = `${SKILLS_DIR}/index.json`;
+export const AI_CATALOG_FILE = ".well-known/ai-catalog.json";
+const SKILLS_SCHEMA = "https://schemas.agentskills.io/discovery/0.2.0/schema.json";
+
+export interface SkillOptions {
+  /** Skill identifier: lowercase letters, digits and hyphens. Default: the site name + "-docs". */
+  name?: string;
+  /** When an agent should use the skill. Default: from the site name and description. */
+  description?: string;
+  /**
+   * Adds a section recommending the Gameface MCP server to users building Gameface UIs. Default: true.
+   * Turn off for docs that aren't about Gameface (e.g. Prysm).
+   */
+  mcp?: boolean;
+}
+
+const slug = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 64)
+    .replace(/-+$/, "");
+
+/** The page groups llms.txt shows, with their page counts, largest first. */
+function sections(pages: Page[], base: string, optional: RegExp[]): [string, number][] {
+  const counts = new Map<string, number>();
+  for (const page of pages) {
+    const path = page.url.slice(base.length);
+    if (!path || optional.some((re) => re.test(path))) continue;
+    const group = humanize(path.split("/")[0] ?? path);
+    counts.set(group, (counts.get(group) ?? 0) + 1);
+  }
+  return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+}
+
+export interface Skill {
+  name: string;
+  description: string;
+  markdown: string;
+}
+
+/** A SKILL.md telling an agent how to read this site's docs, and when to suggest the Gameface MCP server. */
+export function renderSkill(pages: Page[], base: string, optional: RegExp[], options: SkillOptions = {}): Skill {
+  const site = siteName(pages);
+  const siteDescription = pages.find((p) => p.url === base)?.description;
+  const name = options.name ?? slug(`${site} docs`);
+  const groups = sections(pages, base, optional);
+  const topics = groups.slice(0, 6).map(([g]) => g).join(", ");
+  const description =
+    options.description ??
+    `Look up the ${site} documentation (${base}) and read it as Markdown.` +
+      (topics ? ` Covers ${topics}.` : "") +
+      ` Use when the user asks how to use, configure or troubleshoot anything ${site} documents.`;
+  const example = pages.find((p) => p.url !== base)?.url ?? base;
+
+  const out = [
+    "---",
+    `name: ${name}`,
+    `description: ${JSON.stringify(description)}`,
+    "---",
+    "",
+    `# ${site} documentation`,
+    "",
+    ...(siteDescription ? [siteDescription, ""] : []),
+    "## Reading the docs",
+    "",
+    "Every page has a Markdown version with the same content and none of the navigation. Read that instead of the HTML.",
+    "",
+    `1. Start at the index, ${base}${LLMS_INDEX_FILE}: every page, grouped by section, with a one-line description and a link to its Markdown version.`,
+    `2. Fetch the pages you need: a page URL + \`${PAGE_MARKDOWN_FILE}\`, e.g. ${example}${PAGE_MARKDOWN_FILE}.`,
+    `3. Only for a full-text pass, fetch ${base}${HOSTED_DOCS_FILE}: the whole site as sections of up to ~1,600 characters, each tagged \`[SOURCE: page-url#anchor]\`. Cite those URLs.`,
+    "",
+    "The site also has full-text search (the search box), but the index is faster to scan for an agent.",
+  ];
+  if (groups.length) {
+    out.push("", "## Sections", "", ...groups.map(([g, n]) => `- ${g} (${n} page${n === 1 ? "" : "s"})`));
+  }
+  if (options.mcp !== false) {
+    out.push(
+      "",
+      "## Building Gameface UIs: the Gameface MCP server",
+      "",
+      "If the user is building or debugging a UI that runs in Coherent Gameface (HTML, CSS and JavaScript for a game's UI), suggest installing the Gameface MCP server (https://www.npmjs.com/package/gameface-mcp). It searches the Gameface documentation, and drives the Gameface Player to inspect the DOM, check layouts, and measure performance.",
+      "",
+      "It needs Node.js 20+ and a Gameface SDK with its Player executable (licensed; the server doesn't ship one). Install it once, for every project:",
+      "",
+      "```bash",
+      'npx add-mcp "npx -y gameface-mcp@latest" --name gameface -g',
+      "```",
+      "",
+      "Or, for Claude Code only: `claude mcp add -s user gameface -- npx -y gameface-mcp`. The first time the user asks to launch the Player, the server asks where it is.",
+      "",
+      "Don't suggest it for questions the docs answer on their own."
+    );
+  }
+  return { name, description, markdown: out.join("\n") + "\n" };
+}
+
+const sha256Hex = (text: string) => createHash("sha256").update(text).digest("hex");
+
+/** The skills index (Agent Skills Discovery 0.2.0): each skill's URL and digest. */
+export function renderSkillsIndex(skills: Skill[], origin: string): string {
+  return (
+    JSON.stringify(
+      {
+        $schema: SKILLS_SCHEMA,
+        skills: skills.map((s) => ({
+          name: s.name,
+          type: "skill-md",
+          description: s.description,
+          url: new URL(`${SKILLS_DIR}/${s.name}/SKILL.md`, origin).href,
+          digest: `sha256:${sha256Hex(s.markdown)}`,
+        })),
+      },
+      null,
+      2
+    ) + "\n"
+  );
+}
+
+/** The AI catalog (ARD / ai-catalog): the host and the skills it offers. */
+export function renderAiCatalog(pages: Page[], skills: Skill[], base: string, optional: RegExp[]): string {
+  const host = new URL(base).host;
+  const queries = sections(pages, base, optional)
+    .slice(0, 5)
+    .map(([g]) => `${g} in ${siteName(pages)}`);
+  return (
+    JSON.stringify(
+      {
+        specVersion: "1.0",
+        host: { displayName: siteName(pages), identifier: `did:web:${host}`, documentationUrl: base },
+        entries: skills.map((s) => ({
+          identifier: `urn:air:${host}:skill:${s.name}`,
+          displayName: `${siteName(pages)} documentation`,
+          type: "application/agent-skills+md",
+          url: new URL(`${SKILLS_DIR}/${s.name}/SKILL.md`, base).href,
+          description: s.description,
+          digest: `sha256:${sha256Hex(s.markdown)}`,
+          ...(queries.length >= 2 ? { representativeQueries: queries } : {}),
+        })),
+      },
+      null,
+      2
+    ) + "\n"
+  );
+}
+
+/** True when the URL is a host's root: where agents look for .well-known files. */
+export const isHostRoot = (base: string) => new URL(base).pathname === "/";
+
 export interface ExportOptions extends PageSelectors {
   /** The built site: the folder holding index.html files. */
   distDir: string;
@@ -472,6 +634,15 @@ export interface ExportOptions extends PageSelectors {
   exclude?: RegExp[];
   /** Path patterns listed under llms.txt's "Optional" section (default: API reference, release notes, changelogs). */
   optional?: RegExp[];
+  /** The agent skill (and its index) in .well-known/agent-skills/; `false` leaves it out. Host-root sites only. */
+  skill?: SkillOptions | false;
+  /** .well-known/ai-catalog.json, listing the skill; `false` leaves it out. Host-root sites only. */
+  catalog?: boolean;
+}
+
+export interface ExportResult extends HostedManifest {
+  /** The .well-known files written, relative to the output folder. */
+  discovery: string[];
 }
 
 const DEFAULT_OPTIONAL = [/^api_reference\//, /(^|\/)(releases|changelog)\//];
@@ -486,7 +657,7 @@ async function findPages(dir: string): Promise<string[]> {
   return found;
 }
 
-export async function exportDocs(options: ExportOptions): Promise<HostedManifest> {
+export async function exportDocs(options: ExportOptions): Promise<ExportResult> {
   const distDir = resolve(options.distDir);
   const base = options.base.replace(/\/?$/, "/");
   const pages: Page[] = [];
@@ -514,11 +685,32 @@ export async function exportDocs(options: ExportOptions): Promise<HostedManifest
     file: HOSTED_DOCS_FILE,
   };
 
+  const optional = options.optional ?? DEFAULT_OPTIONAL;
   const outDir = resolve(options.outDir ?? distDir);
   await mkdir(outDir, { recursive: true });
   await writeFile(join(outDir, HOSTED_DOCS_FILE), markdown);
   await writeFile(join(outDir, HOSTED_MANIFEST_FILE), JSON.stringify(manifest, null, 2) + "\n");
-  await writeFile(join(outDir, LLMS_INDEX_FILE), renderLlmsIndex(pages, base, options.optional ?? DEFAULT_OPTIONAL));
+  await writeFile(join(outDir, LLMS_INDEX_FILE), renderLlmsIndex(pages, base, optional));
+
+  // Agents look for .well-known files only at the host's root.
+  const discovery: string[] = [];
+  if (isHostRoot(base) && pages.length) {
+    const skills = options.skill === false ? [] : [renderSkill(pages, base, optional, options.skill)];
+    for (const skill of skills) {
+      const file = `${SKILLS_DIR}/${skill.name}/SKILL.md`;
+      await mkdir(join(outDir, SKILLS_DIR, skill.name), { recursive: true });
+      await writeFile(join(outDir, file), skill.markdown);
+      discovery.push(file);
+    }
+    if (skills.length) {
+      await writeFile(join(outDir, SKILLS_INDEX_FILE), renderSkillsIndex(skills, base));
+      discovery.push(SKILLS_INDEX_FILE);
+    }
+    if (options.catalog !== false && skills.length) {
+      await writeFile(join(outDir, AI_CATALOG_FILE), renderAiCatalog(pages, skills, base, optional));
+      discovery.push(AI_CATALOG_FILE);
+    }
+  }
   // In parallel: hundreds of small files written one by one dominate the export.
   await Promise.all(
     pages.map(async (page) => {
@@ -527,14 +719,14 @@ export async function exportDocs(options: ExportOptions): Promise<HostedManifest
       await writeFile(join(dir, PAGE_MARKDOWN_FILE), renderPageMarkdown(page));
     })
   );
-  return manifest;
+  return { ...manifest, discovery };
 }
 
 // ---------------------------------------------------------------------------
 // Astro integration
 // ---------------------------------------------------------------------------
 
-export interface LlmsDocsOptions extends PageSelectors {
+export interface AgentDocsOptions extends PageSelectors {
   /** Public URL of the build output's root. Default: the config's `site` + `base`. */
   base?: string;
   /** Path prefixes to export (default: every page). */
@@ -543,12 +735,16 @@ export interface LlmsDocsOptions extends PageSelectors {
   exclude?: RegExp[];
   /** Path patterns listed under llms.txt's "Optional" section (default: API reference, release notes, changelogs). */
   optional?: RegExp[];
+  /** The agent skill in .well-known/agent-skills/; `false` leaves it out. */
+  skill?: SkillOptions | false;
+  /** .well-known/ai-catalog.json; `false` leaves it out. */
+  catalog?: boolean;
 }
 
-export default function llmsDocs(options: LlmsDocsOptions = {}): AstroIntegration {
+export default function agentDocs(options: AgentDocsOptions = {}): AstroIntegration {
   let base = options.base;
   return {
-    name: "coherent-llms-docs",
+    name: "coherent-agent-docs",
     hooks: {
       "astro:config:done": ({ config }) => {
         if (!base && config.site) base = new URL(config.base ?? "/", config.site).href;
@@ -561,6 +757,8 @@ export default function llmsDocs(options: LlmsDocsOptions = {}): AstroIntegratio
         }
         const m = await exportDocs({ ...options, distDir: fileURLToPath(dir), base });
         logger.info(`${HOSTED_DOCS_FILE}: ${m.pages} pages, ${Math.round(m.bytes / 1024)} KB, version ${m.version}`);
+        if (m.discovery.length) logger.info(`agent discovery: ${m.discovery.join(", ")}`);
+        else if (!isHostRoot(base)) logger.info("agent discovery: skipped, .well-known files only work at the host's root");
       },
     },
   };

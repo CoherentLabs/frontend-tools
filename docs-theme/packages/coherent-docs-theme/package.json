@@ -11,7 +11,7 @@
   "exports": {
     ".": "./index.ts",
     "./styles": "./styles.css",
-    "./llms": "./integrations/llmsDocs.ts",
+    "./agent-docs": "./integrations/agentDocs.ts",
     "./robots": "./integrations/robotsTxt.ts",
     "./internal-components/*.astro": "./internal-components/*.astro",
     "./components": "./components/index.ts",

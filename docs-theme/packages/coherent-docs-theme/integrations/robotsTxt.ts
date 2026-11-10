@@ -44,6 +44,11 @@ export interface RobotsTxtOptions {
   aiCrawlers?: string[];
   /** Sitemap URLs. Default: the build's sitemap-index.xml (or sitemap.xml), if it has one. */
   sitemaps?: string[];
+  /**
+   * An `Agentmap:` line pointing agents to the site's AI catalog (ARD): a URL, or `true` for the
+   * site's /.well-known/ai-catalog.json (which the agent docs integration writes). Default: none.
+   */
+  agentmap?: string | boolean;
 }
 
 export const ROBOTS_FILE = "robots.txt";
@@ -65,6 +70,8 @@ export const DEFAULT_AI_CRAWLERS = [
 ];
 
 const SITEMAP_FILES = ["sitemap-index.xml", "sitemap.xml"];
+/** Where the agent docs integration writes the AI catalog. Not imported from it, so this module stays dependency-free. */
+const AI_CATALOG_PATH = "/.well-known/ai-catalog.json";
 
 const exists = (path: string) =>
   access(path).then(
@@ -72,7 +79,7 @@ const exists = (path: string) =>
     () => false
   );
 
-export function renderRobotsTxt(options: RobotsTxtOptions & { sitemaps: string[] }): string {
+export function renderRobotsTxt(options: Omit<RobotsTxtOptions, "agentmap"> & { sitemaps: string[]; agentmap?: string }): string {
   const { search = true, aiInput = true, aiTrain = true } = options.contentSignals || {};
   const yesNo = (value: boolean) => (value ? "yes" : "no");
   const rules = [
@@ -87,6 +94,7 @@ export function renderRobotsTxt(options: RobotsTxtOptions & { sitemaps: string[]
   const out = ["User-agent: *", ...rules];
   if (aiCrawlers.length) out.push("", ...aiCrawlers.map((bot) => `User-agent: ${bot}`), ...rules);
   if (options.sitemaps.length) out.push("", ...options.sitemaps.map((url) => `Sitemap: ${url}`));
+  if (options.agentmap) out.push(...(options.sitemaps.length ? [] : [""]), `Agentmap: ${options.agentmap}`);
   return out.join("\n") + "\n";
 }
 
@@ -121,7 +129,10 @@ export default function robotsTxt(options: RobotsTxtOptions = {}): AstroIntegrat
           sitemaps = file && site ? [new URL(file, site).href] : [];
         }
 
-        await writeFile(join(outDir, ROBOTS_FILE), renderRobotsTxt({ ...options, sitemaps }));
+        const agentmap =
+          typeof options.agentmap === "string" ? options.agentmap : options.agentmap && site ? new URL(AI_CATALOG_PATH, site).href : undefined;
+        const { agentmap: _, ...rest } = options;
+        await writeFile(join(outDir, ROBOTS_FILE), renderRobotsTxt({ ...rest, sitemaps, ...(agentmap ? { agentmap } : {}) }));
         logger.info(`${ROBOTS_FILE}: written${sitemaps.length ? "" : " (no sitemap: set `site` in the Astro config)"}`);
       },
     },

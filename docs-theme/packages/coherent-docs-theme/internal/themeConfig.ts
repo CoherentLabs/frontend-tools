@@ -1,4 +1,4 @@
-import type { LlmsDocsOptions } from '../integrations/llmsDocs';
+import type { AgentDocsOptions } from '../integrations/agentDocs';
 import type { RobotsTxtOptions } from '../integrations/robotsTxt';
 
 interface Topic {
@@ -35,11 +35,17 @@ export interface CoherentThemeOptions {
      */
     devSearch?: boolean
     /**
-     * On `astro build`, writes llms.txt, llms-full.txt, the Gameface MCP manifest and each page's
-     * index.html.md into the build output. On by default (needs `site` in the Astro config);
+     * On `astro build`, makes the docs readable by AI agents: writes llms.txt, llms-full.txt, the
+     * Gameface MCP manifest, each page's index.html.md and, for a site at its host's root, an agent
+     * skill and AI catalog in .well-known/. On by default (needs `site` in the Astro config);
      * `false` turns it off, an object passes options to the integration.
      */
-    llms?: boolean | LlmsDocsOptions
+    agentDocs?: boolean | AgentDocsOptions
+    /**
+     * Registers WebMCP tools (search_docs, get_page, list_pages) on every page, for AI agents in
+     * browsers that support WebMCP. On by default; `false` turns it off.
+     */
+    webMcp?: boolean
     /**
      * On `astro build`, writes robots.txt (AI crawler rules, Content Signals, sitemap) unless public/ has one.
      * On by default; skipped for sites built under a sub-path. `false` turns it off, an object passes options.
