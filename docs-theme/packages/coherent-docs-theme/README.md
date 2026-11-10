@@ -91,6 +91,9 @@ export default defineConfig({
 | **disableDefaultLogo** | `boolean`              | `false`     | If false, injects the Gameface UI logo automatically if such is not defined in the Starlight config of the documentation. Set to true if you want to remove the logo entirely.             |
 | **replacesTitle**      | `boolean`              | `true`      | If true, the logo will replace the title in the header. Set to false if you want to show the title next to the logo. Useful when using a custom logo that doesn't include the title in it. |
 
+| **llms**               | `boolean \| object`    | `true`      | On `astro build`, writes `llms.txt`, `llms-full.txt`, `gameface-mcp-docs.json` (read by the Gameface MCP server) and each page's `index.html.md` into the build output. Needs `site` in the Astro config. `false` turns it off; an object is passed to the LLM docs integration (see below). |
+| **robots**             | `boolean \| object`    | `true`      | On `astro build`, writes `robots.txt` (rules for all crawlers and named AI crawlers, Content Signals, the sitemap URL), unless `public/robots.txt` exists. Skipped for sites built under a sub-path. `false` turns it off; an object is passed to the robots.txt integration (see below). |
+
 To override the default logo, simply provide your own in the Starlight configuration:
 
 ```js
@@ -135,6 +138,61 @@ export const collections = {
   }),
 };
 ```
+
+## 🤖 LLM Docs Integration
+
+Every documentation that uses the theme gets the LLM files on `astro build`, with nothing to configure beyond `site`. Any other Astro site, including one that isn't built with Starlight, can add the same export as a standalone Astro integration:
+
+```js
+// astro.config.mjs
+import { defineConfig } from 'astro/config';
+import llmsDocs from 'coherent-docs-theme/llms';
+
+export default defineConfig({
+  site: 'https://coherent-labs.com',
+  integrations: [
+    llmsDocs({
+      // Where each page's content and title are (defaults: Starlight's `.sl-markdown-content` and `h1#_top`)
+      contentSelector: 'main article',
+      titleSelector: 'h1',
+      include: ['blog/'],
+    }),
+  ],
+});
+```
+
+| Option              | Type       | Default                          | Description                                                                 |
+| ------------------- | ---------- | -------------------------------- | --------------------------------------------------------------------------- |
+| **base**            | `string`   | `site` + `base`                  | Public URL of the build output's root.                                      |
+| **contentSelector** | `string`   | `.sl-markdown-content`           | CSS selector of a page's content. Pages without it are skipped.             |
+| **titleSelector**   | `string`   | `h1#_top`                        | CSS selector of a page's title; falls back to `<title>`.                    |
+| **include**         | `string[]` | all pages                        | Path prefixes to export.                                                    |
+| **exclude**         | `RegExp[]` | -                                | Path patterns to leave out.                                                 |
+| **optional**        | `RegExp[]` | reference pages                  | Path patterns listed under llms.txt's "Optional" section (default: API reference, release notes, changelogs). |
+
+## 🤖 robots.txt Integration
+
+Every documentation that uses the theme gets a `robots.txt` on `astro build`. It allows all crawlers, gives the AI search and training crawlers (GPTBot, ClaudeBot, PerplexityBot, ...) their own group, declares [Content Signals](https://contentsignals.org/) (`search=yes, ai-input=yes, ai-train=yes` by default) and links the sitemap. A `public/robots.txt` takes precedence. Crawlers only read `robots.txt` at a host's root, so sites built under a sub-path get none.
+
+Other Astro sites can add it as a standalone integration:
+
+```js
+// astro.config.mjs
+import { defineConfig } from 'astro/config';
+import robotsTxt from 'coherent-docs-theme/robots';
+
+export default defineConfig({
+  site: 'https://coherent-labs.com',
+  integrations: [robotsTxt({ disallow: ['/internal/'] })],
+});
+```
+
+| Option             | Type                                  | Default                    | Description                                                    |
+| ------------------ | ------------------------------------- | -------------------------- | -------------------------------------------------------------- |
+| **contentSignals** | `{ search, aiInput, aiTrain }`, `false` | all `true`               | How AI may use the content; `false` leaves the line out.       |
+| **disallow**       | `string[]`                            | `[]`                       | Paths no crawler should fetch.                                 |
+| **aiCrawlers**     | `string[]`                            | `DEFAULT_AI_CRAWLERS`      | AI crawlers listed in their own group.                         |
+| **sitemaps**       | `string[]`                            | the build's sitemap        | Sitemap URLs.                                                  |
 
 ## 🛠️ Exported Utilities
 

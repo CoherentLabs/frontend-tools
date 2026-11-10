@@ -1,3 +1,6 @@
+import type { LlmsDocsOptions } from '../integrations/llmsDocs';
+import type { RobotsTxtOptions } from '../integrations/robotsTxt';
+
 interface Topic {
     label?: string
     href?: string
@@ -31,6 +34,17 @@ export interface CoherentThemeOptions {
      * at startup instead of requiring a prior `astro build`. Opt-in and off by default.
      */
     devSearch?: boolean
+    /**
+     * On `astro build`, writes llms.txt, llms-full.txt, the Gameface MCP manifest and each page's
+     * index.html.md into the build output. On by default (needs `site` in the Astro config);
+     * `false` turns it off, an object passes options to the integration.
+     */
+    llms?: boolean | LlmsDocsOptions
+    /**
+     * On `astro build`, writes robots.txt (AI crawler rules, Content Signals, sitemap) unless public/ has one.
+     * On by default; skipped for sites built under a sub-path. `false` turns it off, an object passes options.
+     */
+    robots?: boolean | RobotsTxtOptions
 }
 
 export default function getThemeConfig(): CoherentThemeOptions {

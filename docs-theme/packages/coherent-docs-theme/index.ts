@@ -14,6 +14,8 @@ import { remarkFixAbsoluteLinks } from './remark-directives/fixAbsoluteLinks';
 import remarkCustomHeaderId from 'remark-custom-header-id';
 import { getNavLinks } from './internal/siteRegistry';
 import devPagefindPlugin from './internal/devPagefindPlugin';
+import llmsDocs from './integrations/llmsDocs';
+import robotsTxt from './integrations/robotsTxt';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -87,6 +89,14 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
 
         if (options.devSearch && command !== 'build') {
           addIntegration(devPagefindPlugin());
+        }
+
+        if (options.llms !== false && command === 'build') {
+          addIntegration(llmsDocs(typeof options.llms === 'object' ? options.llms : {}));
+        }
+
+        if (options.robots !== false && command === 'build') {
+          addIntegration(robotsTxt(typeof options.robots === 'object' ? options.robots : {}));
         }
 
         process.env.COHERENT_THEME_CONFIG = JSON.stringify({
@@ -185,3 +195,6 @@ export async function generateVersionWithPackageJSON(packagePath: string, link?:
 export const generateMultipleDocsChangelog = generateChangelogMultiple;
 export const generateDocsChangelog = generateChangelog;
 export const getCoherentReleases = getSortedCoherentReleases;
+export { llmsDocs, robotsTxt };
+export type { LlmsDocsOptions } from './integrations/llmsDocs';
+export type { RobotsTxtOptions, ContentSignals } from './integrations/robotsTxt';
