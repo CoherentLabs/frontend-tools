@@ -1,0 +1,234 @@
+# Gameface Frontend Tools
+
+> Discover the complete suite of tools designed to streamline the creation and testing of game user interfaces with Gameface.
+
+Each link below is a page's Markdown version (the page URL + `index.html.md`). The whole documentation,
+as sections tagged with their page URL, is in [llms-full.txt](https://frontend-tools.coherent-labs.com/llms-full.txt).
+
+## Create gameface app
+
+- [Overview](https://frontend-tools.coherent-labs.com/create-gameface-app/getting-started/index.html.md): `create-gameface-app` is a command-line tool that scaffolds a new Gameface project from a starter template.
+
+## Data binding autocomplete
+
+- [Downloads](https://frontend-tools.coherent-labs.com/data-binding-autocomplete/downloads/index.html.md): Here you can find the latest releases of the Gameface Language Server extension for Visual Studio Code.
+- [Overview](https://frontend-tools.coherent-labs.com/data-binding-autocomplete/getting-started/index.html.md): Auto complete is a feature of the code editors that suggests completions based on your current input.
+- [Configuring the Custom Data Bindings](https://frontend-tools.coherent-labs.com/data-binding-autocomplete/getting-started/configuring-custom-bindings/index.html.md)
+- [Configuring the Models](https://frontend-tools.coherent-labs.com/data-binding-autocomplete/getting-started/configuring-models/index.html.md): In order to get model suggestions, we’ll need to provide the definitions of your models.
+- [Installation](https://frontend-tools.coherent-labs.com/data-binding-autocomplete/getting-started/installation/index.html.md): You’ll need to install VSCode version `1.79.2` and above in order to be able to use the language server.
+- [Language Server for Gameface](https://frontend-tools.coherent-labs.com/data-binding-autocomplete/getting-started/language-server-for-gameface/index.html.md): The default auto-complete features usually can’t provide meaningful suggestions for Gameface features.
+
+## E2e
+
+- [Overview](https://frontend-tools.coherent-labs.com/e2e/api/domelement/index.html.md): The `DOMElement` object represents a DOM element and provides various methods to interact with it.
+- [Overview](https://frontend-tools.coherent-labs.com/e2e/api/domelement/assertmethods/index.html.md): This section of the documentation outlines the additional assertion methods available in the Gameface E2E testing framework for the `DOMElement` object.
+- [element.waitForAttributes](https://frontend-tools.coherent-labs.com/e2e/api/domelement/assertmethods/waitforattributes/index.html.md): Waits for the element to have the specified attributes with their expected values.
+- [element.waitForClasses](https://frontend-tools.coherent-labs.com/e2e/api/domelement/assertmethods/waitforclasses/index.html.md): Waits for the element to have the specified classes applied.
+- [element.waitForPositionOnScreen](https://frontend-tools.coherent-labs.com/e2e/api/domelement/assertmethods/waitforpositiononscreen/index.html.md): Waits for the element to be positioned at the specified coordinates on the screen.
+- [element.waitForSize](https://frontend-tools.coherent-labs.com/e2e/api/domelement/assertmethods/waitforsize/index.html.md): Waits for the element to have the specified size.
+- [element.waitForStyles](https://frontend-tools.coherent-labs.com/e2e/api/domelement/assertmethods/waitforstyles/index.html.md): Waits for the element to have the specified styles applied.
+- [element.waitForText](https://frontend-tools.coherent-labs.com/e2e/api/domelement/assertmethods/waitfortext/index.html.md): Waits for the element to contain the specified text.
+- [element.waitForValue](https://frontend-tools.coherent-labs.com/e2e/api/domelement/assertmethods/waitforvalue/index.html.md): Waits for input or textarea elements to have the specified value.
+- [element.waitForVisibility](https://frontend-tools.coherent-labs.com/e2e/api/domelement/assertmethods/waitforvisibility/index.html.md): Waits for the element to be visible or hidden based on the specified visibility state.
+- [element.waitForVisibilityInScrollableArea](https://frontend-tools.coherent-labs.com/e2e/api/domelement/assertmethods/waitforvisibilityinscrollablearea/index.html.md): Waits for the element to be visible or hidden within a specified scrollable area based on the given visibility state.
+- [element.children](https://frontend-tools.coherent-labs.com/e2e/api/domelement/children/index.html.md): Retrieves the children of the element.
+- [element.classes](https://frontend-tools.coherent-labs.com/e2e/api/domelement/classes/index.html.md): Retrieves the classes of the element.
+- [element.contains](https://frontend-tools.coherent-labs.com/e2e/api/domelement/contains/index.html.md): Retrieves a DOM element containing the specified text starting from the current element.
+- [element.find](https://frontend-tools.coherent-labs.com/e2e/api/domelement/find/index.html.md): Finds a DOM element using the specified selector starting from the current element.
+- [element.findAll](https://frontend-tools.coherent-labs.com/e2e/api/domelement/findall/index.html.md): Finds all elements matching the specified selector starting from the current element.
+- [element.getAttribute](https://frontend-tools.coherent-labs.com/e2e/api/domelement/getattribute/index.html.md): Retrieves the value of the specified attribute of the element.
+- [element.getAttributes](https://frontend-tools.coherent-labs.com/e2e/api/domelement/getattributes/index.html.md): Retrieves the attributes of the element.
+- [element.getInnerHTML](https://frontend-tools.coherent-labs.com/e2e/api/domelement/getinnerhtml/index.html.md): Retrieves the inner HTML of the element.
+- [element.getOuterHTML](https://frontend-tools.coherent-labs.com/e2e/api/domelement/getouterhtml/index.html.md): Retrieves the outer HTML of the element.
+- [element.getParent](https://frontend-tools.coherent-labs.com/e2e/api/domelement/getparent/index.html.md): Retrieves the parent element of the current DOM element.
+- [element.getPositionOnScreen](https://frontend-tools.coherent-labs.com/e2e/api/domelement/getpositiononscreen/index.html.md): Retrieves the position of the element on the screen.
+- [element.getSize](https://frontend-tools.coherent-labs.com/e2e/api/domelement/getsize/index.html.md): Retrieves the size of the element.
+- [element.getValue](https://frontend-tools.coherent-labs.com/e2e/api/domelement/getvalue/index.html.md): Retrieves the value of the element if it is an input or textarea.
+- [element.hasAttribute](https://frontend-tools.coherent-labs.com/e2e/api/domelement/hasattribute/index.html.md): Checks if the element has the specified attribute.
+- [Overview](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/index.html.md): This section contains all methods available for interacting with a UI element via the `DOMElement` object.
+- [element.clear](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/clear/index.html.md): Clears the value of the element if it is an input or textarea.
+- [element.click](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/click/index.html.md): Simulates a click on the element.
+- [element.doubleClick](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/doubleclick/index.html.md): Simulates a double click event on the element with the ‘left’ mouse button.
+- [element.drag](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/drag/index.html.md): Moves the element to the specified coordinates by simulating a drag action.
+- [element.dragBy](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/dragby/index.html.md): Drags the element by the specified offsets relative to the element’s center.
+- [element.dragTo](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/dragto/index.html.md): Drags the current element to a target element or selector on screen.
+- [element.focus](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/focus/index.html.md): Focuses the DOM element.
+- [element.hover](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/hover/index.html.md): Simulates hovering over the element.
+- [element.keyDown](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/keydown/index.html.md): Simulates a key down event for the specified key on the element.
+- [element.keyPress](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/keypress/index.html.md): Simulates a key press event for the specified key on the element.
+- [element.keyUp](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/keyup/index.html.md): Simulates a key up event for the specified key on the element.
+- [element.mousePress](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/mousepress/index.html.md): Simulates a `mousedown` event on the element.
+- [element.mouseRelease](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/mouserelease/index.html.md): Simulates a `mouseup` event on the element.
+- [element.mouseWheel](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/mousewheel/index.html.md): Simulates a `mousewheel` event on the element.
+- [element.rightClick](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/rightclick/index.html.md): Simulates a right click event on the element.
+- [element.scroll](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/scroll/index.html.md): Scrolls the element by the specified delta values.
+- [element.scrollIntoView](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/scrollintoview/index.html.md): Scrolls the current DOM element into view within a scrollable area.
+- [element.scrollTo](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/scrollto/index.html.md): Scrolls the DOM element to the specified coordinates.
+- [element.trigger](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/trigger/index.html.md): Triggers a custom event on the element.
+- [element.type](https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/type/index.html.md): Simulates typing on the element by dispatching key events.
+- [element.isFocusable](https://frontend-tools.coherent-labs.com/e2e/api/domelement/isfocusable/index.html.md): Checks if the element is focusable.
+- [element.isFocused](https://frontend-tools.coherent-labs.com/e2e/api/domelement/isfocused/index.html.md): Checks if the element is focused.
+- [element.isHidden](https://frontend-tools.coherent-labs.com/e2e/api/domelement/ishidden/index.html.md): Checks if the element is hidden.
+- [element.isScrollable](https://frontend-tools.coherent-labs.com/e2e/api/domelement/isscrollable/index.html.md): Checks if the element is scrollable.
+- [element.isVisible](https://frontend-tools.coherent-labs.com/e2e/api/domelement/isvisible/index.html.md): Checks if the element is visible.
+- [element.isVisibleInScrollableArea](https://frontend-tools.coherent-labs.com/e2e/api/domelement/isvisibleinscrollablearea/index.html.md): Determines if the current DOM element is visible within a specified scrollable area.
+- [element.setAttribute](https://frontend-tools.coherent-labs.com/e2e/api/domelement/setattribute/index.html.md): Sets the value of the specified attribute of the element.
+- [element.styles](https://frontend-tools.coherent-labs.com/e2e/api/domelement/styles/index.html.md): Retrieves the computed styles of the element.
+- [element.text](https://frontend-tools.coherent-labs.com/e2e/api/domelement/text/index.html.md): Retrieves the text content of the element.
+- [Overview](https://frontend-tools.coherent-labs.com/e2e/api/domelements/index.html.md): The `DOMElements` object represents an array of DOM elements and provides various methods to interact with them.
+- [elements.first](https://frontend-tools.coherent-labs.com/e2e/api/domelements/first/index.html.md): Retrieves the first element in the array.
+- [elements.last](https://frontend-tools.coherent-labs.com/e2e/api/domelements/last/index.html.md): Retrieves the last element in the array.
+- [elements.nth](https://frontend-tools.coherent-labs.com/e2e/api/domelements/nth/index.html.md): Retrieves the element at the specified index.
+- [gameface-e2e-config.js](https://frontend-tools.coherent-labs.com/e2e/api/gameface-e2e-config/index.html.md): The `gameface-e2e-config.js` file is a configuration file for the `gameface-e2e` testing framework.
+- [gameface-e2e](https://frontend-tools.coherent-labs.com/e2e/api/gameface-e2e/index.html.md): The `gameface-e2e` command will run end-to-end tests in your Gameface projects.
+- [Overview](https://frontend-tools.coherent-labs.com/e2e/api/gamefacegamepad/index.html.md): The `GamefaceGamepad` object provides various methods to simulate gamepad interactions in your UI.
+- [gamepad.disconnect](https://frontend-tools.coherent-labs.com/e2e/api/gamefacegamepad/disconnect/index.html.md): Disconnects the current gamepad instance.
+- [gamepad.hold](https://frontend-tools.coherent-labs.com/e2e/api/gamefacegamepad/hold/index.html.md): Holds one or more gamepad keys.
+- [gamepad.moveLeftStick](https://frontend-tools.coherent-labs.com/e2e/api/gamefacegamepad/moveleftstick/index.html.md): Moves the **left analog stick** to a specific position.
+- [gamepad.moveRightStick](https://frontend-tools.coherent-labs.com/e2e/api/gamefacegamepad/moverightstick/index.html.md): Moves the **right analog stick** to a specific position.
+- [gamepad.press](https://frontend-tools.coherent-labs.com/e2e/api/gamefacegamepad/press/index.html.md): Presses one or more gamepad keys and waits for their release.
+- [gamepad.release](https://frontend-tools.coherent-labs.com/e2e/api/gamefacegamepad/release/index.html.md): Immediately releases one or more pressed gamepad keys.
+- [gamepad.resetSticks](https://frontend-tools.coherent-labs.com/e2e/api/gamefacegamepad/resetsticks/index.html.md): Resets all analog sticks to their **neutral (0,0)** position.
+- [gamepad.sequence](https://frontend-tools.coherent-labs.com/e2e/api/gamefacegamepad/sequence/index.html.md): Executes a sequence of button presses in order.
+- [Overview](https://frontend-tools.coherent-labs.com/e2e/api/gf/index.html.md): The `gf` object provides various methods to interact with the UI running in Gameface.
+- [Overview](https://frontend-tools.coherent-labs.com/e2e/api/gf/constants/index.html.md): Global constants available on the `gf` object for direct access.
+- [gf.GAMEPAD_BUTTONS](https://frontend-tools.coherent-labs.com/e2e/api/gf/constants/gamepadbuttons/index.html.md): Represents a set of gamepad button codes commonly used in methods like `gamepad.press` and `gamepad.hold`.
+- [gf.KEYS](https://frontend-tools.coherent-labs.com/e2e/api/gf/constants/keys/index.html.md): Represents a set of key codes commonly used in methods like `keyPress`, `keyDown`, and `keyUp`.
+- [Overview](https://frontend-tools.coherent-labs.com/e2e/api/gf/data-binding/index.html.md)
+- [gf.createModel](https://frontend-tools.coherent-labs.com/e2e/api/gf/data-binding/createmodel/index.html.md): Creates a new data bind model with the given name and data.
+- [gf.executeBindingScript](https://frontend-tools.coherent-labs.com/e2e/api/gf/data-binding/executebindingscript/index.html.md): Executes a JavaScript function within the browser’s runtime environment, specifically designed for binding scripts.
+- [gf.onEngineEvent](https://frontend-tools.coherent-labs.com/e2e/api/gf/data-binding/onengineevent/index.html.md): Subscribes to a custom event triggered from the UI to the engine with a specified name.
+- [gf.triggerEngineEvent](https://frontend-tools.coherent-labs.com/e2e/api/gf/data-binding/triggerengineevent/index.html.md): Simulates the dispatch of a custom event from the engine with a specified name and associated data.
+- [gf.updateModel](https://frontend-tools.coherent-labs.com/e2e/api/gf/data-binding/updatemodel/index.html.md): Updates a given data model by running a specified function.
+- [Overview](https://frontend-tools.coherent-labs.com/e2e/api/gf/elements/index.html.md)
+- [gf.children](https://frontend-tools.coherent-labs.com/e2e/api/gf/elements/children/index.html.md): Retrieves the children of the specified element.
+- [gf.contains](https://frontend-tools.coherent-labs.com/e2e/api/gf/elements/contains/index.html.md): Retrieves a DOM element containing the specified text.
+- [gf.get](https://frontend-tools.coherent-labs.com/e2e/api/gf/elements/get/index.html.md): Retrieves a DOM element based on the provided selector.
+- [gf.getAll](https://frontend-tools.coherent-labs.com/e2e/api/gf/elements/getall/index.html.md): Retrieves all elements matching the specified selector.
+- [gf.getAttribute](https://frontend-tools.coherent-labs.com/e2e/api/gf/elements/getattribute/index.html.md): Retrieves the value of the specified attribute of the specified element.
+- [gf.getClasses](https://frontend-tools.coherent-labs.com/e2e/api/gf/elements/getclasses/index.html.md): Retrieves the classes of the specified element.
+- [gf.getParent](https://frontend-tools.coherent-labs.com/e2e/api/gf/elements/getparent/index.html.md): Retrieves the parent element of the specified element.
+- [gf.getStyles](https://frontend-tools.coherent-labs.com/e2e/api/gf/elements/getstyles/index.html.md): Retrieves the computed styles of the specified element.
+- [gf.hasAttribute](https://frontend-tools.coherent-labs.com/e2e/api/gf/elements/hasattribute/index.html.md): Checks if the specified element has the specified attribute.
+- [gf.isFocusable](https://frontend-tools.coherent-labs.com/e2e/api/gf/elements/isfocusable/index.html.md): Checks if the specified element is focusable.
+- [gf.isHidden](https://frontend-tools.coherent-labs.com/e2e/api/gf/elements/ishidden/index.html.md): Checks if the specified element is hidden.
+- [gf.isScrollable](https://frontend-tools.coherent-labs.com/e2e/api/gf/elements/isscrollable/index.html.md): Checks if the specified element is scrollable.
+- [gf.isVisible](https://frontend-tools.coherent-labs.com/e2e/api/gf/elements/isvisible/index.html.md): Checks if the specified element is visible.
+- [gf.text](https://frontend-tools.coherent-labs.com/e2e/api/gf/elements/text/index.html.md): Retrieves the text content of the specified element.
+- [Overview](https://frontend-tools.coherent-labs.com/e2e/api/gf/gamepad/index.html.md): The Gameface E2E framework provides a rich set of tools for testing UI behavior driven by gamepad input.
+- [gf.connectGamepad](https://frontend-tools.coherent-labs.com/e2e/api/gf/gamepad/connectgamepad/index.html.md): Creates and connects a new virtual gamepad.
+- [gf.disconnectGamepad](https://frontend-tools.coherent-labs.com/e2e/api/gf/gamepad/disconnectgamepad/index.html.md): Disconnects a previously connected gamepad and removes it from the registry.
+- [gf.getGamepad](https://frontend-tools.coherent-labs.com/e2e/api/gf/gamepad/getgamepad/index.html.md): Retrieves a connected gamepad instance by its identifier.
+- [Overview](https://frontend-tools.coherent-labs.com/e2e/api/gf/interactions/index.html.md): This section provides methods for interacting with the UI using mouse and keyboard events, all accessible through the global `gf` object.
+- [gf.click](https://frontend-tools.coherent-labs.com/e2e/api/gf/interactions/click/index.html.md): Simulates a click on the specified element.
+- [gf.keyDown](https://frontend-tools.coherent-labs.com/e2e/api/gf/interactions/keydown/index.html.md): Simulates a key down event for the specified key on the document.
+- [gf.keyPress](https://frontend-tools.coherent-labs.com/e2e/api/gf/interactions/keypress/index.html.md): Simulates a key press event on the document.
+- [gf.keyUp](https://frontend-tools.coherent-labs.com/e2e/api/gf/interactions/keyup/index.html.md): Simulates a key up event for the specified key on the document.
+- [gf.mouseMove](https://frontend-tools.coherent-labs.com/e2e/api/gf/interactions/mousemove/index.html.md): Moves the mouse to the specified coordinates.
+- [gf.mousePress](https://frontend-tools.coherent-labs.com/e2e/api/gf/interactions/mousepress/index.html.md): Simulates a mouse down event at the specified coordinates on the document.
+- [gf.mouseRelease](https://frontend-tools.coherent-labs.com/e2e/api/gf/interactions/mouserelease/index.html.md): Simulates a mouse release event at the specified coordinates on the document.
+- [gf.mouseWheel](https://frontend-tools.coherent-labs.com/e2e/api/gf/interactions/mousewheel/index.html.md): Simulates a mouse wheel event at the specified coordinates with the given deltas.
+- [Overview](https://frontend-tools.coherent-labs.com/e2e/api/gf/page/index.html.md)
+- [gf.executeScript](https://frontend-tools.coherent-labs.com/e2e/api/gf/page/executescript/index.html.md): Runs a JavaScript function within the browser’s runtime context.
+- [gf.navigate](https://frontend-tools.coherent-labs.com/e2e/api/gf/page/navigate/index.html.md): Navigates to the specified URL.
+- [gf.scrollTo](https://frontend-tools.coherent-labs.com/e2e/api/gf/page/scrollto/index.html.md): Scrolls the page to the specified coordinates.
+- [gf.scrollToBottom](https://frontend-tools.coherent-labs.com/e2e/api/gf/page/scrolltobottom/index.html.md): Scrolls the page to the scrollToBottom.
+- [gf.scrollToTop](https://frontend-tools.coherent-labs.com/e2e/api/gf/page/scrolltotop/index.html.md): Scrolls the page to the top.
+- [gf.trigger](https://frontend-tools.coherent-labs.com/e2e/api/gf/page/trigger/index.html.md): Triggers a custom DOM event on the document with the specified name and data.
+- [Debugging](https://frontend-tools.coherent-labs.com/e2e/concepts/debugging/index.html.md): The framework includes debug logs that can be useful if you encounter an error that is not sufficiently descriptive.
+- [GF object and DOMElement](https://frontend-tools.coherent-labs.com/e2e/concepts/gf-over-domelement/index.html.md): Gameface e2e testing framework provides two main ways to interact with UI elements: the `gf` object and the `DOMElement` object.
+- [Running multiple test processes in parallel](https://frontend-tools.coherent-labs.com/e2e/concepts/multiple-processes/index.html.md): The framework allows running multiple test processes simultaneously.
+- [Waiting for the right element state](https://frontend-tools.coherent-labs.com/e2e/concepts/waiting-for-element/index.html.md): Validating changes in an element’s state within the UI can sometimes lead to unreliable test results.
+- [Writing tests](https://frontend-tools.coherent-labs.com/e2e/concepts/writing-tests/index.html.md): To write tests for your UI in Gameface, you can use the `gf` object provided by the testing framework.
+- [Overview](https://frontend-tools.coherent-labs.com/e2e/getting-started/index.html.md): Gameface E2E an end-to-end (E2E) JavaScript testing framework for Gameface, capable of running tests on UIs created with Gameface.
+- [Installation](https://frontend-tools.coherent-labs.com/e2e/getting-started/installation/index.html.md)
+- [Usage](https://frontend-tools.coherent-labs.com/e2e/getting-started/usage/index.html.md)
+
+## Eslint plugin gameface
+
+- [Overview](https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/getting-started/index.html.md): Use **eslint-plugin-gameface** in your projects to catch unsupported or risky Gameface patterns **during development**, instead of at runtime.
+- [Configuration](https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/getting-started/configuration/index.html.md)
+- [Installation](https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/getting-started/installation/index.html.md): Install **ESLint** and **eslint-plugin-gameface**.
+- [Data binding](https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/data-binding/index.html.md): Gameface data binding attributes are easy to mistype.
+- [JavaScript and TypeScript](https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/javascript/index.html.md): Scripts can call APIs that Gameface does not provide/support.
+- [Rules reference](https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/rules-reference/index.html.md): Every Gameface rule uses the `gameface/` prefix.
+- [Styles and HTML markup](https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/styles-and-markup/index.html.md): Most Gameface related issues in day-to-day work show up as **CSS** or **HTML** problems.
+- [Svelte SFC](https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/svelte/index.html.md): Svelte **single-file components** (`.svelte`) are linted by the recommended preset.
+- [SVG in UI](https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/svg/index.html.md): SVG inside your **HTML, JSX/TSX, Vue templates, or Svelte markup** is checked against Gameface’s SVG support.
+- [Troubleshooting](https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/troubleshooting/index.html.md): VS Code and other editors often validate CSS separately from ESLint.
+- [Vue SFC](https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/vue/index.html.md): Vue **single-file components** (`.vue`) are linted by the recommended preset.
+- [What gets checked](https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/what-gets-checked/index.html.md): The recommended preset runs **Gameface-specific** rules on top of normal HTML and CSS parsing.
+
+## Gameface cli
+
+- [Overview](https://frontend-tools.coherent-labs.com/gameface-cli/getting-started/index.html.md): `gameface-cli` adds and updates **individual Gameface UI components** inside an existing project.
+- [Existing projects](https://frontend-tools.coherent-labs.com/gameface-cli/getting-started/existing-projects/index.html.md): Projects created with the **`gameface-ui` template** from `create-gameface-app` are already wired up and need nothing from this page.
+
+## Gameface vite plugin
+
+- [Fixing SVGs](https://frontend-tools.coherent-labs.com/gameface-vite-plugin/concepts/fixing-svgs/index.html.md): Using SVGs in Gameface with SolidJS can lead to compatibility issues due to the way SolidJS handles SVG elements.
+- [Resolving Unclosed Tags](https://frontend-tools.coherent-labs.com/gameface-vite-plugin/concepts/unclosed-tags/index.html.md): SolidJS optimizes the build output by minimizing file size, which includes generating HTML with unclosed tags.
+- [Overview](https://frontend-tools.coherent-labs.com/gameface-vite-plugin/getting-started/index.html.md): A Vite plugin designed to streamline the development of Gameface UI projects by providing optimized build and development configurations.
+- [How to use](https://frontend-tools.coherent-labs.com/gameface-vite-plugin/getting-started/how-to-use/index.html.md): To use the Gameface Vite plugin, you need to set up your project with Vite and then configure the plugin in your `vite.config.js` file.
+- [Installation](https://frontend-tools.coherent-labs.com/gameface-vite-plugin/getting-started/installation/index.html.md)
+- [Vite Solid Plugin Notice](https://frontend-tools.coherent-labs.com/gameface-vite-plugin/vite-plugin-solid/index.html.md)
+
+## Interaction manager
+
+- [Actions](https://frontend-tools.coherent-labs.com/interaction-manager/features/actions/index.html.md): Allows to register actions that can be reused throughout your code.
+- [Draggable](https://frontend-tools.coherent-labs.com/interaction-manager/features/draggable/index.html.md): Allows you to drag around elements on the screen.
+- [Dropzone](https://frontend-tools.coherent-labs.com/interaction-manager/features/dropzone/index.html.md): Allows you to drag around elements on the screen.
+- [Gamepad](https://frontend-tools.coherent-labs.com/interaction-manager/features/gamepad/index.html.md): The gamepad object allows for easier gamepad set up.
+- [Keyboard](https://frontend-tools.coherent-labs.com/interaction-manager/features/keyboard/index.html.md): The keyboard object provides an easy to use way to set up keys to perform different actions in your UI.
+- [Resize](https://frontend-tools.coherent-labs.com/interaction-manager/features/resize/index.html.md): Allows you to resize an element.
+- [Rotate](https://frontend-tools.coherent-labs.com/interaction-manager/features/rotate/index.html.md): Allows you to rotate an element.
+- [Spatial Navigation](https://frontend-tools.coherent-labs.com/interaction-manager/features/spatial-navigation/index.html.md)
+- [Touch Gestures](https://frontend-tools.coherent-labs.com/interaction-manager/features/touch-gestures/index.html.md): Allows you to easily use some of the most common Touch Gestures like - tap, hold, drag, swipe, pinch/stretch and zoom.
+- [Pan and Zoom](https://frontend-tools.coherent-labs.com/interaction-manager/features/zoom/index.html.md): Allows you to zoom in on an element.
+- [Overview](https://frontend-tools.coherent-labs.com/interaction-manager/getting-started/index.html.md): The `coherent-gameface-interaction-manager` is a JS library for the most common UI interactions.
+- [Installation](https://frontend-tools.coherent-labs.com/interaction-manager/getting-started/installation/index.html.md): The coherent-gameface-interaction-manager is distributed as both ESM and UMD bundles.
+- [Type Support & IntelliSense](https://frontend-tools.coherent-labs.com/interaction-manager/getting-started/type-support/index.html.md): Version 2.7.0 marks a complete rewrite of the library in TypeScript, delivering full type definitions out of the box.
+
+## Vite gameface rasterize
+
+- [Configuration](https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/api/configuration/index.html.md): Every option is optional.
+- [Attributes](https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/concepts/attribute-contract/index.html.md): The contract between markup and the build is just HTML attributes.
+- [Preparing your UI](https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/concepts/authoring/index.html.md): Most failed bakes come from a few recurring patterns.
+- [Diagnostics](https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/concepts/diagnostics/index.html.md): Every diagnostic names the element it is about, the route it was found on, and prints a link to its entry on this page.
+- [Element mode](https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/concepts/element-mode/index.html.md): Decoration mode bakes one element’s own shadows and fills.
+- [Things to watch out for](https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/concepts/limitations/index.html.md): Everything here is known and either handled or refused.
+- [Inspecting the output](https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/concepts/looking-at-a-baked-page/index.html.md): Start with `rz/report/<route>.png`.
+- [Measuring the result](https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/concepts/measuring/index.html.md): The Player paces frames at a fixed cap of roughly 60 ms.
+- [Overview](https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/getting-started/index.html.md): A Vite plugin that turns expensive static CSS decoration into pre-rendered textures.
+- [How to use](https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/getting-started/how-to-use/index.html.md): That is the whole opt-in.
+- [Installation](https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/getting-started/installation/index.html.md): The plugin renders with a real Gameface Player.
+
+## Vite gameface style transformer
+
+- [Key Features and how to use](https://frontend-tools.coherent-labs.com/vite-gameface-style-transformer/concepts/key-features/index.html.md): Write standard Tailwind/UnoCSS classes.
+- [Known Behavior](https://frontend-tools.coherent-labs.com/vite-gameface-style-transformer/concepts/known-behavior/index.html.md)
+- [Plugin configuration](https://frontend-tools.coherent-labs.com/vite-gameface-style-transformer/concepts/plugin-cofiguration/index.html.md)
+- [Overview](https://frontend-tools.coherent-labs.com/vite-gameface-style-transformer/getting-started/index.html.md): A framework-agnostic Vite plugin and UnoCSS preset designed specifically for Coherent Gameface.
+- [How to use](https://frontend-tools.coherent-labs.com/vite-gameface-style-transformer/getting-started/how-to-use/index.html.md): Add the plugin to your Vite config.
+
+## Vite solid style to css plugin
+
+- [Key Features](https://frontend-tools.coherent-labs.com/vite-solid-style-to-css-plugin/concepts/key-features/index.html.md)
+- [Known Behavior](https://frontend-tools.coherent-labs.com/vite-solid-style-to-css-plugin/concepts/known-behavior/index.html.md): When signals are used to dynamically update a style property at runtime, those properties will not be converted into CSS classes.
+- [Plugin configuration](https://frontend-tools.coherent-labs.com/vite-solid-style-to-css-plugin/concepts/plugin-cofiguration/index.html.md)
+- [Overview](https://frontend-tools.coherent-labs.com/vite-solid-style-to-css-plugin/getting-started/index.html.md): The `vite-solid-style-to-css` plugin is designed to convert the `style={{}}` properties into CSS class names when SolidJS is used.
+- [Example](https://frontend-tools.coherent-labs.com/vite-solid-style-to-css-plugin/getting-started/example/index.html.md)
+- [How to use](https://frontend-tools.coherent-labs.com/vite-solid-style-to-css-plugin/getting-started/how-to-use/index.html.md): To use the `Solid Style to CSS` plugin, you need to set up your project with Vite and then configure the plugin in your `vite.config.js` file.
+- [Installation](https://frontend-tools.coherent-labs.com/vite-solid-style-to-css-plugin/getting-started/installation/index.html.md)
+
+## Optional
+
+- [Changelog](https://frontend-tools.coherent-labs.com/create-gameface-app/changelog/index.html.md): Fix Remove the `src/recipes` directory from Projects scaffolded from the `gameface-ui` template.
+- [Changelog](https://frontend-tools.coherent-labs.com/e2e/changelog/index.html.md): Feature Introduced new drag methods for enhanced drag-and-drop testing capabilities.
+- [Changelog](https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/changelog/index.html.md): Fix Fixed declarations inside SCSS suffix selectors (`&-option`, `&__item`, `&--active`) not being linted in `.scss` files.
+- [Changelog](https://frontend-tools.coherent-labs.com/gameface-cli/changelog/index.html.md): Feature `track` records components that are already in a project but were never registered under `gameface-ui-components`, so `status` and `update` can see them.
+- [Changelog](https://frontend-tools.coherent-labs.com/gameface-vite-plugin/changelog/index.html.md): Fix Resolved an issue where inline SVG elements with dynamic children in SolidJS caused runtime errors or silent build failures in production.
+- [Changelog](https://frontend-tools.coherent-labs.com/interaction-manager/changelog/index.html.md): Fix Fixed a bug in Spatial Navigation where wrap-around navigation failed in tall, scrollable lists.
+- [Changelog](https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/changelog/index.html.md)
+- [Changelog](https://frontend-tools.coherent-labs.com/vite-gameface-style-transformer/changelog/index.html.md): Breaking change `gamefaceStyleTransformerPlugin` usage has been updated to use the spread operator (`...`) when adding the plugin to your Vite config.
+- [Changelog](https://frontend-tools.coherent-labs.com/vite-solid-style-to-css-plugin/changelog/index.html.md): Fix Resolved Vite warnings related to the plugin when building with source maps enabled by regenerating the source maps after transforming the code.

@@ -1,0 +1,68 @@
+# Waiting for the right element state
+
+Source: https://frontend-tools.coherent-labs.com/e2e/concepts/waiting-for-element/
+
+Validating changes in an element’s state within the UI can sometimes lead to unreliable test results. For instance, clicking a button that modifies an element’s size might cause the test to fail if the size change hasn’t occurred by the time the validation runs. This happens because UI updates are often asynchronous and may take time to reflect.
+
+Methods prone to such issues include:
+
+- `element.getSize`
+- `element.getPositionOnScreen`
+- `element.isVisible`
+- `element.isVisibleInScrollableArea`
+- `element.isHidden`
+- `element.isScrollable`
+- `gf.isHidden`
+- `gf.isVisible`
+
+Other methods that depend on the UI’s state post-interaction may also exhibit similar problems. The following guide outlines an effective approach to address these challenges.
+
+## Use gf.retryIfFails
+
+To handle asynchronous UI updates, leverage the `gf.retryIfFails` method. This utility retries the provided function until it succeeds or times out, ensuring the element’s state has changed before proceeding with validation.
+
+### Example
+
+Below is an example demonstrating how to use `gf.retryIfFails` to wait for an element’s size to update after a click. The test clicks an element to trigger a size change and then validates the updated size:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        await element.click(); // Trigger a size change
+        await gf.retryIfFails(async () => {
+            const size = await element.getSize();
+            assert(size.width > 100, 'Element width should be greater than 100');
+        });
+    });
+});
+```
+
+## gf.retryIfFails Parameters
+
+The `gf.retryIfFails` method accepts the following parameters:
+
+- **`action`**: The function to execute, which should return a promise. If the promise resolves successfully, the retry stops; if it rejects, the retry continues until the timeout is reached.
+- **`retryCount`** (optional): The number of times to retry the action. Defaults to 10. Each retry waits for 100 milliseconds before executing the action again.
+
+## Enhanced assert methods 1.1.0
+
+Version `1.1.0` introduced additional methods to the `DOMElement` object for easier validation of element states. These methods internally retry the validation, eliminating the need to use `gf.retryIfFails` directly in your tests.
+
+For example:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        // Clicking the button makes the element visible
+        await gf.click('.btn');
+        // This approach may result in flaky tests if the element isn't immediately visible after the click
+        assert.equal(await element.isVisible(), true, 'Element should be visible');
+        // This method retries the visibility check until it passes or times out. If the element remains invisible after the timeout, an error is thrown with a descriptive message.
+        assert(await element.waitForVisibility(true));
+    });
+});
+```
+
+For more details on the new assert methods, refer to the DOMElement Assert methods documentation.

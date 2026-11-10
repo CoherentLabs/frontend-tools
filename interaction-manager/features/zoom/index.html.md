@@ -1,0 +1,133 @@
+# Pan and Zoom
+
+Source: https://frontend-tools.coherent-labs.com/interaction-manager/features/zoom/
+
+Allows you to zoom in on an element.
+
+## Usage
+
+```ts
+new zoom(zoomOptions)
+```
+
+## Basic implementation
+
+```ts
+const grid = new zoom({ element: '.grid' });
+```
+
+## zoomOptions
+
+```ts
+interface ZoomOptions {
+    element: string,
+    minZoom?: number,
+    maxZoom?: number,
+    zoomFactor?: number,
+    onZoom?: Function
+}
+```
+
+### element
+
+Type:
+
+```ts
+type element = string
+```
+
+The element selector.
+
+### minZoom
+
+Type:
+
+```ts
+type minZoom = number
+```
+
+`default: 0.1`
+
+How much you can zoom out of the element.
+
+### maxZoom
+
+Type:
+
+```ts
+type maxZoom = number
+```
+
+`default: Inifinity`
+
+How much you can zoom in on the element.
+
+### zoomFactor
+
+Type:
+
+```ts
+type zoomFactor = number
+```
+
+`default: 0.1`
+
+By how much to zoom in or out of the element.
+
+### onZoom
+
+Type:
+
+```ts
+type onZoom = () => void;
+```
+
+Executes when the element zooms in or out.
+
+## Properties
+
+### actionName readonly
+
+Type:
+
+```ts
+type actionName = string
+```
+
+The name of the action that can be used to programmatically zoom the element.
+
+### touchEnabled
+
+Type:
+
+```ts
+type touchEnabled = boolean
+```
+
+Enables or disables touch events. Default is `false`.
+
+## Methods
+
+### deinit()
+
+Removes the event listeners and disables the zoom functionality.
+
+## Actions
+
+You are able to zoom elements using actions. Since every zoom action is unique you can do the following:
+
+```ts
+const element = new zoom({ element: '.grid' });
+
+actions.execute(element.actionName, {x: 100, y: 100, zoomDirection: -1});
+```
+
+Where you need to provide the x and y coordinates of the element, where you want to zoom to and the `zoomDirection` which can be -1 for zoom out and 1 for zoom in.
+
+```ts
+interface ZoomAction {
+    x: number;
+    y: number;
+    zoomDirection: number;
+}
+```

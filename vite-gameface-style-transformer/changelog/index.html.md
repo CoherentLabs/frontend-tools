@@ -1,0 +1,37 @@
+# Changelog
+
+Source: https://frontend-tools.coherent-labs.com/vite-gameface-style-transformer/changelog/
+
+## 2.0.0 Latest
+
+Breaking change `gamefaceStyleTransformerPlugin` usage has been updated to use the spread operator (`...`) when adding the plugin to your Vite config. Internally the function now returns an array of plugins that apply different transformations and fixes that are described below.
+
+For example, instead of:
+
+```ts
+gamefaceStyleTransformerPlugin({ suppressWarnings: false, isSolidProject: false }),
+```
+
+```ts
+...gamefaceStyleTransformerPlugin({ suppressWarnings: false, isSolidProject: false }),
+```
+
+Fix Plugin now set bigger specificity for generated `gf-prop--` classes to ensure they override other styles when necessary.
+
+Fix Static CSS validation now applies consistently across all frameworks (JSX, Vue, HTML, and Svelte). Dynamic style values are no longer stripped from the source when extraction is skipped; style attributes are only rewritten when at least one static declaration is converted to a `gf-prop--` class.
+
+Fix JSX/Vue object-style parsing skips entries containing template literals (`${…}`), Svelte interpolation (`{…}`), and other dynamic markers. Partially static style objects keep dynamic entries in the residual inline style.
+
+Fix UnoCSS fingerprint rules (`__uno_hash_*{--:''}`) are patched to use a valid no-op declaration so Gameface’s CSS parser accepts the stylesheet without warnings while UnoCSS HMR can still locate the hash selector.
+
+## 1.0.0
+
+Feature Plugin adds option to create custom states like `style:error={{'background-color': 'red'}}`.
+
+Feature Plugin adds option to write out full styles for a state or pseudo-element (e.g. `style:hover={{"background-color" : "red"}}`, `style:before={{"content" : "'Hello'"}}`).
+
+Feature Plugin adds option to write state classes like `hover:background-color-red` and `focus:text-color-blue`. It also allows you to write pseudo-element classes like `before:content-['Hello']`.
+
+Feature Plugin automatically converts `styles` property to `UnoCSS` compatible classes.
+
+Feature Plugin converts class names to remove arbitrary-value brackets and other symbols that can’t be escaped in class names.

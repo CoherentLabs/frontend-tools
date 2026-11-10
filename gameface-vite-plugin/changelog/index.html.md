@@ -1,0 +1,76 @@
+# Changelog
+
+Source: https://frontend-tools.coherent-labs.com/gameface-vite-plugin/changelog/
+
+## 1.0.4 Latest
+
+Fix Resolved an issue where inline SVG elements with dynamic children in SolidJS caused runtime errors or silent build failures in production.
+
+The following example now renders correctly:
+
+```tsx
+import { createSignal } from 'solid-js';
+
+const SVGComponent = () => {
+    const arr = Array.from({ length: 5 });
+    const [firstName] = createSignal('first name');
+
+    return <svg viewBox="0 0 200 200" width="300" height="300" >
+        <For each={arr}>
+            {(_, index) => <rect y={index() * 10} width="618" height={(index() + 1) * 10} fill={`#${index() + 4}${index() + 3}${index() + 2}${index() + 1}${index()}9`} />}
+        </For>
+        <text x="20" y="35">{firstName()}</text>
+    </svg>
+}
+```
+
+## 1.0.3
+
+Fix Resolved issues with using `()` brackets in SolidJS components, which previously caused errors with the plugin. The generated template from the SolidJS plugin, transformed by vite-gameface, contained `(<!>)` in place of `({expression})`, leading to build errors. This update ensures proper transformation of components using `()` brackets, eliminating these errors.
+
+For instance, the following code now functions as expected:
+
+```tsx
+const MyComponent = () => {
+    const [test] = createSignal('test');
+    return (
+        <span>({test()})</span>
+    );
+};
+```
+
+## 1.0.2
+
+Fix Resolved Vite warnings related to the plugin when building with source maps enabled by regenerating the source maps after transforming the code.
+
+The warnings included:
+
+```plaintext
+[plugin gameface] Sourcemap is likely to be incorrect: a plugin (gameface) was used to transform files, but didn't generate a sourcemap for the transformation. Consult the plugin documentation for help
+```
+
+Fix Corrected the handling of inlined `SVGs` to ensure proper transformation of child SVG elements wrapped within components. For instance, the [SolidJS clock example](https://www.solidjs.com/examples/clock) now functions correctly due to the plugin’s improved transformation of `SVG` elements in such scenarios.
+
+Here is an example of a case that is now transformed correctly:
+
+```tsx
+const SVGComponent = ()=>{
+    return <svg>
+        <Line />
+    </svg>
+}
+
+const Line = () => {
+    return <line stroke="red" stroke-width="2px"></line>
+}
+```
+
+## 1.0.1
+
+New Added public documentation for the plugin.
+
+## 1.0.0
+
+Feature Plugin resolves unclosed tags when using SolidJS in Gameface.
+
+Feature Plugin fixes SVGs for compatibility with Gameface when using SolidJS.

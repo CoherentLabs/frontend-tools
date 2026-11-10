@@ -1,0 +1,38 @@
+# element.getSize
+
+Source: https://frontend-tools.coherent-labs.com/e2e/api/domelement/getsize/
+
+## element.getSize(): Promise<{ width: number, height: number } | null>
+
+Retrieves the size of the element.
+
+- Returns a promise that resolves to an object containing the `width` and `height` of the element.
+- If the element is not visible, the method returns `null`.
+
+## Usage
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        const size = await element.getSize();
+    });
+});
+```
+
+**Note:** Getting the size of a text element is not supported.
+
+**Caution:** If you need to verify changes in an element’s size after an interaction (e.g., a click), ensure you wait for additional time before checking the size. For simplicity you can use the `gf.retryIfFails` method to retry the operation until it succeeds or times out. For example:
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        await element.click(); // Trigger a size change
+        await gf.retryIfFails(async () => {
+            const size = await element.getSize();
+            assert(size.width > 100, 'Element width should be greater than 100');
+        });
+    });
+});
+```

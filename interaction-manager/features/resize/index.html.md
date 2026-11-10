@@ -1,0 +1,172 @@
+# Resize
+
+Source: https://frontend-tools.coherent-labs.com/interaction-manager/features/resize/
+
+Allows you to resize an element.
+
+## Usage
+
+```ts
+new resize(resizeOptions);
+```
+
+## Basic implementation
+
+```ts
+const square = new resize({ element: '.square' });
+```
+
+## resizeOptions
+
+```ts
+interface ResizeOptions {
+    element: string;
+    edgeWidth?: number;
+    onWidthChange?: (width: number) => void;
+    onHeightChange?: (height: number) => void;
+    widthMin?: number;
+    widthMax?: number;
+    heightMin?: number;
+    heightMax?: number;
+}
+```
+
+### element
+
+Type:
+
+```ts
+type element = string
+```
+
+The element selector.
+
+### edgeWidth
+
+Type:
+
+```ts
+type edgeWidth = number
+```
+
+`default: 5`
+
+The width of the edge that you can grab.
+
+### widthMin
+
+Type:
+
+```ts
+type widthMin = number
+```
+
+`default: 50`
+
+The minimum width that element can be resized to.
+
+### widthMax
+
+Type:
+
+```ts
+type widthMax = number
+```
+
+`default: window.innerWidth`
+
+The maximum width that element can be resized to.
+
+### heightMin
+
+Type:
+
+```ts
+type heightMin = number
+```
+
+`default: 50`
+
+The minimum height that element can be resized to.
+
+### heightMax
+
+Type:
+
+```ts
+type heightMax = number
+```
+
+`default: window.innerHeight`
+
+The maximum height that element can be resized to.
+
+### onWidthChange
+
+Type:
+
+```ts
+type onWidthChange = (width: number) => void;
+```
+
+Executes when the element width changes
+
+### onHeightChange
+
+Type:
+
+```ts
+type onHeightChange = (height: number) => void;
+```
+
+Executes when the element height changes.
+
+## Properties
+
+### heightAction readonly
+
+Type:
+
+```ts
+type heightAction = string
+```
+
+The name of the action that can be used to programmatically change the height of the element.
+
+### widthAction readonly
+
+Type:
+
+```ts
+type widthAction = string
+```
+
+The name of the action that can be used to programmatically change the width of the element.
+
+### touchEnabled
+
+Type:
+
+```ts
+type touchEnabled = boolean
+```
+
+Enables or disables touch events. Default is `false`.
+
+## Methods
+
+### deinit()
+
+Removes the event listeners and disables the resize functionality.
+
+## Actions
+
+You are able to resize elements using actions. Since every resize action is unique you can do the following:
+
+```ts
+const element = new resize({ element: '.square' });
+
+actions.execute(element.heightAction, 200);
+
+actions.execute(element.widthAction, 200);
+```

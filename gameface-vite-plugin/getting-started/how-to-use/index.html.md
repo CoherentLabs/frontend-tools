@@ -1,0 +1,25 @@
+# How to use
+
+Source: https://frontend-tools.coherent-labs.com/gameface-vite-plugin/getting-started/how-to-use/
+
+**Caution:** Starting with version [`2.11.7`](https://github.com/solidjs/vite-plugin-solid/releases/tag/vite-plugin-solid%402.11.7), [`vite-plugin-solid`](https://github.com/solidjs/vite-plugin-solid) includes new configuration flags that improve Gameface compatibility. You may be able to omit the `vite-gameface` plugin entirely. See the Vite Solid Plugin Notice for details.
+
+To use the Gameface Vite plugin, you need to set up your project with Vite and then configure the plugin in your `vite.config.js` file.
+
+After you have Vite project, vite config file, and the plugin installed, you can enable the plugin by adding it to the `plugins` array in your Vite configuration file. Here’s a basic example of how to do this:
+
+```js
+import { defineConfig } from 'vite';
+import solidGameface from 'vite-gameface';
+
+export default defineConfig({
+    ...
+    plugins: [
+        ...
+        solidGameface()
+    ],
+    ...
+});
+```
+
+Make sure `solidGameface` method is called as a last plugin in the array. This is important because the plugin needs to be the last one to process the files, ensuring that all other plugins have already done their work before Gameface processes the files.

@@ -1,0 +1,11 @@
+# Installation
+
+Source: https://frontend-tools.coherent-labs.com/gameface-vite-plugin/getting-started/installation/
+
+To install the plugin in your project, run the following command:
+
+```shell
+npm install vite-gameface --save-dev
+```
+
+**We recommend using Node.js version 20 or higher.**

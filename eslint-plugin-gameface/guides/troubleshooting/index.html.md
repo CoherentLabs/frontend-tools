@@ -1,0 +1,48 @@
+# Troubleshooting
+
+Source: https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/troubleshooting/
+
+## No gameface/ messages after setup
+
+- Confirm `eslint.config.js` spreads `...gameface.configs["flat/recommended"]`.
+- Run ESLint from the project root: `npx eslint path/to/your-file.html`.
+- Check the file extension is covered (`.html`, `.css`, `.scss`, `.js`, `.jsx`, `.ts`, `.tsx`, `.vue`, `.svelte`).
+- Ensure the file is not under `ignores` (for example `dist/**`).
+
+## Vue .vue files not linted in the editor
+
+- Add `"vue"` to `eslint.validate` in `.vscode/settings.json` (see Installation).
+- Ensure `eslint.config.js` spreads `...gameface.configs["flat/recommended"]`—the preset registers `vue-eslint-parser` for `**/*.vue`.
+- `<style>` blocks are linted via `vue-sfc-css-*` rules on the same `.vue` file (not as separate virtual files).
+
+## Svelte .svelte files not linted in the editor
+
+- Add `"svelte"` to `eslint.validate` in `.vscode/settings.json` (see Installation).
+- Ensure `eslint.config.js` spreads `...gameface.configs["flat/recommended"]`—the preset registers `svelte-eslint-parser` for `**/*.svelte`.
+- `<style>` blocks are linted via `svelte-sfc-css-*` rules on the same `.svelte` file (not as separate virtual files).
+
+## Editor shows “unknown property” but ESLint does not
+
+VS Code and other editors often validate CSS separately from ESLint. `coh-*` properties for example may look invalid in the editor even when Gameface supports them. Use [VS Code custom CSS data](https://code.visualstudio.com/docs/languages/css#_css-specific-settings) or adjust editor CSS lint — not this plugin.
+
+## SCSS variables skip some warnings
+
+Rules see `$variable` values as unresolved text, so some property/value checks are skipped on those lines. That is expected; keep critical Gameface constraints in plain CSS or literals where possible.
+
+## Too many HTML partial warnings
+
+Relax or disable `gameface/html-partial-features`, or switch its mode in Configuration:
+
+```js
+"gameface/html-partial-features": ["warn", { mode: "tag-warn" }],
+```
+
+## Migrating from HTMLHint / Stylelint
+
+The previous workflow was to use [HTMLLint](https://docs.coherent-labs.com/cpp-gameface/content_development/htmllint/) and [CSS Linter](https://docs.coherent-labs.com/cpp-gameface/content_development/csslinting/).
+
+Now you can adopt this plugin gradually and stop using previous HTMLLint and CSS Linter. Enable `flat/recommended` for HTML and CSS first, then expand to JSX/TS, Vue, or Svelte in your project if needed. Once you adopted `eslint-plugin-gameface` you can safely remove `HTMLLint` and `CSS Linter`.
+
+## Still stuck?
+
+Check the exact **rule id** in the ESLint message (for example `gameface/css-no-unsupported-properties`) and look it up in Rules reference to see what it enforces and how to turn it off.

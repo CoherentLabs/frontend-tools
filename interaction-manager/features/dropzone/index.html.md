@@ -1,0 +1,216 @@
+# Dropzone
+
+Source: https://frontend-tools.coherent-labs.com/interaction-manager/features/dropzone/
+
+Allows you to drag around elements on the screen.
+
+## Usage
+
+```ts
+new dropzone(dropzoneOptions);
+```
+
+## Basic implementation
+
+```ts
+const square = new dropzone({ element: '.square', dropzones: ['.dropzone'] });
+```
+
+## dropzoneOptions
+
+### element
+
+Type:
+
+```ts
+type element = string
+```
+
+The element selector.
+
+### dropzones
+
+Type:
+
+```ts
+type dropzones = string[]
+```
+
+Array of dropzones that the element can be dropped into.
+
+### dragClass
+
+Type:
+
+```ts
+type dragClass = string
+```
+
+Class to be added to the dragged element.
+
+### dropzoneActiveClass
+
+Type:
+
+```ts
+type dropzoneActiveClass = string
+```
+
+Class to be added to the dropzone, whenever an element is dragged over it.
+
+### dropType
+
+Type:
+
+```ts
+type dropType = 'switch' | 'add' | 'shift' | 'none'
+```
+
+`default: 'add'`
+
+The type of action to take, when you drop an element over a dropzone that already has elements inside.
+
+Type | Description
+`none` | Returns the dragged element to the initial position
+`switch` | Switches the dragged element with the element in the dropzone
+`add` | Adds the dragged element to the dropzone
+`shift` | Shifts the element to the nearest empty dropzone
+
+**Example**
+
+```ts
+const square = new dropzone({ element: '.square1', dropzones: ['.dropzone1'], dropType: 'add' });
+const square1 = new dropzone({ element: '.square2', dropzones: ['.dropzone2'], dropType: 'none' });
+const square2 = new dropzone({ element: '.square3', dropzones: ['.dropzone3'], dropType: 'switch' });
+const square3 = new dropzone({ element: '.square4', dropzones: ['.dropzone4'], dropType: 'shift' });
+```
+
+### onDragStart
+
+Type:
+
+```ts
+type onDragStart = (element: HTMLElement) => void;
+```
+
+Executes when you start dragging the element.
+
+### onDragMove
+
+Type:
+
+```ts
+type onDragMove = (position: { x: number; y: number }) => void;
+```
+
+Executes when you move the dragged element.
+
+### onDragEnd
+
+Type:
+
+```ts
+type onDragEnd = (element: HTMLElement) => void;
+```
+
+Executes when you stop dragging the element.
+
+### onDropZoneLeave
+
+Type:
+
+```ts
+type onDropZoneLeave = (element: HTMLElement) => void;
+```
+
+Executes when you drag an element out of a a dropzone
+
+### onDropZoneEnter
+
+Type:
+
+```ts
+type onDropZoneEnter = (element: HTMLElement) => void;
+```
+
+Executes when you drag an element over a dropzone
+
+### onDrop
+
+Type:
+
+```ts
+type onDrop = (dropEventData: DropEvent) => void;
+```
+
+Executes when an element is dropped in a dropzone.
+
+#### DropEvent
+
+```ts
+interface DropEvent {
+    preventDefault: () => void; //Stops the element from being dropped. Useful when you want to have a backend handle the element move
+    target: HTMLElement;
+    dropzone: HTMLElement;
+}
+```
+
+## Properties
+
+### actionName readonly
+
+Type:
+
+```ts
+type actionName = string
+```
+
+The name of the action that can be used to programmatically drag the element.
+
+### automaticAction readonly
+
+Type:
+
+```ts
+type automaticAction = string
+```
+
+The name of the action that can be used to automatically move an element to a dropzone.
+
+### touchEnabled
+
+Type:
+
+```ts
+type touchEnabled = boolean
+```
+
+Enables or disables touch events. Default is `false`.
+
+## Methods
+
+### deinit()
+
+Removes the event listeners and disables the dropzone functionality.
+
+## Actions
+
+You are able to drag elements using actions. Since every dropzone action is unique you can do the following:
+
+```ts
+const element = new dropzone({ element: '.square', dropzones: ['.dropzone'] });
+
+actions.execute(element.actionName, {x: 100, y: 100, index: 0});
+```
+
+You will need to pass the x and y coordinates where you want the element to go and the index of the element.
+
+You can also automatically move an element to a dropzone by using the `automaticAction`:
+
+```ts
+const element = new dropzone({ element: '.square', dropzones: ['.dropzone'] });
+
+actions.execute(element.automaticAction, {elementIndex: 0, dropzoneIndex: 0});
+```
+
+You will need to pass the index of the element you want to move and the index of the dropzone you want to move the element to.

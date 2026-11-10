@@ -1,0 +1,5 @@
+# Overview
+
+Source: https://frontend-tools.coherent-labs.com/vite-solid-style-to-css-plugin/getting-started/
+
+The `vite-solid-style-to-css` plugin is designed to convert the `style={{}}` properties into CSS class names when SolidJS is used. This plugin extracts styles from the `style`, generates unique class names, and moves the styles into a `CSS` file (for production builds) or a style block (during development). This optimization improves performance by minimizing inline styles and utilizing CSS for better caching and reusability.

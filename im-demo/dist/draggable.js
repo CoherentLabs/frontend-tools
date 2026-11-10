@@ -1,8 +1,31 @@
-(function(global, factory) {
-  typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.draggable = factory());
-})(this, (function() {
-  "use strict";
-  class DragBase {
+"use strict";
+var draggable = (() => {
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __export = (target, all) => {
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
+  };
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+  // src/draggable.ts
+  var draggable_exports = {};
+  __export(draggable_exports, {
+    default: () => draggable_default2
+  });
+
+  // src/utils/drag-base.ts
+  var DragBase = class {
     constructor(options) {
       this.options = options;
       this.draggableElements = [];
@@ -32,7 +55,10 @@
         y: clientY - y
       };
     }
-  }
+  };
+  var drag_base_default = DragBase;
+
+  // src/utils/utility-functions.ts
   function toDeg(rad) {
     return rad * 180 / Math.PI;
   }
@@ -53,8 +79,11 @@
       y: (y1 + y2) / 2
     };
   }
-  class IM {
+
+  // src/utils/global-object.ts
+  var IM = class _IM2 {
     constructor() {
+      // eslint-disable-next-line require-jsdoc
       this.actions = [];
       this.keyboardFunctions = [];
       this.gamepadFunctions = [];
@@ -63,7 +92,7 @@
      * Initialize global object
      */
     init() {
-      if (!window._IM) window._IM = new IM();
+      if (!window._IM) window._IM = new _IM2();
     }
     /**
      * Get keyboard functions matching the given keys
@@ -80,24 +109,24 @@
     /**
      * Get a gamepad function matching the given button actions and type
      */
-    getGamepadAction({ actions: actions2, type }) {
+    getGamepadAction({ actions, type }) {
       return _IM.gamepadFunctions.find((gpFunc) => {
-        return gpFunc.actions.every((action) => actions2.includes(action)) && gpFunc.type === type && gpFunc.actions.length === actions2.length;
+        return gpFunc.actions.every((action) => actions.includes(action)) && gpFunc.type === type && gpFunc.actions.length === actions.length;
       });
     }
     /**
      * Get all gamepad functions matching the given button actions
      */
-    getGamepadActions(actions2, exactMatch = true) {
+    getGamepadActions(actions) {
       return _IM.gamepadFunctions.filter(
-        (gpFunc) => gpFunc.actions.every((action) => actions2.includes(action)) && (exactMatch ? gpFunc.actions.length === actions2.length : true)
+        (gpFunc) => gpFunc.actions.every((action) => actions.includes(action)) && gpFunc.actions.length === actions.length
       );
     }
     /**
      * Get the index of a gamepad function matching the given button actions
      */
-    getGamepadActionIndex(actions2) {
-      return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions2.includes(action)));
+    getGamepadActionIndex(actions) {
+      return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions.includes(action)));
     }
     /**
      * Get an action by name
@@ -154,21 +183,23 @@ This ${callbackType} is already registered for this combination and type. To upd
       const index = _IM.gamepadFunctions.indexOf(functionEntry);
       if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
     }
-  }
-  const IM$1 = new IM();
-  class Actions {
+  };
+  var global_object_default = new IM();
+
+  // src/lib_components/actions.ts
+  var Actions = class {
     /**
      * Register an action
      */
     register(action, callback) {
-      if (IM$1.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
+      if (global_object_default.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
       _IM.actions.push({ name: action, callback });
     }
     /**
      * Remove a registered action
      */
     remove(action) {
-      const actionIndex = IM$1.getActionIndex(action);
+      const actionIndex = global_object_default.getActionIndex(action);
       if (actionIndex === -1) return console.error(`${action} is not a registered action!`);
       _IM.actions.splice(actionIndex, 1);
     }
@@ -176,12 +207,14 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Trigger an action
      */
     execute(action, value) {
-      const actionObject = IM$1.getAction(action);
+      const actionObject = global_object_default.getAction(action);
       if (!actionObject) return console.error(`${action} is not a registered action!`);
       actionObject.callback(value);
     }
-  }
-  const actions = new Actions();
+  };
+  var actions_default = new Actions();
+
+  // src/utils/gesture-utils.ts
   function getDirection(diffX, diffY) {
     const MIN_SWIPE_OFFSET = 200;
     if (diffY < 0 && diffX > -MIN_SWIPE_OFFSET && diffX < MIN_SWIPE_OFFSET) return "top";
@@ -196,8 +229,10 @@ This ${callbackType} is already registered for this combination and type. To upd
   function getElement(element) {
     return element instanceof HTMLElement ? element : document.querySelector(element);
   }
-  const MULTIPLE_TOUCHES_MIN_NUMBER = 2;
-  class TouchGestures {
+
+  // src/lib_components/touch-gestures.ts
+  var MULTIPLE_TOUCHES_MIN_NUMBER = 2;
+  var TouchGestures = class {
     constructor() {
       this.activeTouches = /* @__PURE__ */ new Map();
     }
@@ -507,10 +542,12 @@ This ${callbackType} is already registered for this combination and type. To upd
         }
       };
     }
-  }
-  const touchGestures = new TouchGestures();
-  const AXIS = ["x", "y"];
-  class Draggable extends DragBase {
+  };
+  var touch_gestures_default = new TouchGestures();
+
+  // src/lib_components/draggable.ts
+  var AXIS = ["x", "y"];
+  var Draggable = class extends drag_base_default {
     constructor(options) {
       super(options);
       this.actionName = `drag-around-${createHash()}`;
@@ -558,7 +595,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       this.elementRect = this.draggedElement.getBoundingClientRect();
       this.setRestriction();
       this.setPointerOffset(event.clientX, event.clientY, this.draggedElement);
-      actions.execute(this.actionName, {
+      actions_default.execute(this.actionName, {
         x: event.clientX + this.bodyScrollOffset.x - this.offset.x,
         y: event.clientY + this.bodyScrollOffset.y - this.offset.y,
         index: this.draggedItemIndex
@@ -572,7 +609,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * mousemove event handler
      */
     onMouseMove(event) {
-      actions.execute(this.actionName, {
+      actions_default.execute(this.actionName, {
         x: event.clientX + this.bodyScrollOffset.x - this.offset.x,
         y: event.clientY + this.bodyScrollOffset.y - this.offset.y,
         index: this.draggedItemIndex
@@ -592,7 +629,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Register dragging as an action to be able to use it externally
      */
     registerDragActions() {
-      actions.register(this.actionName, ({ x, y, index }) => {
+      actions_default.register(this.actionName, ({ x, y, index }) => {
         if (!this.draggableElements[index]) return console.error(`There is no draggable element at index ${index}`);
         if (this.options.lockAxis && AXIS.includes(this.options.lockAxis)) {
           x = this.options.lockAxis === "y" ? this.elementRect.x : x;
@@ -607,7 +644,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Removes the registered action
      */
     removeDragActions() {
-      actions.remove(this.actionName);
+      actions_default.remove(this.actionName);
     }
     /**
      * Add touch gestures to drag the element
@@ -615,7 +652,7 @@ This ${callbackType} is already registered for this combination and type. To upd
     addTouchEvents() {
       this.draggableElements.forEach((element) => {
         this.touchEvents.push(
-          touchGestures.drag({
+          touch_gestures_default.drag({
             element,
             onDragStart: (event) => {
               this.onMouseDown({ currentTarget: event.currentTarget, clientX: event.x, clientY: event.y });
@@ -656,7 +693,11 @@ This ${callbackType} is already registered for this combination and type. To upd
         bottom: height + y - this.elementRect.height
       };
     }
-  }
-  IM$1.init();
-  return Draggable;
-}));
+  };
+  var draggable_default = Draggable;
+
+  // src/draggable.ts
+  global_object_default.init();
+  var draggable_default2 = draggable_default;
+  return __toCommonJS(draggable_exports);
+})();

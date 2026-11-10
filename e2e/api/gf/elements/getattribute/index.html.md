@@ -1,0 +1,23 @@
+# gf.getAttribute
+
+Source: https://frontend-tools.coherent-labs.com/e2e/api/gf/elements/getattribute/
+
+## gf.getAttribute(selector: string, name: string): Promise<string | undefined>
+
+Retrieves the value of the specified attribute of the specified element.
+
+- **`selector`**: The CSS selector of the element to retrieve.
+- **`name`**: The name of the attribute to retrieve.
+- Returns a promise that resolves to the value of the attribute or `undefined` if the attribute does not exist.
+
+**Note:** The attribute value is returned as a string.
+
+## Usage
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const attribute = await gf.getAttribute('.my-element', 'data-id');
+    });
+});
+```

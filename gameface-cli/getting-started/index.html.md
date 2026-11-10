@@ -1,0 +1,176 @@
+# Overview
+
+Source: https://frontend-tools.coherent-labs.com/gameface-cli/getting-started/
+
+`gameface-cli` adds and updates **individual Gameface UI components** inside an existing project. Instead of pulling the whole library, you install the components you actually use, and the CLI keeps them current as new versions ship.
+
+It is not a scaffolder. If you are starting from nothing, use `create-gameface-app` with the **Gameface UI** template to create the project first. `gameface-cli` only ever operates on a project that already exists.
+
+## Requirements
+
+A [Gameface UI](https://gameface-ui.coherent-labs.com/) or a SolidJS project set up. The CLI checks for `solid-js` in your `package.json` and stops if it isn’t there.
+
+Only the [Gameface UI](https://gameface-ui.coherent-labs.com/) project is ready to use straight away. The `solid-js` template that can be downloaded from the create-gameface-app CLI does not have the aliases and style variables that components rely on. If you are using that one, or on a Solid project of your own, follow the one-time setup in Existing projects.
+
+## Quick start
+
+**npm:**
+
+```
+npx gameface-cli add Dropdown
+```
+
+**pnpm:**
+
+```
+pnpm dlx gameface-cli add Dropdown
+```
+
+**yarn:**
+
+```
+yarn dlx gameface-cli add Dropdown
+```
+
+That copies `Dropdown` into `src/components/`, along with everything it depends on, and records what it installed in your `package.json`.
+
+**Editing installed components:** Installed components are managed by the CLI, so `update` replaces them with the newer version. Any local changes you have made to them will be replaced along with the file.
+
+If you need different behaviour, the safer options are to use the component’s props, or to wrap it in your own component under `src/custom-components/`, which the CLI never touches. If something is missing or broken, an issue or a pull request against the library is worth more than a local patch.
+
+## Commands
+
+### add
+
+Installs one or more components, together with their dependencies.
+
+```bash
+npx gameface-cli add Dropdown
+npx gameface-cli add Dropdown Scroll TextSlider
+```
+
+Adding several at once is cheaper than adding them one at a time, since shared dependencies are downloaded once and if external dependencies are missing `npm install` runs a single time at the end.
+
+This is also how you pick up components released since you created your project. `update` only refreshes what you already have, it never adds anything new.
+
+**Dependency upgrades:** If a component you are installing shares a dependency with something you already have, that dependency is brought up to the current version too.
+
+For example, if you already have `Dropdown` and it has pulled the `Utility/Navigation` at v1.0.0 alongside it, and you add `TextSlider` which also depends on the `Navigation` component, the CLI will upgrade `Utility/Navigation` to its latest version for you.
+
+### update
+
+Brings installed components up to the latest published version.
+
+```bash
+npx gameface-cli update              # everything you have installed
+npx gameface-cli update Dropdown     # just this one
+```
+
+With no arguments it sweeps everything tracked in your `package.json`, updates whatever is out of date, and leaves current components alone.
+
+The command updates files related just to Gameface UI components in your project. Your own code, your views, and your config files (`tsconfig.json`, `vite.config`, `package.json` scripts) are never touched. Library changes that need a config edit are called out in the changelog and applied by hand.
+
+Only files whose contents differ from the published version are written. A component that is out of date by a single file produces a single-file diff rather than a rewrite of the whole component and everything it depends on, so what you review afterwards is what actually changed.
+
+### track
+
+Registers Gameface UI components that are already in your project but were never recorded under `gameface-ui-components`. Without this, `status` and `update` cannot see them.
+
+```bash
+npx gameface-cli track
+```
+
+It compares every file in your project against the registry and sorts each component into one of three outcomes:
+
+Result | What it means | What gets recorded
+Up to date | Every file matches the published version | its real version
+Behind | One or more files are missing or different | `0.0.0`, so `update` picks it up
+Not installed | None of its files are present | nothing
+
+Anything recorded as `0.0.0` counts as out of date, so the next `update` restores it to the published version.
+
+**`track` never writes component files.** It only adds entries to `package.json`, and it never modifies or removes entries that are already there - so it is safe to re-run, and doubles as a repair after a bad merge drops keys from your `package.json`. When it finishes you can either record the versions and stop, or record and run the update immediately.
+
+**When you need it:** Projects scaffolded by a recent `create-gameface-app` already have their components recorded. You need `track` if your project predates the CLI (Gameface UI v3.1.0 or earlier), if you copied components in by hand, or if the version recording failed while scaffolding.
+
+### status
+
+Shows what you have installed and what has moved on without you.
+
+```bash
+npx gameface-cli status
+```
+
+```plaintext
+┌  gameface-cli
+│
+◇  Gameface UI v3.2.0
+│
+├  Installed Components ────────────╮
+│                                   │
+│  Dropdown    v1.0.0 → v1.1.0      │
+│  TextSlider  v1.1.0 (up to date)  │
+│                                   │
+├───────────────────────────────────╯
+│
+●  12 more components available in the library.
+│
+└  1 out of 2 outdated · run `gameface-cli update` to upgrade
+```
+
+## Options
+
+Flag | Alias | Description
+`--yes` | `-y` | Answer every confirmation prompt with yes.
+`--help` | `-h` | Print usage information and exit.
+
+Two more flags apply to specific commands only: `--verbose` on `add`, `update` and `track`, and `--hard` on `update`.
+
+### --verbose
+
+Lists the individual files behind each result instead of just the counts.
+
+On `add` and `update` it prints every file written rather than the directories they live in. On `track` it names the files that are missing or differ under each component, and reports the components it skipped as not installed.
+
+```bash
+npx gameface-cli track --verbose
+npx gameface-cli update --verbose
+```
+
+### --hard
+
+Reinstalls components even when their recorded version already matches the registry, which `update` would normally skip.
+
+```bash
+npx gameface-cli update Dropdown --hard   # restore a component you edited
+npx gameface-cli update --hard            # refresh everything, shared files included
+```
+
+Use it to restore a stock component after editing it in place, or to refresh the shared files that components depend on. Those shared files carry no version of their own, so nothing else can tell that they have drifted.
+
+**Caution:**
+
+`--hard` overwrites local edits without asking, and with no arguments it reinstalls everything you have. Commit your work first.
+
+## What it changes in your project
+
+Two things, and nothing else.
+
+**Component files** are written under `src/`, at the same paths they have in the library.
+
+**A record of what you installed** is added to your `package.json`, under `gameface-ui-components`:
+
+```json
+"gameface-ui-components": {
+  "Dropdown": "1.0.0",
+  "TextSlider": "1.1.0"
+}
+```
+
+`status` and `update` compare these versions against the ones the library publishes. Anything that differs is out of date.
+
+**Don't edit the gameface-ui-components property by hand:** This entry is the CLI’s only record of what you have installed, and it is trusted as-is. Editing it by hand makes every command report the wrong thing: lower a version and `update` will reinstall a component you already have, raise one and it will skip a component that is genuinely out of date, remove an entry and the component stops being tracked at all.
+
+Commit it with the rest of your `package.json` and let the CLI maintain it.
+
+Nothing else in your project is modified, and the rest of your `package.json` keeps its existing formatting.

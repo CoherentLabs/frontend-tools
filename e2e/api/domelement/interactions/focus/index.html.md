@@ -1,0 +1,23 @@
+# element.focus
+
+Source: https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/focus/
+
+## element.focus(): Promise<boolean>
+
+Focuses the DOM element.
+
+- Returns a promise that resolves when the element is focused.
+
+## Usage
+
+```js
+describe('Test script', function () {
+    it('Test 1', async () => {
+        const element = await gf.get('.my-element');
+        await element.focus();
+        assert.equal(await element.isFocused(), true);
+    });
+});
+```
+
+**Note:** Focusing text elements is not supported.

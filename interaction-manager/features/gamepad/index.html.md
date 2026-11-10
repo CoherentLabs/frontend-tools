@@ -1,0 +1,270 @@
+# Gamepad
+
+Source: https://frontend-tools.coherent-labs.com/interaction-manager/features/gamepad/
+
+The gamepad object allows for easier gamepad set up. It uses the Gamepad API to create helper functions to listen for button presses or joystick movement.
+
+To start listening for connected gamepads, you first need to enable it. To do that you need to set the following:
+
+```ts
+gamepad.enabled = true;
+```
+
+to disable the gamepad, just change the `enabled` property to `false`.
+
+## Changing the polling interval
+
+In order to get the correct information from the Gamepad API, we need to poll the data at an interval. By default this interval is 200ms, but you can change it by doing
+
+```ts
+gamepad.pollingInterval = 400;
+```
+
+Which will change the interval to 400ms.
+
+## .on(options)
+
+The `.on` call allows you to set up listeners for your gamepad actions.
+
+```ts
+type ButtonGamepadOptions = {
+    actions: ButtonInput[],
+    type?: 'hold' | 'press',
+    callback: ((buttons: GamepadButton[]) => void) | string
+};
+
+type AxisGamepadOptions = {
+    actions: AxisInput[],
+    type?: 'hold',
+    callback: ((axes: [number, number]) => void) | string
+};
+
+gamepad.on(options: ButtonGamepadOptions | AxisGamepadOptions);
+```
+
+### options
+
+#### actions
+
+Type:
+
+```ts
+type actions = string[] | number[]
+```
+
+The actions array is an array of buttons or joystick actions that will trigger a a callback.
+
+You can use either the button number or an alias for the buttons. For the users convenience there are playstation and xbox specific aliases available.
+
+Number | Generic Alias | Playstation Alias | Xbox Alias
+0 | face-button-down | playstation.x | xbox.a
+1 | face-button-right | playstation.circle | xbox.b
+2 | face-button-left | playstation.square | xbox.x
+3 | face-button-top | playstation.triangle | xbox.y
+4 | left-shoulder | playstation.l1 | xbox.lb
+5 | right-shoulder | playstation.r1 | xbox.rb
+6 | left-shoulder-bottom | playstation.l2 | xbox.lt
+7 | right-shoulder-bottom | playstation.r2 | xbox.rt
+8 | select | playstation.share | xbox.view
+9 | start | playstation.options | xbox.menu
+10 | left-analogue-stick | playstation.l3 | xbox.left-thumbstick
+11 | right-analogue-stick | playstation.r3 | xbox.right-thumbstick
+12 | pad-up | playstation.d-pad-up | xbox.d-pad-up
+13 | pad-down | playstation.d-pad-down | xbox.d-pad-down
+14 | pad-left | playstation.d-pad-left | xbox.d-pad-left
+15 | pad-right | playstation.d-pad-right | xbox.d-pad-right
+16 | center-button | playstation.center | xbox.center
+
+For example:
+
+```ts
+gamepad.on({
+    actions: ['pad-down', 'right-shoulder'],
+    callback: () => {},
+});
+```
+
+will trigger the callback when the down pad and the right shoulder button are pressed at the same time.
+
+You can also use joystick aliases to trigger callbacks on specific joystick movements.
+
+For example:
+
+```ts
+gamepad.on({
+    actions: ['left.joystick'],
+    callback: () => {},
+});
+```
+
+will trigger the callback when the left joystick moves.
+
+There are also aliases for specific directions available:
+
+```ts
+gamepad.on({
+    actions: ['left.joystick.down'],
+    callback: () => {},
+});
+```
+
+will trigger the callback when the left joystick is moved down.
+
+The available aliases are
+
+```ts
+[
+    'right.joystick',
+    'left.joystick',
+    'left.joystick.down',
+    'left.joystick.up',
+    'left.joystick.left',
+    'left.joystick.right',
+    'right.joystick.down',
+    'right.joystick.up',
+    'right.joystick.left',
+    'right.joystick.right',
+]
+```
+
+**Caution:** Using an axis action in a combination with a button action will result in an error.
+
+#### type
+
+Type
+
+```ts
+type type = ('press' | 'hold')
+```
+
+The type of action to execute.
+
+Choosing `press` will trigger the action once if you press and then release the button. Using `hold` on the other hand will trigger the action constantly until you release the button.
+
+The default value for type is `hold`.
+
+**Caution:** Using an axis action with a ‘press’ type will result in an error.
+
+#### callback
+
+Type:
+
+```ts
+type callback = ((buttons: GamepadButton[]) => void) | ((axes: [number, number]) => void) | string
+```
+
+The function that will execute when a gamepad action is triggered.
+
+```ts
+gamepad.on({
+    actions: ['face-button-down'],
+    callback: (buttons: GamepadButton[]) => doSomething(buttons[0].pressed, buttons[0].touched, buttons[0].value),
+});
+```
+
+```ts
+gamepad.on({
+    actions: ['left.joystick'],
+    callback: (axes: [number, number]) => doSomething(axes[0], axes[1]),
+});
+```
+
+If you are using an action for buttons, you can get the [GamepadButton](https://developer.mozilla.org/en-US/docs/Web/API/GamepadButton) objects for each button that is pressed. If you are using a joystick action, you can get the x and y coordinates of the joystick.
+
+If you already have a registered action you can use it instead of a function:
+
+```ts
+gamepad.on({
+    actions: ['face-button-down'],
+    callback: 'registered-action',
+});
+```
+
+### Registering Multiple Callbacks 2.4.4
+
+You can now register multiple callbacks or actions for the same action combination and type. All callbacks will be executed in the order they were registered.
+
+```ts
+// Register first callback
+gamepad.on({
+    actions: [0],
+    callback: () => console.log('First callback'),
+    type: 'press'
+});
+
+// Register second callback for the same action
+gamepad.on({
+    actions: [0],
+    callback: () => console.log('Second callback'),
+    type: 'press'
+});
+
+// When button 0 is pressed, both callbacks will execute:
+// Output: 'First callback'
+// Output: 'Second callback'
+```
+
+This is particularly useful when different parts of your application need to respond to the same gamepad input without having to manually manage callback registration and unregistration.
+
+**Caution:** Attempting to register the exact same callback reference or action twice will result in an error to prevent accidental duplicates.
+
+## .off(actions, callback)
+
+Removes a registered gamepad action or a specific callback from an action.
+
+```ts
+gamepad.off(actions: GamepadInput[], callback?: Function | string);
+```
+
+### actions
+
+The actions array is an array of the gamepad actions you want to remove.
+
+### callback (optional)
+
+The specific callback function or action name you want to remove from the action combination. If not provided, all callbacks for the action will be removed.
+
+### Removing All Callbacks
+
+If you provide only the actions array, all callbacks registered for that action combination will be removed across all types (press, hold).
+
+```ts
+// Remove all callbacks for this action
+gamepad.off(['left.joystick']);
+```
+
+You will need to provide the exact actions you have registered in order to remove them.
+
+For example if you have registered an action using a `playstation` alias, you will also need to remove it using the same alias.
+
+### Removing a Specific Callback
+
+To remove only a specific callback while keeping others, pass the callback reference as the second parameter:
+
+```ts
+const myCallback = () => console.log('My callback');
+
+gamepad.on({
+    actions: [0],
+    callback: myCallback,
+    type: 'press'
+});
+
+// Later, remove only this specific callback
+gamepad.off([0], myCallback);
+```
+
+This is useful when multiple callbacks are registered for the same action:
+
+```ts
+const callback1 = () => console.log('First');
+const callback2 = () => console.log('Second');
+
+gamepad.on({ actions: [0], callback: callback1, type: 'press' });
+gamepad.on({ actions: [0], callback: callback2, type: 'press' });
+
+// Remove only callback1, callback2 will still execute
+gamepad.off([0], callback1);
+```
+
+**Caution:** Anonymous arrow functions (`() => {}`) cannot be removed individually since they don’t have a reference. To remove specific callbacks, always store them in a variable first, similar to how `removeEventListener` works in the DOM.

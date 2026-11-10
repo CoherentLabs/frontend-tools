@@ -1,0 +1,57 @@
+# element.dragBy
+
+Source: https://frontend-tools.coherent-labs.com/e2e/api/domelement/interactions/dragby/
+
+## element.dragBy(deltaX?: number, deltaY?: number): Promise<void>
+
+Drags the element by the specified offsets relative to the element’s center.
+
+Performs a pointer drag from the center of the current element to a new position calculated by adding the specified offsets to the element’s center coordinates. This is useful for dragging elements by a relative distance rather than to an absolute position or target element.
+
+- **`deltaX`**: (Optional) Horizontal offset in pixels to move from the element’s center. Defaults to 0.
+- **`deltaY`**: (Optional) Vertical offset in pixels to move from the element’s center. Defaults to 0.
+- Returns a promise that resolves once the drag sequence (press → move → release) completes.
+
+**Note:**
+
+- Dragging is supported only for elements with drag functionality implemented via `mousedown`, `mousemove`, and `mouseup` events.
+- Text elements are not supported for dragging.
+- If the current element is not visible, it will be automatically scrolled into view before the drag.
+- Both `deltaX` and `deltaY` are relative to the element’s center position and can be positive or negative values.
+
+## Usage
+
+### Drag right by 100 pixels
+
+```js
+describe('Test script', function () {
+    it('Drag element to the right', async () => {
+        const element = await gf.get('.draggable-item');
+        await element.dragBy(100, 0);
+    });
+});
+```
+
+### Drag down and to the right
+
+```js
+describe('Test script', function () {
+    it('Drag element diagonally', async () => {
+        const element = await gf.get('.draggable-item');
+        await element.dragBy(50, 75);
+    });
+});
+```
+
+### Drag with negative offsets (up and left)
+
+```js
+describe('Test script', function () {
+    it('Drag element up and to the left', async () => {
+        const element = await gf.get('.draggable-item');
+        await element.dragBy(-100, -50);
+    });
+});
+```
+
+**Note:** Text elements are not supported for dragging.

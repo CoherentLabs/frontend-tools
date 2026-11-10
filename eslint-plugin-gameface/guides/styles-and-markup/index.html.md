@@ -1,0 +1,62 @@
+# Styles and HTML markup
+
+Source: https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/styles-and-markup/
+
+Most Gameface related issues in day-to-day work show up as **CSS** or **HTML** problems. The plugin surfaces them as ESLint messages with the `gameface/` prefix.
+
+## CSS files
+
+In `.css` and `.scss` you may see errors for:
+
+- **Unsupported properties** — for example properties Gameface’s support tables list as missing
+- **Partial properties** — the property exists but a specific value (often a keyword) is not supported
+- **Unsupported functions** — such as `clamp()`, `min()`, or `max()` where Gameface marks them missing
+- **Selectors** — pseudos Gameface does not implement, or only partially supports
+- **Keyframes and variables** — patterns documented as unsupported, like `var()` inside `@keyframes` or `calc(50% - 20px)` mixing percent and pixels
+
+Fix the stylesheet or adjust the rule if your team accepts the risk and wants to silence that diagnostic.
+
+## HTML markup
+
+In `.html` you may see:
+
+- **Unsupported elements** — tags Gameface parses but does not implement (the default preset focuses on a curated set such as `<select>`, table layout tags, `<iframe>`, rather than every heading or paragraph)
+- **Partial elements** — warnings when you use an attribute Gameface does not support on that tag
+- The same **CSS checks** inside `<style>` blocks and on `style="..."` attributes
+
+## JSX components
+
+For components, put styles in `.css` files when possible.
+
+If you use inline styles, the linter checks both common JSX forms:
+
+- **Object** `style={{ alignContent: 'space-between' }}` — unsupported **property names** and bad **values** on keys (for example a typo like `alingContent`)
+- **String** `style="display: flex; gap: clamp(1rem, 2rem, 3rem)"` — the full CSS string, including unsupported **functions** and keyframes rules
+
+Some checks (functions, `var()` in keyframes, mixed `%` in `calc()`) apply only to **string** styles, not object literals. See Rules reference — JSX `style` props.
+
+## Vue components
+
+For `.vue` single-file components, checks mirror JSX and HTML:
+
+- **`:style` object** — property names and partial values on keys (for example `:style="{ alignContent: 'stretch' }"`)
+- **`:style` / `style` string** — full CSS text, including functions and keyframe limits
+- **`data-bind-*`** — plain or bound (`:data-bind-value="..."`) attributes in the template
+- **`<style>` blocks** — the same rules as `.css` files (`vue-sfc-css-*`)
+
+See Vue SFC and Rules reference — Vue `:style`.
+
+## Svelte components
+
+For `.svelte` single-file components, checks mirror JSX and HTML:
+
+- **`style={object}`** — property names and partial values on keys (when an object literal is used)
+- **`style="..."` / `style={\`…\`}\`** — full CSS text, including functions and keyframe limits
+- **`data-bind-*`** — plain attributes or expressions in markup (`data-bind-value="{Model.score}"`)
+- **`<style>` blocks** — the same rules as `.css` files (`svelte-sfc-css-*`)
+
+See Svelte SFC and Rules reference — Svelte `style`.
+
+## Partial support warnings
+
+Some rules default to **warn** instead of **error** (for example partial selectors or partial JS APIs). Treat them as “works in browser, may fail or behave differently in Gameface” and fix or suppress per team policy.

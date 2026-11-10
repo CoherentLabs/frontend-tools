@@ -1,0 +1,13 @@
+# Plugin configuration
+
+Source: https://frontend-tools.coherent-labs.com/vite-gameface-style-transformer/concepts/plugin-cofiguration/
+
+The plugin accepts an optional configuration object with two flags:
+
+Option | Type | Default | Description
+`suppressWarnings` | `boolean` | `false` | Disables plugin warning logs in the console.
+`isSolidProject` | `boolean` | `false` | Treats JSX/TSX output as Solid-style and uses `class` instead of React-style `className` when injecting classes.
+
+## suppressWarnings
+
+Prevents warnings from being printed by the transformer.

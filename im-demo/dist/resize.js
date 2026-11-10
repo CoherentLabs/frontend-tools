@@ -1,7 +1,30 @@
-(function(global, factory) {
-  typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.resize = factory());
-})(this, (function() {
-  "use strict";
+"use strict";
+var resize = (() => {
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __export = (target, all) => {
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
+  };
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+  // src/resize.ts
+  var resize_exports = {};
+  __export(resize_exports, {
+    default: () => resize_default2
+  });
+
+  // src/utils/utility-functions.ts
   function toDeg(rad) {
     return rad * 180 / Math.PI;
   }
@@ -22,8 +45,11 @@
       y: (y1 + y2) / 2
     };
   }
-  class IM {
+
+  // src/utils/global-object.ts
+  var IM = class _IM2 {
     constructor() {
+      // eslint-disable-next-line require-jsdoc
       this.actions = [];
       this.keyboardFunctions = [];
       this.gamepadFunctions = [];
@@ -32,7 +58,7 @@
      * Initialize global object
      */
     init() {
-      if (!window._IM) window._IM = new IM();
+      if (!window._IM) window._IM = new _IM2();
     }
     /**
      * Get keyboard functions matching the given keys
@@ -49,24 +75,24 @@
     /**
      * Get a gamepad function matching the given button actions and type
      */
-    getGamepadAction({ actions: actions2, type }) {
+    getGamepadAction({ actions, type }) {
       return _IM.gamepadFunctions.find((gpFunc) => {
-        return gpFunc.actions.every((action) => actions2.includes(action)) && gpFunc.type === type && gpFunc.actions.length === actions2.length;
+        return gpFunc.actions.every((action) => actions.includes(action)) && gpFunc.type === type && gpFunc.actions.length === actions.length;
       });
     }
     /**
      * Get all gamepad functions matching the given button actions
      */
-    getGamepadActions(actions2, exactMatch = true) {
+    getGamepadActions(actions) {
       return _IM.gamepadFunctions.filter(
-        (gpFunc) => gpFunc.actions.every((action) => actions2.includes(action)) && (exactMatch ? gpFunc.actions.length === actions2.length : true)
+        (gpFunc) => gpFunc.actions.every((action) => actions.includes(action)) && gpFunc.actions.length === actions.length
       );
     }
     /**
      * Get the index of a gamepad function matching the given button actions
      */
-    getGamepadActionIndex(actions2) {
-      return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions2.includes(action)));
+    getGamepadActionIndex(actions) {
+      return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions.includes(action)));
     }
     /**
      * Get an action by name
@@ -123,21 +149,23 @@ This ${callbackType} is already registered for this combination and type. To upd
       const index = _IM.gamepadFunctions.indexOf(functionEntry);
       if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
     }
-  }
-  const IM$1 = new IM();
-  class Actions {
+  };
+  var global_object_default = new IM();
+
+  // src/lib_components/actions.ts
+  var Actions = class {
     /**
      * Register an action
      */
     register(action, callback) {
-      if (IM$1.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
+      if (global_object_default.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
       _IM.actions.push({ name: action, callback });
     }
     /**
      * Remove a registered action
      */
     remove(action) {
-      const actionIndex = IM$1.getActionIndex(action);
+      const actionIndex = global_object_default.getActionIndex(action);
       if (actionIndex === -1) return console.error(`${action} is not a registered action!`);
       _IM.actions.splice(actionIndex, 1);
     }
@@ -145,12 +173,14 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Trigger an action
      */
     execute(action, value) {
-      const actionObject = IM$1.getAction(action);
+      const actionObject = global_object_default.getAction(action);
       if (!actionObject) return console.error(`${action} is not a registered action!`);
       actionObject.callback(value);
     }
-  }
-  const actions = new Actions();
+  };
+  var actions_default = new Actions();
+
+  // src/utils/gesture-utils.ts
   function getDirection(diffX, diffY) {
     const MIN_SWIPE_OFFSET = 200;
     if (diffY < 0 && diffX > -MIN_SWIPE_OFFSET && diffX < MIN_SWIPE_OFFSET) return "top";
@@ -165,8 +195,10 @@ This ${callbackType} is already registered for this combination and type. To upd
   function getElement(element) {
     return element instanceof HTMLElement ? element : document.querySelector(element);
   }
-  const MULTIPLE_TOUCHES_MIN_NUMBER = 2;
-  class TouchGestures {
+
+  // src/lib_components/touch-gestures.ts
+  var MULTIPLE_TOUCHES_MIN_NUMBER = 2;
+  var TouchGestures = class {
     constructor() {
       this.activeTouches = /* @__PURE__ */ new Map();
     }
@@ -476,9 +508,11 @@ This ${callbackType} is already registered for this combination and type. To upd
         }
       };
     }
-  }
-  const touchGestures = new TouchGestures();
-  class Resize {
+  };
+  var touch_gestures_default = new TouchGestures();
+
+  // src/lib_components/resize.ts
+  var Resize = class {
     constructor(options) {
       this.enabled = false;
       this.activeEdge = null;
@@ -553,16 +587,16 @@ This ${callbackType} is already registered for this combination and type. To upd
       const offsetY = event.clientY - this.elementRect.y;
       switch (this.activeEdge) {
         case "bottom":
-          actions.execute(this.heightAction, offsetY);
+          actions_default.execute(this.heightAction, offsetY);
           this.options.onHeightChange && this.options.onHeightChange(offsetY);
           break;
         case "right":
-          actions.execute(this.widthAction, offsetX);
+          actions_default.execute(this.widthAction, offsetX);
           this.options.onWidthChange && this.options.onWidthChange(offsetX);
           break;
         case "bottomRight":
-          actions.execute(this.heightAction, offsetY);
-          actions.execute(this.widthAction, offsetX);
+          actions_default.execute(this.heightAction, offsetY);
+          actions_default.execute(this.widthAction, offsetX);
           this.options.onWidthChange && this.options.onWidthChange(offsetX);
           this.options.onHeightChange && this.options.onHeightChange(offsetY);
           break;
@@ -580,7 +614,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Adds the touch events to fire the actions
      */
     addTouchEvents() {
-      this.touchEvents = touchGestures.drag({
+      this.touchEvents = touch_gestures_default.drag({
         element: this.resizableElement,
         onDragStart: (event) => {
           this.onMouseDown(event);
@@ -659,11 +693,11 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Registers actions
      */
     registerActions() {
-      actions.register(this.heightAction, (height) => {
+      actions_default.register(this.heightAction, (height) => {
         this.resizableElement.style.height = `${clamp(height, this.options.heightMin, this.options.heightMax)}px`;
         this.edges.right.style.height = `${clamp(height, this.options.heightMin, this.options.heightMax) - this.options.edgeWidth}px`;
       });
-      actions.register(this.widthAction, (width) => {
+      actions_default.register(this.widthAction, (width) => {
         this.resizableElement.style.width = `${clamp(width, this.options.widthMin, this.options.widthMax)}px`;
         this.edges.bottom.style.width = `${clamp(width, this.options.widthMin, this.options.widthMax) - this.options.edgeWidth}px`;
       });
@@ -672,10 +706,14 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Removes the registered actions
      */
     removeActions() {
-      actions.remove(this.heightAction);
-      actions.remove(this.widthAction);
+      actions_default.remove(this.heightAction);
+      actions_default.remove(this.widthAction);
     }
-  }
-  IM$1.init();
-  return Resize;
-}));
+  };
+  var resize_default = Resize;
+
+  // src/resize.ts
+  global_object_default.init();
+  var resize_default2 = resize_default;
+  return __toCommonJS(resize_exports);
+})();

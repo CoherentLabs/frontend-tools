@@ -1,9 +1,42 @@
-(function(global, factory) {
-  typeof exports === "object" && typeof module !== "undefined" ? factory(exports) : typeof define === "function" && define.amd ? define(["exports"], factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, factory(global.interactionManager = {}));
-})(this, (function(exports2) {
-  "use strict";
-  class IM {
+"use strict";
+var interactionManager = (() => {
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __export = (target, all) => {
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
+  };
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+  // src/interaction-manager.ts
+  var interaction_manager_exports = {};
+  __export(interaction_manager_exports, {
+    actions: () => actions_default,
+    draggable: () => draggable_default,
+    dropzone: () => dropzone_default,
+    gamepad: () => gamepad_default,
+    keyboard: () => keyboard_default,
+    resize: () => resize_default,
+    rotate: () => rotate_default,
+    spatialNavigation: () => spatial_navigation_default,
+    touchGestures: () => touch_gestures_default,
+    zoom: () => zoom_default
+  });
+
+  // src/utils/global-object.ts
+  var IM = class _IM2 {
     constructor() {
+      // eslint-disable-next-line require-jsdoc
       this.actions = [];
       this.keyboardFunctions = [];
       this.gamepadFunctions = [];
@@ -12,7 +45,7 @@
      * Initialize global object
      */
     init() {
-      if (!window._IM) window._IM = new IM();
+      if (!window._IM) window._IM = new _IM2();
     }
     /**
      * Get keyboard functions matching the given keys
@@ -29,24 +62,24 @@
     /**
      * Get a gamepad function matching the given button actions and type
      */
-    getGamepadAction({ actions: actions2, type }) {
+    getGamepadAction({ actions, type }) {
       return _IM.gamepadFunctions.find((gpFunc) => {
-        return gpFunc.actions.every((action) => actions2.includes(action)) && gpFunc.type === type && gpFunc.actions.length === actions2.length;
+        return gpFunc.actions.every((action) => actions.includes(action)) && gpFunc.type === type && gpFunc.actions.length === actions.length;
       });
     }
     /**
      * Get all gamepad functions matching the given button actions
      */
-    getGamepadActions(actions2, exactMatch = true) {
+    getGamepadActions(actions) {
       return _IM.gamepadFunctions.filter(
-        (gpFunc) => gpFunc.actions.every((action) => actions2.includes(action)) && (exactMatch ? gpFunc.actions.length === actions2.length : true)
+        (gpFunc) => gpFunc.actions.every((action) => actions.includes(action)) && gpFunc.actions.length === actions.length
       );
     }
     /**
      * Get the index of a gamepad function matching the given button actions
      */
-    getGamepadActionIndex(actions2) {
-      return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions2.includes(action)));
+    getGamepadActionIndex(actions) {
+      return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions.includes(action)));
     }
     /**
      * Get an action by name
@@ -103,9 +136,11 @@ This ${callbackType} is already registered for this combination and type. To upd
       const index = _IM.gamepadFunctions.indexOf(functionEntry);
       if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
     }
-  }
-  const IM$1 = new IM();
-  const mappings$1 = {
+  };
+  var global_object_default = new IM();
+
+  // src/utils/keyboard-mappings.ts
+  var mappings = {
     ALT: 18,
     ARROW_DOWN: 40,
     ARROW_LEFT: 37,
@@ -206,20 +241,22 @@ This ${callbackType} is already registered for this combination and type. To upd
     EQUAL: 187,
     SYSTEM: 91
   };
-  const mappingsKeys = Object.keys(mappings$1);
-  class Actions {
+  var keyboard_mappings_default = mappings;
+
+  // src/lib_components/actions.ts
+  var Actions = class {
     /**
      * Register an action
      */
     register(action, callback) {
-      if (IM$1.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
+      if (global_object_default.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
       _IM.actions.push({ name: action, callback });
     }
     /**
      * Remove a registered action
      */
     remove(action) {
-      const actionIndex = IM$1.getActionIndex(action);
+      const actionIndex = global_object_default.getActionIndex(action);
       if (actionIndex === -1) return console.error(`${action} is not a registered action!`);
       _IM.actions.splice(actionIndex, 1);
     }
@@ -227,19 +264,21 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Trigger an action
      */
     execute(action, value) {
-      const actionObject = IM$1.getAction(action);
+      const actionObject = global_object_default.getAction(action);
       if (!actionObject) return console.error(`${action} is not a registered action!`);
       actionObject.callback(value);
     }
-  }
-  const actions = new Actions();
-  class Keyboard {
+  };
+  var actions_default = new Actions();
+
+  // src/lib_components/keyboard.ts
+  var Keyboard = class {
     constructor() {
       this.eventListenerAttached = false;
       this.keysPressed = /* @__PURE__ */ new Set();
       this.onKeyDown = this.onKeyDown.bind(this);
       this.onKeyUp = this.onKeyUp.bind(this);
-      if (!window.KEYS) window.KEYS = mappings$1;
+      if (!window.KEYS) window.KEYS = keyboard_mappings_default;
     }
     /**
      * Registers keyboard event listeners
@@ -250,7 +289,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     on(options) {
       const keys = this.normalizeKeys(options.keys);
-      const incorrectKeys = keys.filter((key) => !mappings$1[key]);
+      const incorrectKeys = keys.filter((key) => !keyboard_mappings_default[key]);
       if (incorrectKeys.length > 0) return console.error(`The following keys [${incorrectKeys.join(", ")}] you have entered are incorrect! `);
       if (!this.eventListenerAttached) {
         document.addEventListener("keydown", this.onKeyDown);
@@ -259,10 +298,10 @@ This ${callbackType} is already registered for this combination and type. To upd
       }
       const types = !options.type ? ["press"] : Array.isArray(options.type) ? options.type : [options.type];
       types.forEach((type) => {
-        const registeredKeys = IM$1.getKeys(keys);
+        const registeredKeys = global_object_default.getKeys(keys);
         const existingEntry = registeredKeys.find((key) => key.type === type);
         if (existingEntry) {
-          return IM$1.addCallbackToEntry(existingEntry, options.callback, {
+          return global_object_default.addCallbackToEntry(existingEntry, options.callback, {
             identifier: `Keys: [${keys.join(", ")}]`,
             type
           });
@@ -282,7 +321,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     off(keys, callback) {
       keys = this.normalizeKeys(keys);
-      const keyCombinations = IM$1.getKeys(keys);
+      const keyCombinations = global_object_default.getKeys(keys);
       if (keyCombinations.length === 0) return console.error("You are trying to remove a non-existent key combination!");
       if (callback) {
         const combinationsWithCallback = keyCombinations.filter((combination) => combination.callbacks.includes(callback));
@@ -293,12 +332,12 @@ This ${callbackType} is already registered for this combination and type. To upd
           const cbIndex = combination.callbacks.indexOf(callback);
           combination.callbacks.splice(cbIndex, 1);
           if (combination.callbacks.length === 0) {
-            IM$1.removeKeyboardFunction(combination);
+            global_object_default.removeKeyboardFunction(combination);
           }
         });
       } else {
         keyCombinations.forEach((combination) => {
-          IM$1.removeKeyboardFunction(combination);
+          global_object_default.removeKeyboardFunction(combination);
         });
       }
       if (_IM.keyboardFunctions.length === 0) {
@@ -314,7 +353,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       const keyPressed = this.keyCodeToString(event.keyCode);
       if (!keyPressed) return;
       this.keysPressed.add(keyPressed);
-      const registeredKeys = IM$1.getKeys([...this.keysPressed]);
+      const registeredKeys = global_object_default.getKeys([...this.keysPressed]);
       if (registeredKeys.length === 0) return;
       registeredKeys.forEach((key) => {
         if (key.type === "press" && event.repeat) return;
@@ -330,7 +369,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       const keyPressed = this.keyCodeToString(event.keyCode);
       if (!keyPressed) return;
       this.keysPressed.delete(keyPressed);
-      const registeredKeys = IM$1.getKeys([keyPressed]);
+      const registeredKeys = global_object_default.getKeys([keyPressed]);
       if (registeredKeys.length === 0) return;
       registeredKeys.forEach((key) => {
         if (key.type === "lift" && key.keys.indexOf(keyPressed) !== -1) this.executeCallbacks(event, key);
@@ -340,7 +379,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Convert keyCode to string representing key
      */
     keyCodeToString(code) {
-      return mappingsKeys.find((key) => mappings$1[key] === code);
+      return Object.keys(keyboard_mappings_default).find((key) => keyboard_mappings_default[key] === code);
     }
     /**
      * Removes duplicates and converts KeyCodes to valid KeyName strings
@@ -366,13 +405,15 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     executeCallbacks(event, registeredKeys) {
       registeredKeys.callbacks.forEach((callback) => {
-        if (typeof callback === "string") return actions.execute(callback, event);
+        if (typeof callback === "string") return actions_default.execute(callback, event);
         callback(event);
       });
     }
-  }
-  const keyboard = new Keyboard();
-  const mappings = {
+  };
+  var keyboard_default = new Keyboard();
+
+  // src/utils/gamepad-mappings.ts
+  var mappings2 = {
     FACE_BUTTON_DOWN: 0,
     FACE_BUTTON_RIGHT: 1,
     FACE_BUTTON_LEFT: 2,
@@ -395,10 +436,10 @@ This ${callbackType} is already registered for this combination and type. To upd
       "face-button-left": "FACE_BUTTON_LEFT",
       "face-button-right": "FACE_BUTTON_RIGHT",
       "face-button-top": "FACE_BUTTON_TOP",
-      "left-shoulder": "LEFT_SHOULDER",
-      "right-shoulder": "RIGHT_SHOULDER",
-      "left-shoulder-bottom": "LEFT_SHOULDER_BOTTOM",
-      "right-shoulder-bottom": "RIGHT_SHOULDER_BOTTOM",
+      "left-sholder": "LEFT_SHOULDER",
+      "right-sholder": "RIGHT_SHOULDER",
+      "left-sholder-bottom": "LEFT_SHOULDER_BOTTOM",
+      "right-sholder-bottom": "RIGHT_SHOULDER_BOTTOM",
       select: "SELECT",
       start: "START",
       "left-analogue-stick": "LEFT_ANALOGUE_STICK",
@@ -456,56 +497,74 @@ This ${callbackType} is already registered for this combination and type. To upd
       "right.joystick.right"
     ]
   };
-  const AXIS_THRESHOLD = 0.9;
-  const ACTION_TYPES = ["press", "hold"];
-  class Gamepad {
+  var gamepad_mappings_default = mappings2;
+
+  // src/lib_components/gamepad.ts
+  var AXIS_THRESHOLD = 0.9;
+  var ACTION_TYPES = ["press", "hold"];
+  var Gamepad = class {
     constructor() {
-      this._gamepadEnabled = false;
-      this._pollingInterval = 200;
+      this.pollingStarted = false;
+      this.gamepadEnabled = false;
+      this.pollingInterval = 200;
       this._pressedAction = null;
       this._pressedButtons = [];
+      this.onGamepadConnected = this.onGamepadConnected.bind(this);
       this.sanitizeAction = this.sanitizeAction.bind(this);
     }
     /**
      * Allow gamepads to be connected
      */
     set enabled(isEnabled) {
-      this._gamepadEnabled = isEnabled;
-      this._gamepadEnabled ? this.startPolling() : this.stopPolling();
+      this.gamepadEnabled = isEnabled;
+      this.gamepadEnabled ? this.init() : this.deinit();
     }
-    set pollingInterval(interval) {
-      this._pollingInterval = interval;
-      if (this._gamepadEnabled) {
-        if (this.pollingIntervalRef) this.stopPolling();
-        this.startPolling();
-      }
+    /**
+     * Attaches the event listeners for the gamepads
+     */
+    init() {
+      window.addEventListener("gamepadconnected", this.onGamepadConnected);
+    }
+    /**
+     * Removes any attached event listeners for gamepads
+     */
+    deinit() {
+      window.removeEventListener("gamepadconnected", this.onGamepadConnected);
+    }
+    /**
+     * Starts polling on the first connected
+     */
+    onGamepadConnected() {
+      if (this.pollingStarted) return;
+      this.pollingStarted = true;
+      this.startPolling();
     }
     on(options) {
-      const actions2 = options.actions.map(this.sanitizeAction);
-      const isAxisAlias = mappings.axisAliases.some((alias) => actions2.includes(alias));
+      const actions = options.actions.map(this.sanitizeAction);
+      const isAxisAlias = gamepad_mappings_default.axisAliases.some((alias) => actions.includes(alias));
       const type = options.type && ACTION_TYPES.includes(options.type) ? options.type : "hold";
       if (type === "press" && isAxisAlias) {
         return console.error(`You can't use an axis action with a 'press' type!`);
       }
-      if (actions2.length > 1 && isAxisAlias) {
+      if (actions.length > 1 && isAxisAlias) {
         return console.error(`You can't use an axis action in a combination with a button action`);
       }
-      const existingEntry = IM$1.getGamepadAction({ actions: actions2, type });
+      const existingEntry = global_object_default.getGamepadAction({ actions, type });
       if (existingEntry) {
-        return IM$1.addCallbackToEntry(existingEntry, options.callback, {
-          identifier: `Actions: [${actions2.join(", ")}]`,
+        return global_object_default.addCallbackToEntry(existingEntry, options.callback, {
+          identifier: `Actions: [${actions.join(", ")}]`,
           type
         });
       }
-      _IM.gamepadFunctions.push({ actions: actions2, type, callbacks: [options.callback] });
+      _IM.gamepadFunctions.push({ actions, type, callbacks: [options.callback] });
     }
     /**
      * Removes either an action or a callback from the provided action
      * @param {Array} actions - Array containing the action you want to remove
      * @param {string | Function} callback - Callback or action you want to remove 
      */
-    off(actions2, callback) {
-      const matchingActions = IM$1.getGamepadActions(actions2.map(this.sanitizeAction));
+    off(actions, callback) {
+      const matchingActions = global_object_default.getGamepadActions(actions.map(this.sanitizeAction));
       if (matchingActions.length === 0) {
         return console.error("You are trying to remove a non-existent action!");
       }
@@ -516,29 +575,28 @@ This ${callbackType} is already registered for this combination and type. To upd
           const cbIndex = action.callbacks.indexOf(callback);
           action.callbacks.splice(cbIndex, 1);
           if (action.callbacks.length === 0) {
-            IM$1.removeGamepadFunction(action);
+            global_object_default.removeGamepadFunction(action);
           }
         });
       } else {
-        matchingActions.forEach((action) => IM$1.removeGamepadFunction(action));
+        matchingActions.forEach((action) => global_object_default.removeGamepadFunction(action));
       }
     }
     /**
      * Loop that handles button presses and axis movement
      */
     startPolling() {
-      this.pollingIntervalRef = setInterval(() => {
-        const gamepads = navigator.getGamepads();
-        if (gamepads.length === 0) return;
-        gamepads.forEach((gamepad2) => {
-          if (!gamepad2) return;
-          this.handleButtons(gamepad2.buttons);
-          this.handleJoysticks(gamepad2.axes);
-        });
-      }, this._pollingInterval);
-    }
-    stopPolling() {
-      if (this.pollingIntervalRef) clearInterval(this.pollingIntervalRef);
+      const gamepads = navigator.getGamepads();
+      if (gamepads.length === 0) {
+        this.pollingStarted = false;
+        return;
+      }
+      gamepads.forEach((gamepad) => {
+        if (!gamepad) return;
+        this.handleButtons(gamepad.buttons);
+        this.handleJoysticks(gamepad.axes);
+      });
+      setTimeout(this.startPolling.bind(this), this.pollingInterval);
     }
     handleButtons(buttons) {
       const pressedButtons = buttons.reduce(
@@ -551,7 +609,7 @@ This ${callbackType} is already registered for this combination and type. To upd
         },
         { buttonIndexes: [], buttons: [] }
       );
-      const gamepadActions = IM$1.getGamepadActions(pressedButtons.buttonIndexes, false);
+      const gamepadActions = global_object_default.getGamepadActions(pressedButtons.buttonIndexes);
       if (this._pressedAction) {
         if (!gamepadActions.includes(this._pressedAction)) {
           this.executeCallbacks(this._pressedAction, this._pressedButtons);
@@ -611,28 +669,30 @@ This ${callbackType} is already registered for this combination and type. To upd
     sanitizeAction(action) {
       if (typeof action === "number") return action;
       const actionName = action.toLowerCase();
-      if (mappings.axisAliases.includes(actionName)) return actionName;
-      const key = mappings.aliases[actionName];
-      if (key) return mappings[key];
+      if (gamepad_mappings_default.axisAliases.includes(actionName)) return actionName;
+      const key = gamepad_mappings_default.aliases[actionName];
+      if (key) return gamepad_mappings_default[key];
       throw new Error(`You have entered a non-supported button alias: ${action}`);
     }
     /**
      * Gets all registered Joystick actions
      */
     getJoystickActions() {
-      return _IM.gamepadFunctions.filter((gpFunc) => mappings.axisAliases.includes(gpFunc.actions[0]));
+      return _IM.gamepadFunctions.filter((gpFunc) => gamepad_mappings_default.axisAliases.includes(gpFunc.actions[0]));
     }
     /**
      * Executes the callbacks from the registered action
      */
     executeCallbacks(action, value) {
       action.callbacks.forEach((callback) => {
-        if (typeof callback === "string") return actions.execute(callback, value);
+        if (typeof callback === "string") return actions_default.execute(callback, value);
         callback(value);
       });
     }
-  }
-  const gamepad = new Gamepad();
+  };
+  var gamepad_default = new Gamepad();
+
+  // src/utils/utility-functions.ts
   function toDeg(rad) {
     return rad * 180 / Math.PI;
   }
@@ -653,29 +713,19 @@ This ${callbackType} is already registered for this combination and type. To upd
       y: (y1 + y2) / 2
     };
   }
-  const directions = ["down", "up", "left", "right"];
-  const defaultKeysState = { up: ["arrow_up"], down: ["arrow_down"], right: ["arrow_right"], left: ["arrow_left"] };
-  class SpatialNavigation {
+
+  // src/lib_components/spatial-navigation.ts
+  var directions = ["down", "up", "left", "right"];
+  var defaultKeysState = { up: ["arrow_up"], down: ["arrow_down"], right: ["arrow_right"], left: ["arrow_left"] };
+  var SpatialNavigation = class {
     constructor() {
       this.enabled = false;
-      this.areas = { default: this.createDefaultAreaState() };
+      this.areas = { default: { elements: [], distance: 0, overflow: { x: 0, y: 0 } } };
       this.registeredKeys = /* @__PURE__ */ new Set();
       this.clearCurrentActiveKeys = false;
       this.overlapPercentage = 0.5;
       this.lastFocusedElement = null;
       this.paused = false;
-      this.syncLastFocused = (event) => {
-        const target = event.target;
-        if (!this.enabled || !target) return;
-        for (const areaName in this.areas) {
-          const area = this.areas[areaName];
-          if (area.elements.includes(target)) {
-            area.lastFocusedElement = target;
-            this.lastFocusedElement = target;
-            break;
-          }
-        }
-      };
     }
     /**
      * Initializes the spatial navigation
@@ -701,7 +751,6 @@ This ${callbackType} is already registered for this combination and type. To upd
       this.add(navigableElements);
       this.activeKeys = JSON.parse(JSON.stringify(defaultKeysState));
       this.registerKeyActions();
-      window.addEventListener("focusin", this.syncLastFocused);
       if (overlap && 0 <= overlap && overlap <= 1) {
         this.overlapPercentage = overlap;
       }
@@ -712,11 +761,10 @@ This ${callbackType} is already registered for this combination and type. To upd
     deinit() {
       if (!this.enabled) return;
       this.enabled = false;
-      this.areas = { default: this.createDefaultAreaState() };
+      this.areas = { default: { elements: [], distance: 0, overflow: { x: 0, y: 0 } } };
       this.removeKeyActions();
       this.overlapPercentage = 0.5;
       this.lastFocusedElement = null;
-      window.removeEventListener("focusin", this.syncLastFocused);
     }
     /**
      * Add new elements to area or new area
@@ -757,27 +805,6 @@ This ${callbackType} is already registered for this combination and type. To upd
       delete this.areas[area];
     }
     /**
-     * Gets the last focused element from the specified area
-     * @param area
-     */
-    getLastFocused(area = "default") {
-      const el = this.areas[area]?.lastFocusedElement;
-      if (el && !document.contains(el)) {
-        this.areas[area].lastFocusedElement = void 0;
-        return void 0;
-      }
-      return el;
-    }
-    /**
-     * Returns the structure of the default area
-     */
-    createDefaultAreaState() {
-      return {
-        elements: [],
-        lastFocusedElement: void 0
-      };
-    }
-    /**
      * Get elements from selector and save them to the default group
      * @param navArea
      */
@@ -807,7 +834,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       }, []);
       if (domElements.length === 0) return console.error(`${navArea.elements.join(", ")} are either not a correct selectors or the elements are not present in the DOM.`);
       if (!this.areas[navArea.area]) {
-        this.areas[navArea.area] = this.createDefaultAreaState();
+        this.areas[navArea.area] = { elements: [], distance: 0, overflow: { x: 0, y: 0 } };
       }
       this.setNavigationAreaProperties(navArea.area, domElements);
     }
@@ -817,6 +844,35 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     setNavigationAreaProperties(area, domElements) {
       this.areas[area].elements.push(...domElements);
+      this.areas[area].distance = this.getElementsDistance(this.areas[area].elements);
+      this.areas[area].overflow = this.setOverflowValues(domElements[0].parentElement);
+    }
+    /**
+     * Calculates the distance between the provided elements and return the max distance
+     * @param elements
+     * @returns The max distance between the elements
+     */
+    getElementsDistance(elements) {
+      return elements.reduce((acc, el) => {
+        const { x, y } = el.getBoundingClientRect();
+        const distance = Math.hypot(x, y);
+        return acc < distance ? distance : acc;
+      }, 0);
+    }
+    /**
+     * Recursively checks for overflow in the parent elements and sets the area overflow values
+     * @param {HTMLElement} element - The element to check for overflow
+     * @returns {{x: number, y: number}|HTMLElement} - Next element to check for overflow or object with the overflow values
+     */
+    setOverflowValues(element) {
+      if (!element) return { x: 0, y: 0 };
+      const { scrollWidth, scrollHeight } = element;
+      const overflowX = Math.max(0, scrollWidth - window.innerWidth);
+      const overflowY = Math.max(0, scrollHeight - window.innerHeight);
+      if (overflowX > 0 || overflowY > 0) {
+        return { x: overflowX, y: overflowY };
+      }
+      return this.setOverflowValues(element.parentElement);
     }
     /**
      * Sets the tabindex of the element that needs to be focused
@@ -829,12 +885,19 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Returns the valid focusable elements in the navigable area
      * @param {HTMLElement} targetElement
      * @param {HTMLElement[]} elements
+     * @param {number} distance
      */
-    getFocusableGroup(targetElement, elements) {
+    getFocusableGroup(targetElement, elements, distance) {
       return elements.reduce((accumulator, element) => {
         if (element !== targetElement && !element.hasAttribute("disabled")) {
           const { x, y, height, width } = element.getBoundingClientRect();
-          accumulator.push({ element, x, y, height, width });
+          accumulator.push({
+            element,
+            x: x + distance,
+            y: y + distance,
+            height,
+            width
+          });
         }
         return accumulator;
       }, []);
@@ -856,21 +919,34 @@ This ${callbackType} is already registered for this combination and type. To upd
      * @param {Object} focusedElement
      * @param {number} focusedElement.x
      * @param {number} focusedElement.y
+     * @param {number} distance
+     * @param {{x: number, y: number}} overflow
      */
-    getClosestToEdge(direction, elements) {
+    getClosestToEdge(direction, elements, focusedElement, distance, overflow) {
+      let newDistance, oldDistance;
+      const bottomEdge = window.innerHeight + distance + overflow.y;
+      const rightEdge = window.innerWidth + distance + overflow.x;
       return elements.reduce((acc, el) => {
         switch (direction) {
           case "down":
-            return el.y < acc.y ? el : acc;
+            newDistance = Math.hypot(el.x - focusedElement.x, el.y);
+            oldDistance = Math.hypot(acc.x - focusedElement.x, acc.y);
+            break;
           case "up":
-            return el.y > acc.y ? el : acc;
+            newDistance = Math.hypot(el.x - focusedElement.x, bottomEdge - el.y);
+            oldDistance = Math.hypot(acc.x - focusedElement.x, bottomEdge - acc.y);
+            break;
           case "right":
-            return el.x < acc.x ? el : acc;
+            newDistance = Math.hypot(el.x, el.y - focusedElement.y);
+            oldDistance = Math.hypot(acc.x, acc.y - focusedElement.y);
+            break;
           case "left":
-            return el.x > acc.x ? el : acc;
-          default:
-            return acc;
+            newDistance = Math.hypot(rightEdge - el.x, el.y - focusedElement.y);
+            oldDistance = Math.hypot(rightEdge - acc.x, acc.y - focusedElement.y);
+            break;
         }
+        acc = newDistance < oldDistance ? el : acc;
+        return acc;
       });
     }
     /**
@@ -882,26 +958,36 @@ This ${callbackType} is already registered for this combination and type. To upd
       const activeElement = this.isActiveElementInGroup() && document.activeElement || this.lastFocusedElement;
       const currentArea = this.getCurrentArea(activeElement);
       if (!currentArea) return console.error("The active element is not in a focusable area!");
-      const { elements } = currentArea;
-      const focusableGroup = this.getFocusableGroup(activeElement, elements);
+      const { elements, distance, overflow } = currentArea;
+      const focusableGroup = this.getFocusableGroup(activeElement, elements, distance);
       const { x, y, width, height } = activeElement.getBoundingClientRect();
-      const dimensions = { x, y, width, height };
+      const adjustedDimensions = {
+        x: x + distance,
+        y: y + distance,
+        width,
+        height
+      };
       if (focusableGroup.length === 0) return;
-      const currentAxisGroup = this.filterGroupByCurrentAxis(direction, focusableGroup, dimensions);
+      const currentAxisGroup = this.filterGroupByCurrentAxis(direction, focusableGroup, adjustedDimensions);
       if (!currentAxisGroup.length) return;
       let nextFocusableElement = this.findNextElement(
         direction,
         currentAxisGroup,
-        dimensions.x,
-        dimensions.y
+        adjustedDimensions.x,
+        adjustedDimensions.y
       );
       if (!nextFocusableElement) {
-        nextFocusableElement = this.getClosestToEdge(direction, currentAxisGroup);
+        nextFocusableElement = this.getClosestToEdge(
+          direction,
+          currentAxisGroup,
+          adjustedDimensions,
+          distance,
+          overflow
+        );
       }
       if (nextFocusableElement) {
         nextFocusableElement.element.focus();
         this.lastFocusedElement = nextFocusableElement.element;
-        currentArea.lastFocusedElement = this.lastFocusedElement;
       }
     }
     /** Filters the focusable group by the relevant axis by chacking for same axis overlap */
@@ -968,17 +1054,17 @@ This ${callbackType} is already registered for this combination and type. To upd
           if (this.paused) return;
           this.moveFocus(direction);
         };
-        actions.register(`move-focus-${direction}`, callback);
+        actions_default.register(`move-focus-${direction}`, callback);
         const keys = this.activeKeys[direction];
         for (const key of keys) {
-          keyboard.on({
+          keyboard_default.on({
             keys: [key],
             callback: `move-focus-${direction}`,
             type: ["press", "hold"]
           });
           this.registeredKeys.add(key);
         }
-        gamepad.on({
+        gamepad_default.on({
           actions: [`playstation.d-pad-${direction}`],
           callback: `move-focus-${direction}`
         });
@@ -1022,10 +1108,10 @@ This ${callbackType} is already registered for this combination and type. To upd
         directions.forEach((direction) => {
           const actionName = `move-focus-${direction}`;
           for (const key of this.activeKeys[direction]) {
-            keyboard.off([key], actionName);
+            keyboard_default.off([key], actionName);
           }
-          actions.remove(actionName);
-          gamepad.off([`playstation.d-pad-${direction}`], actionName);
+          actions_default.remove(actionName);
+          gamepad_default.off([`playstation.d-pad-${direction}`], actionName);
           if (this.clearCurrentActiveKeys) this.activeKeys[direction] = [];
         });
         this.registeredKeys.clear();
@@ -1046,7 +1132,6 @@ This ${callbackType} is already registered for this combination and type. To upd
         return console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
       }
       this.lastFocusedElement.focus();
-      this.areas[area].lastFocusedElement = this.lastFocusedElement;
     }
     /**
      * Focuses on the last element in a focusable area
@@ -1069,19 +1154,12 @@ This ${callbackType} is already registered for this combination and type. To upd
         return console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
       }
       this.lastFocusedElement.focus();
-      this.areas[area].lastFocusedElement = this.lastFocusedElement;
     }
     /**
-     * Changes focus to another area by focusing on the last focused element in that area. If no element has previously been focused, it will focus the first available element.
+     * Changes focus to another area
      */
     switchArea(area) {
-      if (!this.enabled) return;
-      const lastFocusedInArea = this.getLastFocused(area);
-      if (!lastFocusedInArea || lastFocusedInArea.hasAttribute("disabled")) {
-        return this.focusFirst(area);
-      }
-      lastFocusedInArea.focus();
-      this.lastFocusedElement = lastFocusedInArea;
+      this.focusFirst(area);
     }
     /**
     * Checks if a given element is in a focusable area
@@ -1117,9 +1195,11 @@ This ${callbackType} is already registered for this combination and type. To upd
       if (!this.enabled) return;
       this.paused = false;
     }
-  }
-  const spatialNavigation = new SpatialNavigation();
-  class DragBase {
+  };
+  var spatial_navigation_default = new SpatialNavigation();
+
+  // src/utils/drag-base.ts
+  var DragBase = class {
     constructor(options) {
       this.options = options;
       this.draggableElements = [];
@@ -1149,7 +1229,10 @@ This ${callbackType} is already registered for this combination and type. To upd
         y: clientY - y
       };
     }
-  }
+  };
+  var drag_base_default = DragBase;
+
+  // src/utils/gesture-utils.ts
   function getDirection(diffX, diffY) {
     const MIN_SWIPE_OFFSET = 200;
     if (diffY < 0 && diffX > -MIN_SWIPE_OFFSET && diffX < MIN_SWIPE_OFFSET) return "top";
@@ -1164,8 +1247,10 @@ This ${callbackType} is already registered for this combination and type. To upd
   function getElement(element) {
     return element instanceof HTMLElement ? element : document.querySelector(element);
   }
-  const MULTIPLE_TOUCHES_MIN_NUMBER = 2;
-  class TouchGestures {
+
+  // src/lib_components/touch-gestures.ts
+  var MULTIPLE_TOUCHES_MIN_NUMBER = 2;
+  var TouchGestures = class {
     constructor() {
       this.activeTouches = /* @__PURE__ */ new Map();
     }
@@ -1475,10 +1560,12 @@ This ${callbackType} is already registered for this combination and type. To upd
         }
       };
     }
-  }
-  const touchGestures = new TouchGestures();
-  const AXIS = ["x", "y"];
-  class Draggable extends DragBase {
+  };
+  var touch_gestures_default = new TouchGestures();
+
+  // src/lib_components/draggable.ts
+  var AXIS = ["x", "y"];
+  var Draggable = class extends drag_base_default {
     constructor(options) {
       super(options);
       this.actionName = `drag-around-${createHash()}`;
@@ -1526,7 +1613,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       this.elementRect = this.draggedElement.getBoundingClientRect();
       this.setRestriction();
       this.setPointerOffset(event.clientX, event.clientY, this.draggedElement);
-      actions.execute(this.actionName, {
+      actions_default.execute(this.actionName, {
         x: event.clientX + this.bodyScrollOffset.x - this.offset.x,
         y: event.clientY + this.bodyScrollOffset.y - this.offset.y,
         index: this.draggedItemIndex
@@ -1540,7 +1627,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * mousemove event handler
      */
     onMouseMove(event) {
-      actions.execute(this.actionName, {
+      actions_default.execute(this.actionName, {
         x: event.clientX + this.bodyScrollOffset.x - this.offset.x,
         y: event.clientY + this.bodyScrollOffset.y - this.offset.y,
         index: this.draggedItemIndex
@@ -1560,7 +1647,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Register dragging as an action to be able to use it externally
      */
     registerDragActions() {
-      actions.register(this.actionName, ({ x, y, index }) => {
+      actions_default.register(this.actionName, ({ x, y, index }) => {
         if (!this.draggableElements[index]) return console.error(`There is no draggable element at index ${index}`);
         if (this.options.lockAxis && AXIS.includes(this.options.lockAxis)) {
           x = this.options.lockAxis === "y" ? this.elementRect.x : x;
@@ -1575,7 +1662,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Removes the registered action
      */
     removeDragActions() {
-      actions.remove(this.actionName);
+      actions_default.remove(this.actionName);
     }
     /**
      * Add touch gestures to drag the element
@@ -1583,7 +1670,7 @@ This ${callbackType} is already registered for this combination and type. To upd
     addTouchEvents() {
       this.draggableElements.forEach((element) => {
         this.touchEvents.push(
-          touchGestures.drag({
+          touch_gestures_default.drag({
             element,
             onDragStart: (event) => {
               this.onMouseDown({ currentTarget: event.currentTarget, clientX: event.x, clientY: event.y });
@@ -1624,8 +1711,11 @@ This ${callbackType} is already registered for this combination and type. To upd
         bottom: height + y - this.elementRect.height
       };
     }
-  }
-  class Dropzone extends DragBase {
+  };
+  var draggable_default = Draggable;
+
+  // src/lib_components/dropzone.ts
+  var Dropzone = class extends drag_base_default {
     constructor(options) {
       super(options);
       this.dropzones = [];
@@ -1688,7 +1778,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       this.draggedElement.style.position = "absolute";
       this.draggedElement.style.pointerEvents = "none";
       this.setPointerOffset(event.clientX, event.clientY, this.draggedElement);
-      actions.execute(this.actionName, {
+      actions_default.execute(this.actionName, {
         x: event.clientX + this.bodyScrollOffset.x - this.offset.x,
         y: event.clientY + this.bodyScrollOffset.y - this.offset.y,
         index: this.draggedItemIndex
@@ -1702,7 +1792,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * mousemove event handler
      */
     onMouseMove(event) {
-      actions.execute(this.actionName, {
+      actions_default.execute(this.actionName, {
         x: event.clientX + this.bodyScrollOffset.x - this.offset.x,
         y: event.clientY + this.bodyScrollOffset.y - this.offset.y,
         index: this.draggedItemIndex
@@ -1749,20 +1839,20 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Register dragging as an action to be able to use it externally
      */
     registerDragActions() {
-      actions.register(this.actionName, ({ x, y, index }) => {
+      actions_default.register(this.actionName, ({ x, y, index }) => {
         if (!this.draggableElements[index]) return console.error(`There is no draggable element at index ${index}`);
         this.draggableElements[index].style.left = `${x}px`;
         this.draggableElements[index].style.top = `${y}px`;
         this.options.onDragMove && this.options.onDragMove({ x, y });
       });
-      actions.register(this.automaticAction, this.automaticMove.bind(this));
+      actions_default.register(this.automaticAction, this.automaticMove.bind(this));
     }
     /**
      * Removes the registered actions
      */
     removeActions() {
-      actions.remove(this.actionName);
-      actions.remove(this.automaticAction);
+      actions_default.remove(this.actionName);
+      actions_default.remove(this.automaticAction);
     }
     /* eslint-disable max-lines-per-function*/
     /**
@@ -1771,7 +1861,7 @@ This ${callbackType} is already registered for this combination and type. To upd
     addTouchEvents() {
       this.draggableElements.forEach((element) => {
         this.touchEvents.push(
-          touchGestures.drag({
+          touch_gestures_default.drag({
             element,
             onDragStart: (event) => {
               this.onMouseDown({ currentTarget: event.currentTarget, clientX: event.x, clientY: event.y });
@@ -1873,6 +1963,10 @@ This ${callbackType} is already registered for this combination and type. To upd
           this.draggedElement?.parentNode.appendChild(this.draggedOver.children[0]);
           this.draggedOver.appendChild(this.draggedElement);
           break;
+        case "none":
+          break;
+        default:
+          break;
       }
       this.onMouseLeave();
     }
@@ -1897,10 +1991,13 @@ This ${callbackType} is already registered for this combination and type. To upd
         children.forEach((child) => this.dropzones[index].appendChild(child));
       });
     }
-  }
-  const fullRotation = 360;
-  const rotationOffset = 90;
-  class Rotate {
+  };
+  var dropzone_default = Dropzone;
+
+  // src/lib_components/rotate.ts
+  var fullRotation = 360;
+  var rotationOffset = 90;
+  var Rotate = class {
     constructor(options) {
       this.rotatingElement = null;
       this.elementPosition = { x: 0, y: 0 };
@@ -1963,7 +2060,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       if (this.options.snapAngle) {
         this.angle = Math.floor(this.angle / this.options.snapAngle) * this.options.snapAngle;
       }
-      actions.execute(this.actionName, this.angle);
+      actions_default.execute(this.actionName, this.angle);
     }
     /**
      * Handles the mouseup event
@@ -1976,7 +2073,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Registers the actions
      */
     registerAction() {
-      actions.register(this.actionName, (angle) => {
+      actions_default.register(this.actionName, (angle) => {
         this.rotatingElement.style.transform = `rotate(${angle}deg)`;
         this.options.onRotation && this.options.onRotation(angle < 0 ? fullRotation + angle : angle);
       });
@@ -1985,13 +2082,13 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Removes the action
      */
     removeActions() {
-      actions.remove(this.actionName);
+      actions_default.remove(this.actionName);
     }
     /**
      * Add rotate touch events
      */
     addTouchEvents() {
-      this.touchEvents = touchGestures.drag({
+      this.touchEvents = touch_gestures_default.drag({
         element: this.rotatingElement,
         onDragStart: ({ x, y }) => {
           this.onMouseDown({ clientX: x, clientY: y });
@@ -2019,8 +2116,11 @@ This ${callbackType} is already registered for this combination and type. To upd
       const offsetY = y - this.elementPosition.y;
       return (toDeg(Math.atan2(offsetY, offsetX)) + fullRotation + rotationOffset) % fullRotation;
     }
-  }
-  class Resize {
+  };
+  var rotate_default = Rotate;
+
+  // src/lib_components/resize.ts
+  var Resize = class {
     constructor(options) {
       this.enabled = false;
       this.activeEdge = null;
@@ -2095,16 +2195,16 @@ This ${callbackType} is already registered for this combination and type. To upd
       const offsetY = event.clientY - this.elementRect.y;
       switch (this.activeEdge) {
         case "bottom":
-          actions.execute(this.heightAction, offsetY);
+          actions_default.execute(this.heightAction, offsetY);
           this.options.onHeightChange && this.options.onHeightChange(offsetY);
           break;
         case "right":
-          actions.execute(this.widthAction, offsetX);
+          actions_default.execute(this.widthAction, offsetX);
           this.options.onWidthChange && this.options.onWidthChange(offsetX);
           break;
         case "bottomRight":
-          actions.execute(this.heightAction, offsetY);
-          actions.execute(this.widthAction, offsetX);
+          actions_default.execute(this.heightAction, offsetY);
+          actions_default.execute(this.widthAction, offsetX);
           this.options.onWidthChange && this.options.onWidthChange(offsetX);
           this.options.onHeightChange && this.options.onHeightChange(offsetY);
           break;
@@ -2122,7 +2222,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Adds the touch events to fire the actions
      */
     addTouchEvents() {
-      this.touchEvents = touchGestures.drag({
+      this.touchEvents = touch_gestures_default.drag({
         element: this.resizableElement,
         onDragStart: (event) => {
           this.onMouseDown(event);
@@ -2201,11 +2301,11 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Registers actions
      */
     registerActions() {
-      actions.register(this.heightAction, (height) => {
+      actions_default.register(this.heightAction, (height) => {
         this.resizableElement.style.height = `${clamp(height, this.options.heightMin, this.options.heightMax)}px`;
         this.edges.right.style.height = `${clamp(height, this.options.heightMin, this.options.heightMax) - this.options.edgeWidth}px`;
       });
-      actions.register(this.widthAction, (width) => {
+      actions_default.register(this.widthAction, (width) => {
         this.resizableElement.style.width = `${clamp(width, this.options.widthMin, this.options.widthMax)}px`;
         this.edges.bottom.style.width = `${clamp(width, this.options.widthMin, this.options.widthMax) - this.options.edgeWidth}px`;
       });
@@ -2214,11 +2314,14 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Removes the registered actions
      */
     removeActions() {
-      actions.remove(this.heightAction);
-      actions.remove(this.widthAction);
+      actions_default.remove(this.heightAction);
+      actions_default.remove(this.widthAction);
     }
-  }
-  class Zoom {
+  };
+  var resize_default = Resize;
+
+  // src/lib_components/zoom.ts
+  var Zoom = class {
     constructor(options) {
       this.enabled = false;
       this.actionName = `pan-and-zoom-${createHash()}`;
@@ -2267,7 +2370,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     onWheel(event) {
       event.preventDefault();
-      actions.execute(this.actionName, {
+      actions_default.execute(this.actionName, {
         x: event.clientX,
         y: event.clientY,
         zoomDirection: Math.sign(event.deltaY)
@@ -2277,7 +2380,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Registers the actions for the pan and zoom
      */
     registerActions() {
-      actions.register(this.actionName, ({ x, y, zoomDirection }) => {
+      actions_default.register(this.actionName, ({ x, y, zoomDirection }) => {
         const offset = this.calculateOffsets(x, y);
         this.options.onZoom && this.options.onZoom();
         const scale = Number((this.transform.scale - zoomDirection * this.options.zoomFactor).toFixed(5));
@@ -2298,16 +2401,16 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Removes the registered actions
      */
     removeActions() {
-      actions.remove(this.actionName);
+      actions_default.remove(this.actionName);
     }
     /**
      * Add pinch and stretch touch events
      */
     addTouchEvents() {
-      this.touchEvents = touchGestures.pinch({
+      this.touchEvents = touch_gestures_default.pinch({
         element: this.zoomableElement,
         callback: ({ pinchDelta, midpoint }) => {
-          actions.execute(this.actionName, {
+          actions_default.execute(this.actionName, {
             x: midpoint.x,
             y: midpoint.y,
             zoomDirection: Math.sign(pinchDelta) * -1
@@ -2332,19 +2435,10 @@ This ${callbackType} is already registered for this combination and type. To upd
         y: y - elementRect.y
       };
     }
-  }
-  IM$1.init();
-  exports2.GamepadMappings = mappings;
-  exports2.KeyboardMappings = mappings$1;
-  exports2.actions = actions;
-  exports2.draggable = Draggable;
-  exports2.dropzone = Dropzone;
-  exports2.gamepad = gamepad;
-  exports2.keyboard = keyboard;
-  exports2.resize = Resize;
-  exports2.rotate = Rotate;
-  exports2.spatialNavigation = spatialNavigation;
-  exports2.touchGestures = touchGestures;
-  exports2.zoom = Zoom;
-  Object.defineProperty(exports2, Symbol.toStringTag, { value: "Module" });
-}));
+  };
+  var zoom_default = Zoom;
+
+  // src/interaction-manager.ts
+  global_object_default.init();
+  return __toCommonJS(interaction_manager_exports);
+})();
