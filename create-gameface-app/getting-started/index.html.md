@@ -1,5 +1,7 @@
 # Overview
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/create-gameface-app/getting-started/
 
 `create-gameface-app` is a command-line tool that scaffolds a new Gameface project from a starter template. It downloads the template of your choice, optionally installs its dependencies, and leaves you with a project that is ready to run.

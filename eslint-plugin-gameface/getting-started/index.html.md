@@ -1,5 +1,7 @@
 # Overview
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/getting-started/
 
 Use **eslint-plugin-gameface** in your projects to catch unsupported or risky Gameface patterns **during development**, instead of at runtime.

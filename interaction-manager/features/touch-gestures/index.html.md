@@ -1,5 +1,7 @@
 # Touch Gestures
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/interaction-manager/features/touch-gestures/
 
 Allows you to easily use some of the most common Touch Gestures like - tap, hold, drag, swipe, pinch/stretch and zoom.

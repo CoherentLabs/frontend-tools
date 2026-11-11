@@ -1,5 +1,7 @@
 # Changelog
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/changelog/
 
 ## 1.3.1 Latest

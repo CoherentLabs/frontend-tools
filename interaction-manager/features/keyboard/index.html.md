@@ -1,5 +1,7 @@
 # Keyboard
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/interaction-manager/features/keyboard/
 
 The keyboard object provides an easy to use way to set up keys to perform different actions in your UI. It also allows you to create key combinations with ease. It also provides two properties for adding and removing key actions.

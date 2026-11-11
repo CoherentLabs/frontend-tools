@@ -1,5 +1,7 @@
 # Existing projects
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/gameface-cli/getting-started/existing-projects/
 
 Projects created with the **`gameface-ui` template** from `create-gameface-app` are already wired up and need nothing from this page.

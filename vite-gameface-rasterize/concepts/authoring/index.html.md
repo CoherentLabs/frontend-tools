@@ -1,5 +1,7 @@
 # Preparing your UI
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/concepts/authoring/
 
 Most failed bakes come from a few recurring patterns. Keep these five rules in mind and the result is much more predictable.

@@ -1,5 +1,7 @@
 # What gets checked
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/what-gets-checked/
 
 The recommended preset runs **Gameface-specific** rules on top of normal HTML and CSS parsing. Below is what you can expect in day-to-day work—not every possible rule, but the main categories.

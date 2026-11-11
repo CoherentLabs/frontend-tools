@@ -1,5 +1,7 @@
 # Spatial Navigation
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/interaction-manager/features/spatial-navigation/
 
 A JavaScript-based implementation for Spatial Navigation with gamepad support

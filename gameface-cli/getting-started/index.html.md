@@ -1,5 +1,7 @@
 # Overview
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/gameface-cli/getting-started/
 
 `gameface-cli` adds and updates **individual Gameface UI components** inside an existing project. Instead of pulling the whole library, you install the components you actually use, and the CLI keeps them current as new versions ship.

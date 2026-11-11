@@ -1,5 +1,7 @@
 # Waiting for the right element state
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/e2e/concepts/waiting-for-element/
 
 Validating changes in an element’s state within the UI can sometimes lead to unreliable test results. For instance, clicking a button that modifies an element’s size might cause the test to fail if the size change hasn’t occurred by the time the validation runs. This happens because UI updates are often asynchronous and may take time to reflect.

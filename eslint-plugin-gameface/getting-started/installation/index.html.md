@@ -1,5 +1,7 @@
 # Installation
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/getting-started/installation/
 
 Install **ESLint** and **eslint-plugin-gameface**. The plugin ships with the HTML, CSS, Vue, and Svelte SFC tooling its preset uses (`@html-eslint/eslint-plugin`, `@eslint/css`, `vue-eslint-parser`, `eslint-plugin-vue`, `svelte-eslint-parser`, `eslint-plugin-svelte`, and the TypeScript parser for `.ts` / `.tsx` / `<script lang="ts">`) - you do not install those separately.

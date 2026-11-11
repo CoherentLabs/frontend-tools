@@ -1,5 +1,7 @@
 # Data binding
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/data-binding/
 
 Gameface data binding attributes are easy to mistype. The plugin flags common mistakes in **HTML** and **JSX** before you load the page in the engine.

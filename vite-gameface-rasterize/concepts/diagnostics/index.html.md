@@ -1,5 +1,7 @@
 # Diagnostics
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/concepts/diagnostics/
 
 Every diagnostic names the element it is about, the route it was found on, and prints a link to its entry on this page. Errors fail the build; warnings do not. Identical ones collapse into a single line with a count.

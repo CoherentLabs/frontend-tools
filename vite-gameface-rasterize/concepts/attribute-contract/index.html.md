@@ -1,5 +1,7 @@
 # Attributes
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/concepts/attribute-contract/
 
 The contract between markup and the build is just HTML attributes. It is framework-agnostic: the plugin reads the rendered output whether the page was written in plain HTML, JSX, Vue, or Svelte.

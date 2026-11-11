@@ -1,5 +1,7 @@
 # gameface-e2e
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/e2e/api/gameface-e2e/
 
 The `gameface-e2e` command will run end-to-end tests in your Gameface projects. It allows you to execute your test files and interact with the Player.exe application.

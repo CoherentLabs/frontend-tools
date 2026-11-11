@@ -1,5 +1,7 @@
 # Styles and HTML markup
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/styles-and-markup/
 
 Most Gameface related issues in day-to-day work show up as **CSS** or **HTML** problems. The plugin surfaces them as ESLint messages with the `gameface/` prefix.

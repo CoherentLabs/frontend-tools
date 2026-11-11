@@ -1,5 +1,7 @@
 # How to use
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/vite-solid-style-to-css-plugin/getting-started/how-to-use/
 
 To use the `Solid Style to CSS` plugin, you need to set up your project with Vite and then configure the plugin in your `vite.config.js` file.

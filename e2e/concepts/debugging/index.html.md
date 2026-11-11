@@ -1,5 +1,7 @@
 # Debugging
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/e2e/concepts/debugging/
 
 The framework includes debug logs that can be useful if you encounter an error that is not sufficiently descriptive. For instance, you might face a WebSocket server error due to an incorrect `Player.exe` path. Enabling debug logs can provide insights such as “Spawning player executable with path: …”, helping you identify the issue.

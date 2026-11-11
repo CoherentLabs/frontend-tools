@@ -1,5 +1,7 @@
 # Language Server for Gameface
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/data-binding-autocomplete/getting-started/language-server-for-gameface/
 
 The default auto-complete features usually can’t provide meaningful suggestions for Gameface features. That’s because none of the editors are aware of the data binding attributes or the game models that are initialized runtime. [VS Code’s](https://code.visualstudio.com/) functionality can be greatly enhanced and extended through extensions. The [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) developed by [Microsoft](https://www.microsoft.com/) can be used to create a custom language server that can handle Gameface specific features.

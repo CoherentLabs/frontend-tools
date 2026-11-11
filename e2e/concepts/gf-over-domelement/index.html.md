@@ -1,5 +1,7 @@
 # GF object and DOMElement
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/e2e/concepts/gf-over-domelement/
 
 Gameface e2e testing framework provides two main ways to interact with UI elements: the `gf` object and the `DOMElement` object. Each serves a different purpose and is suited for different scenarios. Understanding when to use each can help you write more efficient and effective tests.

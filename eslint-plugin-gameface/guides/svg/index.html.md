@@ -1,5 +1,7 @@
 # SVG in UI
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/svg/
 
 SVG inside your **HTML, JSX/TSX, Vue templates, or Svelte markup** is checked against Gameface’s SVG support. Standalone `.svg` files in `assets/` are not linted by this plugin—embed or reference SVG in components and pages you lint.

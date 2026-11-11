@@ -1,5 +1,7 @@
 # JavaScript and TypeScript
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/javascript/
 
 Scripts can call APIs that Gameface does not provide/support. The plugin flags **obvious** unsupported usage in `.js`, `.jsx`, `.ts`, and `.tsx` files.

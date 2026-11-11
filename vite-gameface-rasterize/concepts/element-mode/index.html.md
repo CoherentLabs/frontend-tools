@@ -1,5 +1,7 @@
 # Element mode
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/concepts/element-mode/
 
 Decoration mode bakes one element’s own shadows and fills. Element mode takes a whole subtree — wrappers, frames, static labels — turns it into one image, and keeps only the parts that truly need to stay live.

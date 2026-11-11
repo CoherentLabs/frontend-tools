@@ -1,5 +1,7 @@
 # Running multiple test processes in parallel
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/e2e/concepts/multiple-processes/
 
 The framework allows running multiple test processes simultaneously. Each test process spawns a separate Gameface Player instance on a different port if the current one is occupied.

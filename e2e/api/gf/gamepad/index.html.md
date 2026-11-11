@@ -1,5 +1,7 @@
 # Overview
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/e2e/api/gf/gamepad/
 
 The Gameface E2E framework provides a rich set of tools for testing UI behavior driven by gamepad input. It can fully simulate gamepad interactions and works seamlessly with UIs that use the interaction manager gamepad system for handling gamepad-driven navigation and actions.

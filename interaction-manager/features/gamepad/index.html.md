@@ -1,5 +1,7 @@
 # Gamepad
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/interaction-manager/features/gamepad/
 
 The gamepad object allows for easier gamepad set up. It uses the Gamepad API to create helper functions to listen for button presses or joystick movement.

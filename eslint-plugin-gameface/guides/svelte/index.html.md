@@ -1,5 +1,7 @@
 # Svelte SFC
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/eslint-plugin-gameface/guides/svelte/
 
 Svelte **single-file components** (`.svelte`) are linted by the recommended preset. The plugin parses the SFC with `svelte-eslint-parser` and runs Gameface checks on each block.

@@ -1,5 +1,7 @@
 # Installation
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/data-binding-autocomplete/getting-started/installation/
 
 You’ll need to install VSCode version `1.79.2` and above in order to be able to use the language server.

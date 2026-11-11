@@ -2,6 +2,8 @@
 
 > Discover the complete suite of tools designed to streamline the creation and testing of game user interfaces with Gameface.
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/
 
 Gameface E2E

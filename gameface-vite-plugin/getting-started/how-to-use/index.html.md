@@ -1,5 +1,7 @@
 # How to use
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/gameface-vite-plugin/getting-started/how-to-use/
 
 **Caution:** Starting with version [`2.11.7`](https://github.com/solidjs/vite-plugin-solid/releases/tag/vite-plugin-solid%402.11.7), [`vite-plugin-solid`](https://github.com/solidjs/vite-plugin-solid) includes new configuration flags that improve Gameface compatibility. You may be able to omit the `vite-gameface` plugin entirely. See the Vite Solid Plugin Notice for details.

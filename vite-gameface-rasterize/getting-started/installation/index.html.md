@@ -1,5 +1,7 @@
 # Installation
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/vite-gameface-rasterize/getting-started/installation/
 
 ```shell

@@ -1,5 +1,7 @@
 # Vite Solid Plugin Notice
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/gameface-vite-plugin/vite-plugin-solid/
 
 Version [`2.11.7`](https://github.com/solidjs/vite-plugin-solid/releases/tag/vite-plugin-solid%402.11.7) of [`vite-plugin-solid`](https://github.com/solidjs/vite-plugin-solid) introduces new configuration flags to control HTML generation. These flags are critical for preventing HTML parsing warnings in Gameface.

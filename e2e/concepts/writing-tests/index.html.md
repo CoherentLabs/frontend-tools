@@ -1,5 +1,7 @@
 # Writing tests
 
+> Documentation index: https://frontend-tools.coherent-labs.com/llms.txt lists every page of this documentation as Markdown; the full text is in https://frontend-tools.coherent-labs.com/llms-full.txt.
+
 Source: https://frontend-tools.coherent-labs.com/e2e/concepts/writing-tests/
 
 To write tests for your UI in Gameface, you can use the `gf` object provided by the testing framework. The `gf` object provides various methods to interact with the UI, such as clicking elements, getting the element properties, etc.
