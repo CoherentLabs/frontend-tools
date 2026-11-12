@@ -1,3 +1,7 @@
+import type { AgentDocsOptions } from '../integrations/agentDocs';
+import type { StructuredDataOptions } from './structuredData';
+import type { RobotsTxtOptions } from '../integrations/robotsTxt';
+
 interface Topic {
     label?: string
     href?: string
@@ -31,9 +35,34 @@ export interface CoherentThemeOptions {
      * at startup instead of requiring a prior `astro build`. Opt-in and off by default.
      */
     devSearch?: boolean
+    /**
+     * On `astro build`, makes the docs readable by AI agents: writes llms.txt, llms-full.txt, the
+     * Gameface MCP manifest, each page's index.html.md and, for a site at its host's root, an agent
+     * skill and AI catalog in .well-known/. Also registers the WebMCP tools on every page
+     * (`agentDocs: { webMcp: false }` leaves them out). On by default (needs `site` in the Astro
+     * config); `false` turns it all off, an object passes options to the integration.
+     */
+    agentDocs?: boolean | AgentDocsOptions
+    /**
+     * Adds Schema.org structured data (JSON-LD) to every page: TechArticle and BreadcrumbList on docs
+     * pages, WebSite and Organization on the homepage. Needs `site`. On by default; `false` turns it off,
+     * an object sets the publisher (default: Coherent Labs).
+     */
+    structuredData?: boolean | StructuredDataOptions
+    /**
+     * On `astro build`, writes robots.txt (AI crawler rules, Content Signals, sitemap) unless public/ has one.
+     * On by default; skipped for sites built under a sub-path. `false` turns it off, an object passes options.
+     */
+    robots?: boolean | RobotsTxtOptions
 }
 
-export default function getThemeConfig(): CoherentThemeOptions {
+/** The config the theme's components read: the options, plus values the plugin resolves from them. */
+export interface ResolvedThemeConfig extends CoherentThemeOptions {
+    /** Whether to register the WebMCP tools (from `agentDocs.webMcp`; off when `agentDocs` is). */
+    webMcp?: boolean
+}
+
+export default function getThemeConfig(): ResolvedThemeConfig {
     let themeConfig = {
         documentation: '',
         showPageProgress: false,
@@ -44,7 +73,7 @@ export default function getThemeConfig(): CoherentThemeOptions {
         topicsConfig: {},
         currentTopicId: 'native',
         version: '0.0.0.0'
-    } as CoherentThemeOptions;
+    } as ResolvedThemeConfig;
 
     if (process.env.COHERENT_THEME_CONFIG) {
         try {

@@ -1,5 +1,9 @@
 ---
 import DefaultHead from '@astrojs/starlight/components/Head.astro';
+import getThemeConfig from '../internal/themeConfig';
+import { buildStructuredData, toScriptJson } from '../internal/structuredData';
+
+const { webMcp = true, structuredData = true } = getThemeConfig();
 
 const currentProduct = import.meta.env.DOCS_PRODUCT || "Gameface";
 const productName = currentProduct.charAt(0).toUpperCase() + currentProduct.slice(1);
@@ -28,6 +32,32 @@ if (Array.isArray(routeData?.head)) {
         }
     });
 }
+
+// Schema.org JSON-LD. Needs absolute URLs (the config's `site`); none on the 404 page.
+const formatLabel = (text: string) => String(text ?? '').replace(productNameRegex, productName);
+const isNotFound = routeData?.entry?.id === '404' || /\/404\/?$/.test(Astro.url.pathname);
+const jsonLd = structuredData && Astro.site && routeData?.entry?.data && !isNotFound
+    ? toScriptJson(buildStructuredData(
+        {
+            url: new URL(Astro.url.pathname, Astro.site).href,
+            root: new URL(import.meta.env.BASE_URL, Astro.site).href,
+            siteTitle: formatLabel(routeData.siteTitle ?? ''),
+            title: formatLabel(routeData.entry.data.title ?? ''),
+            description: routeData.entry.data.description ? formatLabel(routeData.entry.data.description) : undefined,
+            lang: routeData.lang,
+            lastUpdated: routeData.lastUpdated instanceof Date ? routeData.lastUpdated : undefined,
+            sidebar: routeData.sidebar,
+            formatLabel,
+        },
+        typeof structuredData === 'object' ? structuredData : {},
+    ))
+    : undefined;
 ---
 
 <DefaultHead {...Astro.props} />
+{jsonLd && <script is:inline type="application/ld+json" set:html={jsonLd} />}
+{webMcp && (
+    <script>
+        import "../internal/webMcp";
+    </script>
+)}

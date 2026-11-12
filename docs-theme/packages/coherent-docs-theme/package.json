@@ -1,6 +1,6 @@
 {
   "name": "coherent-docs-theme",
-  "version": "1.0.16",
+  "version": "1.1.0",
   "license": "MIT",
   "description": "Theme for all the coherent documentations",
   "author": "CoherentLabs",
@@ -11,6 +11,9 @@
   "exports": {
     ".": "./index.ts",
     "./styles": "./styles.css",
+    "./agent-docs": "./integrations/agentDocs.ts",
+    "./robots": "./integrations/robotsTxt.ts",
+    "./web-mcp": "./internal/webMcp.ts",
     "./internal-components/*.astro": "./internal-components/*.astro",
     "./components": "./components/index.ts",
     "./components/*.astro": "./components/*.astro",
@@ -24,9 +27,15 @@
     "astro": "5.17.1"
   },
   "dependencies": {
+    "@types/hast": "^3.0.5",
     "gray-matter": "^4.0.3",
     "hast-util-from-html": "^2.0.1",
+    "hast-util-select": "^6.0.4",
     "hast-util-to-html": "^9.0.0",
+    "hast-util-to-mdast": "^10.1.2",
+    "hast-util-to-text": "^4.0.2",
+    "mdast-util-gfm": "^3.1.0",
+    "mdast-util-to-markdown": "^2.1.2",
     "pagefind": "1.4.0",
     "reading-time": "^1.5.0",
     "remark-custom-header-id": "^1.0.0",
@@ -39,6 +48,11 @@
   "peerDependencies": {
     "@astrojs/starlight": ">=0.37.6",
     "astro": ">=5.17.1"
+  },
+  "peerDependenciesMeta": {
+    "@astrojs/starlight": {
+      "optional": true
+    }
   },
   "overrides": {
     "zod": "3.25.76",
