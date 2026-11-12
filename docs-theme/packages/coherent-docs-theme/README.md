@@ -92,7 +92,7 @@ export default defineConfig({
 | **replacesTitle**      | `boolean`              | `true`      | If true, the logo will replace the title in the header. Set to false if you want to show the title next to the logo. Useful when using a custom logo that doesn't include the title in it. |
 
 | **agentDocs**          | `boolean \| object`    | `true`      | On `astro build`, makes the docs readable by AI agents: `llms.txt`, `llms-full.txt`, `gameface-mcp-docs.json` (read by the Gameface MCP server), each page's `index.html.md`, and an agent skill and AI catalog in `.well-known/`. Needs `site` in the Astro config. `false` turns it off; an object is passed to the agent docs integration (see below). |
-| **webMcp**             | `boolean`              | `true`      | Registers WebMCP tools (`search_docs`, `get_page`, `list_pages`) on every page, for AI agents in browsers that support WebMCP. |
+| **structuredData**     | `boolean \| object`    | `true`      | Adds [Schema.org](https://schema.org/) JSON-LD to every page: `TechArticle` and `BreadcrumbList` on docs pages, `WebSite` and `Organization` on the homepage. Needs `site`. `dateModified` comes from Starlight's `lastUpdated` when it's on. An object sets the publisher: `{ publisher: { name, url, logo } }` (default: Coherent Labs, no logo). |
 | **robots**             | `boolean \| object`    | `true`      | On `astro build`, writes `robots.txt` (rules for all crawlers and named AI crawlers, Content Signals, the sitemap URL), unless `public/robots.txt` exists. Skipped for sites built under a sub-path. `false` turns it off; an object is passed to the robots.txt integration (see below). |
 
 To override the default logo, simply provide your own in the Starlight configuration:
@@ -149,7 +149,7 @@ Every documentation that uses the theme becomes readable by AI agents on `astro 
 | `llms.txt`                                   | Index of every page, grouped by section, linked to its Markdown version ([llmstxt.org](https://llmstxt.org/)). |
 | `llms-full.txt`                              | The whole site as sections tagged with their page URL. The Gameface MCP server searches it.   |
 | `gameface-mcp-docs.json`                     | Manifest the Gameface MCP server checks to download `llms-full.txt` only when it changed.      |
-| `<page>/index.html.md`                       | Each page as standalone Markdown.                                                              |
+| `<page>/index.html.md`                       | Each page as standalone Markdown, linked from the page's `<head>` with `<link rel="alternate" type="text/markdown">`. |
 | `.well-known/agent-skills/<name>/SKILL.md`   | A skill telling agents how to read the docs, and to suggest the Gameface MCP server to users building Gameface UIs. |
 | `.well-known/agent-skills/index.json`        | The skills index ([Agent Skills Discovery](https://github.com/cloudflare/agent-skills-discovery-rfc)). |
 | `.well-known/ai-catalog.json`                | AI catalog listing the skill ([ARD](https://agenticresourcediscovery.org/)), also linked from each page's `<head>` and from robots.txt (`Agentmap:`). |
@@ -186,6 +186,9 @@ export default defineConfig({
 | **optional**        | `RegExp[]` | reference pages                  | Path patterns listed under llms.txt's "Optional" section (default: API reference, release notes, changelogs). |
 | **skill**           | `object \| false` | generated               | The agent skill: `{ name, description, mcp }` (`mcp: false` drops the Gameface MCP section). `false` leaves it out. |
 | **catalog**         | `boolean`  | `true`                           | Writes `.well-known/ai-catalog.json`.                                       |
+| **alternateLinks**  | `boolean`  | `true`                           | Adds `<link rel="alternate" type="text/markdown">` to each exported page.   |
+| **llmsDirective**   | `boolean`  | `true`                           | Adds a pointer to `llms.txt` at the top of every page's Markdown, and a visually hidden one at the top of its HTML `<body>`. |
+| **webMcp**          | `boolean`  | `true`                           | Registers the WebMCP tools below on every page. Turning off `agentDocs` turns them off too, since they read its files. |
 
 ### WebMCP tools
 
@@ -197,7 +200,7 @@ Every page also registers three read-only [WebMCP](https://webmachinelearning.gi
 | `get_page`    | `url` (optional)    | A page as Markdown (its `index.html.md`); the current page by default. |
 | `list_pages`  | -                   | The site's `llms.txt`.                                        |
 
-They register only in browsers with the WebMCP API, and Pagefind loads only when an agent first searches. Turn them off with `webMcp: false`.
+They register only in browsers with the WebMCP API, and Pagefind loads only when an agent first searches. Turn them off with `agentDocs: { webMcp: false }`. Used on its own, the integration injects the tools itself; `search_docs` then needs the site to have a Pagefind index.
 
 ## 🤖 robots.txt Integration
 

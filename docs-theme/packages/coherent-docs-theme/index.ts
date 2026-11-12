@@ -100,8 +100,12 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
         const atHostRoot = (astroConfig.base ?? '/').replace(/\/+$/, '') === '';
         const hasCatalog = options.agentDocs !== false && skillOptions !== false && agentDocsOptions.catalog !== false && atHostRoot;
 
+        // WebMCP's tools read the agent docs files, so they go with them. The Head override renders
+        // the script (in dev too), so the integration doesn't inject it again.
+        const webMcp = options.agentDocs !== false && agentDocsOptions.webMcp !== false;
+
         if (options.agentDocs !== false && command === 'build') {
-          addIntegration(agentDocs({ ...agentDocsOptions, skill: skillOptions }));
+          addIntegration(agentDocs({ ...agentDocsOptions, skill: skillOptions, webMcp: false }));
         }
 
         if (options.robots !== false && command === 'build') {
@@ -119,7 +123,8 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
           topicsConfig: options.topicsConfig,
           currentTopicId: options.currentTopicId,
           version: options.version,
-          webMcp: options.webMcp ?? true,
+          webMcp,
+          structuredData: options.structuredData ?? true,
         });
 
         const configUpdates: any = {

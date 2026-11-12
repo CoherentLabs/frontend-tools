@@ -422,13 +422,30 @@ function describe(page: Page, siteDescription?: string): string {
  * then the content with headings one level up (at least H2) and without the
  * anchor ids search uses.
  */
-export function renderPageMarkdown(page: Page): string {
+export function renderPageMarkdown(page: Page, base?: string): string {
   const body = page.markdown.replace(
     /^(#{2,6}) (.+?)(?: \{#[^}]*\})?$/gm,
     (_, hashes: string, text: string) => `${"#".repeat(Math.max(2, hashes.length - 1))} ${text}`
   );
-  return [`# ${page.title}`, "", ...(page.description ? [`> ${page.description}`, ""] : []), `Source: ${page.url}`, "", body, ""].join("\n");
+  return [
+    `# ${page.title}`,
+    "",
+    ...(page.description ? [`> ${page.description}`, ""] : []),
+    ...(base ? [llmsDirectiveMarkdown(base), ""] : []),
+    `Source: ${page.url}`,
+    "",
+    body,
+    "",
+  ].join("\n");
 }
+
+/**
+ * The llms.txt directive: tells an agent that landed on one page where the index of every page is.
+ * Agents arrive from search results and pasted links, rarely from llms.txt itself.
+ */
+export const llmsDirectiveMarkdown = (base: string) =>
+  `> Documentation index: ${base}${LLMS_INDEX_FILE} lists every page of this documentation as Markdown; ` +
+  `the full text is in ${base}${HOSTED_DOCS_FILE}.`;
 
 const humanize = (segment: string) => segment.replace(/[-_]+/g, " ").replace(/^\w/, (c) => c.toUpperCase());
 
@@ -638,6 +655,18 @@ export interface ExportOptions extends PageSelectors {
   skill?: SkillOptions | false;
   /** .well-known/ai-catalog.json, listing the skill; `false` leaves it out. Host-root sites only. */
   catalog?: boolean;
+  /**
+   * Adds `<link rel="alternate" type="text/markdown">` to each exported page's HTML, pointing to its
+   * index.html.md, so agents reading the HTML find the Markdown version. Default: true. Only when the
+   * Markdown files are written next to the pages (outDir is distDir).
+   */
+  alternateLinks?: boolean;
+  /**
+   * Puts the llms.txt directive (a pointer to llms.txt) on every page: at the top of each index.html.md,
+   * and visually hidden at the top of each page's <body>, where agents reading the HTML see it (they drop
+   * the <head>). Default: true. The HTML one only when outDir is distDir.
+   */
+  llmsDirective?: boolean;
 }
 
 export interface ExportResult extends HostedManifest {
@@ -657,10 +686,40 @@ async function findPages(dir: string): Promise<string[]> {
   return found;
 }
 
+const escapeAttr = (text: string) => text.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
+/**
+ * Edits a built page, each change once: `<link rel="alternate" type="text/markdown">` in its <head>,
+ * and the llms.txt directive as the first thing in its <body>. The directive is visually hidden but
+ * not display:none or aria-hidden, which HTML-to-text tools and accessibility-tree readers drop;
+ * it stays out of the content Pagefind indexes.
+ */
+async function annotatePage(file: string, edits: { markdownHref?: string; base?: string }): Promise<void> {
+  let html = await readFile(file, "utf8");
+  const original = html;
+  if (edits.markdownHref && !/<link[^>]+type="text\/markdown"/i.test(html) && html.includes("</head>")) {
+    const link = `<link rel="alternate" type="text/markdown" href="${escapeAttr(edits.markdownHref)}">`;
+    html = html.replace("</head>", `${link}</head>`);
+  }
+  if (edits.base && !html.includes("data-llms-directive")) {
+    const index = escapeAttr(edits.base + LLMS_INDEX_FILE);
+    const full = escapeAttr(edits.base + HOSTED_DOCS_FILE);
+    const note =
+      `<div data-llms-directive data-pagefind-ignore style="position:absolute;width:1px;height:1px;` +
+      `margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0">` +
+      `For AI agents: the documentation index is at <a href="${index}">${index}</a>, listing every page as Markdown; ` +
+      `the full text is at <a href="${full}">${full}</a>.</div>`;
+    html = html.replace(/<body\b[^>]*>/i, (tag) => tag + note);
+  }
+  if (html !== original) await writeFile(file, html);
+}
+
 export async function exportDocs(options: ExportOptions): Promise<ExportResult> {
   const distDir = resolve(options.distDir);
   const base = options.base.replace(/\/?$/, "/");
   const pages: Page[] = [];
+  /** Each exported page's HTML file, for the alternate links. */
+  const htmlFiles = new Map<Page, string>();
 
   for (const file of await findPages(distDir)) {
     const rel = relative(distDir, join(file, "..")).replace(/\\/g, "/");
@@ -668,7 +727,10 @@ export async function exportDocs(options: ExportOptions): Promise<ExportResult> 
     if (options.include && !options.include.some((p) => path.startsWith(p))) continue;
     if (options.exclude?.some((re) => re.test(path))) continue;
     const page = extractPage(base + path, await readFile(file, "utf8"), options);
-    if (page) pages.push(page);
+    if (page) {
+      pages.push(page);
+      htmlFiles.set(page, file);
+    }
   }
   // Sorted so the same site always produces the same bytes, and so the same version.
   pages.sort((a, b) => (a.url < b.url ? -1 : 1));
@@ -711,12 +773,23 @@ export async function exportDocs(options: ExportOptions): Promise<ExportResult> 
       discovery.push(AI_CATALOG_FILE);
     }
   }
+  // The HTML edits point to files next to each page, so only when the Markdown files are written there.
+  const alternateLinks = options.alternateLinks !== false && outDir === distDir;
+  const llmsDirective = options.llmsDirective !== false;
+  const htmlDirective = llmsDirective && outDir === distDir;
   // In parallel: hundreds of small files written one by one dominate the export.
   await Promise.all(
     pages.map(async (page) => {
       const dir = join(outDir, page.url.slice(base.length));
       await mkdir(dir, { recursive: true });
-      await writeFile(join(dir, PAGE_MARKDOWN_FILE), renderPageMarkdown(page));
+      await writeFile(join(dir, PAGE_MARKDOWN_FILE), renderPageMarkdown(page, llmsDirective ? base : undefined));
+      const html = htmlFiles.get(page);
+      if (html && (alternateLinks || htmlDirective)) {
+        await annotatePage(html, {
+          ...(alternateLinks ? { markdownHref: new URL(page.url).pathname + PAGE_MARKDOWN_FILE } : {}),
+          ...(htmlDirective ? { base } : {}),
+        });
+      }
     })
   );
   return { ...manifest, discovery };
@@ -739,6 +812,16 @@ export interface AgentDocsOptions extends PageSelectors {
   skill?: SkillOptions | false;
   /** .well-known/ai-catalog.json; `false` leaves it out. */
   catalog?: boolean;
+  /** `<link rel="alternate" type="text/markdown">` on each exported page; `false` leaves it out. */
+  alternateLinks?: boolean;
+  /** A pointer to llms.txt at the top of every page's Markdown and HTML; `false` leaves it out. */
+  llmsDirective?: boolean;
+  /**
+   * Registers the WebMCP tools (search_docs, get_page, list_pages) on every page, for AI agents in
+   * browsers that support WebMCP. They read the files this integration writes, and search_docs needs
+   * Pagefind. Default: true; `false` leaves them out.
+   */
+  webMcp?: boolean;
 }
 
 export default function agentDocs(options: AgentDocsOptions = {}): AstroIntegration {
@@ -746,6 +829,9 @@ export default function agentDocs(options: AgentDocsOptions = {}): AstroIntegrat
   return {
     name: "coherent-agent-docs",
     hooks: {
+      "astro:config:setup": ({ injectScript }) => {
+        if (options.webMcp !== false) injectScript("page", `import "coherent-docs-theme/web-mcp";`);
+      },
       "astro:config:done": ({ config }) => {
         if (!base && config.site) base = new URL(config.base ?? "/", config.site).href;
       },

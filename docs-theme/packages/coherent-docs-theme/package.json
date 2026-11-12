@@ -13,6 +13,7 @@
     "./styles": "./styles.css",
     "./agent-docs": "./integrations/agentDocs.ts",
     "./robots": "./integrations/robotsTxt.ts",
+    "./web-mcp": "./internal/webMcp.ts",
     "./internal-components/*.astro": "./internal-components/*.astro",
     "./components": "./components/index.ts",
     "./components/*.astro": "./components/*.astro",
