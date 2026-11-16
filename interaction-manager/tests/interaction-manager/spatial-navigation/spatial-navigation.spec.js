@@ -532,6 +532,23 @@ describe('Spatial navigation - Area switching', () => {
         await isElementFocused('.square-11');
     });
 
+    it('Should return null from focusFirst and focusLast for an unknown area', async () => {
+        const result = await gf.executeScript(() => {
+            const sn = interactionManager.spatialNavigation;
+            return [sn.focusFirst('missing'), sn.focusLast('missing')];
+        });
+
+        assert.deepEqual(result, [null, null]);
+    });
+
+    it('Should align to the last focused element when focus was lost', async () => {
+        await focusSquare(6);
+        await gf.executeScript(() => interactionManager.spatialNavigation.clearFocus());
+
+        assert.equal(await switchArea('area-2', { direction: 'right' }), '10');
+        await isElementFocused('.square-10');
+    });
+
     it('Should focus the last focused element when switching without options', async () => {
         // Nothing was focused in area-2 yet, so it focuses the first element
         assert.equal(await switchArea('area-2'), '7');
