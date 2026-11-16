@@ -112,8 +112,6 @@
         <script src="../../dist/spatial-navigation.js"></script>
         <script src="../../dist/gamepad.js"></script>
         <script>
-            let counter = 0;
-
             spatialNavigation.init([
                 { area: 'square-1', elements: ['.square1'] },
                 { area: 'square-2', elements: ['.square2'] },
@@ -127,8 +125,8 @@
 
             document.addEventListener('keydown', (e) => {
                 if (e.keyCode === KEYS.SPACEBAR && !e.repeat) {
-                    counter++;
-                    spatialNavigation.switchArea(`square-${(counter % 2) + 1}`);
+                    const inSquare1 = document.activeElement.classList.contains('square1');
+                    spatialNavigation.switchArea(inSquare1 ? 'square-2' : 'square-1');
                 }
             });
         </script>

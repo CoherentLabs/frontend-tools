@@ -516,7 +516,7 @@ class SpatialNavigation {
     focusFirst(area = 'default'): HTMLElement | null {
         if (!this.enabled) return null;
 
-        const navigableElements = this.areas[area].elements;
+        const navigableElements = this.areas[area]?.elements;
         if (!navigableElements || navigableElements.length === 0) {
             console.error(`The area '${area}' you are trying to focus doesn't exist or the spatial navigation hasn't been initialized`);
             return null;
@@ -539,7 +539,7 @@ class SpatialNavigation {
     focusLast(area = 'default'): HTMLElement | null {
         if (!this.enabled) return null;
 
-        const navigableElements = this.areas[area].elements;
+        const navigableElements = this.areas[area]?.elements;
         if (!navigableElements || navigableElements.length === 0) {
             console.error(`The area '${area}' you are trying to focus doesn't exist or the spatial navigation hasn't been initialized`);
             return null;
@@ -589,7 +589,7 @@ class SpatialNavigation {
             const { direction } = options!;
             const { elements } = this.areas[area];
 
-            const activeElement = document.activeElement as HTMLElement;
+            const activeElement = ((this.isActiveElementInGroup() && document.activeElement) || this.lastFocusedElement) as HTMLElement;
             if (!activeElement) return null;
 
             const dimensions = activeElement.getBoundingClientRect();
