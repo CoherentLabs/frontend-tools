@@ -91,6 +91,10 @@ export default defineConfig({
 | **disableDefaultLogo** | `boolean`              | `false`     | If false, injects the Gameface UI logo automatically if such is not defined in the Starlight config of the documentation. Set to true if you want to remove the logo entirely.             |
 | **replacesTitle**      | `boolean`              | `true`      | If true, the logo will replace the title in the header. Set to false if you want to show the title next to the logo. Useful when using a custom logo that doesn't include the title in it. |
 
+| **agentDocs**          | `boolean \| object`    | `true`      | On `astro build`, makes the docs readable by AI agents: `llms.txt`, `llms-full.txt`, `gameface-mcp-docs.json` (read by the Gameface MCP server), each page's `index.html.md`, and an agent skill and AI catalog in `.well-known/`. Needs `site` in the Astro config. `false` turns it off; an object is passed to the agent docs integration (see below). |
+| **structuredData**     | `boolean \| object`    | `true`      | Adds [Schema.org](https://schema.org/) JSON-LD to every page: `TechArticle` and `BreadcrumbList` on docs pages, `WebSite` and `Organization` on the homepage. Needs `site`. `dateModified` comes from Starlight's `lastUpdated` when it's on. An object sets the publisher: `{ publisher: { name, url, logo } }` (default: Coherent Labs, no logo). |
+| **robots**             | `boolean \| object`    | `true`      | On `astro build`, writes `robots.txt` (rules for all crawlers and named AI crawlers, Content Signals, the sitemap URL), unless `public/robots.txt` exists. Skipped for sites built under a sub-path. `false` turns it off; an object is passed to the robots.txt integration (see below). |
+
 To override the default logo, simply provide your own in the Starlight configuration:
 
 ```js
@@ -135,6 +139,93 @@ export const collections = {
   }),
 };
 ```
+
+## 🤖 Agent Docs Integration
+
+Every documentation that uses the theme becomes readable by AI agents on `astro build`, with nothing to configure beyond `site`. It writes:
+
+| File                                         | What it is                                                                                     |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `llms.txt`                                   | Index of every page, grouped by section, linked to its Markdown version ([llmstxt.org](https://llmstxt.org/)). |
+| `llms-full.txt`                              | The whole site as sections tagged with their page URL. The Gameface MCP server searches it.   |
+| `gameface-mcp-docs.json`                     | Manifest the Gameface MCP server checks to download `llms-full.txt` only when it changed.      |
+| `<page>/index.html.md`                       | Each page as standalone Markdown, linked from the page's `<head>` with `<link rel="alternate" type="text/markdown">`. |
+| `.well-known/agent-skills/<name>/SKILL.md`   | A skill telling agents how to read the docs, and to suggest the Gameface MCP server to users building Gameface UIs. |
+| `.well-known/agent-skills/index.json`        | The skills index ([Agent Skills Discovery](https://github.com/cloudflare/agent-skills-discovery-rfc)). |
+| `.well-known/ai-catalog.json`                | AI catalog listing the skill ([ARD](https://agenticresourcediscovery.org/)), also linked from each page's `<head>` and from robots.txt (`Agentmap:`). |
+
+The `.well-known` files are written only for a site at its host's root: agents don't look for them under a sub-path. The skill's Gameface MCP section is left out for Prysm docs.
+
+Any other Astro site, including one that isn't built with Starlight, can add the same export as a standalone Astro integration:
+
+```js
+// astro.config.mjs
+import { defineConfig } from 'astro/config';
+import agentDocs from 'coherent-docs-theme/agent-docs';
+
+export default defineConfig({
+  site: 'https://coherent-labs.com',
+  integrations: [
+    agentDocs({
+      // Where each page's content and title are (defaults: Starlight's `.sl-markdown-content` and `h1#_top`)
+      contentSelector: 'main article',
+      titleSelector: 'h1',
+      include: ['blog/'],
+    }),
+  ],
+});
+```
+
+| Option              | Type       | Default                          | Description                                                                 |
+| ------------------- | ---------- | -------------------------------- | --------------------------------------------------------------------------- |
+| **base**            | `string`   | `site` + `base`                  | Public URL of the build output's root.                                      |
+| **contentSelector** | `string`   | `.sl-markdown-content`           | CSS selector of a page's content. Pages without it are skipped.             |
+| **titleSelector**   | `string`   | `h1#_top`                        | CSS selector of a page's title; falls back to `<title>`.                    |
+| **include**         | `string[]` | all pages                        | Path prefixes to export.                                                    |
+| **exclude**         | `RegExp[]` | -                                | Path patterns to leave out.                                                 |
+| **optional**        | `RegExp[]` | reference pages                  | Path patterns listed under llms.txt's "Optional" section (default: API reference, release notes, changelogs). |
+| **skill**           | `object \| false` | generated               | The agent skill: `{ name, description, mcp }` (`mcp: false` drops the Gameface MCP section). `false` leaves it out. |
+| **catalog**         | `boolean`  | `true`                           | Writes `.well-known/ai-catalog.json`.                                       |
+| **alternateLinks**  | `boolean`  | `true`                           | Adds `<link rel="alternate" type="text/markdown">` to each exported page.   |
+| **llmsDirective**   | `boolean`  | `true`                           | Adds a pointer to `llms.txt` at the top of every page's Markdown, and a visually hidden one at the top of its HTML `<body>`. |
+| **webMcp**          | `boolean`  | `true`                           | Registers the WebMCP tools below on every page. Turning off `agentDocs` turns them off too, since they read its files. |
+
+### WebMCP tools
+
+Every page also registers three read-only [WebMCP](https://webmachinelearning.github.io/webmcp/) tools, so an AI agent in the browser can use the docs without scraping them:
+
+| Tool          | Input               | Returns                                                       |
+| ------------- | ------------------- | ------------------------------------------------------------- |
+| `search_docs` | `query`, `limit`    | The best-matching pages (title, URL, excerpt), from the site's Pagefind index. |
+| `get_page`    | `url` (optional)    | A page as Markdown (its `index.html.md`); the current page by default. |
+| `list_pages`  | -                   | The site's `llms.txt`.                                        |
+
+They register only in browsers with the WebMCP API, and Pagefind loads only when an agent first searches. Turn them off with `agentDocs: { webMcp: false }`. Used on its own, the integration injects the tools itself; `search_docs` then needs the site to have a Pagefind index.
+
+## 🤖 robots.txt Integration
+
+Every documentation that uses the theme gets a `robots.txt` on `astro build`. It allows all crawlers, gives the AI search and training crawlers (GPTBot, ClaudeBot, PerplexityBot, ...) their own group, declares [Content Signals](https://contentsignals.org/) (`search=yes, ai-input=yes, ai-train=yes` by default) and links the sitemap. A `public/robots.txt` takes precedence. Crawlers only read `robots.txt` at a host's root, so sites built under a sub-path get none.
+
+Other Astro sites can add it as a standalone integration:
+
+```js
+// astro.config.mjs
+import { defineConfig } from 'astro/config';
+import robotsTxt from 'coherent-docs-theme/robots';
+
+export default defineConfig({
+  site: 'https://coherent-labs.com',
+  integrations: [robotsTxt({ disallow: ['/internal/'] })],
+});
+```
+
+| Option             | Type                                  | Default                    | Description                                                    |
+| ------------------ | ------------------------------------- | -------------------------- | -------------------------------------------------------------- |
+| **contentSignals** | `{ search, aiInput, aiTrain }`, `false` | all `true`               | How AI may use the content; `false` leaves the line out.       |
+| **disallow**       | `string[]`                            | `[]`                       | Paths no crawler should fetch.                                 |
+| **aiCrawlers**     | `string[]`                            | `DEFAULT_AI_CRAWLERS`      | AI crawlers listed in their own group.                         |
+| **sitemaps**       | `string[]`                            | the build's sitemap        | Sitemap URLs.                                                  |
+| **agentmap**       | `string`, `boolean`                   | `true` with the theme      | An `Agentmap:` line pointing to the AI catalog; `true` uses `/.well-known/ai-catalog.json`. |
 
 ## 🛠️ Exported Utilities
 

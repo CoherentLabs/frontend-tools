@@ -14,6 +14,8 @@ import { remarkFixAbsoluteLinks } from './remark-directives/fixAbsoluteLinks';
 import remarkCustomHeaderId from 'remark-custom-header-id';
 import { getNavLinks } from './internal/siteRegistry';
 import devPagefindPlugin from './internal/devPagefindPlugin';
+import agentDocs, { AI_CATALOG_FILE } from './integrations/agentDocs';
+import robotsTxt from './integrations/robotsTxt';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -89,6 +91,28 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
           addIntegration(devPagefindPlugin());
         }
 
+        // Agent docs: the skill recommends the Gameface MCP server, which is for Gameface UIs only.
+        const agentDocsOptions = typeof options.agentDocs === 'object' ? options.agentDocs : {};
+        const skillOptions = agentDocsOptions.skill === false
+          ? false
+          : { mcp: !/prysm/i.test(options.documentation), ...agentDocsOptions.skill };
+        // .well-known files only work at the host's root.
+        const atHostRoot = (astroConfig.base ?? '/').replace(/\/+$/, '') === '';
+        const hasCatalog = options.agentDocs !== false && skillOptions !== false && agentDocsOptions.catalog !== false && atHostRoot;
+
+        // WebMCP's tools read the agent docs files, so they go with them. The Head override renders
+        // the script (in dev too), so the integration doesn't inject it again.
+        const webMcp = options.agentDocs !== false && agentDocsOptions.webMcp !== false;
+
+        if (options.agentDocs !== false && command === 'build') {
+          addIntegration(agentDocs({ ...agentDocsOptions, skill: skillOptions, webMcp: false }));
+        }
+
+        if (options.robots !== false && command === 'build') {
+          const robotsOptions = typeof options.robots === 'object' ? options.robots : {};
+          addIntegration(robotsTxt({ agentmap: hasCatalog, ...robotsOptions }));
+        }
+
         process.env.COHERENT_THEME_CONFIG = JSON.stringify({
           showPageProgress,
           navLinks,
@@ -98,7 +122,9 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
           breadcrumbs: options.breadcrumbs,
           topicsConfig: options.topicsConfig,
           currentTopicId: options.currentTopicId,
-          version: options.version
+          version: options.version,
+          webMcp,
+          structuredData: options.structuredData ?? true,
         });
 
         const configUpdates: any = {
@@ -126,6 +152,13 @@ export default function coherentThemePlugin(options: CoherentThemeOptions = { do
             content: options.documentation
           }
         });
+
+        if (hasCatalog) {
+          configUpdates.head.push({
+            tag: 'link',
+            attrs: { rel: 'ai-catalog', href: `/${AI_CATALOG_FILE}`, type: 'application/json' }
+          });
+        }
 
         if (options.engine) {
           configUpdates.head.push({
@@ -185,3 +218,6 @@ export async function generateVersionWithPackageJSON(packagePath: string, link?:
 export const generateMultipleDocsChangelog = generateChangelogMultiple;
 export const generateDocsChangelog = generateChangelog;
 export const getCoherentReleases = getSortedCoherentReleases;
+export { agentDocs, robotsTxt };
+export type { AgentDocsOptions, SkillOptions } from './integrations/agentDocs';
+export type { RobotsTxtOptions, ContentSignals } from './integrations/robotsTxt';
