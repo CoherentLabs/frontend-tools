@@ -1,38 +1,12 @@
-"use strict";
-var spatialNavigation = (() => {
-  var __defProp = Object.defineProperty;
-  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-  var __getOwnPropNames = Object.getOwnPropertyNames;
-  var __hasOwnProp = Object.prototype.hasOwnProperty;
-  var __export = (target, all) => {
-    for (var name in all)
-      __defProp(target, name, { get: all[name], enumerable: true });
-  };
-  var __copyProps = (to, from, except, desc) => {
-    if (from && typeof from === "object" || typeof from === "function") {
-      for (let key of __getOwnPropNames(from))
-        if (!__hasOwnProp.call(to, key) && key !== except)
-          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-    }
-    return to;
-  };
-  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-
-  // src/spatial-navigation.ts
-  var spatial_navigation_exports = {};
-  __export(spatial_navigation_exports, {
-    default: () => spatial_navigation_default2
-  });
-
-  // src/utils/utility-functions.ts
+(function(global, factory) {
+  typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.spatialNavigation = factory());
+})(this, (function() {
+  "use strict";
   function toDeg(rad) {
     return rad * 180 / Math.PI;
   }
-
-  // src/utils/global-object.ts
-  var IM = class _IM2 {
+  class IM {
     constructor() {
-      // eslint-disable-next-line require-jsdoc
       this.actions = [];
       this.keyboardFunctions = [];
       this.gamepadFunctions = [];
@@ -41,7 +15,7 @@ var spatialNavigation = (() => {
      * Initialize global object
      */
     init() {
-      if (!window._IM) window._IM = new _IM2();
+      if (!window._IM) window._IM = new IM();
     }
     /**
      * Get keyboard functions matching the given keys
@@ -58,24 +32,24 @@ var spatialNavigation = (() => {
     /**
      * Get a gamepad function matching the given button actions and type
      */
-    getGamepadAction({ actions, type }) {
+    getGamepadAction({ actions: actions2, type }) {
       return _IM.gamepadFunctions.find((gpFunc) => {
-        return gpFunc.actions.every((action) => actions.includes(action)) && gpFunc.type === type && gpFunc.actions.length === actions.length;
+        return gpFunc.actions.every((action) => actions2.includes(action)) && gpFunc.type === type && gpFunc.actions.length === actions2.length;
       });
     }
     /**
      * Get all gamepad functions matching the given button actions
      */
-    getGamepadActions(actions) {
+    getGamepadActions(actions2, exactMatch = true) {
       return _IM.gamepadFunctions.filter(
-        (gpFunc) => gpFunc.actions.every((action) => actions.includes(action)) && gpFunc.actions.length === actions.length
+        (gpFunc) => gpFunc.actions.every((action) => actions2.includes(action)) && (exactMatch ? gpFunc.actions.length === actions2.length : true)
       );
     }
     /**
      * Get the index of a gamepad function matching the given button actions
      */
-    getGamepadActionIndex(actions) {
-      return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions.includes(action)));
+    getGamepadActionIndex(actions2) {
+      return _IM.gamepadFunctions.findIndex((gpFunc) => gpFunc.actions.every((action) => actions2.includes(action)));
     }
     /**
      * Get an action by name
@@ -132,23 +106,21 @@ This ${callbackType} is already registered for this combination and type. To upd
       const index = _IM.gamepadFunctions.indexOf(functionEntry);
       if (index !== -1) _IM.gamepadFunctions.splice(index, 1);
     }
-  };
-  var global_object_default = new IM();
-
-  // src/lib_components/actions.ts
-  var Actions = class {
+  }
+  const IM$1 = new IM();
+  class Actions {
     /**
      * Register an action
      */
     register(action, callback) {
-      if (global_object_default.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
+      if (IM$1.getAction(action)) return console.error(`The following action "${action}" is already registered!`);
       _IM.actions.push({ name: action, callback });
     }
     /**
      * Remove a registered action
      */
     remove(action) {
-      const actionIndex = global_object_default.getActionIndex(action);
+      const actionIndex = IM$1.getActionIndex(action);
       if (actionIndex === -1) return console.error(`${action} is not a registered action!`);
       _IM.actions.splice(actionIndex, 1);
     }
@@ -156,15 +128,13 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Trigger an action
      */
     execute(action, value) {
-      const actionObject = global_object_default.getAction(action);
+      const actionObject = IM$1.getAction(action);
       if (!actionObject) return console.error(`${action} is not a registered action!`);
       actionObject.callback(value);
     }
-  };
-  var actions_default = new Actions();
-
-  // src/utils/keyboard-mappings.ts
-  var mappings = {
+  }
+  const actions = new Actions();
+  const mappings$1 = {
     ALT: 18,
     ARROW_DOWN: 40,
     ARROW_LEFT: 37,
@@ -265,16 +235,14 @@ This ${callbackType} is already registered for this combination and type. To upd
     EQUAL: 187,
     SYSTEM: 91
   };
-  var keyboard_mappings_default = mappings;
-
-  // src/lib_components/keyboard.ts
-  var Keyboard = class {
+  const mappingsKeys = Object.keys(mappings$1);
+  class Keyboard {
     constructor() {
       this.eventListenerAttached = false;
       this.keysPressed = /* @__PURE__ */ new Set();
       this.onKeyDown = this.onKeyDown.bind(this);
       this.onKeyUp = this.onKeyUp.bind(this);
-      if (!window.KEYS) window.KEYS = keyboard_mappings_default;
+      if (!window.KEYS) window.KEYS = mappings$1;
     }
     /**
      * Registers keyboard event listeners
@@ -285,7 +253,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     on(options) {
       const keys = this.normalizeKeys(options.keys);
-      const incorrectKeys = keys.filter((key) => !keyboard_mappings_default[key]);
+      const incorrectKeys = keys.filter((key) => !mappings$1[key]);
       if (incorrectKeys.length > 0) return console.error(`The following keys [${incorrectKeys.join(", ")}] you have entered are incorrect! `);
       if (!this.eventListenerAttached) {
         document.addEventListener("keydown", this.onKeyDown);
@@ -294,10 +262,10 @@ This ${callbackType} is already registered for this combination and type. To upd
       }
       const types = !options.type ? ["press"] : Array.isArray(options.type) ? options.type : [options.type];
       types.forEach((type) => {
-        const registeredKeys = global_object_default.getKeys(keys);
+        const registeredKeys = IM$1.getKeys(keys);
         const existingEntry = registeredKeys.find((key) => key.type === type);
         if (existingEntry) {
-          return global_object_default.addCallbackToEntry(existingEntry, options.callback, {
+          return IM$1.addCallbackToEntry(existingEntry, options.callback, {
             identifier: `Keys: [${keys.join(", ")}]`,
             type
           });
@@ -317,7 +285,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     off(keys, callback) {
       keys = this.normalizeKeys(keys);
-      const keyCombinations = global_object_default.getKeys(keys);
+      const keyCombinations = IM$1.getKeys(keys);
       if (keyCombinations.length === 0) return console.error("You are trying to remove a non-existent key combination!");
       if (callback) {
         const combinationsWithCallback = keyCombinations.filter((combination) => combination.callbacks.includes(callback));
@@ -328,12 +296,12 @@ This ${callbackType} is already registered for this combination and type. To upd
           const cbIndex = combination.callbacks.indexOf(callback);
           combination.callbacks.splice(cbIndex, 1);
           if (combination.callbacks.length === 0) {
-            global_object_default.removeKeyboardFunction(combination);
+            IM$1.removeKeyboardFunction(combination);
           }
         });
       } else {
         keyCombinations.forEach((combination) => {
-          global_object_default.removeKeyboardFunction(combination);
+          IM$1.removeKeyboardFunction(combination);
         });
       }
       if (_IM.keyboardFunctions.length === 0) {
@@ -349,7 +317,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       const keyPressed = this.keyCodeToString(event.keyCode);
       if (!keyPressed) return;
       this.keysPressed.add(keyPressed);
-      const registeredKeys = global_object_default.getKeys([...this.keysPressed]);
+      const registeredKeys = IM$1.getKeys([...this.keysPressed]);
       if (registeredKeys.length === 0) return;
       registeredKeys.forEach((key) => {
         if (key.type === "press" && event.repeat) return;
@@ -365,7 +333,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       const keyPressed = this.keyCodeToString(event.keyCode);
       if (!keyPressed) return;
       this.keysPressed.delete(keyPressed);
-      const registeredKeys = global_object_default.getKeys([keyPressed]);
+      const registeredKeys = IM$1.getKeys([keyPressed]);
       if (registeredKeys.length === 0) return;
       registeredKeys.forEach((key) => {
         if (key.type === "lift" && key.keys.indexOf(keyPressed) !== -1) this.executeCallbacks(event, key);
@@ -375,7 +343,7 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Convert keyCode to string representing key
      */
     keyCodeToString(code) {
-      return Object.keys(keyboard_mappings_default).find((key) => keyboard_mappings_default[key] === code);
+      return mappingsKeys.find((key) => mappings$1[key] === code);
     }
     /**
      * Removes duplicates and converts KeyCodes to valid KeyName strings
@@ -401,15 +369,13 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     executeCallbacks(event, registeredKeys) {
       registeredKeys.callbacks.forEach((callback) => {
-        if (typeof callback === "string") return actions_default.execute(callback, event);
+        if (typeof callback === "string") return actions.execute(callback, event);
         callback(event);
       });
     }
-  };
-  var keyboard_default = new Keyboard();
-
-  // src/utils/gamepad-mappings.ts
-  var mappings2 = {
+  }
+  const keyboard = new Keyboard();
+  const mappings = {
     FACE_BUTTON_DOWN: 0,
     FACE_BUTTON_RIGHT: 1,
     FACE_BUTTON_LEFT: 2,
@@ -432,10 +398,10 @@ This ${callbackType} is already registered for this combination and type. To upd
       "face-button-left": "FACE_BUTTON_LEFT",
       "face-button-right": "FACE_BUTTON_RIGHT",
       "face-button-top": "FACE_BUTTON_TOP",
-      "left-sholder": "LEFT_SHOULDER",
-      "right-sholder": "RIGHT_SHOULDER",
-      "left-sholder-bottom": "LEFT_SHOULDER_BOTTOM",
-      "right-sholder-bottom": "RIGHT_SHOULDER_BOTTOM",
+      "left-shoulder": "LEFT_SHOULDER",
+      "right-shoulder": "RIGHT_SHOULDER",
+      "left-shoulder-bottom": "LEFT_SHOULDER_BOTTOM",
+      "right-shoulder-bottom": "RIGHT_SHOULDER_BOTTOM",
       select: "SELECT",
       start: "START",
       "left-analogue-stick": "LEFT_ANALOGUE_STICK",
@@ -493,74 +459,56 @@ This ${callbackType} is already registered for this combination and type. To upd
       "right.joystick.right"
     ]
   };
-  var gamepad_mappings_default = mappings2;
-
-  // src/lib_components/gamepad.ts
-  var AXIS_THRESHOLD = 0.9;
-  var ACTION_TYPES = ["press", "hold"];
-  var Gamepad = class {
+  const AXIS_THRESHOLD = 0.9;
+  const ACTION_TYPES = ["press", "hold"];
+  class Gamepad {
     constructor() {
-      this.pollingStarted = false;
-      this.gamepadEnabled = false;
-      this.pollingInterval = 200;
+      this._gamepadEnabled = false;
+      this._pollingInterval = 200;
       this._pressedAction = null;
       this._pressedButtons = [];
-      this.onGamepadConnected = this.onGamepadConnected.bind(this);
       this.sanitizeAction = this.sanitizeAction.bind(this);
     }
     /**
      * Allow gamepads to be connected
      */
     set enabled(isEnabled) {
-      this.gamepadEnabled = isEnabled;
-      this.gamepadEnabled ? this.init() : this.deinit();
+      this._gamepadEnabled = isEnabled;
+      this._gamepadEnabled ? this.startPolling() : this.stopPolling();
     }
-    /**
-     * Attaches the event listeners for the gamepads
-     */
-    init() {
-      window.addEventListener("gamepadconnected", this.onGamepadConnected);
-    }
-    /**
-     * Removes any attached event listeners for gamepads
-     */
-    deinit() {
-      window.removeEventListener("gamepadconnected", this.onGamepadConnected);
-    }
-    /**
-     * Starts polling on the first connected
-     */
-    onGamepadConnected() {
-      if (this.pollingStarted) return;
-      this.pollingStarted = true;
-      this.startPolling();
+    set pollingInterval(interval) {
+      this._pollingInterval = interval;
+      if (this._gamepadEnabled) {
+        if (this.pollingIntervalRef) this.stopPolling();
+        this.startPolling();
+      }
     }
     on(options) {
-      const actions = options.actions.map(this.sanitizeAction);
-      const isAxisAlias = gamepad_mappings_default.axisAliases.some((alias) => actions.includes(alias));
+      const actions2 = options.actions.map(this.sanitizeAction);
+      const isAxisAlias = mappings.axisAliases.some((alias) => actions2.includes(alias));
       const type = options.type && ACTION_TYPES.includes(options.type) ? options.type : "hold";
       if (type === "press" && isAxisAlias) {
         return console.error(`You can't use an axis action with a 'press' type!`);
       }
-      if (actions.length > 1 && isAxisAlias) {
+      if (actions2.length > 1 && isAxisAlias) {
         return console.error(`You can't use an axis action in a combination with a button action`);
       }
-      const existingEntry = global_object_default.getGamepadAction({ actions, type });
+      const existingEntry = IM$1.getGamepadAction({ actions: actions2, type });
       if (existingEntry) {
-        return global_object_default.addCallbackToEntry(existingEntry, options.callback, {
-          identifier: `Actions: [${actions.join(", ")}]`,
+        return IM$1.addCallbackToEntry(existingEntry, options.callback, {
+          identifier: `Actions: [${actions2.join(", ")}]`,
           type
         });
       }
-      _IM.gamepadFunctions.push({ actions, type, callbacks: [options.callback] });
+      _IM.gamepadFunctions.push({ actions: actions2, type, callbacks: [options.callback] });
     }
     /**
      * Removes either an action or a callback from the provided action
      * @param {Array} actions - Array containing the action you want to remove
      * @param {string | Function} callback - Callback or action you want to remove 
      */
-    off(actions, callback) {
-      const matchingActions = global_object_default.getGamepadActions(actions.map(this.sanitizeAction));
+    off(actions2, callback) {
+      const matchingActions = IM$1.getGamepadActions(actions2.map(this.sanitizeAction));
       if (matchingActions.length === 0) {
         return console.error("You are trying to remove a non-existent action!");
       }
@@ -571,28 +519,29 @@ This ${callbackType} is already registered for this combination and type. To upd
           const cbIndex = action.callbacks.indexOf(callback);
           action.callbacks.splice(cbIndex, 1);
           if (action.callbacks.length === 0) {
-            global_object_default.removeGamepadFunction(action);
+            IM$1.removeGamepadFunction(action);
           }
         });
       } else {
-        matchingActions.forEach((action) => global_object_default.removeGamepadFunction(action));
+        matchingActions.forEach((action) => IM$1.removeGamepadFunction(action));
       }
     }
     /**
      * Loop that handles button presses and axis movement
      */
     startPolling() {
-      const gamepads = navigator.getGamepads();
-      if (gamepads.length === 0) {
-        this.pollingStarted = false;
-        return;
-      }
-      gamepads.forEach((gamepad) => {
-        if (!gamepad) return;
-        this.handleButtons(gamepad.buttons);
-        this.handleJoysticks(gamepad.axes);
-      });
-      setTimeout(this.startPolling.bind(this), this.pollingInterval);
+      this.pollingIntervalRef = setInterval(() => {
+        const gamepads = navigator.getGamepads();
+        if (gamepads.length === 0) return;
+        gamepads.forEach((gamepad2) => {
+          if (!gamepad2) return;
+          this.handleButtons(gamepad2.buttons);
+          this.handleJoysticks(gamepad2.axes);
+        });
+      }, this._pollingInterval);
+    }
+    stopPolling() {
+      if (this.pollingIntervalRef) clearInterval(this.pollingIntervalRef);
     }
     handleButtons(buttons) {
       const pressedButtons = buttons.reduce(
@@ -605,7 +554,7 @@ This ${callbackType} is already registered for this combination and type. To upd
         },
         { buttonIndexes: [], buttons: [] }
       );
-      const gamepadActions = global_object_default.getGamepadActions(pressedButtons.buttonIndexes);
+      const gamepadActions = IM$1.getGamepadActions(pressedButtons.buttonIndexes, false);
       if (this._pressedAction) {
         if (!gamepadActions.includes(this._pressedAction)) {
           this.executeCallbacks(this._pressedAction, this._pressedButtons);
@@ -665,41 +614,51 @@ This ${callbackType} is already registered for this combination and type. To upd
     sanitizeAction(action) {
       if (typeof action === "number") return action;
       const actionName = action.toLowerCase();
-      if (gamepad_mappings_default.axisAliases.includes(actionName)) return actionName;
-      const key = gamepad_mappings_default.aliases[actionName];
-      if (key) return gamepad_mappings_default[key];
+      if (mappings.axisAliases.includes(actionName)) return actionName;
+      const key = mappings.aliases[actionName];
+      if (key) return mappings[key];
       throw new Error(`You have entered a non-supported button alias: ${action}`);
     }
     /**
      * Gets all registered Joystick actions
      */
     getJoystickActions() {
-      return _IM.gamepadFunctions.filter((gpFunc) => gamepad_mappings_default.axisAliases.includes(gpFunc.actions[0]));
+      return _IM.gamepadFunctions.filter((gpFunc) => mappings.axisAliases.includes(gpFunc.actions[0]));
     }
     /**
      * Executes the callbacks from the registered action
      */
     executeCallbacks(action, value) {
       action.callbacks.forEach((callback) => {
-        if (typeof callback === "string") return actions_default.execute(callback, value);
+        if (typeof callback === "string") return actions.execute(callback, value);
         callback(value);
       });
     }
-  };
-  var gamepad_default = new Gamepad();
-
-  // src/lib_components/spatial-navigation.ts
-  var directions = ["down", "up", "left", "right"];
-  var defaultKeysState = { up: ["arrow_up"], down: ["arrow_down"], right: ["arrow_right"], left: ["arrow_left"] };
-  var SpatialNavigation = class {
+  }
+  const gamepad = new Gamepad();
+  const directions = ["down", "up", "left", "right"];
+  const defaultKeysState = { up: ["arrow_up"], down: ["arrow_down"], right: ["arrow_right"], left: ["arrow_left"] };
+  class SpatialNavigation {
     constructor() {
       this.enabled = false;
-      this.areas = { default: { elements: [], distance: 0, overflow: { x: 0, y: 0 } } };
+      this.areas = { default: this.createDefaultAreaState() };
       this.registeredKeys = /* @__PURE__ */ new Set();
       this.clearCurrentActiveKeys = false;
       this.overlapPercentage = 0.5;
       this.lastFocusedElement = null;
       this.paused = false;
+      this.syncLastFocused = (event) => {
+        const target = event.target;
+        if (!this.enabled || !target) return;
+        for (const areaName in this.areas) {
+          const area = this.areas[areaName];
+          if (area.elements.includes(target)) {
+            area.lastFocusedElement = target;
+            this.lastFocusedElement = target;
+            break;
+          }
+        }
+      };
     }
     /**
      * Initializes the spatial navigation
@@ -725,6 +684,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       this.add(navigableElements);
       this.activeKeys = JSON.parse(JSON.stringify(defaultKeysState));
       this.registerKeyActions();
+      window.addEventListener("focusin", this.syncLastFocused);
       if (overlap && 0 <= overlap && overlap <= 1) {
         this.overlapPercentage = overlap;
       }
@@ -735,10 +695,12 @@ This ${callbackType} is already registered for this combination and type. To upd
     deinit() {
       if (!this.enabled) return;
       this.enabled = false;
-      this.areas = { default: { elements: [], distance: 0, overflow: { x: 0, y: 0 } } };
+      this.areas = { default: this.createDefaultAreaState() };
       this.removeKeyActions();
       this.overlapPercentage = 0.5;
       this.lastFocusedElement = null;
+      this.onNavigationEdge = void 0;
+      window.removeEventListener("focusin", this.syncLastFocused);
     }
     /**
      * Add new elements to area or new area
@@ -779,6 +741,27 @@ This ${callbackType} is already registered for this combination and type. To upd
       delete this.areas[area];
     }
     /**
+     * Gets the last focused element from the specified area
+     * @param area
+     */
+    getLastFocused(area = "default") {
+      const el = this.areas[area]?.lastFocusedElement;
+      if (el && !document.contains(el)) {
+        this.areas[area].lastFocusedElement = void 0;
+        return void 0;
+      }
+      return el;
+    }
+    /**
+     * Returns the structure of the default area
+     */
+    createDefaultAreaState() {
+      return {
+        elements: [],
+        lastFocusedElement: void 0
+      };
+    }
+    /**
      * Get elements from selector and save them to the default group
      * @param navArea
      */
@@ -808,7 +791,7 @@ This ${callbackType} is already registered for this combination and type. To upd
       }, []);
       if (domElements.length === 0) return console.error(`${navArea.elements.join(", ")} are either not a correct selectors or the elements are not present in the DOM.`);
       if (!this.areas[navArea.area]) {
-        this.areas[navArea.area] = { elements: [], distance: 0, overflow: { x: 0, y: 0 } };
+        this.areas[navArea.area] = this.createDefaultAreaState();
       }
       this.setNavigationAreaProperties(navArea.area, domElements);
     }
@@ -818,35 +801,6 @@ This ${callbackType} is already registered for this combination and type. To upd
      */
     setNavigationAreaProperties(area, domElements) {
       this.areas[area].elements.push(...domElements);
-      this.areas[area].distance = this.getElementsDistance(this.areas[area].elements);
-      this.areas[area].overflow = this.setOverflowValues(domElements[0].parentElement);
-    }
-    /**
-     * Calculates the distance between the provided elements and return the max distance
-     * @param elements
-     * @returns The max distance between the elements
-     */
-    getElementsDistance(elements) {
-      return elements.reduce((acc, el) => {
-        const { x, y } = el.getBoundingClientRect();
-        const distance = Math.hypot(x, y);
-        return acc < distance ? distance : acc;
-      }, 0);
-    }
-    /**
-     * Recursively checks for overflow in the parent elements and sets the area overflow values
-     * @param {HTMLElement} element - The element to check for overflow
-     * @returns {{x: number, y: number}|HTMLElement} - Next element to check for overflow or object with the overflow values
-     */
-    setOverflowValues(element) {
-      if (!element) return { x: 0, y: 0 };
-      const { scrollWidth, scrollHeight } = element;
-      const overflowX = Math.max(0, scrollWidth - window.innerWidth);
-      const overflowY = Math.max(0, scrollHeight - window.innerHeight);
-      if (overflowX > 0 || overflowY > 0) {
-        return { x: overflowX, y: overflowY };
-      }
-      return this.setOverflowValues(element.parentElement);
     }
     /**
      * Sets the tabindex of the element that needs to be focused
@@ -859,19 +813,12 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Returns the valid focusable elements in the navigable area
      * @param {HTMLElement} targetElement
      * @param {HTMLElement[]} elements
-     * @param {number} distance
      */
-    getFocusableGroup(targetElement, elements, distance) {
+    getFocusableGroup(targetElement, elements) {
       return elements.reduce((accumulator, element) => {
         if (element !== targetElement && !element.hasAttribute("disabled")) {
           const { x, y, height, width } = element.getBoundingClientRect();
-          accumulator.push({
-            element,
-            x: x + distance,
-            y: y + distance,
-            height,
-            width
-          });
+          accumulator.push({ element, x, y, height, width });
         }
         return accumulator;
       }, []);
@@ -879,12 +826,9 @@ This ${callbackType} is already registered for this combination and type. To upd
     /**
      * Checks if the passed element is within a group and returns the rest of the elements in the group
      * @param {HTMLElement} targetElement
-     * @returns {NavigationObject[]}
      */
     getCurrentArea(targetElement) {
-      return Object.values(this.areas).find((area) => {
-        if (area.elements.includes(targetElement)) return true;
-      });
+      return Object.entries(this.areas).find(([_, area]) => area.elements.includes(targetElement));
     }
     /**
      * Gets the element closest to the opposite edge of the navigation direction
@@ -893,34 +837,21 @@ This ${callbackType} is already registered for this combination and type. To upd
      * @param {Object} focusedElement
      * @param {number} focusedElement.x
      * @param {number} focusedElement.y
-     * @param {number} distance
-     * @param {{x: number, y: number}} overflow
      */
-    getClosestToEdge(direction, elements, focusedElement, distance, overflow) {
-      let newDistance, oldDistance;
-      const bottomEdge = window.innerHeight + distance + overflow.y;
-      const rightEdge = window.innerWidth + distance + overflow.x;
+    getClosestToEdge(direction, elements) {
       return elements.reduce((acc, el) => {
         switch (direction) {
           case "down":
-            newDistance = Math.hypot(el.x - focusedElement.x, el.y);
-            oldDistance = Math.hypot(acc.x - focusedElement.x, acc.y);
-            break;
+            return el.y < acc.y ? el : acc;
           case "up":
-            newDistance = Math.hypot(el.x - focusedElement.x, bottomEdge - el.y);
-            oldDistance = Math.hypot(acc.x - focusedElement.x, bottomEdge - acc.y);
-            break;
+            return el.y > acc.y ? el : acc;
           case "right":
-            newDistance = Math.hypot(el.x, el.y - focusedElement.y);
-            oldDistance = Math.hypot(acc.x, acc.y - focusedElement.y);
-            break;
+            return el.x < acc.x ? el : acc;
           case "left":
-            newDistance = Math.hypot(rightEdge - el.x, el.y - focusedElement.y);
-            oldDistance = Math.hypot(rightEdge - acc.x, acc.y - focusedElement.y);
-            break;
+            return el.x > acc.x ? el : acc;
+          default:
+            return acc;
         }
-        acc = newDistance < oldDistance ? el : acc;
-        return acc;
       });
     }
     /**
@@ -932,36 +863,26 @@ This ${callbackType} is already registered for this combination and type. To upd
       const activeElement = this.isActiveElementInGroup() && document.activeElement || this.lastFocusedElement;
       const currentArea = this.getCurrentArea(activeElement);
       if (!currentArea) return console.error("The active element is not in a focusable area!");
-      const { elements, distance, overflow } = currentArea;
-      const focusableGroup = this.getFocusableGroup(activeElement, elements, distance);
-      const { x, y, width, height } = activeElement.getBoundingClientRect();
-      const adjustedDimensions = {
-        x: x + distance,
-        y: y + distance,
-        width,
-        height
-      };
-      if (focusableGroup.length === 0) return;
-      const currentAxisGroup = this.filterGroupByCurrentAxis(direction, focusableGroup, adjustedDimensions);
-      if (!currentAxisGroup.length) return;
+      const [areaName, areaState] = currentArea;
+      const { elements } = areaState;
+      const focusableGroup = this.getFocusableGroup(activeElement, elements);
+      const dimensions = activeElement.getBoundingClientRect();
+      const currentAxisGroup = this.filterGroupByCurrentAxis(direction, focusableGroup, dimensions);
       let nextFocusableElement = this.findNextElement(
         direction,
         currentAxisGroup,
-        adjustedDimensions.x,
-        adjustedDimensions.y
+        dimensions.x,
+        dimensions.y
       );
       if (!nextFocusableElement) {
-        nextFocusableElement = this.getClosestToEdge(
-          direction,
-          currentAxisGroup,
-          adjustedDimensions,
-          distance,
-          overflow
-        );
+        const loop = this.onNavigationEdge?.({ direction, area: areaName, element: activeElement });
+        if (loop === false || !currentAxisGroup.length) return;
+        nextFocusableElement = this.getClosestToEdge(direction, currentAxisGroup);
       }
       if (nextFocusableElement) {
         nextFocusableElement.element.focus();
         this.lastFocusedElement = nextFocusableElement.element;
+        areaState.lastFocusedElement = this.lastFocusedElement;
       }
     }
     /** Filters the focusable group by the relevant axis by chacking for same axis overlap */
@@ -1028,17 +949,17 @@ This ${callbackType} is already registered for this combination and type. To upd
           if (this.paused) return;
           this.moveFocus(direction);
         };
-        actions_default.register(`move-focus-${direction}`, callback);
+        actions.register(`move-focus-${direction}`, callback);
         const keys = this.activeKeys[direction];
         for (const key of keys) {
-          keyboard_default.on({
+          keyboard.on({
             keys: [key],
             callback: `move-focus-${direction}`,
             type: ["press", "hold"]
           });
           this.registeredKeys.add(key);
         }
-        gamepad_default.on({
+        gamepad.on({
           actions: [`playstation.d-pad-${direction}`],
           callback: `move-focus-${direction}`
         });
@@ -1082,10 +1003,10 @@ This ${callbackType} is already registered for this combination and type. To upd
         directions.forEach((direction) => {
           const actionName = `move-focus-${direction}`;
           for (const key of this.activeKeys[direction]) {
-            keyboard_default.off([key], actionName);
+            keyboard.off([key], actionName);
           }
-          actions_default.remove(actionName);
-          gamepad_default.off([`playstation.d-pad-${direction}`], actionName);
+          actions.remove(actionName);
+          gamepad.off([`playstation.d-pad-${direction}`], actionName);
           if (this.clearCurrentActiveKeys) this.activeKeys[direction] = [];
         });
         this.registeredKeys.clear();
@@ -1096,25 +1017,30 @@ This ${callbackType} is already registered for this combination and type. To upd
      * Focuses on the first element in a focusable area
      */
     focusFirst(area = "default") {
-      if (!this.enabled) return;
-      const navigableElements = this.areas[area].elements;
+      if (!this.enabled) return null;
+      const navigableElements = this.areas[area]?.elements;
       if (!navigableElements || navigableElements.length === 0) {
-        return console.error(`The area '${area}' you are trying to focus doesn't exist or the spatial navigation hasn't been initialized`);
+        console.error(`The area '${area}' you are trying to focus doesn't exist or the spatial navigation hasn't been initialized`);
+        return null;
       }
       this.lastFocusedElement = navigableElements.find((el) => !el.hasAttribute("disabled"));
       if (!this.lastFocusedElement) {
-        return console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
+        console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
+        return null;
       }
       this.lastFocusedElement.focus();
+      this.areas[area].lastFocusedElement = this.lastFocusedElement;
+      return this.lastFocusedElement;
     }
     /**
      * Focuses on the last element in a focusable area
      */
     focusLast(area = "default") {
-      if (!this.enabled) return;
-      const navigableElements = this.areas[area].elements;
+      if (!this.enabled) return null;
+      const navigableElements = this.areas[area]?.elements;
       if (!navigableElements || navigableElements.length === 0) {
-        return console.error(`The area '${area}' you are trying to focus doesn't exist or the spatial navigation hasn't been initialized`);
+        console.error(`The area '${area}' you are trying to focus doesn't exist or the spatial navigation hasn't been initialized`);
+        return null;
       }
       let element;
       for (let i = navigableElements.length - 1; i >= 0; i--) {
@@ -1125,15 +1051,77 @@ This ${callbackType} is already registered for this combination and type. To upd
       }
       this.lastFocusedElement = element;
       if (!this.lastFocusedElement) {
-        return console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
+        console.error(`The area '${area}' you are trying to focus doesn't have any focusable elements`);
+        return null;
       }
       this.lastFocusedElement.focus();
+      this.areas[area].lastFocusedElement = this.lastFocusedElement;
+      return this.lastFocusedElement;
     }
     /**
-     * Changes focus to another area
+     * Changes focus to another area by focusing on the last focused element in that area. If no element has previously been focused, it will focus the first available element.
+     * If a direction is provided, focuses the element closest to the edge the navigation enters from, on the same axis as the currently focused element.
+     * If no such element exists, the fallback is used. Without a fallback, focus doesn't change.
+     * @param {string} area - The name of the area to switch to
+     * @param {Object} [options]
+     * @param {string} options.direction - The direction of navigation into the area
+     * @param {'first'|'last'|'lastFocused'} [options.fallback] - What to focus if no element is found in the direction. 'lastFocused' falls back to the first element if none was focused
+     * @example
+     * spatialNavigation.switchArea('content');
+     * spatialNavigation.switchArea('content', { direction: 'right' });
+     * spatialNavigation.switchArea('content', { direction: 'right', fallback: 'lastFocused' });
      */
-    switchArea(area) {
-      this.focusFirst(area);
+    switchArea(area, options) {
+      if (!this.enabled) return null;
+      if (!this.areas[area]) {
+        console.warn(`${area} is not a valid navigable area!`);
+        return null;
+      }
+      const focusByDirection = () => {
+        const { direction } = options;
+        const { elements } = this.areas[area];
+        const activeElement = this.isActiveElementInGroup() && document.activeElement || this.lastFocusedElement;
+        if (!activeElement) return null;
+        const dimensions = activeElement.getBoundingClientRect();
+        const focusableGroup = this.getFocusableGroup(activeElement, elements);
+        const currentAxisGroup = this.filterGroupByCurrentAxis(direction, focusableGroup, dimensions);
+        if (currentAxisGroup.length === 0) return null;
+        const closestToEdge = this.getClosestToEdge(direction, currentAxisGroup);
+        closestToEdge.element.focus();
+        this.lastFocusedElement = closestToEdge.element;
+        return closestToEdge.element;
+      };
+      const focusLastFocused = () => {
+        const lastFocusedInArea = this.getLastFocused(area);
+        if (!lastFocusedInArea || lastFocusedInArea.hasAttribute("disabled")) {
+          return this.focusFirst(area);
+        }
+        lastFocusedInArea.focus();
+        this.lastFocusedElement = lastFocusedInArea;
+        return lastFocusedInArea;
+      };
+      if (!options) return focusLastFocused();
+      if (!options.direction) {
+        console.warn(`You must provide a direction.`);
+        return null;
+      }
+      const focused = focusByDirection();
+      if (focused) return focused;
+      if (!options.fallback) {
+        console.warn(`No focusable elements found in the direction ${options.direction}. Please provide a fallback.`);
+        return null;
+      }
+      switch (options.fallback) {
+        case "first":
+          return this.focusFirst(area);
+        case "last":
+          return this.focusLast(area);
+        case "lastFocused":
+          return focusLastFocused();
+        default:
+          console.warn(`Invalid fallback option: ${options.fallback}`);
+          return null;
+      }
     }
     /**
     * Checks if a given element is in a focusable area
@@ -1169,11 +1157,8 @@ This ${callbackType} is already registered for this combination and type. To upd
       if (!this.enabled) return;
       this.paused = false;
     }
-  };
-  var spatial_navigation_default = new SpatialNavigation();
-
-  // src/spatial-navigation.ts
-  global_object_default.init();
-  var spatial_navigation_default2 = spatial_navigation_default;
-  return __toCommonJS(spatial_navigation_exports);
-})();
+  }
+  const SpatialNavigation$1 = new SpatialNavigation();
+  IM$1.init();
+  return SpatialNavigation$1;
+}));

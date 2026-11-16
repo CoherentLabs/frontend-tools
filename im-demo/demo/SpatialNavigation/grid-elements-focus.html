@@ -60,7 +60,11 @@
         <script>
             spatialNavigation.init(['.square']);
 
-            spatialNavigation.focusFirst();
+            if (window.top === window) {
+                spatialNavigation.focusFirst();
+            } else {
+                document.documentElement.addEventListener('mouseenter', () => spatialNavigation.focusFirst());
+            }
 
             gamepad.enabled = true;
             gamepad.lessSensitive = true;
