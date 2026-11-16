@@ -162,8 +162,10 @@ spatialNavigation.remove('area-1');
 Focuses on the first element of an area.
 
 ```ts
-spatialNavigation.focusFirst(area: string = 'default');
+spatialNavigation.focusFirst(area: string = 'default'): HTMLElement | null;
 ```
+
+Returns the focused element, or `null` if nothing was focused.
 
 ### focusLast(area)
 
@@ -172,8 +174,10 @@ spatialNavigation.focusFirst(area: string = 'default');
 Focuses on the last element of an area.
 
 ```ts
-spatialNavigation.focusLast(area: string = 'default');
+spatialNavigation.focusLast(area: string = 'default'): HTMLElement | null;
 ```
+
+Returns the focused element, or `null` if nothing was focused.
 
 ### getLastFocused(area) :badge[3.0.0]{variant="success"}
 
@@ -183,13 +187,29 @@ Returns the last focused element from a specific area. If no element has been fo
 spatialNavigation.getLastFocused(area: string = 'default'): HTMLElement | undefined;
 ```
 
-### switchArea(area) :badge[Breaking Change]{variant="danger"}
+### switchArea(area, options) :badge[3.1.0]{variant="success"}
 
 Switches focus to the specified area. 
 It will attempt to focus the last focused element in that area. If no element was previously focused in that area, or if that element has been removed from the DOM, or is unavailable (disabled), it falls back to `focusFirst()`.
 
 ```ts
-spatialNavigation.switchArea(area: string);
+type SwitchAreaOptions = {
+    direction: 'down' | 'up' | 'left' | 'right',
+    fallback?: 'first' | 'last' | 'lastFocused'
+};
+
+spatialNavigation.switchArea(area: string, options?: SwitchAreaOptions): HTMLElement | null;
+```
+
+Returns the focused element, or `null` if nothing was focused.
+
+#### options (optional)
+
+* `direction` - Focuses the element closest to the edge the navigation enters from, on the same axis as the currently focused element. For example, with `'right'` it focuses the leftmost element in the area that is on the same row.
+* `fallback` - What to focus if no element is found in the given direction. `'lastFocused'` behaves the same as calling `switchArea` without options. If no fallback is provided, the focus doesn't change.
+
+```ts
+spatialNavigation.switchArea('inspector', { direction: 'right', fallback: 'lastFocused' });
 ```
 
 :::caution[Breaking Change]
@@ -284,6 +304,21 @@ Returns `true` if the spatial navigation is paused, otherwise `false`.
 Type: `Record<string, { elements: HTMLElement[], lastFocusedElement: HTMLElement | undefined }>`
 
 Returns an object with all the registered areas.
+
+### onNavigationEdge :badge[3.1.0]{variant="success"}
+
+Type: `(e: { direction: Direction, area: string, element: HTMLElement }) => boolean | void`
+
+Callback called when the navigation reaches the edge of an area and there is no element to move to in that direction. By default the focus loops to the opposite edge of the area. Return `false` to prevent that, for example when switching to another area.
+
+```ts
+spatialNavigation.onNavigationEdge = ({ direction, area }) => {
+    if (area === 'inventory' && direction === 'right') {
+        spatialNavigation.switchArea('inspector', { direction, fallback: 'lastFocused' });
+        return false;
+    }
+};
+```
 
 ## Actions
 

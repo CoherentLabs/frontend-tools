@@ -42,6 +42,10 @@
                 box-sizing: border-box;
             }
 
+            .square[disabled] {
+                background-color: lightgray;
+            }
+
             .square1 {
                 background-color: cornflowerblue;
             }
@@ -85,7 +89,7 @@
             </div>
             <div class="area-containers">
                 <div class="container">
-                    <div class="square square2">1</div>
+                    <div class="square square2" disabled>1</div>
                     <div class="square square2">2</div>
                     <div class="square square2">3</div>
                     <div class="square square2">4</div>
@@ -108,19 +112,21 @@
         <script src="../../dist/spatial-navigation.js"></script>
         <script src="../../dist/gamepad.js"></script>
         <script>
-            let counter = 0;
-
             spatialNavigation.init([
                 { area: 'square-1', elements: ['.square1'] },
                 { area: 'square-2', elements: ['.square2'] },
             ]);
 
-            spatialNavigation.focusFirst('square-1');
+            if (window.top === window) {
+                spatialNavigation.focusFirst('square-1');
+            } else {
+                document.documentElement.addEventListener('mouseenter', () => spatialNavigation.focusFirst('square-1'));
+            }
 
             document.addEventListener('keydown', (e) => {
                 if (e.keyCode === KEYS.SPACEBAR && !e.repeat) {
-                    counter++;
-                    spatialNavigation.switchArea(`square-${(counter % 2) + 1}`);
+                    const inSquare1 = document.activeElement.classList.contains('square1');
+                    spatialNavigation.switchArea(inSquare1 ? 'square-2' : 'square-1');
                 }
             });
         </script>

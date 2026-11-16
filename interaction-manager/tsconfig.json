@@ -24,12 +24,12 @@
     "forceConsistentCasingInFileNames": true,
 
     // Environment
-    "lib": ["ES6", "DOM", "DOM.Iterable"],
+    "lib": ["ES2017", "DOM", "DOM.Iterable"],
+    "types": ["node"],
     "skipLibCheck": true,
 
     // Source handling
     "rootDir": "./src",
-    "baseUrl": ".",
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "esm"],  

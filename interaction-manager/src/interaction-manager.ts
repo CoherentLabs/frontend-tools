@@ -15,6 +15,7 @@ import zoom from './lib_components/zoom';
 import touchGestures from './lib_components/touch-gestures';
 import { KeyName, KeyCode, KeyboardKey } from './utils/keyboard-mappings';
 import { ButtonInput, AxisInput, GamepadInput } from './utils/gamepad-mappings';
+import { NavigationEdgeEvent, NavigationEdgeHandler, SwitchAreaOptions } from './lib_components/spatial-navigation';
 
 import IM from './utils/global-object';
 
@@ -29,5 +30,8 @@ export type {
     KeyboardKey,
     ButtonInput,
     AxisInput,
-    GamepadInput
+    GamepadInput,
+    NavigationEdgeEvent,
+    NavigationEdgeHandler,
+    SwitchAreaOptions
 }
